@@ -1,0 +1,7 @@
+{
+  "extends": "@managevent/config/tsconfig/react-library.json",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vitest.config.ts", "eslint.config.mjs"]
+}

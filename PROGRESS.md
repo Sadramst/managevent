@@ -11,8 +11,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | FND-03 | `packages/validators`: Zod schemas for every MVP API input/output, content schemas, primitives, fixture tests                                                     | ✅     |
 | FND-04 | `packages/types`: domain types inferred from validators, branded ID types and helpers                                                                             | ✅     |
 | FND-05 | `packages/i18n`: EN and FA dictionaries, `t()`, `getDir()`, Persian digits & ی/ک normalisation, Gregorian & Jalali formatters, `getExperienceMode()`, parity test | ✅     |
-| FND-06 | `packages/ui`: celebration & memorial tokens, 7 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | 🟨     |
-| FND-07 | `packages/auth`: Better Auth config, roles, `PERMISSIONS.md` matrix, `requirePermission()`, resource scoping helpers, allowed/denied tests per permission         | ⬜     |
+| FND-06 | `packages/ui`: celebration & memorial tokens, 7 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | ✅     |
+| FND-07 | `packages/auth`: Better Auth config, roles, `PERMISSIONS.md` matrix, `requirePermission()`, resource scoping helpers, allowed/denied tests per permission         | 🟨     |
 | FND-08 | `packages/payments`: cents helpers, GST maths (`PAYMENTS_AND_GST.md`), tax invoice model, invitation plans/entitlements, Stripe test wrappers, rounding tests     | ⬜     |
 | FND-09 | `packages/pricing`: Builder estimator engine (`WEBSITE.md` §A6.4) with fixtures for every ceremony family                                                         | ⬜     |
 | FND-10 | `packages/logistics`: headcount → recommendations engine (`ARCHITECTURE.md` §6), pure functions, 100% branch coverage target                                      | ⬜     |

@@ -1,5 +1,16 @@
 # @managevent/validators
 
-Zod schemas: the API contract. Input and output schemas for every API endpoint, content schemas (mirroring `content/schemas`), shared primitives (money cents, AU phone, ABN format, IANA time zone, locale, slug and token formats).
+Zod schemas for every Managevent API endpoint, `/content` JSON schema mirrors, and domain primitives (AUD cents, AU phone, ABN modulus-89 checksum, IANA time zones, safe slugs, guest tokens, and prefixed UUIDv7 IDs).
 
-**Status:** not yet scaffolded (FND-03). See [`AGENTS.md`](AGENTS.md).
+## Usage
+
+```ts
+import { LeadCreateSchema, AbnSchema } from "@managevent/validators";
+
+const lead = LeadCreateSchema.parse({
+  source: "BUILDER",
+  name: "Sara Ahmadi",
+  email: "sara@example.com",
+  preferredLanguage: "fa",
+});
+```

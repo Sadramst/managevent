@@ -1,11 +1,36 @@
 {
   "name": "@managevent/validators",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Zod schemas: the API contract",
-  "scripts": {},
+  "type": "module",
+  "description": "Zod schemas: the API contract, content schemas and domain primitives",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./primitives": "./src/primitives.ts",
+    "./content": "./src/content.ts",
+    "./api": "./src/api.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
+  },
+  "dependencies": {
+    "zod": "3.24.4"
+  },
+  "devDependencies": {
+    "@managevent/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "typescript": "5.9.3",
+    "vitest": "3.0.9"
+  },
   "managevent": {
-    "status": "not-scaffolded",
+    "status": "scaffolded",
     "backlog": "FND-03"
   }
 }

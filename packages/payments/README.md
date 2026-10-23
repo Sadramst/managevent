@@ -1,5 +1,13 @@
 # @managevent/payments
 
-Money, GST, plans and Stripe. Cents helpers, GST maths (`docs/compliance/PAYMENTS_AND_GST.md`), the tax invoice model and number sequence, invitation plans and entitlements, Stripe and Stripe Connect wrappers, and webhook verification helpers.
+The single source of truth for money (`AUD` integer cents) and Australian GST (`10%`) calculations (`docs/compliance/PAYMENTS_AND_GST.md`), ATO Tax Invoice generation, invitation plans/entitlements (`WEBSITE.md` §B14), and Stripe test-mode wrappers.
 
-**Status:** not yet scaffolded (FND-08). See [`AGENTS.md`](AGENTS.md).
+## Usage
+
+```ts
+import { priceLineFromUnitIncGst, sumPricedLines, formatAudCents } from "@managevent/payments";
+
+const line = priceLineFromUnitIncGst({ qty: 80, unitPriceIncGstCents: 12500 });
+const totals = sumPricedLines([line]);
+console.log(formatAudCents(totals.totalIncGstCents, { suffixIncGst: true }));
+```

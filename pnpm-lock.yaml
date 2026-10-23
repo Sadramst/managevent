@@ -152,7 +152,36 @@ importers:
 
   packages/notifications: {}
 
-  packages/payments: {}
+  packages/payments:
+    dependencies:
+      '@managevent/types':
+        specifier: workspace:*
+        version: link:../types
+      '@managevent/validators':
+        specifier: workspace:*
+        version: link:../validators
+      stripe:
+        specifier: 23.0.1
+        version: 23.0.1(@types/node@22.20.5)
+    devDependencies:
+      '@managevent/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      '@vitest/coverage-v8':
+        specifier: 3.0.9
+        version: 3.0.9(vitest@3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15))
+      eslint:
+        specifier: 9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.0.9
+        version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)
 
   packages/pricing: {}
 
@@ -1705,6 +1734,15 @@ packages:
   strip-json-comments@3.1.1:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
+
+  stripe@23.0.1:
+    resolution: {integrity: sha512-VFLs9IAzSZ8GIm6/vqhjqOL0fbYrSNYCpgZ3LS3YkSi/i5RnyMpu/Hf9YxPTOCYwc3mZKU3IJvuvKffQH2NLMg==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@types/node': '>=20'
+    peerDependenciesMeta:
+      '@types/node':
+        optional: true
 
   supports-color@7.2.0:
     resolution: {integrity: sha512-qpCAvRl9stuOHveKsn7HncJRvv501qIacKzQlO/+Lwxc9+0q2wLyv4Dfvt80/DPn2pqOBsJdDiogXGR9+OvwRw==}
@@ -3269,6 +3307,10 @@ snapshots:
       ansi-regex: 6.4.0
 
   strip-json-comments@3.1.1: {}
+
+  stripe@23.0.1(@types/node@22.20.5):
+    optionalDependencies:
+      '@types/node': 22.20.5
 
   supports-color@7.2.0:
     dependencies:

@@ -1,5 +1,10 @@
 # Contract changelog
 
+Step 2 launch (2026-10-23): additive EN/FA marketing and draft legal dictionary
+keys; auth re-exports the Prisma adapter for the API's database-backed sessions.
+API lead authorization no longer trusts client role headers. Production email
+requires explicit domain verification and uses provider idempotency keys.
+
 Step 2 plans (2026-10-23): additive `getInvitationPlan(plan, mode)` and optional
 mode arguments on entitlement helpers grant memorial Premium access for zero cents.
 Agency-only logistics fulfilment remains agency-only. Premium celebration price

@@ -4,6 +4,10 @@ The single source of truth for money (`AUD` integer cents) and Australian GST (`
 
 ## Usage
 
+`getInvitationPlan(plan, experienceMode)` is the entitlement resolver. Memorial
+invitations receive Premium access for zero cents, while agency-only logistics
+fulfilment stays agency-only. Celebration Premium costs 6900 AUD cents incl. GST.
+
 ```ts
 import { priceLineFromUnitIncGst, sumPricedLines, formatAudCents } from "@managevent/payments";
 

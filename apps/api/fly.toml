@@ -1,13 +1,16 @@
 # Fly.io configuration for apps/api (Sydney region: syd per ADR-0003 and OPEN_DECISIONS D-01)
-# DO NOT DEPLOY in Phase 0 without founder sign-off.
+# Step 2 production scope approved by founder.
 app = "managevent-api"
 primary_region = "syd"
 
 [build]
-  dockerfile = "Dockerfile"
+  dockerfile = "apps/api/Dockerfile"
+
+[deploy]
+  release_command = "pnpm db:migrate"
 
 [env]
-  APP_ENV = "staging"
+  APP_ENV = "production"
   NODE_ENV = "production"
   PORT = "4000"
   TZ = "Australia/Perth"

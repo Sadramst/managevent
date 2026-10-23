@@ -2,12 +2,15 @@
 
 ## Step 2 Work Log
 
+- C implemented locally: EN/FA home, draft privacy/terms, accessibility, 404, metadata, hreflang, sitemap/robots, OG image and server-action enquiry via api-client. Self-hosted font subsets; configurable contact details. Twenty-two desktop/mobile Playwright tests passed against an isolated mock API, including axe and RTL checks. Local mobile Lighthouse: EN 90/100/100, FA 92/100/100 (Performance/Accessibility/SEO).
+- D prepared, not deployed: Fly API release migrations, internal worker, Docker environment exclusions, post-CI deploy job and deployment runbook. Real email adapter remains gated by verified domain; notifications use the confirmed inbox via configuration. Forged role headers no longer authorize access to private lead data.
+
 - A4 done: ADR-0004 pins Prisma 6.x and records Supabase Sydney session-mode pooling for both database URLs.
 - B done: `enc:v1` accepted; Premium is 6900 AUD cents incl. GST; memorials receive Premium free; Builder stays internal with placeholder rates. Eleven payment tests pass, including memorial limits, zero pricing and agency-bridge separation. Matching source decision comments removed; Phase 0 report below is historical.
 
 - A1 done: database postinstall generates Prisma; Turbo build/typecheck/test explicitly depend on `@managevent/db#db:generate`. Verified a separate temporary clone with `pnpm install --frozen-lockfile` and `pnpm turbo run typecheck`: 27 tasks passed, no `.env` required.
 - A2 done: append-only encrypted-health migration applied locally; raw RSVP rows have no plaintext dietary/severity properties. Database: 8 tests; validators: 15; worker: 2; focused typechecks pass. EventHeadcount accepts numeric counts only.
-- A3 blocked: available upgrade tool does not expose the required dependency scan/install/upgrade operations. No versions have been changed in Step 2.
+- A3 blocked: available upgrade tool does not expose the required dependency scan/install/upgrade operations. Existing Better Auth, Gemini SDK and config Tailwind versions have not been upgraded. The new marketing scaffold uses Next 16.4.2 and Tailwind/PostCSS 4.3.3.
 - Production pending: no Fly/Vercel/Supabase/Resend tooling or authenticated provider sessions available. No cloud deployment performed. DNS values must come from the actual provider account, not generic examples.
 - Contact defaults approved: `sadra.tabarestani@gmail.com`, `0452657916`; lead notification address confirmed as `m.sadra.mst@gmail.com`. All remain configurable.
 
@@ -263,3 +266,45 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 - **Content expansion (MKT-04 / MKT-05):** `/content` currently contains 3 ceremonies (`wedding`, `sofreh-aghd`, `celebration-of-life`), 3 packages, and 9 Perth placeholder venues. Phase 1 (`MKT-04`, `MKT-05`) will expand `/content` to 8 fully written ceremonies and 6 packages to pass the 300-word local SEO thin-content guard (`MKT-10`).
 - **Font subsetting (MKT-01):** Self-hosted WOFF2 subsets for `Cormorant Garamond`, `Plus Jakarta Sans`, and `Vazirmatn` need to be bundled in `apps/marketing` and `apps/invitation` to meet the `< 2.5s` 4G LCP budget.
+
+## STEP 2 REPORT
+
+**Status: partial; production deployment is blocked. No cloud resources were deployed and no live emails were sent.**
+
+### URLs
+
+- Local: http://localhost:3100 and http://localhost:3100/fa.
+- Intended production: https://www.managevent.com.au, https://www.managevent.com.au/fa and https://api.managevent.com.au/health. Not verified live by this session.
+- Apex HTTPS and the requested 301 redirect have not been provisioned or verified.
+
+### Completed Code
+
+- A1: postinstall Prisma generation and explicit Turbo generation dependencies. A separate temporary clone passed install and all 27 typecheck tasks without `.env`.
+- A2: new guarded migration drops plaintext RSVP dietary/severity columns. Encryption removes plaintext write keys. Raw-row tests prove encrypted-only storage; worker snapshots validate counts only and reject cross-event references.
+- A4: ADR-0004 pins Prisma 6.x and requires Supabase Sydney session pooling for both database URLs.
+- B: enc:v1 accepted; Premium confirmed at 6900 AUD cents incl. GST; memorial Premium entitlements are free without granting agency fulfilment; Builder stays unpublished with placeholder rates.
+- C: minimal EN/FA marketing site, full RTL, local font subsets, enquiry server action calling api-client, honeypot, unticked marketing consent, bilingual success/errors, draft legal pages, accessibility, 404, sitemap/robots, metadata/hreflang and OG image. No fake prices, reviews, ABN or partner venues. Configurable owner contact defaults retained.
+- D preparation only: Sydney Fly configs, API migration release command, internal worker without public ports, Docker secret exclusions, post-CI Fly deployment job and `infra/DEPLOY_RUNBOOK.md`.
+- Production safety: verified-session lead authorization replaces forged role headers; production auth requires an explicit secret; errors omit raw internal details. Resend production transport is verification-gated and uses stable per-email idempotency keys. Lead notifications default to the confirmed inbox via configurable environment settings.
+
+### Verification
+
+- Scoped Turbo lint/typecheck/test/build: **69 tasks passed**, excluding the concurrently edited invitation app only.
+- Unit/integration tests in the implemented scope: **120** across 18 test files (including the final worker adapter tests).
+- Marketing Playwright: **22 passed** across desktop/mobile, EN/FA, mocked server-to-server API submission, validation, image rendering, overflow, axe scans and private Builder 404.
+- Local production-build mobile Lighthouse: **EN Performance 90, Accessibility 100, SEO 100; FA Performance 92, Accessibility 100, SEO 100**. These are local measurements, not live production scores.
+- Full root gates were attempted: formatting fails in concurrent invitation files; Turbo stops on invitation lint (`prefer-const` in its i18n helper). That unrelated work was not changed, staged or committed here. CI is not claimed green.
+- Docker build, Supabase migration/seed, provider deploys, live HTTPS and real email receipt remain unverified.
+
+### Waiting On Human / Blockers
+
+- A3 remains pending: the available upgrade workflow does not expose its required scoped scan/install/upgrade tools. Existing Better Auth 1.2.12, Gemini SDK 1.4.0 and config Tailwind 4.0.14 were not upgraded. The new marketing app uses Next 16.4.2 and Tailwind/PostCSS 4.3.3. Existing peer warnings remain and must be resolved before launch.
+- Authenticate official Fly/Vercel CLIs and select the production provider accounts. Supply Supabase Sydney session connection strings and production secrets **only through private provider/terminal prompts**, never chat or committed files. Exact secret-entry commands are in the runbook.
+- Add `FLY_API_TOKEN` as a repository secret. Resolve concurrent invitation checks before merging to `main`. Contract-change label lookup returned 404; GitHub issue/PR tracking remains pending.
+- Obtain actual Vercel, Fly certificate/IP and Resend domain DNS records. One exact DNS table is pending provider access; no guessed records were supplied. Wait for owner confirmation before verification. DMARC policy is `p=none`.
+- Verify Resend domain before enabling the email gate or submitting any live enquiry. Confirm the lead row, queue completion, notification receipt and translated auto-reply after deployment.
+- Legal/cultural review of draft bilingual copy remains pending. Preview noindex is implemented, but a real Vercel preview and its configuration are not verified.
+
+### Monthly Cost Estimate
+
+Indicative USD before tax, exchange rates and usage: Fly two always-on shared machines $10-20; Supabase Pro about $25; Vercel Pro about $20 per member for commercial use; Resend free within limits or about $20 Pro. Planning total **$55-85/month** for one Vercel member. Confirm current provider pricing, regional usage and backup requirements before provisioning; these are estimates, not retrieved quotes.

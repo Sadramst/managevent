@@ -14,8 +14,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | FND-06 | `packages/ui`: celebration & memorial tokens, 7 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | ✅     |
 | FND-07 | `packages/auth`: Better Auth config, roles, `PERMISSIONS.md` matrix, `requirePermission()`, resource scoping helpers, allowed/denied tests per permission         | ✅     |
 | FND-08 | `packages/payments`: cents helpers, GST maths (`PAYMENTS_AND_GST.md`), tax invoice model, invitation plans/entitlements, Stripe test wrappers, rounding tests     | ✅     |
-| FND-09 | `packages/pricing`: Builder estimator engine (`WEBSITE.md` §A6.4) with fixtures for every ceremony family                                                         | 🟨     |
-| FND-10 | `packages/logistics`: headcount → recommendations engine (`ARCHITECTURE.md` §6), pure functions, 100% branch coverage target                                      | ⬜     |
+| FND-09 | `packages/pricing`: Builder estimator engine (`WEBSITE.md` §A6.4) with fixtures for every ceremony family                                                         | ✅     |
+| FND-10 | `packages/logistics`: headcount → recommendations engine (`ARCHITECTURE.md` §6), pure functions, 100% branch coverage target                                      | 🟨     |
 | FND-11 | `apps/api`: Hono on Node 22, `/health`, Better Auth mount, `POST /v1/leads`, error model, request id, redaction, rate limit, idempotency, OpenAPI, Dockerfile     | ⬜     |
 | FND-12 | `apps/worker`: pg-boss setup, job registry (Zod, idempotent, dedupe key, retries), `lead.created` → email job                                                     | ⬜     |
 | FND-13 | `packages/notifications` (Resend, Twilio, consent, suppression, quiet hours, EN/FA templates) and `packages/storage` (R2 signed URLs)                             | ⬜     |

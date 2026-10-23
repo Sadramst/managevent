@@ -1,5 +1,11 @@
 # @managevent/pricing
 
-Ceremony Builder estimator. Price list versions, service tier rules, quantity drivers, travel zones, range bands, and the estimate breakdown, used by `www` (preview), `app` and `admin`.
+Pure Ceremony Builder cost estimator (`WEBSITE.md` §A6.4), reproducible price-list version (`2026.10.1`), quantity drivers (`GUEST`, `TABLE`, `HOUR`, `FIXED`), travel zones, and fixtures for all 4 ceremony families.
 
-**Status:** not yet scaffolded (FND-09). See [`AGENTS.md`](AGENTS.md).
+## Usage
+
+```ts
+import { calculateBuilderEstimate, CEREMONY_FAMILY_BUILDER_FIXTURES } from "@managevent/pricing";
+
+const estimate = calculateBuilderEstimate(CEREMONY_FAMILY_BUILDER_FIXTURES.CULTURAL);
+```

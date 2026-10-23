@@ -16,11 +16,14 @@
     "test:e2e": "turbo run test:e2e",
     "clean": "turbo run clean",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "db:generate": "pnpm --filter @managevent/db db:generate",
+    "db:migrate": "pnpm --filter @managevent/db db:migrate",
+    "db:seed": "pnpm --filter @managevent/db db:seed"
   },
   "devDependencies": {
-    "prettier": "^3.9.10",
-    "turbo": "^2.11.10",
-    "typescript": "^5.9.3"
+    "prettier": "3.9.10",
+    "turbo": "2.11.10",
+    "typescript": "5.9.3"
   }
 }

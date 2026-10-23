@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+:root,
+[data-experience-mode="celebration"] {
+  --me-surface: #faf7f2;
+  --me-surface-raised: #ffffff;
+  --me-ink: #18181b;
+  --me-ink-muted: #52525b;
+  --me-primary: #5c1a24;
+  --me-on-primary: #faf7f2;
+  --me-accent: #c5a059;
+}
+
+[data-experience-mode="memorial"] {
+  --me-surface: #f8f9fa;
+  --me-surface-raised: #ffffff;
+  --me-ink: #1e293b;
+  --me-ink-muted: #64748b;
+  --me-primary: #1e293b;
+  --me-on-primary: #f8f9fa;
+  --me-accent: #8c7a6b;
+}
+
+@theme {
+  --color-surface: var(--me-surface);
+  --color-surface-raised: var(--me-surface-raised);
+  --color-ink: var(--me-ink);
+  --color-ink-muted: var(--me-ink-muted);
+  --color-primary: var(--me-primary);
+  --color-on-primary: var(--me-on-primary);
+  --color-accent: var(--me-accent);
+
+  --radius-sheet: 24px;
+  --radius-panel: 12px;
+  --radius-control: 8px;
+  --radius-chip: 999px;
+
+  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-farsi: "Vazirmatn", system-ui, sans-serif;
+
+  --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);
+}

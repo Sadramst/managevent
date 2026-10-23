@@ -10,6 +10,7 @@
     ".": "./src/index.ts"
   },
   "scripts": {
+    "postinstall": "prisma generate",
     "build": "prisma generate && tsc --noEmit",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",

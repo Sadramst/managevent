@@ -26,7 +26,7 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["@managevent/db#db:generate", "^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [
         ".next/**",
@@ -38,8 +38,8 @@
     },
     "dev": { "cache": false, "persistent": true },
     "lint": { "dependsOn": ["^build"] },
-    "typecheck": { "dependsOn": ["^build"] },
-    "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
+    "typecheck": { "dependsOn": ["@managevent/db#db:generate", "^build"] },
+    "test": { "dependsOn": ["@managevent/db#db:generate", "^build"], "outputs": ["coverage/**"] },
     "test:e2e": { "dependsOn": ["build"], "cache": false },
     "db:generate": { "cache": false },
     "db:migrate": { "cache": false },

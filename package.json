@@ -27,6 +27,9 @@
     "typescript": "5.9.3"
   },
   "pnpm": {
+    "overrides": {
+      "better-call": "1.0.8"
+    },
     "onlyBuiltDependencies": [
       "@prisma/client",
       "@prisma/engines",

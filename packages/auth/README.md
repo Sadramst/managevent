@@ -1,5 +1,13 @@
 # @managevent/auth
 
-Auth and RBAC. Better Auth configuration (used by `apps/api`), the role enum, the permission matrix, `requirePermission()`, resource scoping helpers (event co-host, vendor organisation, crew roster window), and client session helpers.
+Self-hosted Better Auth configuration (`ADR-0005`), RBAC roles, the `PERMISSIONS.md` permission matrix, `requirePermission()`, and resource scoping helpers (`canCoHostPerform`, `canVendorAccessOrgResource`, `isWithinCrewRosterWindow`).
 
-**Status:** not yet scaffolded (FND-07). See [`AGENTS.md`](AGENTS.md).
+## Usage
+
+```ts
+import { requirePermission } from "@managevent/auth";
+
+requirePermission({ userId: "usr_123", roles: ["CUSTOMER_HOST"] }, "order:apply_recommendation", {
+  eventOwnerUserId: "usr_123",
+});
+```

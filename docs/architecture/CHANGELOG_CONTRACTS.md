@@ -4,6 +4,7 @@ Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`,
 
 | Date       | PR     | Package                  | Change                                                                                               | Breaking? | Migration notes |
 | ---------- | ------ | ------------------------ | ---------------------------------------------------------------------------------------------------- | --------- | --------------- |
+| 2026-10-23 | FND-10 | `@managevent/logistics`  | RSVP headcount -> catering, allergen, cake, seating, hire and RSA staffing recommendation engine     | No        | Initial release |
 | 2026-10-23 | FND-09 | `@managevent/pricing`    | Ceremony Builder estimator (`WEBSITE.md` §A6.4), price list `2026.10.1`, ceremony family fixtures    | No        | Initial release |
 | 2026-10-23 | FND-08 | `@managevent/payments`   | AUD cents, 10% GST per-line half-up rounding, ATO TaxInvoice, plans/entitlements, Stripe test wrap   | No        | Initial release |
 | 2026-10-23 | FND-07 | `@managevent/auth`       | Better Auth config, `PERMISSIONS.md` matrix (22 permissions), `requirePermission()`, scoping helpers | No        | Initial release |

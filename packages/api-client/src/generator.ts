@@ -37,18 +37,29 @@ export function extractOpenApiOperations(spec: OpenApiSpecDocument): ExtractedOp
 }
 
 /**
- * Generates the exact TypeScript source for `src/generated.ts` from `apps/api`'s OpenAPI document.
+ * Generates the exact Prettier-formatted TypeScript source for `src/generated.ts` from `apps/api`'s OpenAPI document.
  */
 export function buildGeneratedClientSource(spec: OpenApiSpecDocument): string {
   const operations = extractOpenApiOperations(spec);
-  const operationsJson = JSON.stringify(operations, null, 2);
+  const itemsSource = operations
+    .map(
+      (op) => `  {
+    method: ${JSON.stringify(op.method)},
+    path: ${JSON.stringify(op.path)},
+    summary: ${JSON.stringify(op.summary)},
+    tags: [${op.tags.map((t) => JSON.stringify(t)).join(", ")}],
+  },`,
+    )
+    .join("\n");
 
   return `// AUTO-GENERATED FILE — DO NOT EDIT MANUALLY.
 // Run \`pnpm --filter @managevent/api-client generate\` to regenerate from @managevent/api OpenAPI spec.
 
 export const GENERATED_API_VERSION = ${JSON.stringify(spec.info.version)} as const;
 
-export const GENERATED_OPERATIONS = ${operationsJson} as const;
+export const GENERATED_OPERATIONS = [
+${itemsSource}
+] as const;
 
 export type GeneratedOperation = (typeof GENERATED_OPERATIONS)[number];
 `;

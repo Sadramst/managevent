@@ -1,7 +1,14 @@
 # @managevent/worker
 
-Background worker
+Background worker on Node 22 using `pg-boss`.
 
-Async and scheduled jobs: emails, SMS and WhatsApp sends, RSVP reminders, `headcount.changed` → recommendations, media processing (resize, EXIF strip, transcode, blurhash), AI jobs, Xero sync, payout release, retention and deletion, document expiry alerts, event pack generation.
+## Registered Jobs (Phase 0)
 
-**Status:** not yet scaffolded. Read [`AGENTS.md`](AGENTS.md) and the root [`ROADMAP.md`](../../ROADMAP.md) (FND-12, then per-feature jobs).
+- `lead.created`: Sends localised (`en`/`fa`) auto-reply email to the lead and alerts planners, persisting an idempotent `Message` record.
+- `headcount.changed`: Computes catering, cake, seating, hire and RSA staffing recommendations via `@managevent/logistics` and stores a versioned `RecommendationSet`.
+
+## Running locally
+
+```bash
+pnpm --filter @managevent/worker dev
+```

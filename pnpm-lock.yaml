@@ -97,7 +97,48 @@ importers:
 
   apps/vendors: {}
 
-  apps/worker: {}
+  apps/worker:
+    dependencies:
+      '@managevent/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@managevent/db':
+        specifier: workspace:*
+        version: link:../../packages/db
+      '@managevent/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@managevent/logistics':
+        specifier: workspace:*
+        version: link:../../packages/logistics
+      '@managevent/payments':
+        specifier: workspace:*
+        version: link:../../packages/payments
+      '@managevent/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
+      pg-boss:
+        specifier: 10.4.2
+        version: 10.4.2
+      zod:
+        specifier: 3.24.4
+        version: 3.24.4
+    devDependencies:
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      eslint:
+        specifier: 9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      tsx:
+        specifier: 4.23.15
+        version: 4.23.15
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.0.9
+        version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   packages/ai: {}
 

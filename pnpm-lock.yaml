@@ -274,7 +274,33 @@ importers:
         specifier: 3.0.9
         version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
-  packages/notifications: {}
+  packages/notifications:
+    dependencies:
+      '@managevent/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@managevent/types':
+        specifier: workspace:*
+        version: link:../types
+      '@managevent/validators':
+        specifier: workspace:*
+        version: link:../validators
+    devDependencies:
+      '@managevent/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      eslint:
+        specifier: 9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.0.9
+        version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   packages/payments:
     dependencies:
@@ -341,7 +367,30 @@ importers:
         specifier: 3.0.9
         version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
-  packages/storage: {}
+  packages/storage:
+    dependencies:
+      '@managevent/types':
+        specifier: workspace:*
+        version: link:../types
+      '@managevent/validators':
+        specifier: workspace:*
+        version: link:../validators
+    devDependencies:
+      '@managevent/config':
+        specifier: workspace:*
+        version: link:../config
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      eslint:
+        specifier: 9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.0.9
+        version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(tsx@4.23.15)(yaml@2.9.1)
 
   packages/types:
     dependencies:

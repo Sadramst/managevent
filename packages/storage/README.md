@@ -1,5 +1,20 @@
 # @managevent/storage
 
-Cloudflare R2 media. Signed upload and download URLs, bucket selection (public or private), key conventions, and image or video variant descriptors.
+Cloudflare R2 media storage utilities (`ARCHITECTURE.md` §9): public/private bucket selection, short-lived AWS SigV4 signed upload/download URLs, EXIF-strip guards, and AVIF/WebP/H.264 variant descriptors.
 
-**Status:** not yet scaffolded (FND-13). See [`AGENTS.md`](AGENTS.md).
+## Usage
+
+```ts
+import { createSignedUploadUrl, selectMediaBucket } from "@managevent/storage";
+
+const bucket = selectMediaBucket({
+  purpose: "WALL",
+  moderation: "PENDING",
+  exifStripped: false,
+});
+const signed = createSignedUploadUrl({
+  bucket,
+  key: "events/evt_123/wall/med_123.jpg",
+  contentType: "image/jpeg",
+});
+```

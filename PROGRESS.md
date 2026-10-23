@@ -19,8 +19,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | FND-11 | `apps/api`: Hono on Node 22, `/health`, Better Auth mount, `POST /v1/leads`, error model, request id, redaction, rate limit, idempotency, OpenAPI, Dockerfile     | ✅     |
 | FND-12 | `apps/worker`: pg-boss setup, job registry (Zod, idempotent, dedupe key, retries), `lead.created` → email job                                                     | ✅     |
 | FND-13 | `packages/notifications` (Resend, Twilio, consent, suppression, quiet hours, EN/FA templates) and `packages/storage` (R2 signed URLs)                             | ✅     |
-| FND-14 | `packages/api-client`: typed client generated from `apps/api` OpenAPI spec, generate script, up-to-date verification test                                         | 🟨     |
-| FND-15 | CI: extend `.github/workflows/ci.yml` (Postgres service, migrate & drift check, i18n parity, content validation, tests) and write `infra/LOCAL_DEV.md`            | ⬜     |
+| FND-14 | `packages/api-client`: typed client generated from `apps/api` OpenAPI spec, generate script, up-to-date verification test                                         | ✅     |
+| FND-15 | CI: extend `.github/workflows/ci.yml` (Postgres service, migrate & drift check, i18n parity, content validation, tests) and write `infra/LOCAL_DEV.md`            | 🟨     |
 | FND-16 | `packages/ai`: `@google/genai` client, versioned prompt registry, Zod output schemas, quotas, PII scrubber, memorial tone guard, eval fixtures                    | ⬜     |
 
 ## Phase 1: Marketing site `www`

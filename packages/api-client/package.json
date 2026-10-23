@@ -1,11 +1,40 @@
 {
   "name": "@managevent/api-client",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Typed API client",
-  "scripts": {},
+  "type": "module",
+  "description": "Typed API client generated from apps/api OpenAPI specification",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "generate": "tsx src/generate.ts",
+    "generate:check": "tsx src/generate.ts --check",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
+  },
+  "dependencies": {
+    "@managevent/api": "workspace:*",
+    "@managevent/types": "workspace:*",
+    "@managevent/validators": "workspace:*",
+    "zod": "3.24.4"
+  },
+  "devDependencies": {
+    "@managevent/config": "workspace:*",
+    "@managevent/db": "workspace:*",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.0.9"
+  },
   "managevent": {
-    "status": "not-scaffolded",
+    "status": "scaffolded",
     "backlog": "FND-14"
   }
 }

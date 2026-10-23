@@ -1,7 +1,7 @@
 # WEBSITE.md: web specification
 
 **Covers:** Part A, `www.managevent.com.au` (`apps/marketing`). Part B, `invitation.managevent.com.au` (`apps/invitation`). Part C, the rules that apply across both domains.
-**Status:** v0.1 specification. No code exists yet. This file is the source of truth for routes, page anatomy, content models and acceptance criteria.
+**Status:** v0.1 specification. Step 2 implements a deliberately minimal launch subset locally: `/`, `/fa`, `/privacy`, `/terms`, `/accessibility` and their FA equivalents, server-action enquiry, 404 and SEO metadata. Production deployment is pending provider access and verification. The Builder and all catalogue/price/review/venue pages remain unpublished; `/plan` returns 404 until real rates are approved. The remainder of this document is the future product specification.
 **Read with:** `AGENTS.md`, `ARCHITECTURE.md`, `docs/design/DESIGN_SYSTEM.md`, `docs/design/MEMORIAL_MODE.md`, `packages/db/DATA_MODEL.md`, `content/README.md`.
 
 Conventions used in this document:

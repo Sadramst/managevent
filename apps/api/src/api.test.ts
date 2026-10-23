@@ -148,7 +148,15 @@ describe("@managevent/api", () => {
     const unauthRes = await app.request("/v1/leads");
     expect(unauthRes.status).toBe(401);
 
-    const forbiddenRes = await app.request("/v1/leads", {
+    const forgedRes = await app.request("/v1/leads", {
+      headers: { "x-managevent-user-id": "usr_forged", "x-managevent-roles": "SUPER_ADMIN" },
+    });
+    expect(forgedRes.status).toBe(401);
+
+    const forbiddenApp = createApiApp({
+      resolveActor: async () => ({ userId: "usr_host_1", roles: ["CUSTOMER_HOST"] }),
+    });
+    const forbiddenRes = await forbiddenApp.request("/v1/leads", {
       headers: {
         "x-managevent-user-id": "usr_host_1",
         "x-managevent-roles": "CUSTOMER_HOST",
@@ -156,7 +164,10 @@ describe("@managevent/api", () => {
     });
     expect(forbiddenRes.status).toBe(403);
 
-    const allowedRes = await app.request("/v1/leads", {
+    const staffApp = createApiApp({
+      resolveActor: async () => ({ userId: "usr_staff_1", roles: ["PLANNER_STAFF"] }),
+    });
+    const allowedRes = await staffApp.request("/v1/leads", {
       headers: {
         "x-managevent-user-id": "usr_staff_1",
         "x-managevent-roles": "PLANNER_STAFF",

@@ -28,7 +28,40 @@ export interface ResendEmailPayload {
 }
 
 export interface ResendEmailAdapter {
-  sendEmail(payload: ResendEmailPayload): Promise<{ id: string }>;
+  sendEmail(payload: ResendEmailPayload, idempotencyKey?: string): Promise<{ id: string }>;
+}
+
+export class ProductionResendAdapter implements ResendEmailAdapter {
+  constructor(private readonly fetchImpl: typeof fetch = fetch) {}
+
+  async sendEmail(payload: ResendEmailPayload, idempotencyKey?: string): Promise<{ id: string }> {
+    if (process.env.RESEND_DOMAIN_VERIFIED !== "true") {
+      throw new Error("Resend domain verification must be confirmed before sending email");
+    }
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) throw new Error("RESEND_API_KEY is required");
+    const response = await this.fetchImpl("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${apiKey}`,
+        "Content-Type": "application/json",
+        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
+      },
+      body: JSON.stringify(payload),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (!response.ok) throw new Error(`Resend delivery failed (${response.status})`);
+    const result: unknown = await response.json();
+    if (
+      !result ||
+      typeof result !== "object" ||
+      !("id" in result) ||
+      typeof result.id !== "string"
+    ) {
+      throw new Error("Invalid Resend delivery response");
+    }
+    return { id: result.id };
+  }
 }
 
 /**
@@ -60,8 +93,13 @@ export function createLeadCreatedJob(options?: {
   plannerInboxEmail?: string;
 }): JobDefinition<typeof LeadCreatedJobSchema, LeadCreatedJobResult> {
   const client = options?.dbClient ?? db;
-  const emailAdapter = options?.emailAdapter ?? new MockSafeResendAdapter();
-  const plannerEmail = options?.plannerInboxEmail ?? "planners@managevent.com.au";
+  const emailAdapter =
+    options?.emailAdapter ??
+    (process.env.NODE_ENV === "production"
+      ? new ProductionResendAdapter()
+      : new MockSafeResendAdapter());
+  const plannerEmail =
+    options?.plannerInboxEmail ?? process.env.LEAD_NOTIFICATION_EMAIL ?? "m.sadra.mst@gmail.com";
   const fromAddress =
     process.env.EMAIL_FROM_TRANSACTIONAL ?? "Managevent <hello@managevent.com.au>";
 
@@ -92,23 +130,29 @@ export function createLeadCreatedJob(options?: {
       const autoReplySubject = t(locale, "emails.leadAutoReplySubject");
       const autoReplyBody = t(locale, "emails.leadAutoReplyBody", { name: payload.name });
 
-      await emailAdapter.sendEmail({
-        from: fromAddress,
-        to: payload.email,
-        subject: autoReplySubject,
-        text: autoReplyBody,
-      });
+      await emailAdapter.sendEmail(
+        {
+          from: fromAddress,
+          to: payload.email,
+          subject: autoReplySubject,
+          text: autoReplyBody,
+        },
+        `lead-auto-reply:${payload.leadId}`,
+      );
 
       const plannerSubject = t("en", "emails.leadPlannerAlertSubject", {
         name: payload.name,
         source: payload.source,
       });
-      const plannerResult = await emailAdapter.sendEmail({
-        from: fromAddress,
-        to: plannerEmail,
-        subject: plannerSubject,
-        text: `Lead ID: ${payload.leadId} (${payload.source})`,
-      });
+      const plannerResult = await emailAdapter.sendEmail(
+        {
+          from: fromAddress,
+          to: plannerEmail,
+          subject: plannerSubject,
+          text: `Lead ID: ${payload.leadId}\nName: ${payload.name}\nEmail: ${payload.email}\nSource: ${payload.source}`,
+        },
+        `lead-planner-alert:${payload.leadId}`,
+      );
 
       await client.message.create({
         data: {

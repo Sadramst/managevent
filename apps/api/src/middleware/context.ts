@@ -6,8 +6,6 @@ import type { Context, MiddlewareHandler } from "hono";
 import { AuthorizationError, type AuthActor } from "@managevent/auth";
 import { redactForLog, redactUrl } from "@managevent/config";
 import { generateUuidV7 } from "@managevent/db";
-import type { Role } from "@managevent/types";
-import { RoleEnum } from "@managevent/validators";
 import { ZodError } from "zod";
 
 export interface ApiEnv {
@@ -69,36 +67,14 @@ export function redactedLoggerMiddleware(
 }
 
 /**
- * Extracts `AuthActor` from session headers (`x-managevent-user-id`, `x-managevent-roles`, `x-managevent-org-id`)
- * or bearer/cookie session context.
+ * Resolves identity from a verified session. Caller-supplied identity and role
+ * headers are never trusted.
  */
-export function actorMiddleware(): MiddlewareHandler<ApiEnv> {
+export function actorMiddleware(
+  resolveActor: (request: Request) => Promise<AuthActor | null>,
+): MiddlewareHandler<ApiEnv> {
   return async (c, next) => {
-    const userId = c.req.header("x-managevent-user-id")?.trim();
-    const rolesHeader = c.req.header("x-managevent-roles")?.trim();
-    const orgId = c.req.header("x-managevent-org-id")?.trim();
-
-    if (rolesHeader) {
-      const roles: Role[] = [];
-      for (const rawRole of rolesHeader.split(",")) {
-        const parsed = RoleEnum.safeParse(rawRole.trim());
-        if (parsed.success) {
-          roles.push(parsed.data);
-        }
-      }
-      if (roles.length > 0) {
-        c.set("actor", {
-          ...(userId ? { userId } : {}),
-          ...(orgId ? { organisationId: orgId } : {}),
-          roles,
-        });
-      } else {
-        c.set("actor", null);
-      }
-    } else {
-      c.set("actor", null);
-    }
-
+    c.set("actor", await resolveActor(c.req.raw));
     await next();
   };
 }
@@ -179,7 +155,7 @@ export function handleApiError(err: unknown, c: Context<ApiEnv>): Response {
     );
   }
 
-  const message = err instanceof Error ? err.message : "Internal server error";
+  const message = "Internal server error";
   return c.json(
     {
       error: {

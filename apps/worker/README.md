@@ -9,6 +9,16 @@ Background worker on Node 22 using `pg-boss`.
 
 ## Running locally
 
+In production, `lead.created` uses Resend rather than the local mock. Configure
+`RESEND_API_KEY`, `EMAIL_FROM_TRANSACTIONAL`, and `LEAD_NOTIFICATION_EMAIL` in Fly
+secret/config storage. The sender is hello@managevent.com.au and the notification
+inbox is the owner's confirmed address. Set `RESEND_DOMAIN_VERIFIED` only after
+Resend confirms domain verification and the owner has confirmed DNS changes.
+Until then the adapter fails without making a network request. Auto-reply and
+planner alert use separate stable provider idempotency keys. Tests always inject
+mock transports; no live service is contacted. See the deployment runbook for
+the remaining provider setup and live delivery checks.
+
 ```bash
 pnpm --filter @managevent/worker dev
 ```

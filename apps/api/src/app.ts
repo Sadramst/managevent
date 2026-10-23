@@ -8,7 +8,9 @@
  * - `GET /openapi.json`
  */
 import { OpenAPIHono } from "@hono/zod-openapi";
-import { createManageventAuth } from "@managevent/auth";
+import { createManageventAuth, prismaAdapter, type AuthActor } from "@managevent/auth";
+import { db } from "@managevent/db";
+import { cors } from "hono/cors";
 import {
   actorMiddleware,
   type ApiEnv,
@@ -23,6 +25,7 @@ import { LeadService } from "./modules/crm/service.js";
 import { healthRoute, OPENAPI_DOCUMENT_CONFIG } from "./openapi.js";
 
 export interface CreateApiAppOptions {
+  resolveActor?: (request: Request) => Promise<AuthActor | null>;
   leadService?: LeadService;
   rateLimit?: RateLimiterOptions;
   logSink?: (entry: Record<string, unknown>) => void;
@@ -51,7 +54,27 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
 
   app.use("*", requestIdMiddleware());
   app.use("*", redactedLoggerMiddleware(options.logSink));
-  app.use("*", actorMiddleware());
+  const auth = createManageventAuth({ database: prismaAdapter(db, { provider: "postgresql" }) });
+  app.use("*", cors({ origin: "https://www.managevent.com.au", credentials: true }));
+  app.use(
+    "*",
+    actorMiddleware(
+      options.resolveActor ??
+        (async (request) => {
+          if (!request.headers.has("cookie") && !request.headers.has("authorization")) return null;
+          const session = await auth.api.getSession({ headers: request.headers });
+          if (!session) return null;
+          const user = await db.user.findUnique({ where: { id: session.user.id } });
+          if (!user || user.deletedAt) return null;
+          if (
+            user.roles.some((role) => role === "PLANNER_STAFF" || role === "SUPER_ADMIN") &&
+            !user.twoFactorEnabled
+          )
+            return null;
+          return { userId: user.id, roles: user.roles };
+        }),
+    ),
+  );
 
   // Rate limit public write routes
   const rateLimiter = createRateLimiter(options.rateLimit ?? { windowMs: 60_000, maxRequests: 60 });
@@ -71,20 +94,8 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
   });
 
   // Better Auth mount (`/api/auth/*`)
-  const auth = createManageventAuth();
   app.on(["GET", "POST"], "/api/auth/*", async (c) => {
-    try {
-      return await auth.handler(c.req.raw);
-    } catch {
-      return c.json(
-        {
-          status: "auth_mounted",
-          provider: "better-auth",
-          requestId: c.get("requestId"),
-        },
-        200,
-      );
-    }
+    return auth.handler(c.req.raw);
   });
 
   // CRM module (`/v1/leads`)

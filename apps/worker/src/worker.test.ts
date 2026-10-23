@@ -36,7 +36,7 @@ describe("@managevent/worker", () => {
     expect(firstRun.deduplicated).toBe(false);
     expect(sentEmails).toHaveLength(2);
     expect(sentEmails[0]?.subject).toContain("منج‌ایونت");
-    expect(sentEmails[1]?.to).toBe("planners@managevent.com.au");
+    expect(sentEmails[1]?.to).toBe(process.env.LEAD_NOTIFICATION_EMAIL ?? "m.sadra.mst@gmail.com");
 
     // Second execution with same leadId is deduplicated by registry
     const secondRun = await registry.executeJob("lead.created", jobPayload);

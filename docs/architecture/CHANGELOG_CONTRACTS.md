@@ -1,5 +1,10 @@
 # Contract changelog
 
+Step 2 plans (2026-10-23): additive `getInvitationPlan(plan, mode)` and optional
+mode arguments on entitlement helpers grant memorial Premium access for zero cents.
+Agency-only logistics fulfilment remains agency-only. Premium celebration price
+confirmed at 6900 AUD cents inclusive of GST.
+
 ## Step 2: Encrypted Health Storage (2026-10-23)
 
 Breaking database contract: remove `Rsvp.dietary` and `Rsvp.allergySeverity`.

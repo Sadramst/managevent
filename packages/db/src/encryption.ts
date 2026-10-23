@@ -9,7 +9,7 @@ export const ENCRYPTION_PREFIX = "enc:v1:" as const;
 /**
  * Resolves a 32-byte encryption key from a base64 string or `process.env.PII_ENCRYPTION_KEY`.
  *
- * // DECISION-NEEDED(FND-02): Key rotation version table for PII_ENCRYPTION_KEY (v1 prefix already encoded in ciphertext).
+ * The accepted envelope version is enc:v1; preserve that key when introducing future versions.
  */
 export function resolveEncryptionKey(keyInput?: string): Buffer {
   const raw = keyInput ?? process.env.PII_ENCRYPTION_KEY ?? "";

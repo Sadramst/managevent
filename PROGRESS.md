@@ -2,6 +2,9 @@
 
 ## Step 2 Work Log
 
+- A4 done: ADR-0004 pins Prisma 6.x and records Supabase Sydney session-mode pooling for both database URLs.
+- B done: `enc:v1` accepted; Premium is 6900 AUD cents incl. GST; memorials receive Premium free; Builder stays internal with placeholder rates. Eleven payment tests pass, including memorial limits, zero pricing and agency-bridge separation. Matching source decision comments removed; Phase 0 report below is historical.
+
 - A1 done: database postinstall generates Prisma; Turbo build/typecheck/test explicitly depend on `@managevent/db#db:generate`. Verified a separate temporary clone with `pnpm install --frozen-lockfile` and `pnpm turbo run typecheck`: 27 tasks passed, no `.env` required.
 - A2 done: append-only encrypted-health migration applied locally; raw RSVP rows have no plaintext dietary/severity properties. Database: 8 tests; validators: 15; worker: 2; focused typechecks pass. EventHeadcount accepts numeric counts only.
 - A3 blocked: available upgrade tool does not expose the required dependency scan/install/upgrade operations. No versions have been changed in Step 2.

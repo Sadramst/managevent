@@ -21,14 +21,20 @@ All consumer prices are shown **GST-inclusive**, in **AUD**. The maths lives in 
 
 ## Invitations
 
-| Plan               | Price (placeholder)                            | Notes                                    |
-| ------------------ | ---------------------------------------------- | ---------------------------------------- |
-| Free               | $0                                             | Up to 30 guests                          |
-| Premium Event Pass | **TBC** (suggest test points: $39 / $69 / $99) | One-off per event                        |
-| Agency             | Included                                       | Part of any Managevent package           |
-| SMS credits        | TBC per 100                                    | Pass the Twilio cost through plus margin |
+**Resolved 2026-10-23:** Premium Event Pass is **6900 cents AUD incl. GST**.
+Memorial invitations receive Premium entitlements at **no charge**. Provider
+messaging credits remain separately controlled; agency fulfilment is not included.
+The `enc:v1` encryption envelope is accepted. Builder rates remain internal
+placeholders and the Builder must not be publicly available until real rates are approved.
 
-**Decision for the founder:** make Premium free for memorial events (recommended, as a goodwill gesture).
+| Plan               | Price                    | Notes                                    |
+| ------------------ | ------------------------ | ---------------------------------------- |
+| Free               | $0                       | Up to 30 guests                          |
+| Premium Event Pass | 6900 cents AUD incl. GST | One-off per event; free for memorials    |
+| Agency             | Included                 | Part of any Managevent package           |
+| SMS credits        | TBC per 100              | Pass the Twilio cost through plus margin |
+
+**Resolved:** Premium entitlements are free for memorial events.
 
 ## Marketplace (phase 2)
 

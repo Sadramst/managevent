@@ -17,6 +17,32 @@ jobs:
     name: Lint · Typecheck · Test · Build
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: managevent
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres -d managevent"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=10
+    env:
+      APP_ENV: local
+      NODE_ENV: test
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/managevent
+      DIRECT_URL: postgresql://postgres:postgres@localhost:5432/managevent
+      PII_ENCRYPTION_KEY: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=
+      BETTER_AUTH_SECRET: ci-test-only-better-auth-secret-32chars-minimum
+      BETTER_AUTH_URL: http://localhost:4000
+      AUTH_COOKIE_DOMAIN: localhost
+      GUEST_TOKEN_PEPPER: ci-test-only-guest-token-pepper
+      STRIPE_SECRET_KEY: sk_test_ci_mock_only
+      STRIPE_WEBHOOK_SECRET: whsec_ci_mock_only
     steps:
       - uses: actions/checkout@v4
         with:
@@ -27,11 +53,24 @@ jobs:
           node-version-file: .nvmrc
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm format:check
-      - run: pnpm turbo run lint typecheck test build
-      # Added by later issues:
-      # - i18n parity (FND-05)  - prisma migrate diff check (FND-02)
-      # - thin-content SEO guard (MKT-10)  - Lighthouse CI (MKT-15)
+      - name: Generate Prisma client & deploy migrations
+        run: |
+          pnpm db:generate
+          pnpm db:migrate
+      - name: Check Prisma schema drift
+        run: pnpm db:drift-check
+      - name: Seed database with Perth placeholder content
+        run: pnpm db:seed
+      - name: Validate /content against content/schemas
+        run: pnpm validate:content
+      - name: Check i18n EN/FA dictionary parity
+        run: pnpm --filter @managevent/i18n test
+      - name: Check committed OpenAPI client is up to date
+        run: pnpm --filter @managevent/api-client generate:check
+      - name: Check formatting
+        run: pnpm format:check
+      - name: Run workspace lint, typecheck, test and build
+        run: pnpm turbo run lint typecheck test build
 
   secrets-scan:
     name: Secret scan

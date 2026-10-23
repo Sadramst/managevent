@@ -16,6 +16,7 @@
     "test": "vitest run",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
+    "db:drift-check": "prisma migrate diff --from-schema-datasource prisma/schema.prisma --to-schema-datamodel prisma/schema.prisma --exit-code",
     "db:seed": "tsx src/seed.ts",
     "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
   },

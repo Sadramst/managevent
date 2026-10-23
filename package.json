@@ -19,7 +19,9 @@
     "format:check": "prettier --check .",
     "db:generate": "pnpm --filter @managevent/db db:generate",
     "db:migrate": "pnpm --filter @managevent/db db:migrate",
-    "db:seed": "pnpm --filter @managevent/db db:seed"
+    "db:drift-check": "pnpm --filter @managevent/db db:drift-check",
+    "db:seed": "pnpm --filter @managevent/db db:seed",
+    "validate:content": "node scripts/validate-content.mjs"
   },
   "devDependencies": {
     "prettier": "3.9.10",

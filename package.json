@@ -28,6 +28,7 @@
   },
   "pnpm": {
     "overrides": {
+      "@hono/zod-validator": "0.4.3",
       "better-call": "1.0.8"
     },
     "onlyBuiltDependencies": [

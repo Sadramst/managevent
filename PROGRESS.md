@@ -7,8 +7,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | ID     | Task                                                                                                                                                              | Status |
 | ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
 | FND-01 | Scaffold `packages/config` (tsconfig presets, ESLint flat config, Prettier, Tailwind v4 preset with brand tokens, Vitest preset, physical-direction ESLint rule)  | ✅     |
-| FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md`, UUIDv7 ID generator, AES-256-GCM field encryption extension, initial migration, Perth placeholder seed         | 🟨     |
-| FND-03 | `packages/validators`: Zod schemas for every MVP API input/output, content schemas, primitives, fixture tests                                                     | ⬜     |
+| FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md`, UUIDv7 ID generator, AES-256-GCM field encryption extension, initial migration, Perth placeholder seed         | ✅     |
+| FND-03 | `packages/validators`: Zod schemas for every MVP API input/output, content schemas, primitives, fixture tests                                                     | 🟨     |
 | FND-04 | `packages/types`: domain types inferred from validators, branded ID types and helpers                                                                             | ⬜     |
 | FND-05 | `packages/i18n`: EN and FA dictionaries, `t()`, `getDir()`, Persian digits & ی/ک normalisation, Gregorian & Jalali formatters, `getExperienceMode()`, parity test | ⬜     |
 | FND-06 | `packages/ui`: celebration & memorial tokens, 7 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | ⬜     |

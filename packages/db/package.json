@@ -1,11 +1,38 @@
 {
   "name": "@managevent/db",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
-  "description": "Database schema and client (Prisma)",
-  "scripts": {},
+  "type": "module",
+  "description": "Database schema and client (Prisma), prefixed UUIDv7 IDs, AES-256-GCM field encryption, and Perth seed",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "prisma generate && tsc --noEmit",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "tsx src/seed.ts",
+    "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
+  },
+  "dependencies": {
+    "@prisma/client": "6.19.3"
+  },
+  "devDependencies": {
+    "@managevent/config": "workspace:*",
+    "@types/node": "22.20.5",
+    "eslint": "9.39.5",
+    "prisma": "6.19.3",
+    "tsx": "4.23.15",
+    "typescript": "5.9.3",
+    "vitest": "3.0.9"
+  },
   "managevent": {
-    "status": "not-scaffolded",
+    "status": "scaffolded",
     "backlog": "FND-02"
   }
 }

@@ -1,0 +1,1161 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Enums ──────────────────────────────────────────────────────────────────
+
+enum Role {
+  CUSTOMER_HOST
+  GUEST
+  VENDOR
+  PLANNER_STAFF
+  CHECKIN_CREW
+  SUPER_ADMIN
+}
+
+enum CeremonyFamily {
+  CELEBRATION
+  CULTURAL
+  CORPORATE
+  SOLEMN
+}
+
+enum ExperienceMode {
+  CELEBRATION
+  MEMORIAL
+}
+
+enum EventStatus {
+  DRAFT
+  ENQUIRY
+  PROPOSAL
+  BOOKED
+  PLANNING
+  LIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum LeadStage {
+  NEW
+  QUALIFIED
+  PROPOSAL_SENT
+  BOOKED
+  LOST
+}
+
+enum LeadSource {
+  BUILDER
+  CONTACT_FORM
+  BOOK_CONSULT
+  WHATSAPP
+  PHONE
+  INVITATION_BRIDGE
+  REFERRAL
+  OTHER
+}
+
+enum RsvpStatus {
+  PENDING
+  YES
+  NO
+  MAYBE
+}
+
+enum DietaryTag {
+  HALAL
+  VEGETARIAN
+  VEGAN
+  GLUTEN_FREE
+  DAIRY_FREE
+  NUT_ALLERGY
+  SHELLFISH_ALLERGY
+  OTHER_ALLERGY
+  KOSHER
+  NONE
+}
+
+enum AllergySeverity {
+  MILD
+  MODERATE
+  SEVERE_ANAPHYLAXIS
+}
+
+enum CoHostRole {
+  OWNER
+  EDITOR
+  VIEWER
+}
+
+enum InvitationPlan {
+  FREE
+  PREMIUM
+  AGENCY
+}
+
+enum PaymentStatus {
+  PENDING
+  REQUIRES_ACTION
+  SUCCEEDED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
+
+enum PaymentKind {
+  DEPOSIT
+  MILESTONE
+  BALANCE
+  INVITATION_PASS
+  ADD_ON
+  REFUND
+}
+
+enum VendorStatus {
+  APPLIED
+  PENDING_DOCS
+  UNDER_REVIEW
+  APPROVED
+  SUSPENDED
+  REJECTED
+}
+
+enum DocumentType {
+  PUBLIC_LIABILITY
+  FOOD_SAFETY
+  RSA
+  LIQUOR_LICENCE
+  WWCC
+  ABN_EVIDENCE
+  OTHER
+}
+
+enum BookingStatus {
+  REQUESTED
+  QUOTED
+  ACCEPTED
+  DECLINED
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+enum MediaModeration {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MessageChannel {
+  EMAIL
+  SMS
+  WHATSAPP
+  PUSH
+  IN_APP
+}
+
+enum OrganisationKind {
+  VENDOR
+  CORPORATE
+  INTERNAL
+}
+
+enum MembershipRole {
+  OWNER
+  ADMIN
+  MEMBER
+}
+
+enum WellMode {
+  NONE
+  WISHING_WELL
+  TRIBUTE_BOOK
+}
+
+enum RsvpSource {
+  WEB
+  HOST_ENTRY
+  IMPORT
+}
+
+enum HeadcountTrigger {
+  RSVP
+  HOST_EDIT
+  SCHEDULED
+}
+
+enum LegacySlugSource {
+  APPILICO_ANNIVERSARY
+  APPILICO_E
+}
+
+enum OrderStatus {
+  DRAFT
+  PROPOSED
+  ACCEPTED
+  LOCKED
+  COMPLETED
+  CANCELLED
+}
+
+enum OrderLineKind {
+  SERVICE
+  PACKAGE
+  HIRE
+  VENDOR_BOOKING
+  FEE
+}
+
+enum OrderLineUnit {
+  GUEST
+  TABLE
+  HOUR
+  ITEM
+  FIXED
+}
+
+enum RecommendationStatus {
+  OPEN
+  APPLIED
+  DISMISSED
+  SUPERSEDED
+}
+
+enum PaymentMethod {
+  CARD
+  APPLE_PAY
+  GOOGLE_PAY
+  AFTERPAY
+  BANK_TRANSFER
+}
+
+enum InventoryReservationStatus {
+  HELD
+  DISPATCHED
+  RETURNED
+  DAMAGED
+}
+
+enum ScanResult {
+  OK
+  DUPLICATE
+  INVALID
+  WRONG_EVENT
+}
+
+enum MediaBucket {
+  PUBLIC
+  PRIVATE
+}
+
+enum MediaPurpose {
+  WALL
+  COVER
+  GALLERY
+  MUSIC
+  DOCUMENT
+  TRIBUTE
+}
+
+enum WellVisibility {
+  HOSTS_ONLY
+  WALL
+}
+
+enum ConsentSubjectType {
+  USER
+  GUEST
+  LEAD
+}
+
+enum ConsentPurpose {
+  MARKETING_EMAIL
+  MARKETING_SMS
+  EVENT_UPDATES
+  HEALTH_DATA_CATERING
+  PHOTO_PUBLICATION
+  TESTIMONIAL
+}
+
+// ─── Identity & Better Auth ─────────────────────────────────────────────────
+
+model User {
+  id               String       @id
+  email            String       @unique
+  emailVerified    Boolean      @default(false)
+  phone            String?
+  name             String
+  image            String?
+  locale           String       @default("en")
+  roles            Role[]
+  mfaEnabled       Boolean      @default(false)
+  twoFactorEnabled Boolean      @default(false)
+  avatarMediaId    String?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  deletedAt        DateTime?
+  sessions         Session[]
+  accounts         Account[]
+  twoFactors       TwoFactor[]
+  memberships      Membership[]
+  ownedEvents      Event[]      @relation("EventOwner")
+  plannedEvents    Event[]      @relation("EventPlanner")
+  coHostedEvents   CoHost[]
+}
+
+model Session {
+  id                   String   @id
+  userId               String
+  token                String   @unique
+  expiresAt            DateTime
+  ipAddress            String?
+  userAgent            String?
+  activeOrganizationId String?
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+  user                 User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String    @id
+  userId                String
+  accountId             String
+  providerId            String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model TwoFactor {
+  id          String   @id
+  userId      String
+  secret      String
+  backupCodes String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Organisation {
+  id                     String              @id
+  kind                   OrganisationKind
+  name                   String
+  slug                   String?             @unique
+  abn                    String?
+  acn                    String?
+  gstRegistered          Boolean             @default(false)
+  abnVerifiedAt          DateTime?
+  abnLookupSnapshot      Json?
+  stripeConnectAccountId String?
+  status                 VendorStatus?
+  createdAt              DateTime            @default(now())
+  updatedAt              DateTime            @updatedAt
+  deletedAt              DateTime?
+  memberships            Membership[]
+  venues                 Venue[]
+  vendorServices         VendorService[]
+  vendorDocuments        VendorDocument[]
+  availabilityBlocks     AvailabilityBlock[]
+  bookings               Booking[]
+  orderLines             OrderLine[]
+  transfers              Transfer[]
+}
+
+model Membership {
+  id             String         @id
+  userId         String
+  organisationId String
+  role           MembershipRole @default(MEMBER)
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  organisation   Organisation   @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, organisationId])
+}
+
+// ─── Marketing & CRM ────────────────────────────────────────────────────────
+
+model Lead {
+  id                 String         @id
+  stage              LeadStage      @default(NEW)
+  source             LeadSource
+  name               String
+  email              String
+  phone              String?
+  preferredLanguage  String         @default("en")
+  preferredChannel   MessageChannel @default(EMAIL)
+  ceremonySlug       String?
+  eventDate          DateTime?
+  dateFlexible       Boolean        @default(false)
+  guestEstimate      Int?
+  area               String?
+  message            String?
+  estimateId         String?
+  utm                Json?
+  assignedToUserId   String?
+  marketingConsentId String?
+  eventId            String?
+  idempotencyKey     String?        @unique
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+  deletedAt          DateTime?
+
+  @@index([stage, createdAt])
+}
+
+model BuilderSession {
+  id           String     @id
+  anonymousKey String
+  userId       String?
+  stateJson    Json
+  locale       String     @default("en")
+  ceremonySlug String
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  estimates    Estimate[]
+}
+
+model Estimate {
+  id               String         @id
+  builderSessionId String
+  priceListVersion String
+  currency         String         @default("AUD")
+  lowIncGstCents   Int
+  highIncGstCents  Int
+  breakdownJson    Json
+  assumptionsJson  Json
+  shareToken       String         @unique
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  builderSession   BuilderSession @relation(fields: [builderSessionId], references: [id], onDelete: Cascade)
+}
+
+// ─── Catalogue ──────────────────────────────────────────────────────────────
+
+model CeremonyType {
+  slug               String         @id
+  family             CeremonyFamily
+  experienceMode     ExperienceMode
+  name               Json
+  summary            Json?
+  culturalNotes      Json?
+  includesCategories String[]
+  timelineTemplate   Json
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+}
+
+model Venue {
+  id             String        @id
+  slug           String        @unique
+  name           Json
+  area           String
+  type           String
+  capacityJson   Json
+  rulesJson      Json
+  facilities     String[]
+  suitableFor    String[]
+  accessible     Boolean       @default(false)
+  lat            Float?
+  lng            Float?
+  partnerStatus  String
+  organisationId String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  organisation   Organisation? @relation(fields: [organisationId], references: [id])
+  events         Event[]
+  subEvents      SubEvent[]
+  floorPlans     FloorPlan[]
+}
+
+model Service {
+  id        String   @id
+  category  String
+  name      Json
+  tiersJson Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Package {
+  id                   String   @id
+  slug                 String   @unique
+  name                 Json
+  tier                 String?
+  ceremonySlugs        String[]
+  guestMin             Int
+  guestMax             Int
+  currency             String   @default("AUD")
+  fromPriceIncGstCents Int
+  inclusionsJson       Json
+  addOnsJson           Json
+  depositRuleJson      Json
+  active               Boolean  @default(true)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}
+
+model PriceList {
+  id            String   @id
+  version       String   @unique
+  effectiveFrom DateTime
+  rulesJson     Json
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+// ─── Events & Invitations ───────────────────────────────────────────────────
+
+model Event {
+  id                    String                 @id
+  ownerUserId           String
+  title                 Json
+  ceremonySlug          String
+  experienceMode        ExperienceMode
+  status                EventStatus            @default(DRAFT)
+  startsAt              DateTime
+  endsAt                DateTime?
+  timeZone              String                 @default("Australia/Perth")
+  venueId               String?
+  venueFreeText         String?
+  lat                   Float?
+  lng                   Float?
+  guestCountTarget      Int?
+  plannerUserId         String?
+  leadId                String?
+  isAgencyManaged       Boolean                @default(false)
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  deletedAt             DateTime?
+  owner                 User                   @relation("EventOwner", fields: [ownerUserId], references: [id])
+  planner               User?                  @relation("EventPlanner", fields: [plannerUserId], references: [id])
+  venue                 Venue?                 @relation(fields: [venueId], references: [id])
+  subEvents             SubEvent[]
+  coHosts               CoHost[]
+  invitation            Invitation?
+  headcounts            EventHeadcount[]
+  orders                Order[]
+  recommendationSets    RecommendationSet[]
+  bookings              Booking[]
+  inventoryReservations InventoryReservation[]
+  tasks                 Task[]
+  runSheets             RunSheet[]
+  crewRosters           CrewRoster[]
+  scanEvents            ScanEvent[]
+  floorPlans            FloorPlan[]
+  mediaAssets           MediaAsset[]
+
+  @@index([ownerUserId])
+  @@index([status, startsAt])
+}
+
+model SubEvent {
+  id            String    @id
+  eventId       String
+  title         Json
+  startsAt      DateTime
+  endsAt        DateTime?
+  venueId       String?
+  venueFreeText String?
+  order         Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  event         Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  venue         Venue?    @relation(fields: [venueId], references: [id])
+}
+
+model CoHost {
+  id        String     @id
+  eventId   String
+  userId    String
+  role      CoHostRole
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  event     Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model Invitation {
+  id              String         @id
+  eventId         String         @unique
+  eventSlug       String         @unique
+  templateSlug    String
+  themeId         String
+  contentJson     Json
+  languages       String[]
+  defaultLanguage String         @default("en")
+  gateStyle       String
+  musicMediaId    String?
+  coverMediaId    String?
+  plan            InvitationPlan @default(FREE)
+  pinHash         String?
+  rsvpDeadline    DateTime?
+  rsvpConfigJson  Json
+  publishedAt     DateTime?
+  salt            String
+  allowForwarding Boolean        @default(true)
+  wallEnabled     Boolean        @default(false)
+  wallAutoApprove Boolean        @default(false)
+  wellMode        WellMode       @default(NONE)
+  wellConfigJson  Json
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+  deletedAt       DateTime?
+  event           Event          @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  parties         Party[]
+  payments        Payment[]
+  wellEntries     WellEntry[]
+  campaigns       Campaign[]
+}
+
+model Party {
+  id              String       @id
+  invitationId    String
+  stableId        String
+  displayName     Json
+  token           String
+  tokenRevokedAt  DateTime?
+  maxSeats        Int          @default(1)
+  allowPlusOnes   Boolean      @default(false)
+  childrenAllowed Boolean      @default(false)
+  tags            String[]
+  tableLabel      String?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  deletedAt       DateTime?
+  invitation      Invitation   @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  guests          Guest[]
+  passes          Pass[]
+  legacySlugs     LegacySlug[]
+  wellEntries     WellEntry[]
+
+  @@unique([invitationId, token])
+  @@unique([invitationId, stableId])
+}
+
+model Guest {
+  id               String    @id
+  partyId          String
+  stableId         String
+  name             Json
+  email            String?
+  phone            String?
+  isChild          Boolean   @default(false)
+  isPlusOne        Boolean   @default(false)
+  individualToken  String?
+  contactConsentId String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+  party            Party     @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  rsvp             Rsvp?
+  passes           Pass[]
+}
+
+model Rsvp {
+  id                       String           @id
+  guestId                  String           @unique
+  status                   RsvpStatus       @default(PENDING)
+  respondedAt              DateTime
+  dietary                  DietaryTag[]
+  dietaryEncrypted         String?
+  allergyNotes             String?
+  allergySeverity          AllergySeverity?
+  allergySeverityEncrypted String?
+  accessibilityNotes       String?
+  songRequests             String[]
+  messageToHost            String?
+  source                   RsvpSource       @default(WEB)
+  idempotencyKey           String           @unique
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  guest                    Guest            @relation(fields: [guestId], references: [id], onDelete: Cascade)
+}
+
+model EventHeadcount {
+  id                 String              @id
+  eventId            String
+  takenAt            DateTime            @default(now())
+  adultsYes          Int
+  childrenYes        Int
+  maybe              Int
+  pending            Int
+  no                 Int
+  dietaryCountsJson  Json
+  trigger            HeadcountTrigger
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  event              Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  recommendationSets RecommendationSet[]
+}
+
+model Pass {
+  id           String      @id
+  guestId      String?
+  partyId      String
+  qrPayloadSig String
+  checkedInAt  DateTime?
+  checkedInBy  String?
+  deviceId     String?
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  guest        Guest?      @relation(fields: [guestId], references: [id])
+  party        Party       @relation(fields: [partyId], references: [id], onDelete: Cascade)
+  scanEvents   ScanEvent[]
+}
+
+model LegacySlug {
+  id         String           @id
+  legacyPath String           @unique
+  partyId    String
+  source     LegacySlugSource
+  createdAt  DateTime         @default(now())
+  updatedAt  DateTime         @updatedAt
+  party      Party            @relation(fields: [partyId], references: [id], onDelete: Cascade)
+}
+
+// ─── Orders & Logistics ─────────────────────────────────────────────────────
+
+model Order {
+  id                 String              @id
+  eventId            String
+  status             OrderStatus         @default(DRAFT)
+  priceListVersion   String
+  currency           String              @default("AUD")
+  totalsJson         Json
+  acceptedAt         DateTime?
+  termsVersion       String
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  deletedAt          DateTime?
+  event              Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  lines              OrderLine[]
+  recommendationSets RecommendationSet[]
+  paymentSchedules   PaymentSchedule[]
+  payments           Payment[]
+}
+
+model OrderLine {
+  id                   String         @id
+  orderId              String
+  kind                 OrderLineKind
+  refId                String
+  description          Json
+  qty                  Int
+  unit                 OrderLineUnit
+  currency             String         @default("AUD")
+  unitPriceExGstCents  Int
+  amountExGstCents     Int
+  gstCents             Int
+  amountIncGstCents    Int
+  vendorOrganisationId String?
+  finalNumbersDueAt    DateTime?
+  logisticsKey         String?
+  createdAt            DateTime       @default(now())
+  updatedAt            DateTime       @updatedAt
+  order                Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorOrganisation   Organisation?  @relation(fields: [vendorOrganisationId], references: [id])
+  bookings             Booking[]
+}
+
+model RecommendationSet {
+  id                 String               @id
+  eventId            String
+  orderId            String?
+  basedOnHeadcountId String
+  rulesVersion       String
+  itemsJson          Json
+  status             RecommendationStatus @default(OPEN)
+  appliedByUserId    String?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  event              Event                @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  order              Order?               @relation(fields: [orderId], references: [id])
+  basedOnHeadcount   EventHeadcount       @relation(fields: [basedOnHeadcountId], references: [id])
+}
+
+model Booking {
+  id                   String        @id
+  orderLineId          String?
+  eventId              String
+  vendorOrganisationId String
+  vendorServiceId      String
+  status               BookingStatus @default(REQUESTED)
+  quoteJson            Json
+  runSheetJson         Json
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  deletedAt            DateTime?
+  orderLine            OrderLine?    @relation(fields: [orderLineId], references: [id])
+  event                Event         @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  vendorOrganisation   Organisation  @relation(fields: [vendorOrganisationId], references: [id])
+  vendorService        VendorService @relation(fields: [vendorServiceId], references: [id])
+}
+
+model VendorService {
+  id             String       @id
+  organisationId String
+  category       String
+  name           Json
+  tiersJson      Json
+  serviceAreas   String[]
+  active         Boolean      @default(true)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+  bookings       Booking[]
+}
+
+model VendorDocument {
+  id               String       @id
+  organisationId   String
+  type             DocumentType
+  mediaId          String
+  issuer           String?
+  currency         String       @default("AUD")
+  coverAmountCents Int?
+  expiresAt        DateTime?
+  verifiedByUserId String?
+  verifiedAt       DateTime?
+  status           VendorStatus @default(PENDING_DOCS)
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+  organisation     Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
+
+model AvailabilityBlock {
+  id             String       @id
+  organisationId String
+  startsAt       DateTime
+  endsAt         DateTime
+  reason         String
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  organisation   Organisation @relation(fields: [organisationId], references: [id], onDelete: Cascade)
+}
+
+// ─── Payments & Finance ─────────────────────────────────────────────────────
+
+model PaymentSchedule {
+  id        String   @id
+  orderId   String
+  currency  String   @default("AUD")
+  itemsJson Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+}
+
+model Payment {
+  id                    String        @id
+  orderId               String?
+  invitationId          String?
+  kind                  PaymentKind
+  status                PaymentStatus @default(PENDING)
+  currency              String        @default("AUD")
+  amountExGstCents      Int           @default(0)
+  amountIncGstCents     Int
+  gstCents              Int
+  stripePaymentIntentId String        @unique
+  method                PaymentMethod
+  idempotencyKey        String?       @unique
+  paidAt                DateTime?
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  order                 Order?        @relation(fields: [orderId], references: [id])
+  invitation            Invitation?   @relation(fields: [invitationId], references: [id])
+  transfers             Transfer[]
+  refunds               Refund[]
+}
+
+model Transfer {
+  id                   String       @id
+  paymentId            String
+  vendorOrganisationId String
+  currency             String       @default("AUD")
+  amountCents          Int
+  stripeTransferId     String?
+  releaseAt            DateTime
+  releasedAt           DateTime?
+  status               String
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+  payment              Payment      @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+  vendorOrganisation   Organisation @relation(fields: [vendorOrganisationId], references: [id])
+}
+
+model TaxInvoiceSequence {
+  id        Int      @id @default(1)
+  lastValue Int      @default(0)
+  updatedAt DateTime @updatedAt
+}
+
+model TaxInvoice {
+  id               String   @id
+  number           String   @unique
+  issuedAt         DateTime
+  supplierAbn      String
+  customerName     String
+  customerAbn      String?
+  currency         String   @default("AUD")
+  linesJson        Json
+  totalExGstCents  Int
+  gstCents         Int
+  totalIncGstCents Int
+  pdfMediaId       String
+  xeroInvoiceId    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Refund {
+  id             String   @id
+  paymentId      String
+  currency       String   @default("AUD")
+  amountCents    Int
+  reason         String
+  policyClause   String
+  stripeRefundId String   @unique
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  payment        Payment  @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+}
+
+// ─── Operations ─────────────────────────────────────────────────────────────
+
+model InventoryItem {
+  id                      String                 @id
+  sku                     String                 @unique
+  barcode                 String                 @unique
+  name                    Json
+  category                String
+  qtyOwned                Int
+  currency                String                 @default("AUD")
+  unitHirePriceExGstCents Int
+  replacementCostCents    Int
+  createdAt               DateTime               @default(now())
+  updatedAt               DateTime               @updatedAt
+  reservations            InventoryReservation[]
+}
+
+model InventoryReservation {
+  id        String                     @id
+  itemId    String
+  eventId   String
+  qty       Int
+  from      DateTime
+  to        DateTime
+  status    InventoryReservationStatus @default(HELD)
+  createdAt DateTime                   @default(now())
+  updatedAt DateTime                   @updatedAt
+  item      InventoryItem              @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  event     Event                      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model Task {
+  id             String    @id
+  eventId        String
+  title          String
+  dueAt          DateTime?
+  assigneeUserId String?
+  status         String
+  checklistJson  Json
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  event          Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model RunSheet {
+  id        String   @id
+  eventId   String
+  itemsJson Json
+  version   Int      @default(1)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model CrewRoster {
+  id         String   @id
+  eventId    String
+  userId     String
+  role       String
+  shiftStart DateTime
+  shiftEnd   DateTime
+  deviceIds  String[]
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model ScanEvent {
+  id         String     @id
+  passId     String
+  eventId    String
+  deviceId   String
+  scannedAt  DateTime
+  clientUuid String     @unique
+  result     ScanResult
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+  pass       Pass       @relation(fields: [passId], references: [id], onDelete: Cascade)
+  event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model FloorPlan {
+  id         String   @id
+  eventId    String
+  venueId    String?
+  layoutJson Json
+  version    Int      @default(1)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  event      Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  venue      Venue?   @relation(fields: [venueId], references: [id])
+}
+
+// ─── Media, Messaging & Compliance ──────────────────────────────────────────
+
+model MediaAsset {
+  id                String          @id
+  bucket            MediaBucket
+  key               String          @unique
+  mime              String
+  bytes             Int
+  width             Int?
+  height            Int?
+  durationSec       Int?
+  blurhash          String?
+  uploadedByUserId  String?
+  uploadedByPartyId String?
+  moderation        MediaModeration @default(PENDING)
+  eventId           String?
+  purpose           MediaPurpose
+  exifStripped      Boolean         @default(false)
+  retentionUntil    DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+  deletedAt         DateTime?
+  event             Event?          @relation(fields: [eventId], references: [id])
+
+  @@index([eventId, purpose, moderation])
+}
+
+model WellEntry {
+  id           String          @id
+  invitationId String
+  partyId      String?
+  authorName   String
+  message      String
+  mediaId      String?
+  visibility   WellVisibility  @default(HOSTS_ONLY)
+  moderation   MediaModeration @default(PENDING)
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  deletedAt    DateTime?
+  invitation   Invitation      @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  party        Party?          @relation(fields: [partyId], references: [id])
+}
+
+model Message {
+  id          String         @id
+  channel     MessageChannel
+  to          String
+  templateKey String
+  locale      String
+  eventId     String?
+  campaignId  String?
+  status      String
+  providerId  String
+  sentAt      DateTime?
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  campaign    Campaign?      @relation(fields: [campaignId], references: [id])
+}
+
+model Campaign {
+  id                       String         @id
+  invitationId             String
+  channel                  MessageChannel
+  audienceFilterJson       Json
+  scheduledAt              DateTime?
+  status                   String
+  consentAttestationUserId String
+  createdAt                DateTime       @default(now())
+  updatedAt                DateTime       @updatedAt
+  invitation               Invitation     @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  messages                 Message[]
+}
+
+model ConsentRecord {
+  id          String             @id
+  subjectType ConsentSubjectType
+  subjectId   String
+  purpose     ConsentPurpose
+  granted     Boolean
+  textShown   String
+  locale      String
+  at          DateTime           @default(now())
+  ip          String?
+  withdrawnAt DateTime?
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model Unsubscribe {
+  id        String         @id
+  channel   MessageChannel
+  address   String
+  at        DateTime       @default(now())
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@unique([channel, address])
+}
+
+model AuditLog {
+  id          String   @id
+  actorUserId String?
+  actorRole   Role
+  action      String
+  entity      String
+  entityId    String
+  diffJson    Json
+  at          DateTime @default(now())
+  ip          String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}

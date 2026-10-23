@@ -15,24 +15,31 @@ These follow ADR-0006.
 
 ## ID prefixes
 
-| Prefix  | Entity        | Prefix | Entity            |
-| ------- | ------------- | ------ | ----------------- |
-| `usr_`  | User          | `org_` | Organisation      |
-| `lead_` | Lead          | `bld_` | BuilderSession    |
-| `est_`  | Estimate      | `evt_` | Event             |
-| `sub_`  | SubEvent      | `inv_` | Invitation        |
-| `pty_`  | Party         | `gst_` | Guest             |
-| `rsvp_` | Rsvp          | `hc_`  | EventHeadcount    |
-| `pass_` | Pass          | `ord_` | Order             |
-| `oln_`  | OrderLine     | `rec_` | RecommendationSet |
-| `pay_`  | Payment       | `txi_` | TaxInvoice        |
-| `ven_`  | Venue         | `pkg_` | Package           |
-| `svc_`  | Service       | `vsv_` | VendorService     |
-| `bkg_`  | Booking       | `itm_` | InventoryItem     |
-| `med_`  | MediaAsset    | `msg_` | Message           |
-| `cmp_`  | Campaign      | `aud_` | AuditLog          |
-| `cns_`  | ConsentRecord | `rst_` | CrewRoster        |
-| `scn_`  | ScanEvent     | `lgs_` | LegacySlug        |
+| Prefix  | Entity               | Prefix | Entity            |
+| ------- | -------------------- | ------ | ----------------- |
+| `usr_`  | User                 | `org_` | Organisation      |
+| `lead_` | Lead                 | `bld_` | BuilderSession    |
+| `est_`  | Estimate             | `evt_` | Event             |
+| `sub_`  | SubEvent             | `inv_` | Invitation        |
+| `pty_`  | Party                | `gst_` | Guest             |
+| `rsvp_` | Rsvp                 | `hc_`  | EventHeadcount    |
+| `pass_` | Pass                 | `ord_` | Order             |
+| `oln_`  | OrderLine            | `rec_` | RecommendationSet |
+| `pay_`  | Payment              | `txi_` | TaxInvoice        |
+| `ven_`  | Venue                | `pkg_` | Package           |
+| `svc_`  | Service              | `vsv_` | VendorService     |
+| `bkg_`  | Booking              | `itm_` | InventoryItem     |
+| `med_`  | MediaAsset           | `msg_` | Message           |
+| `cmp_`  | Campaign             | `aud_` | AuditLog          |
+| `cns_`  | ConsentRecord        | `rst_` | CrewRoster        |
+| `scn_`  | ScanEvent            | `lgs_` | LegacySlug        |
+| `mem_`  | Membership           | `coh_` | CoHost            |
+| `prc_`  | PriceList            | `vdc_` | VendorDocument    |
+| `avb_`  | AvailabilityBlock    | `psc_` | PaymentSchedule   |
+| `trf_`  | Transfer             | `ref_` | Refund            |
+| `irs_`  | InventoryReservation | `tsk_` | Task              |
+| `rsh_`  | RunSheet             | `flp_` | FloorPlan         |
+| `wel_`  | WellEntry            | `uns_` | Unsubscribe       |
 
 ## Enums
 

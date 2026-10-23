@@ -86,6 +86,8 @@ describe("@managevent/db", () => {
 
       expect(isEncryptedValue(rsvpWrite.allergyNotes)).toBe(true);
       expect(isEncryptedValue(rsvpWrite.accessibilityNotes)).toBe(true);
+      expect(rsvpWrite).not.toHaveProperty("dietary");
+      expect(rsvpWrite).not.toHaveProperty("allergySeverity");
       expect(isEncryptedValue((rsvpWrite as Record<string, unknown>).dietaryEncrypted)).toBe(true);
       expect(
         isEncryptedValue((rsvpWrite as Record<string, unknown>).allergySeverityEncrypted),
@@ -187,9 +189,11 @@ describe("@managevent/db", () => {
             guestId,
             status: "YES",
             respondedAt: new Date(),
-            dietary: ["HALAL", "NUT_ALLERGY"],
             allergyNotes: "Strict nut-free preparation",
-            allergySeverity: "SEVERE_ANAPHYLAXIS",
+            ...encryptRsvpWriteData({
+              dietary: ["HALAL", "NUT_ALLERGY"],
+              allergySeverity: "SEVERE_ANAPHYLAXIS",
+            }),
             accessibilityNotes: "Wheelchair ramp",
             songRequests: [],
             idempotencyKey: `idem-${rsvpId}`,
@@ -204,12 +208,16 @@ describe("@managevent/db", () => {
         expect(isEncryptedValue(rawRow?.allergyNotes)).toBe(true);
         expect(isEncryptedValue(rawRow?.accessibilityNotes)).toBe(true);
         expect(isEncryptedValue(rawRow?.dietaryEncrypted)).toBe(true);
+        expect(isEncryptedValue(rawRow?.allergySeverityEncrypted)).toBe(true);
+        expect(rawRow).not.toHaveProperty("dietary");
+        expect(rawRow).not.toHaveProperty("allergySeverity");
 
         // Cleanup test entities
         await extendedClient.event.delete({ where: { id: eventId } });
         await extendedClient.user.delete({ where: { id: userId } });
       } finally {
         await rawClient.$disconnect();
+        await extendedClient.$disconnect();
       }
     });
   });

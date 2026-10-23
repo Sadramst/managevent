@@ -407,6 +407,20 @@ export const GuestResponseSchema = z.object({
 
 // ─── RSVP (`POST /v1/rsvp`) ─────────────────────────────────────────────────
 
+export const DietaryCountsSchema = z
+  .object({
+    HALAL: z.number().int().nonnegative().default(0),
+    VEGETARIAN: z.number().int().nonnegative().default(0),
+    VEGAN: z.number().int().nonnegative().default(0),
+    GLUTEN_FREE: z.number().int().nonnegative().default(0),
+    DAIRY_FREE: z.number().int().nonnegative().default(0),
+    KOSHER: z.number().int().nonnegative().default(0),
+    NUT_ALLERGY: z.number().int().nonnegative().default(0),
+    SHELLFISH_ALLERGY: z.number().int().nonnegative().default(0),
+    OTHER_ALLERGY: z.number().int().nonnegative().default(0),
+  })
+  .strict();
+
 export const GuestRsvpItemSchema = z
   .object({
     guestId: GuestIdSchema,

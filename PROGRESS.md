@@ -1,5 +1,13 @@
 # Managevent Progress Tracker
 
+## Step 2 Work Log
+
+- A1 done: database postinstall generates Prisma; Turbo build/typecheck/test explicitly depend on `@managevent/db#db:generate`. Verified a separate temporary clone with `pnpm install --frozen-lockfile` and `pnpm turbo run typecheck`: 27 tasks passed, no `.env` required.
+- A2 done: append-only encrypted-health migration applied locally; raw RSVP rows have no plaintext dietary/severity properties. Database: 8 tests; validators: 15; worker: 2; focused typechecks pass. EventHeadcount accepts numeric counts only.
+- A3 blocked: available upgrade tool does not expose the required dependency scan/install/upgrade operations. No versions have been changed in Step 2.
+- Production pending: no Fly/Vercel/Supabase/Resend tooling or authenticated provider sessions available. No cloud deployment performed. DNS values must come from the actual provider account, not generic examples.
+- Contact defaults approved: `sadra.tabarestani@gmail.com`, `0452657916`; lead notification address confirmed as `m.sadra.mst@gmail.com`. All remain configurable.
+
 Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 ## Phase 0: Foundations

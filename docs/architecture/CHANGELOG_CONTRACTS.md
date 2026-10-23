@@ -1,5 +1,15 @@
 # Contract changelog
 
+## Step 2: Encrypted Health Storage (2026-10-23)
+
+Breaking database contract: remove `Rsvp.dietary` and `Rsvp.allergySeverity`.
+API health inputs remain typed; callers must use `encryptRsvpWriteData()` before
+persistence. API/worker consumers regenerate Prisma. Migration
+`20261023010000_encrypted_health_only` refuses legacy plaintext rows without a
+ciphertext mirror. Backfill with the application key before migration; never
+edit the initial migration. Worker snapshots accept validated counts only and
+reject cross-event snapshot references.
+
 Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`, `i18n` keys (renames or removals only) and `ui` tokens here, newest first.
 
 | Date       | PR     | Package                     | Change                                                                                               | Breaking? | Migration notes |

@@ -690,10 +690,8 @@ model Rsvp {
   guestId                  String           @unique
   status                   RsvpStatus       @default(PENDING)
   respondedAt              DateTime
-  dietary                  DietaryTag[]
   dietaryEncrypted         String?
   allergyNotes             String?
-  allergySeverity          AllergySeverity?
   allergySeverityEncrypted String?
   accessibilityNotes       String?
   songRequests             String[]

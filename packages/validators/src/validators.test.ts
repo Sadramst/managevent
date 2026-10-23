@@ -3,6 +3,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
+  DietaryCountsSchema,
   AbnSchema,
   ApiErrorSchema,
   AuPhoneSchema,
@@ -58,6 +59,12 @@ const contentRoot = resolve(currentDir, "../../../content");
 const SAMPLE_UUID_V7 = "0192b400-0000-7000-8000-000000000001";
 
 describe("@managevent/validators", () => {
+  it("accepts dietary counts only and rejects personal information or negative counts", () => {
+    expect(DietaryCountsSchema.safeParse({ HALAL: 2, NUT_ALLERGY: 1 }).success).toBe(true);
+    expect(DietaryCountsSchema.safeParse({ HALAL: -1 }).success).toBe(false);
+    expect(DietaryCountsSchema.safeParse({ HALAL: 1, name: "Guest" }).success).toBe(false);
+    expect(DietaryCountsSchema.safeParse({ NUT_ALLERGY: ["Guest"] }).success).toBe(false);
+  });
   describe("Primitives (valid and invalid fixtures)", () => {
     it("CentsSchema validates non-negative integers and rejects floats/negatives", () => {
       expect(CentsSchema.safeParse(15000).success).toBe(true);

@@ -32,4 +32,4 @@
 
 ## Gemini CLI note
 
-If your Gemini CLI version supports a configurable context file name, you can point it at `AGENTS.md` directly. Otherwise `GEMINI.md` imports it.
+Configure Gemini CLI to use `AGENTS.md` as its context file name (`contextFileName` in `.gemini/settings.json`). AI features must go through `packages/ai`, never `@google/genai` directly.

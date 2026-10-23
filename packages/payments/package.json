@@ -1,0 +1,11 @@
+{
+  "name": "@managevent/payments",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Money, GST, plans and Stripe",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "backlog": "FND-08"
+  }
+}

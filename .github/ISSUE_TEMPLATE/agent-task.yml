@@ -1,0 +1,93 @@
+name: Agent task
+description: One self-contained unit of work for a coding agent (one issue = one PR).
+title: "[ID] <app/package>: <short title>"
+labels: ["agent:ready"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The agent must read the root `AGENTS.md`, then the `AGENTS.md` in each path below, then this issue.
+  - type: input
+    id: roadmap_id
+    attributes:
+      label: Roadmap ID
+      placeholder: "MKT-06"
+    validations:
+      required: true
+  - type: dropdown
+    id: target
+    attributes:
+      label: Target workspace
+      options:
+        - apps/marketing
+        - apps/invitation
+        - apps/portal
+        - apps/vendors
+        - apps/admin
+        - apps/api
+        - apps/worker
+        - apps/mobile
+        - apps/desktop-win
+        - packages/config
+        - packages/db
+        - packages/types
+        - packages/validators
+        - packages/ui
+        - packages/ui-native
+        - packages/i18n
+        - packages/ai
+        - packages/auth
+        - packages/payments
+        - packages/pricing
+        - packages/logistics
+        - packages/notifications
+        - packages/storage
+        - packages/integrations
+        - packages/api-client
+        - other (explain)
+    validations:
+      required: true
+  - type: textarea
+    id: allowed_paths
+    attributes:
+      label: Paths the agent may modify
+      description: Anything outside these paths requires a separate contract-change issue.
+      placeholder: |
+        apps/marketing/**
+    validations:
+      required: true
+  - type: textarea
+    id: context
+    attributes:
+      label: Spec references
+      placeholder: |
+        WEBSITE.md §A6.4, ARCHITECTURE.md §6, packages/pricing README
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checkboxes, each one testable.
+      placeholder: |
+        - [ ] ...
+    validations:
+      required: true
+  - type: checkboxes
+    id: cross_cutting
+    attributes:
+      label: Cross-cutting requirements that apply
+      options:
+        - label: EN + FA strings and RTL layout
+        - label: Memorial Mode behaviour
+        - label: Handles PII or health data (privacy rules apply)
+        - label: Handles money (cents, GST via packages/payments)
+        - label: Offline behaviour (mobile/desktop)
+  - type: textarea
+    id: out_of_scope
+    attributes:
+      label: Out of scope
+  - type: input
+    id: depends
+    attributes:
+      label: Depends on (issue numbers)

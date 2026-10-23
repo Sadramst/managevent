@@ -1,0 +1,11 @@
+{
+  "name": "@managevent/ui-native",
+  "version": "0.0.0",
+  "private": true,
+  "description": "React Native components",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "backlog": "MOB-01"
+  }
+}

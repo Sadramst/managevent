@@ -1,0 +1,6 @@
+# CLAUDE.md: package `auth`
+
+@AGENTS.md
+@../../AGENTS.md
+
+Stay inside this package unless the issue names other paths. Run `pnpm --filter @managevent/auth lint typecheck test` and the root checks before finishing.

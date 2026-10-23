@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/worker",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Background worker",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 0 onward",
+    "backlog": "FND-12, then per-feature jobs",
+    "spec": "ARCHITECTURE §§6, 9–11, `packages/db/DATA_MODEL.md` retention schedule."
+  }
+}

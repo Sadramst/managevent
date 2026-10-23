@@ -1,0 +1,7 @@
+# Default owner: replace with real GitHub usernames or teams
+*                         @Sadramst
+/packages/db/             @Sadramst
+/packages/validators/     @Sadramst
+/packages/auth/           @Sadramst
+/packages/payments/       @Sadramst
+/docs/compliance/         @Sadramst

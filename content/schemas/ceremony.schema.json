@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ceremony.schema.json",
+  "title": "Ceremony",
+  "type": "object",
+  "required": ["slug", "status", "family", "experienceMode", "name", "summary", "includes"],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "status": { "enum": ["placeholder", "draft", "published"] },
+    "faReview": { "enum": ["needed", "done"] },
+    "family": { "enum": ["CELEBRATION", "CULTURAL", "CORPORATE", "SOLEMN"] },
+    "experienceMode": { "enum": ["CELEBRATION", "MEMORIAL"] },
+    "name": { "$ref": "localized.schema.json" },
+    "summary": { "$ref": "localized.schema.json" },
+    "culturalNotes": { "$ref": "localized.schema.json" },
+    "includes": { "type": "array", "items": { "type": "string" } },
+    "timelineTemplate": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["offsetMinutes", "label"],
+        "properties": {
+          "offsetMinutes": { "type": "integer" },
+          "label": { "$ref": "localized.schema.json" }
+        }
+      }
+    },
+    "faq": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["q", "a"],
+        "properties": {
+          "q": { "$ref": "localized.schema.json" },
+          "a": { "$ref": "localized.schema.json" }
+        }
+      }
+    },
+    "relatedSlugs": { "type": "array", "items": { "type": "string" } },
+    "seo": {
+      "type": "object",
+      "properties": {
+        "title": { "$ref": "localized.schema.json" },
+        "description": { "$ref": "localized.schema.json" }
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+---
+description: Rules for the Tauri Windows app
+globs: apps/desktop-win/**
+alwaysApply: false
+---
+- Tauri v2 with least-privilege capabilities. No shell access from the UI. Validate every command argument in Rust.
+- Kiosk mode is locked down. The display controller shows approved media only. Updates are signed.

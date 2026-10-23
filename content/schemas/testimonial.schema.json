@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "testimonial.schema.json",
+  "title": "Testimonials",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "verified", "consentRecordId", "quote", "author", "ceremonySlug", "date"],
+    "properties": {
+      "id": { "type": "string" },
+      "verified": {
+        "const": true,
+        "description": "Only verified, consented testimonials may exist in this file (ACL)."
+      },
+      "consentRecordId": { "type": "string", "pattern": "^cns_" },
+      "quote": { "$ref": "localized.schema.json" },
+      "author": { "type": "string", "description": "First name + suburb only" },
+      "ceremonySlug": { "type": "string" },
+      "venueSlug": { "type": "string" },
+      "date": { "type": "string", "format": "date" }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/api",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Backend API: api.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 0 onward",
+    "backlog": "FND-11, then every feature's API tasks",
+    "spec": "ARCHITECTURE §§3, 5–12, `packages/db/DATA_MODEL.md`, ADR-0003 to 0009."
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/marketing",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Marketing site: www.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 1",
+    "backlog": "MKT-01 … MKT-15",
+    "spec": "`WEBSITE.md` Part A (all sections). Part C for cross-domain rules."
+  }
+}

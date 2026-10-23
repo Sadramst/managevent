@@ -1,0 +1,34 @@
+{
+  "slug": "perth",
+  "status": "live",
+  "name": { "en": "Perth", "fa": "پرث" },
+  "state": "WA",
+  "timeZone": "Australia/Perth",
+  "areasServed": [
+    "Perth CBD",
+    "Joondalup",
+    "Wanneroo",
+    "Stirling",
+    "Bayswater",
+    "Swan Valley",
+    "Fremantle",
+    "Cockburn",
+    "Canning",
+    "Melville",
+    "South Perth",
+    "Victoria Park",
+    "Armadale",
+    "Rockingham",
+    "Kalamunda",
+    "Mundaring"
+  ],
+  "travelZones": {
+    "metro": { "feeIncGstCents": 0 },
+    "outerMetro": { "feeIncGstCents": 0, "note": "PLACEHOLDER – set by founder" },
+    "regional": { "quoteOnly": true }
+  },
+  "localIntro": {
+    "en": "PLACEHOLDER – From Swan Valley vineyards to Fremantle heritage halls and backyard marquees, we plan and run ceremonies right across Perth.",
+    "fa": "PLACEHOLDER – از تاکستان‌های سوان ولی تا سالن‌های تاریخی فریمنتل و چادرهای مجلل حیاط، مراسم شما را در سراسر پرث برنامه‌ریزی و اجرا می‌کنیم."
+  }
+}

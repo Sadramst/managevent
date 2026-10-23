@@ -1,0 +1,33 @@
+{
+  "aliases": [
+    { "path": "/perth/weddings", "canonical": "/perth/wedding", "mode": "renderWithCanonical" },
+    { "path": "/perth/persian-aghd", "canonical": "/perth/sofreh-aghd", "mode": "redirect301" },
+    {
+      "path": "/perth/birthday-party-packages",
+      "canonical": "/perth/birthday-milestone",
+      "mode": "renderWithCanonical",
+      "packageFilter": { "ceremonySlugs": ["birthday-milestone", "birthday-kids"] }
+    },
+    {
+      "path": "/perth/kids-party-packages",
+      "canonical": "/perth/birthday-kids",
+      "mode": "renderWithCanonical"
+    },
+    {
+      "path": "/perth/engagement-parties",
+      "canonical": "/perth/engagement",
+      "mode": "renderWithCanonical"
+    },
+    {
+      "path": "/perth/corporate-events",
+      "canonical": "/perth/gala-dinner",
+      "mode": "renderWithCanonical"
+    },
+    {
+      "path": "/perth/community-hall-events",
+      "canonical": "/perth/community-hall-event",
+      "mode": "renderWithCanonical"
+    },
+    { "path": "/perth/wake-catering", "canonical": "/perth/wake", "mode": "renderWithCanonical" }
+  ]
+}

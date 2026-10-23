@@ -1,0 +1,22 @@
+{
+  "slug": "milestone-birthday-essential",
+  "status": "placeholder",
+  "tier": "ESSENTIAL",
+  "name": { "en": "Milestone Birthday – Essential", "fa": "جشن تولد ویژه – پایه" },
+  "ceremonySlugs": ["birthday-milestone"],
+  "guestMin": 30,
+  "guestMax": 80,
+  "fromPriceIncGstCents": 0,
+  "inclusions": [
+    {
+      "category": "styling",
+      "label": { "en": "Themed backdrop & table styling", "fa": "بک‌دراپ و چیدمان میز" }
+    },
+    {
+      "category": "hire",
+      "label": { "en": "Tables, chairs & linen", "fa": "میز، صندلی و رومیزی" },
+      "qtyRule": "per-guest"
+    }
+  ],
+  "depositRule": { "percent": 25, "minCents": 50000 }
+}

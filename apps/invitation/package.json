@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/invitation",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Invitations: invitation.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 2",
+    "backlog": "INV-01 … INV-15",
+    "spec": "`WEBSITE.md` Part B (all sections). Part C for cross-domain rules."
+  }
+}

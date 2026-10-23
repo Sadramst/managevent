@@ -1,0 +1,8 @@
+---
+description: Rules for the Expo mobile app
+globs: apps/mobile/**,packages/ui-native/**
+alwaysApply: false
+---
+- Expo Router and NativeWind on `packages/ui` tokens. RTL through `I18nManager` (restart flow).
+- Tokens in `expo-secure-store` only. The offline event pack is encrypted at rest and wiped 48h after the event.
+- The QR scanner must work fully offline. Queue scans with a client UUID.

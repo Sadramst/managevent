@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/portal",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Customer portal: app.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 3",
+    "backlog": "PRT-01 … PRT-11",
+    "spec": "ROADMAP Phase 3, ARCHITECTURE §6 (bridge), WEBSITE.md Part C."
+  }
+}

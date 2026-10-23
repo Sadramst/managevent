@@ -1,0 +1,8 @@
+{
+  "slug": "sydney",
+  "status": "hidden",
+  "name": { "en": "Sydney", "fa": "سیدنی" },
+  "state": "NSW",
+  "timeZone": "Australia/Sydney",
+  "areasServed": []
+}

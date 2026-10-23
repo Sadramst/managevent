@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/mobile",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Mobile app: iOS and Android",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 5",
+    "backlog": "MOB-01 … MOB-07",
+    "spec": "ROADMAP Phase 5, ARCHITECTURE §11 (offline), WEBSITE.md §B8 (passes)."
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "@managevent/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Database schema and client (Prisma)",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "backlog": "FND-02"
+  }
+}

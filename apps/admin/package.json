@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/admin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Admin and planner command centre: admin.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 1 (Admin Lite, MKT-16) → Phase 4",
+    "backlog": "MKT-16, ADM-01 … ADM-08",
+    "spec": "ROADMAP Phases 1 and 4, ARCHITECTURE §7."
+  }
+}

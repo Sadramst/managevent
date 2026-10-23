@@ -1,0 +1,7 @@
+---
+description: Internationalisation and RTL rules
+alwaysApply: true
+---
+- Locales: en (default) and fa (RTL). No hard-coded user-facing strings.
+- Wrap Latin names, prices and phone numbers inside Farsi text with `<bdi>`. Prices and phone numbers use Latin digits.
+- Deterministic date formatting from `packages/i18n` (no `Intl` in SSR or hydration paths). Jalali dates shown alongside Gregorian in FA.

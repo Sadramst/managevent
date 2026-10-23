@@ -1,0 +1,11 @@
+{
+  "name": "@managevent/auth",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Auth and RBAC",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "backlog": "FND-07"
+  }
+}

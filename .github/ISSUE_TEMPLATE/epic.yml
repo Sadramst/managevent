@@ -1,0 +1,17 @@
+name: Epic
+description: A roadmap phase or large feature split into agent tasks.
+title: "[EPIC] <phase/feature>"
+labels: ["epic"]
+body:
+  - type: textarea
+    id: goal
+    attributes:
+      label: Goal and exit criteria
+    validations:
+      required: true
+  - type: textarea
+    id: tasks
+    attributes:
+      label: Child tasks
+      placeholder: |
+        - [ ] #123 MKT-01 ...

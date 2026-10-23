@@ -1,0 +1,170 @@
+[
+  {
+    "slug": "swan-valley-winery-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "Swan Valley winery (partner TBC)",
+      "fa": "تاکستان سوان ولی (در انتظار تأیید همکاری)"
+    },
+    "area": "Swan Valley",
+    "type": "WINERY",
+    "capacity": { "banquet": 150, "rounds": 120, "cocktail": 200 },
+    "indoorOutdoor": "BOTH",
+    "rules": { "curfew": "PLACEHOLDER", "byo": false },
+    "accessible": true,
+    "geo": { "lat": -31.83, "lng": 116.02 },
+    "suitableFor": [
+      "wedding",
+      "engagement",
+      "sofreh-aghd",
+      "birthday-milestone",
+      "anniversary",
+      "gala-dinner"
+    ]
+  },
+  {
+    "slug": "kings-park-setting-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "Kings Park outdoor ceremony setting", "fa": "فضای باز کینگز پارک" },
+    "area": "Perth CBD",
+    "type": "PARK_RESERVE",
+    "capacity": { "theatre": 100 },
+    "indoorOutdoor": "OUTDOOR",
+    "rules": {
+      "permitRequired": true,
+      "permitNotes": {
+        "en": "Event approval from the park's managing authority is required. Check site-specific conditions.",
+        "fa": "برای برگزاری مراسم، مجوز از نهاد مدیریت پارک لازم است."
+      }
+    },
+    "accessible": true,
+    "geo": { "lat": -31.961, "lng": 115.831 },
+    "suitableFor": ["wedding", "proposal", "engagement", "celebration-of-life"]
+  },
+  {
+    "slug": "matilda-bay-foreshore-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "Matilda Bay foreshore sunset setup", "fa": "ساحل ماتیلدا بی، مراسم غروب" },
+    "area": "Crawley",
+    "type": "PARK_RESERVE",
+    "capacity": { "theatre": 80, "cocktail": 100 },
+    "indoorOutdoor": "OUTDOOR",
+    "rules": { "permitRequired": true },
+    "accessible": true,
+    "geo": { "lat": -31.977, "lng": 115.818 },
+    "suitableFor": ["wedding", "proposal", "engagement", "anniversary"]
+  },
+  {
+    "slug": "fremantle-heritage-hall-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "Fremantle heritage warehouse or hall", "fa": "سالن تاریخی فریمنتل" },
+    "area": "Fremantle",
+    "type": "HERITAGE",
+    "capacity": { "banquet": 180, "cocktail": 250 },
+    "indoorOutdoor": "INDOOR",
+    "accessible": true,
+    "geo": { "lat": -32.055, "lng": 115.747 },
+    "suitableFor": ["wedding", "gala-dinner", "product-launch", "birthday-milestone", "mehmooni"]
+  },
+  {
+    "slug": "joondalup-community-hall-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "City of Joondalup community hall", "fa": "سالن اجتماعات شهر جوندالاپ" },
+    "area": "Joondalup",
+    "type": "COUNCIL_HALL",
+    "capacity": { "banquet": 120, "cocktail": 180 },
+    "indoorOutdoor": "INDOOR",
+    "rules": {
+      "insuranceRequiredCents": 2000000000,
+      "byo": true,
+      "noiseNotes": { "en": "Council curfew and bond conditions apply." }
+    },
+    "accessible": true,
+    "geo": { "lat": -31.745, "lng": 115.766 },
+    "suitableFor": [
+      "community-hall-event",
+      "birthday-kids",
+      "baby-shower",
+      "nowruz",
+      "shab-e-yalda",
+      "wake"
+    ]
+  },
+  {
+    "slug": "canning-community-hall-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "City of Canning community hall", "fa": "سالن اجتماعات شهر کنینگ" },
+    "area": "Canning",
+    "type": "COUNCIL_HALL",
+    "indoorOutdoor": "INDOOR",
+    "rules": { "insuranceRequiredCents": 2000000000 },
+    "accessible": true,
+    "geo": { "lat": -32.017, "lng": 115.934 },
+    "suitableFor": ["community-hall-event", "nowruz", "mehmooni", "birthday-kids", "wake"]
+  },
+  {
+    "slug": "melville-community-hall-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "City of Melville community hall", "fa": "سالن اجتماعات شهر ملویل" },
+    "area": "Melville",
+    "type": "COUNCIL_HALL",
+    "indoorOutdoor": "INDOOR",
+    "rules": { "insuranceRequiredCents": 2000000000 },
+    "accessible": true,
+    "geo": { "lat": -32.037, "lng": 115.833 },
+    "suitableFor": ["community-hall-event", "baby-shower", "graduation", "memorial-service"]
+  },
+  {
+    "slug": "luxury-backyard-marquee",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": { "en": "Luxury backyard marquee (your home)", "fa": "چادر مجلل در حیاط منزل شما" },
+    "area": "Perth metro",
+    "type": "PRIVATE_HOME",
+    "indoorOutdoor": "OUTDOOR",
+    "rules": {
+      "noiseNotes": {
+        "en": "Neighbour notice and noise regulations apply; check marquee size and site access.",
+        "fa": "رعایت مقررات صدا و اطلاع به همسایگان لازم است."
+      }
+    },
+    "accessible": false,
+    "suitableFor": [
+      "sofreh-aghd",
+      "baleh-boroon",
+      "engagement",
+      "birthday-milestone",
+      "mehmooni",
+      "wake"
+    ]
+  },
+  {
+    "slug": "riverside-function-centre-placeholder",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "Riverside function centre (CBD)",
+      "fa": "سالن پذیرایی کنار رودخانه (مرکز شهر)"
+    },
+    "area": "Perth CBD",
+    "type": "FUNCTION_CENTRE",
+    "capacity": { "banquet": 300, "rounds": 250, "cocktail": 400, "theatre": 350 },
+    "indoorOutdoor": "INDOOR",
+    "accessible": true,
+    "geo": { "lat": -31.958, "lng": 115.86 },
+    "suitableFor": [
+      "wedding",
+      "gala-dinner",
+      "end-of-year-party",
+      "product-launch",
+      "memorial-service"
+    ]
+  }
+]

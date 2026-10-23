@@ -1,0 +1,42 @@
+{
+  "slug": "sofreh-aghd",
+  "status": "draft",
+  "faReview": "needed",
+  "family": "CULTURAL",
+  "experienceMode": "CELEBRATION",
+  "name": { "en": "Sofreh Aghd (Persian wedding ceremony)", "fa": "سفره عقد" },
+  "summary": {
+    "en": "A beautifully laid sofreh, a calm ceremony flow and every detail handled, from the mirror and candelabra to the guests' sweets.",
+    "fa": "سفره‌ای چشم‌نواز، اجرای آرام مراسم و رسیدگی به همه جزئیات؛ از آینه و شمعدان تا شیرینی مهمانان."
+  },
+  "culturalNotes": {
+    "en": "DRAFT – The sofreh traditionally includes a mirror and candelabra, sugar cones rubbed above the couple, honey, sweets, flatbread, eggs and nuts, rosewater, and the needle-and-thread tradition. Every family's sofreh is personal; we style it around yours. (Requires community review.)",
+    "fa": "پیش‌نویس – سفره عقد به‌طور سنتی شامل آینه و شمعدان، کله‌قند، عسل، شیرینی، نان، تخم‌مرغ و آجیل، گلاب و رسم سوزن و نخ است. سفره هر خانواده منحصربه‌فرد است و ما آن را بر اساس سلیقه شما می‌چینیم."
+  },
+  "includes": [
+    "planning",
+    "styling",
+    "sofreh-set",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -240,
+      "label": { "en": "Sofreh styling & bump-in", "fa": "چیدمان سفره و آماده‌سازی" }
+    },
+    { "offsetMinutes": -30, "label": { "en": "Guests arrive", "fa": "ورود مهمانان" } },
+    { "offsetMinutes": 0, "label": { "en": "Aghd ceremony begins", "fa": "آغاز مراسم عقد" } },
+    {
+      "offsetMinutes": 45,
+      "label": { "en": "Congratulations & gifts", "fa": "تبریک و اهدای هدایا" }
+    },
+    { "offsetMinutes": 90, "label": { "en": "Reception / dinner", "fa": "پذیرایی و شام" } }
+  ],
+  "relatedSlugs": ["baleh-boroon", "wedding", "engagement"]
+}

@@ -1,0 +1,38 @@
+{
+  "slug": "celebration-of-life",
+  "status": "draft",
+  "faReview": "needed",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": { "en": "Celebration of life", "fa": "مراسم گرامیداشت" },
+  "summary": {
+    "en": "A gathering that honours their life, arranged gently and completely, so your family can be together.",
+    "fa": "گردهمایی برای گرامیداشت یاد عزیزتان؛ با آرامش و دقت برگزار می‌شود تا خانواده در کنار هم باشند."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "catering",
+    "florals",
+    "tribute-display",
+    "slideshow",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Venue preparation & tribute display",
+        "fa": "آماده‌سازی محل و نمایش یادبود"
+      }
+    },
+    { "offsetMinutes": 0, "label": { "en": "Guests gather", "fa": "گردهمایی مهمانان" } },
+    { "offsetMinutes": 20, "label": { "en": "Words of remembrance", "fa": "سخنان یادبود" } },
+    {
+      "offsetMinutes": 60,
+      "label": { "en": "Refreshments & time together", "fa": "پذیرایی و همدلی" }
+    }
+  ],
+  "relatedSlugs": ["memorial-service", "wake"]
+}

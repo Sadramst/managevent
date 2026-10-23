@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/vendors",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Vendor portal: vendors.managevent.com.au",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 4",
+    "backlog": "VEN-01 … VEN-06",
+    "spec": "ROADMAP Phase 4, `docs/compliance/VENDOR_VERIFICATION.md`, `docs/compliance/PAYMENTS_AND_GST.md`."
+  }
+}

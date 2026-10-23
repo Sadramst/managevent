@@ -1,0 +1,11 @@
+---
+description: Managevent monorepo master rules (mirror of root AGENTS.md)
+alwaysApply: true
+---
+- Read `AGENTS.md` at the repo root and the `AGENTS.md` in the folder you are editing before making changes. They are authoritative; this file only summarises them.
+- pnpm workspaces and Turborepo. TypeScript strict. No `any`.
+- Contracts: `packages/validators` (Zod) and `packages/db`. Never redefine shapes locally. Shared-package changes need the `contract-change` label.
+- Web apps never import Prisma. All writes go through `apps/api`.
+- Money: integer cents, AUD, GST only via `packages/payments`.
+- PII stays in Australia (Sydney). Never log PII, tokens or payment data. No secrets in code.
+- Only modify the paths named in the GitHub issue.

@@ -1,0 +1,8 @@
+---
+description: Database and Prisma rules
+globs: packages/db/**,apps/api/**,apps/worker/**
+alwaysApply: false
+---
+- `packages/db/DATA_MODEL.md` must stay in sync with `schema.prisma`. Migrations are append-only.
+- 🔒 fields (dietary, allergy, accessibility) are encrypted at field level and nulled by the retention job 90 days after the event.
+- Every money or role change writes an `AuditLog` row in the same transaction.

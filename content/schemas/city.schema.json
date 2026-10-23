@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "city.schema.json",
+  "title": "City",
+  "type": "object",
+  "required": ["slug", "status", "name", "timeZone", "areasServed"],
+  "properties": {
+    "slug": { "type": "string" },
+    "status": { "enum": ["live", "waitlist", "hidden"] },
+    "name": { "$ref": "localized.schema.json" },
+    "state": { "type": "string" },
+    "timeZone": { "type": "string" },
+    "areasServed": { "type": "array", "items": { "type": "string" } },
+    "travelZones": { "type": "object" },
+    "localIntro": { "$ref": "localized.schema.json" }
+  }
+}

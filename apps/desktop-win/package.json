@@ -1,0 +1,13 @@
+{
+  "name": "@managevent/desktop-win",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Windows app: back-office and venue kiosk (Tauri v2)",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "phase": "Phase 6",
+    "backlog": "WIN-01 … WIN-06",
+    "spec": "ROADMAP Phase 6, ARCHITECTURE §11, WEBSITE.md §§B8, B10."
+  }
+}

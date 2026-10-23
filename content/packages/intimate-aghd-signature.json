@@ -1,0 +1,25 @@
+{
+  "slug": "intimate-aghd-signature",
+  "status": "placeholder",
+  "tier": "SIGNATURE",
+  "name": { "en": "Intimate Aghd – Signature", "fa": "عقد صمیمی – سیگنچر" },
+  "ceremonySlugs": ["sofreh-aghd"],
+  "guestMin": 20,
+  "guestMax": 60,
+  "fromPriceIncGstCents": 0,
+  "inclusions": [
+    {
+      "category": "sofreh-set",
+      "label": { "en": "Full sofreh aghd styling", "fa": "چیدمان کامل سفره عقد" }
+    },
+    {
+      "category": "florals",
+      "label": { "en": "Floral arrangement for the sofreh", "fa": "گل‌آرایی سفره" }
+    },
+    {
+      "category": "planning",
+      "label": { "en": "Day-of coordinator", "fa": "هماهنگ‌کننده روز مراسم" }
+    }
+  ],
+  "depositRule": { "percent": 25, "minCents": 50000 }
+}

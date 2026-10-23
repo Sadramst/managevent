@@ -1,0 +1,28 @@
+name: Contract change
+description: Propose a change to a shared package (db, validators, types, auth, payments, i18n keys, ui tokens).
+title: "[CONTRACT] <package>: <change>"
+labels: ["contract-change", "needs-decision"]
+body:
+  - type: textarea
+    id: change
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: consumers
+    attributes:
+      label: Affected consumers (apps/packages)
+    validations:
+      required: true
+  - type: dropdown
+    id: breaking
+    attributes:
+      label: Breaking?
+      options: ["No (additive)", "Yes (migration plan below)"]
+    validations:
+      required: true
+  - type: textarea
+    id: migration
+    attributes:
+      label: Migration plan

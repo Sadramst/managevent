@@ -1,0 +1,11 @@
+{
+  "name": "@managevent/api-client",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Typed API client",
+  "scripts": {},
+  "managevent": {
+    "status": "not-scaffolded",
+    "backlog": "FND-14"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "slug": "melbourne",
+  "status": "hidden",
+  "name": { "en": "Melbourne", "fa": "ملبورن" },
+  "state": "VIC",
+  "timeZone": "Australia/Melbourne",
+  "areasServed": []
+}

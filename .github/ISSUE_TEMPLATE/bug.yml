@@ -1,0 +1,32 @@
+name: Bug
+description: Something is broken.
+title: "[BUG] <app>: <summary>"
+labels: ["bug"]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: App / URL / device
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Locale / mode
+      multiple: true
+      options: [EN, FA (RTL), Memorial Mode, In-app browser (WhatsApp/Instagram)]
+  - type: markdown
+    attributes:
+      value: "⚠️ Do not paste real guest names, phone numbers, dietary info or payment details."

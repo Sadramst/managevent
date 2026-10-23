@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "venue.schema.json",
+  "title": "Venue list",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["slug", "status", "partnerStatus", "name", "area", "type", "suitableFor"],
+    "properties": {
+      "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+      "status": { "enum": ["placeholder", "draft", "published"] },
+      "partnerStatus": { "enum": ["placeholder", "prospect", "partner"] },
+      "name": { "$ref": "localized.schema.json" },
+      "area": { "type": "string" },
+      "type": {
+        "enum": [
+          "WINERY",
+          "PARK_RESERVE",
+          "HERITAGE",
+          "COUNCIL_HALL",
+          "FUNCTION_CENTRE",
+          "RESTAURANT",
+          "HOTEL",
+          "PRIVATE_HOME",
+          "OTHER"
+        ]
+      },
+      "capacity": {
+        "type": "object",
+        "properties": {
+          "banquet": { "type": "integer" },
+          "rounds": { "type": "integer" },
+          "cocktail": { "type": "integer" },
+          "theatre": { "type": "integer" }
+        }
+      },
+      "indoorOutdoor": { "enum": ["INDOOR", "OUTDOOR", "BOTH"] },
+      "rules": {
+        "type": "object",
+        "properties": {
+          "curfew": { "type": "string" },
+          "byo": { "type": "boolean" },
+          "permitRequired": { "type": "boolean" },
+          "permitNotes": { "$ref": "localized.schema.json" },
+          "insuranceRequiredCents": { "type": "integer" },
+          "noiseNotes": { "$ref": "localized.schema.json" }
+        }
+      },
+      "accessible": { "type": "boolean" },
+      "geo": {
+        "type": "object",
+        "properties": { "lat": { "type": "number" }, "lng": { "type": "number" } }
+      },
+      "suitableFor": { "type": "array", "items": { "type": "string" } },
+      "notes": { "$ref": "localized.schema.json" }
+    }
+  }
+}

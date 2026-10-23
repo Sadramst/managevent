@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "routes.schema.json",
+  "title": "SEO route aliases",
+  "type": "object",
+  "required": ["aliases"],
+  "properties": {
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "canonical", "mode"],
+        "properties": {
+          "path": { "type": "string" },
+          "canonical": { "type": "string" },
+          "mode": { "enum": ["redirect301", "renderWithCanonical"] },
+          "packageFilter": { "type": "object" }
+        }
+      }
+    }
+  }
+}

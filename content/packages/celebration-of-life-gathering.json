@@ -1,0 +1,26 @@
+{
+  "slug": "celebration-of-life-gathering",
+  "status": "placeholder",
+  "tier": "ESSENTIAL",
+  "name": { "en": "Celebration of Life Gathering", "fa": "گردهمایی گرامیداشت" },
+  "ceremonySlugs": ["celebration-of-life", "memorial-service", "wake"],
+  "guestMin": 20,
+  "guestMax": 150,
+  "fromPriceIncGstCents": 0,
+  "inclusions": [
+    {
+      "category": "venue",
+      "label": { "en": "Venue sourcing & setup", "fa": "انتخاب و آماده‌سازی محل" }
+    },
+    {
+      "category": "tribute-display",
+      "label": { "en": "Tribute display & photo slideshow", "fa": "نمایش یادبود و اسلایدشو عکس" }
+    },
+    {
+      "category": "catering",
+      "label": { "en": "Light refreshments", "fa": "پذیرایی سبک" },
+      "qtyRule": "per-guest"
+    }
+  ],
+  "depositRule": { "percent": 25, "minCents": 50000 }
+}

@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "package.schema.json",
+  "title": "Package",
+  "type": "object",
+  "required": [
+    "slug",
+    "status",
+    "name",
+    "ceremonySlugs",
+    "guestMin",
+    "guestMax",
+    "fromPriceIncGstCents",
+    "inclusions"
+  ],
+  "properties": {
+    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+    "status": { "enum": ["placeholder", "draft", "published"] },
+    "name": { "$ref": "localized.schema.json" },
+    "tier": { "enum": ["ESSENTIAL", "SIGNATURE", "LUXE"] },
+    "ceremonySlugs": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+    "guestMin": { "type": "integer", "minimum": 1 },
+    "guestMax": { "type": "integer", "minimum": 1 },
+    "fromPriceIncGstCents": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Must be achievable at guestMin (ACL)."
+    },
+    "inclusions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["category", "label"],
+        "properties": {
+          "category": { "type": "string" },
+          "label": { "$ref": "localized.schema.json" },
+          "qtyRule": { "type": "string" }
+        }
+      }
+    },
+    "addOns": { "type": "array", "items": { "type": "object" } },
+    "exclusions": { "type": "array", "items": { "$ref": "localized.schema.json" } },
+    "depositRule": {
+      "type": "object",
+      "properties": { "percent": { "type": "number" }, "minCents": { "type": "integer" } }
+    }
+  }
+}

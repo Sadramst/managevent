@@ -1,0 +1,45 @@
+# deps
+node_modules/
+.pnpm-store/
+
+# builds
+.next/
+out/
+dist/
+build/
+coverage/
+.turbo/
+*.tsbuildinfo
+
+# env — never commit secrets (see .env.example)
+.env
+.env.*
+!.env.example
+
+# expo / react native
+.expo/
+apps/mobile/ios/
+apps/mobile/android/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# tauri / rust
+apps/desktop-win/src-tauri/target/
+apps/desktop-win/src-tauri/gen/
+
+# test artefacts
+playwright-report/
+test-results/
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.log
+.idea/
+.vercel
+
+# owner-provided prototype exports (reference only)
+docs/legacy/ai-studio-export/

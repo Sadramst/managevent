@@ -44,7 +44,7 @@ jobs:
       STRIPE_SECRET_KEY: sk_test_ci_mock_only
       STRIPE_WEBHOOK_SECRET: whsec_ci_mock_only
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - uses: pnpm/action-setup@v4 # reads "packageManager" from package.json
@@ -76,7 +76,7 @@ jobs:
     name: Secret scan
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2

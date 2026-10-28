@@ -11,11 +11,7 @@ interface GallerySectionProps {
   locale: "en" | "fa";
 }
 
-export const GallerySection: React.FC<GallerySectionProps> = ({
-  event,
-  theme,
-  locale,
-}) => {
+export const GallerySection: React.FC<GallerySectionProps> = ({ event, theme, locale }) => {
   const { colors } = theme;
   const isFa = locale === "fa";
   const images = event.content.galleryImages || [];
@@ -46,10 +42,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
           >
             {isFa ? "گالری خاطرات" : "Memories & Moments"}
           </h2>
-          <div
-            className="mt-2 h-0.5 w-12"
-            style={{ backgroundColor: colors.accent }}
-          />
+          <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
 
         {/* Gallery Grid */}
@@ -72,9 +65,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 loading="lazy"
               />
-              <div
-                className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center"
-              >
+              <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
                 <span className="rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-xs">
                   {isFa ? "بزرگنمایی" : "View"}
                 </span>

@@ -34,7 +34,9 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
   const { eventId } = use(params);
   const event = invitationStore.getEventById(eventId);
 
-  const [activeTab, setActiveTab] = useState<"overview" | "guests" | "design" | "responses" | "settings">("overview");
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "guests" | "design" | "responses" | "settings"
+  >("overview");
 
   // Modals
   const [isAddOpen, setIsAddOpen] = useState(false);
@@ -53,10 +55,18 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
 
   const summary = invitationStore.getEventResponsesSummary(event.id);
   const primaryParty = event.parties[0];
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
-  const previewUrl = primaryParty ? `${origin}/i/${event.slug}/${primaryParty.token}` : `${origin}/i/${event.slug}`;
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
+  const previewUrl = primaryParty
+    ? `${origin}/i/${event.slug}/${primaryParty.token}`
+    : `${origin}/i/${event.slug}`;
 
-  const handleAddParty = (partyName: string, seats: number, tags: string[], tableLabel?: string) => {
+  const handleAddParty = (
+    partyName: string,
+    seats: number,
+    tags: string[],
+    tableLabel?: string,
+  ) => {
     invitationStore.addPartyToEvent(event.id, partyName, seats, tags, tableLabel);
     forceUpdate();
   };
@@ -97,15 +107,14 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
             </Link>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-display text-lg font-bold text-stone-900">
-                  {event.title}
-                </h1>
+                <h1 className="font-display text-lg font-bold text-stone-900">{event.title}</h1>
                 <span className="rounded-full bg-stone-100 border px-2 py-0.5 text-[10px] font-mono text-stone-600 uppercase">
                   {event.ceremonySlug}
                 </span>
               </div>
               <p className="text-xs text-stone-500 font-sans">
-                {event.venue.name} • {new Date(event.startsAt).toLocaleDateString("en-AU", { dateStyle: "medium" })}
+                {event.venue.name} •{" "}
+                {new Date(event.startsAt).toLocaleDateString("en-AU", { dateStyle: "medium" })}
               </p>
             </div>
           </div>
@@ -117,7 +126,11 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
               onClick={handleCopyPublicLink}
               className="inline-flex items-center gap-1.5 rounded-button border px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
             >
-              {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+              {copiedLink ? (
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               <span>{copiedLink ? "Copied!" : "Copy Guest Link"}</span>
             </button>
 
@@ -147,7 +160,9 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
               <button
                 key={tab.id}
                 type="button"
-                onClick={() => setActiveTab(tab.id as "overview" | "guests" | "design" | "responses")}
+                onClick={() =>
+                  setActiveTab(tab.id as "overview" | "guests" | "design" | "responses")
+                }
                 className={`inline-flex items-center gap-2 border-b-2 pb-2 transition-all ${
                   isActive
                     ? "border-amber-600 text-amber-900 font-bold"
@@ -262,11 +277,16 @@ export default function StudioEventPage({ params }: StudioEventPageProps) {
                   Dietary Breakdown
                 </h3>
                 {Object.keys(summary.dietaryBreakdown).length === 0 ? (
-                  <p className="text-xs text-stone-500">No special dietary requirements recorded yet.</p>
+                  <p className="text-xs text-stone-500">
+                    No special dietary requirements recorded yet.
+                  </p>
                 ) : (
                   <div className="space-y-2">
                     {Object.entries(summary.dietaryBreakdown).map(([key, count]) => (
-                      <div key={key} className="flex items-center justify-between border-b pb-2 text-xs">
+                      <div
+                        key={key}
+                        className="flex items-center justify-between border-b pb-2 text-xs"
+                      >
                         <span className="font-medium text-stone-700">{key.replace("_", " ")}</span>
                         <span className="rounded-full bg-amber-100 px-2 py-0.5 font-bold text-amber-800">
                           {count} {count === 1 ? "guest" : "guests"}

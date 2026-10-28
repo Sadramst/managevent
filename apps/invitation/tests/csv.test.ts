@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  parseGuestsCsv,
-  generateGuestsBomCsv,
-  type CsvGuestExportRow,
-} from "../lib/csv-helper";
+import { parseGuestsCsv, generateGuestsBomCsv, type CsvGuestExportRow } from "../lib/csv-helper";
 
 describe("CSV Import & Export with UTF-8 BOM", () => {
   it("parses CSV with English headers", () => {

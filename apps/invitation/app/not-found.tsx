@@ -15,7 +15,8 @@ export default function NotFound() {
         </h1>
 
         <p className="mt-3 font-serif text-sm text-stone-400 leading-relaxed">
-          The requested ceremony link or guest pass token could not be verified. It may have expired or been replaced by the host.
+          The requested ceremony link or guest pass token could not be verified. It may have expired
+          or been replaced by the host.
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">

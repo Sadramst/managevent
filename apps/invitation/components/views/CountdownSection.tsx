@@ -64,7 +64,10 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
   if (isMemorial) {
     return (
       <div className="my-6 text-center">
-        <p className="font-serif text-sm tracking-widest text-ink-muted" style={{ color: colors.inkMuted }}>
+        <p
+          className="font-serif text-sm tracking-widest text-ink-muted"
+          style={{ color: colors.inkMuted }}
+        >
           {locale === "fa" ? "گردهمایی برای گرامیداشت یاد و خاطره" : "A gathering in loving memory"}
         </p>
       </div>
@@ -94,7 +97,9 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
             color: colors.accentInk,
           }}
         >
-          {locale === "fa" ? "سپاس از همراهی شما در این روز خاطره‌انگیز" : "Thank you for celebrating with us!"}
+          {locale === "fa"
+            ? "سپاس از همراهی شما در این روز خاطره‌انگیز"
+            : "Thank you for celebrating with us!"}
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">
@@ -118,7 +123,10 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
               >
                 {mounted ? formatDigit(item.value) : "--"}
               </div>
-              <div className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-muted sm:text-xs" style={{ color: colors.inkMuted }}>
+              <div
+                className="mt-0.5 text-[10px] font-medium uppercase tracking-wider text-ink-muted sm:text-xs"
+                style={{ color: colors.inkMuted }}
+              >
                 {item.label}
               </div>
             </div>

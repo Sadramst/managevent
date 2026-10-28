@@ -13,12 +13,7 @@ interface HeroSectionProps {
   locale: "en" | "fa";
 }
 
-export const HeroSection: React.FC<HeroSectionProps> = ({
-  event,
-  theme,
-  greetingName,
-  locale,
-}) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ event, theme, greetingName, locale }) => {
   const isMemorial = event.experienceMode === "MEMORIAL";
   const { colors } = theme;
 
@@ -33,14 +28,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <VectorFlorals theme={theme} position="both" />
 
       {/* Guest Personalized Greeting Banner */}
-      <div className="relative z-10 mx-auto mb-6 inline-flex max-w-sm items-center justify-center gap-2 rounded-chip border px-4 py-1.5 shadow-sm backdrop-blur-md"
+      <div
+        className="relative z-10 mx-auto mb-6 inline-flex max-w-sm items-center justify-center gap-2 rounded-chip border px-4 py-1.5 shadow-sm backdrop-blur-md"
         style={{
           backgroundColor: `${colors.bgWarm}E6`,
           borderColor: colors.rule,
         }}
       >
         <Sparkles className="h-3.5 w-3.5" style={{ color: colors.accent }} />
-        <span className="font-serif text-xs font-semibold tracking-wide" style={{ color: colors.accentInk }}>
+        <span
+          className="font-serif text-xs font-semibold tracking-wide"
+          style={{ color: colors.accentInk }}
+        >
           {locale === "fa" ? `${greetingName} عزیز` : `Dear ${greetingName}`}
         </span>
       </div>
@@ -62,7 +61,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </p>
 
       {/* Ceremony Details Strip */}
-      <div className="relative z-10 mx-auto mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-medium sm:gap-6 sm:text-sm"
+      <div
+        className="relative z-10 mx-auto mt-8 flex flex-wrap items-center justify-center gap-4 text-xs font-medium sm:gap-6 sm:text-sm"
         style={{ color: colors.ink }}
       >
         <div className="inline-flex items-center gap-1.5">

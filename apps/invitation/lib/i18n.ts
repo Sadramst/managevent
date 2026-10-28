@@ -18,21 +18,59 @@ export function toLatinDigits(input: string): string {
 }
 
 const EN_MONTHS = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ] as const;
 
 const FA_GREGORIAN_MONTHS = [
-  "ژانویه", "فوریه", "مارس", "آوریل", "مه", "ژوئن",
-  "ژوئیه", "اوت", "سپتامبر", "اکتبر", "نوامبر", "دسامبر",
+  "ژانویه",
+  "فوریه",
+  "مارس",
+  "آوریل",
+  "مه",
+  "ژوئن",
+  "ژوئیه",
+  "اوت",
+  "سپتامبر",
+  "اکتبر",
+  "نوامبر",
+  "دسامبر",
 ] as const;
 
 const FA_JALALI_MONTHS = [
-  "فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور",
-  "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند",
+  "فروردین",
+  "اردیبهشت",
+  "خرداد",
+  "تیر",
+  "مرداد",
+  "شهریور",
+  "مهر",
+  "آبان",
+  "آذر",
+  "دی",
+  "بهمن",
+  "اسفند",
 ] as const;
 
-const EN_WEEKDAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"] as const;
+const EN_WEEKDAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+] as const;
 const FA_WEEKDAYS = ["یکشنبه", "دوشنبه", "سه‌شنبه", "چهارشنبه", "پنجشنبه", "جمعه", "شنبه"] as const;
 
 export interface DateFormatOptions {
@@ -41,7 +79,11 @@ export interface DateFormatOptions {
   timeZoneOffsetMinutes?: number;
 }
 
-export function gregorianToJalali(gy: number, gm: number, gd: number): { jy: number; jm: number; jd: number } {
+export function gregorianToJalali(
+  gy: number,
+  gm: number,
+  gd: number,
+): { jy: number; jm: number; jd: number } {
   const g_d_m = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334];
   const gy2 = gm > 2 ? gy + 1 : gy;
   let days =
@@ -72,7 +114,11 @@ export function gregorianToJalali(gy: number, gm: number, gd: number): { jy: num
   return { jy, jm, jd };
 }
 
-export function formatDeterministicTime(hours24: number, minutes: number, locale: "en" | "fa"): string {
+export function formatDeterministicTime(
+  hours24: number,
+  minutes: number,
+  locale: "en" | "fa",
+): string {
   const paddedMin = String(minutes).padStart(2, "0");
   if (locale === "fa") {
     const paddedHour = String(hours24).padStart(2, "0");
@@ -100,7 +146,9 @@ export function formatCeremonyDate(
     const monthName = FA_GREGORIAN_MONTHS[month - 1] ?? "";
     const weekdayPrefix = options.includeWeekday ? `${FA_WEEKDAYS[weekday] ?? ""}، ` : "";
     const gregorianPart = `${weekdayPrefix}${toPersianDigits(day)} ${monthName} ${toPersianDigits(year)}`;
-    const timePart = options.includeTime ? `، ساعت ${formatDeterministicTime(hours, minutes, "fa")}` : "";
+    const timePart = options.includeTime
+      ? `، ساعت ${formatDeterministicTime(hours, minutes, "fa")}`
+      : "";
 
     const { jy, jm, jd } = gregorianToJalali(year, month, day);
     const jalaliMonth = FA_JALALI_MONTHS[jm - 1] ?? "";
@@ -111,7 +159,9 @@ export function formatCeremonyDate(
 
   const monthName = EN_MONTHS[month - 1] ?? "";
   const weekdayPrefix = options.includeWeekday ? `${EN_WEEKDAYS[weekday] ?? ""}, ` : "";
-  const timePart = options.includeTime ? ` at ${formatDeterministicTime(hours, minutes, "en")}` : "";
+  const timePart = options.includeTime
+    ? ` at ${formatDeterministicTime(hours, minutes, "en")}`
+    : "";
 
   return `${weekdayPrefix}${day} ${monthName} ${year}${timePart}`;
 }

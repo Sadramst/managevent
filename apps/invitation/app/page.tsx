@@ -77,7 +77,8 @@ export default function HomePage() {
         </h1>
 
         <p className="mx-auto mt-6 max-w-2xl font-serif text-lg sm:text-xl text-stone-300 leading-relaxed">
-          From animated wax-seal reveals to zero-friction RSVP, privacy-safe dietary tracking, and Perth’s finest Persian & Australian ceremony themes.
+          From animated wax-seal reveals to zero-friction RSVP, privacy-safe dietary tracking, and
+          Perth’s finest Persian & Australian ceremony themes.
         </p>
 
         {/* Action Buttons */}
@@ -150,7 +151,8 @@ export default function HomePage() {
                   10th Wedding Anniversary
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Wax-seal envelope reveal, heirloom romantic waltz audio, black-tie dress code, and wishing well PayID integration.
+                  Wax-seal envelope reveal, heirloom romantic waltz audio, black-tie dress code, and
+                  wishing well PayID integration.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
@@ -181,7 +183,8 @@ export default function HomePage() {
                   Sofreh Aghd & Persian Celebration
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Architectural arch decoration, dual Jalali calendar conversion, traditional setar music, and Halal catering options.
+                  Architectural arch decoration, dual Jalali calendar conversion, traditional setar
+                  music, and Halal catering options.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
@@ -212,7 +215,8 @@ export default function HomePage() {
                   Celebration of Life & Remembrance
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Respectful plain-fade gate, subdued typography, tribute book condolence message, and no confetti or celebratory countdowns.
+                  Respectful plain-fade gate, subdued typography, tribute book condolence message,
+                  and no confetti or celebratory countdowns.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
@@ -238,7 +242,8 @@ export default function HomePage() {
               Engineered for Australian Event Hosts
             </h2>
             <p className="mt-3 text-sm text-stone-400 max-w-xl mx-auto">
-              Everything you need to orchestrate guests, catering, and entry from one intuitive platform.
+              Everything you need to orchestrate guests, catering, and entry from one intuitive
+              platform.
             </p>
           </div>
 
@@ -247,7 +252,8 @@ export default function HomePage() {
               <Share2 className="h-7 w-7 text-emerald-400 mb-4" />
               <h3 className="text-base font-bold text-white">WhatsApp & SMS Direct Sharing</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Generate 1-click personalized WhatsApp messages that open directly into in-app webviews without losing session or state.
+                Generate 1-click personalized WhatsApp messages that open directly into in-app
+                webviews without losing session or state.
               </p>
             </div>
 
@@ -255,7 +261,8 @@ export default function HomePage() {
               <Utensils className="h-7 w-7 text-amber-400 mb-4" />
               <h3 className="text-base font-bold text-white">Catering & Dietary Intelligence</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Breakdown of Halal, Vegan, Gluten-Free, and Nut allergies instantly exported with UTF-8 BOM CSV for Perth caterers.
+                Breakdown of Halal, Vegan, Gluten-Free, and Nut allergies instantly exported with
+                UTF-8 BOM CSV for Perth caterers.
               </p>
             </div>
 
@@ -263,7 +270,8 @@ export default function HomePage() {
               <QrCode className="h-7 w-7 text-blue-400 mb-4" />
               <h3 className="text-base font-bold text-white">Digital Pass & Door Check-In</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Each guest party receives a personalized QR code pass for rapid door check-in via Managevent Crew mode or kiosks.
+                Each guest party receives a personalized QR code pass for rapid door check-in via
+                Managevent Crew mode or kiosks.
               </p>
             </div>
 
@@ -271,7 +279,8 @@ export default function HomePage() {
               <ShieldCheck className="h-7 w-7 text-purple-400 mb-4" />
               <h3 className="text-base font-bold text-white">Privacy by Architecture</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Unguessable HMAC tokens, no guest names in Open Graph tags, real 404s for invalid tokens, and zero personal data stored outside Sydney.
+                Unguessable HMAC tokens, no guest names in Open Graph tags, real 404s for invalid
+                tokens, and zero personal data stored outside Sydney.
               </p>
             </div>
 
@@ -279,7 +288,8 @@ export default function HomePage() {
               <Calendar className="h-7 w-7 text-amber-400 mb-4" />
               <h3 className="text-base font-bold text-white">Deterministic Calendar Sync</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                One-tap .ics file downloads and Google/Apple calendar integration pinned to local Western Australia timezone.
+                One-tap .ics file downloads and Google/Apple calendar integration pinned to local
+                Western Australia timezone.
               </p>
             </div>
 
@@ -287,7 +297,8 @@ export default function HomePage() {
               <Layers className="h-7 w-7 text-rose-400 mb-4" />
               <h3 className="text-base font-bold text-white">Integrated Managevent Bridge</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Headcounts and guest dietary preferences flow directly into Managevent marketplace vendor bookings and seating charts.
+                Headcounts and guest dietary preferences flow directly into Managevent marketplace
+                vendor bookings and seating charts.
               </p>
             </div>
           </div>
@@ -307,7 +318,9 @@ export default function HomePage() {
             <Link href="/studio" className="hover:text-stone-300 transition-colors">
               Host Studio
             </Link>
-            <span className="font-mono text-[11px] text-stone-600">invitation.managevent.com.au</span>
+            <span className="font-mono text-[11px] text-stone-600">
+              invitation.managevent.com.au
+            </span>
           </div>
         </div>
       </footer>

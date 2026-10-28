@@ -26,12 +26,12 @@ This guide outlines how to deploy the **Managevent Digital Invitations & Host St
 
 Configure the following environment variables in Vercel (**Settings** → **Environment Variables**):
 
-| Variable Name | Environment | Value | Description |
-| :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_INVITATION_URL` | Production | `https://invitation.managevent.com.au` | Canonical base URL for guest share links & QR codes |
-| `NEXT_PUBLIC_API_URL` | Production | `https://api.managevent.com.au` | Managevent Sydney Backend API |
-| `GUEST_TOKEN_PEPPER` | Production | *Generate random 32-byte secret* | Server-side HMAC pepper for deterministic guest tokens |
-| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Production | *Your Google Maps API Key* | Maps embedding & directions |
+| Variable Name                     | Environment | Value                                  | Description                                            |
+| :-------------------------------- | :---------- | :------------------------------------- | :----------------------------------------------------- |
+| `NEXT_PUBLIC_INVITATION_URL`      | Production  | `https://invitation.managevent.com.au` | Canonical base URL for guest share links & QR codes    |
+| `NEXT_PUBLIC_API_URL`             | Production  | `https://api.managevent.com.au`        | Managevent Sydney Backend API                          |
+| `GUEST_TOKEN_PEPPER`              | Production  | _Generate random 32-byte secret_       | Server-side HMAC pepper for deterministic guest tokens |
+| `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | Production  | _Your Google Maps API Key_             | Maps embedding & directions                            |
 
 ---
 

@@ -30,7 +30,9 @@ export const metadata: Metadata = {
   },
   description:
     "End-to-end luxury digital event invitations, RSVP management, dietary tracking, and check-in for weddings, Persian ceremonies, anniversaries, and memorials.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_INVITATION_URL || "https://invitation.managevent.com.au"),
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_INVITATION_URL || "https://invitation.managevent.com.au",
+  ),
 };
 
 export const viewport: Viewport = {
@@ -40,16 +42,9 @@ export const viewport: Viewport = {
   themeColor: "#9e7d3b",
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${cormorant.variable} ${jakarta.variable} ${vazirmatn.variable}`}
-    >
+    <html lang="en" className={`${cormorant.variable} ${jakarta.variable} ${vazirmatn.variable}`}>
       <body className="min-h-screen bg-stone-50 font-sans text-stone-900 antialiased selection:bg-amber-200 selection:text-amber-950">
         {children}
       </body>

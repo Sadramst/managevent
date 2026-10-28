@@ -12,17 +12,15 @@ interface QrCodeModalProps {
   onClose: () => void;
 }
 
-export const QrCodeModal: React.FC<QrCodeModalProps> = ({
-  party,
-  event,
-  isOpen,
-  onClose,
-}) => {
+export const QrCodeModal: React.FC<QrCodeModalProps> = ({ party, event, isOpen, onClose }) => {
   const [dataUrl, setDataUrl] = useState<string | null>(null);
 
   useEffect(() => {
     if (!party) return;
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://invitation.managevent.com.au";
     const fullUrl = `${origin}/i/${event.slug}/${party.token}`;
 
     QRCode.toDataURL(fullUrl, {

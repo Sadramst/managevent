@@ -9,11 +9,7 @@ interface StorySectionProps {
   locale: "en" | "fa";
 }
 
-export const StorySection: React.FC<StorySectionProps> = ({
-  event,
-  theme,
-  locale,
-}) => {
+export const StorySection: React.FC<StorySectionProps> = ({ event, theme, locale }) => {
   const { colors } = theme;
   const isMemorial = event.experienceMode === "MEMORIAL";
   const { content } = event;
@@ -51,18 +47,16 @@ export const StorySection: React.FC<StorySectionProps> = ({
                 ? "In Loving Memory"
                 : "Our Story"}
           </h2>
-          <div
-            className="mt-2 h-0.5 w-12"
-            style={{ backgroundColor: colors.accent }}
-          />
+          <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
 
         {/* Narrative Paragraphs */}
-        <div className="space-y-4 text-center font-serif text-base leading-relaxed sm:text-lg" style={{ color: colors.ink }}>
+        <div
+          className="space-y-4 text-center font-serif text-base leading-relaxed sm:text-lg"
+          style={{ color: colors.ink }}
+        >
           {content.invitationStory && content.invitationStory.length > 0 ? (
-            content.invitationStory.map((para, idx) => (
-              <p key={idx}>{para}</p>
-            ))
+            content.invitationStory.map((para, idx) => <p key={idx}>{para}</p>)
           ) : (
             <p>{content.subheadline}</p>
           )}
@@ -70,7 +64,10 @@ export const StorySection: React.FC<StorySectionProps> = ({
 
         {/* Story Pillars / Highlights */}
         {content.pillars && content.pillars.length > 0 && (
-          <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 pt-6 border-t" style={{ borderColor: colors.rule }}>
+          <div
+            className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3 pt-6 border-t"
+            style={{ borderColor: colors.rule }}
+          >
             {content.pillars.map((pillar, idx) => (
               <div
                 key={idx}
@@ -86,10 +83,7 @@ export const StorySection: React.FC<StorySectionProps> = ({
                 >
                   {pillar.title}
                 </div>
-                <div
-                  className="mt-1 font-sans text-xs"
-                  style={{ color: colors.inkMuted }}
-                >
+                <div className="mt-1 font-sans text-xs" style={{ color: colors.inkMuted }}>
                   {pillar.description}
                 </div>
               </div>

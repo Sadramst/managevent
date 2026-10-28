@@ -26,7 +26,7 @@
   ],
   "tasks": {
     "build": {
-      "dependsOn": ["@managevent/db#db:generate", "^build"],
+      "dependsOn": ["@managevent/db#db:generate", "^build", "typecheck"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [
         ".next/**",

@@ -3,7 +3,8 @@ import { z } from "zod";
 /**
  * 31-character safe alphabet (excludes `0`, `1`, `i`, `l`, `o`) per `WEBSITE.md` §B6.1.
  */
-export const SAFE_TOKEN_ALPHABET = "23456789abcdefghjkmnpqrstuvwxyz" as const;
+const BASE31_SAFE_ALPHABET = "23456789abcdefghjkmnpqrstuvwxyz" as const;
+export const SAFE_TOKEN_ALPHABET = BASE31_SAFE_ALPHABET;
 
 /**
  * Non-negative integer cents in AUD (`amountCents >= 0`). Never floats.

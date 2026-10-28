@@ -28,7 +28,9 @@ export async function GET(request: Request, context: RouteContext) {
   const startIcs = formatIcsDate(event.startsAt);
   const endIcs = event.endsAt
     ? formatIcsDate(event.endsAt)
-    : formatIcsDate(new Date(new Date(event.startsAt).getTime() + 5 * 60 * 60 * 1000).toISOString());
+    : formatIcsDate(
+        new Date(new Date(event.startsAt).getTime() + 5 * 60 * 60 * 1000).toISOString(),
+      );
 
   const origin = new URL(request.url).origin;
   const guestUrl = `${origin}/i/${event.slug}/${party.token}`;

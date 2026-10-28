@@ -17,7 +17,10 @@ export default function TemplatesPage() {
       {/* Top Header */}
       <header className="border-b border-stone-800 bg-stone-950/70 backdrop-blur-md px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <Link href="/" className="flex items-center gap-2 text-stone-200 hover:text-white font-serif font-bold text-lg">
+          <Link
+            href="/"
+            className="flex items-center gap-2 text-stone-200 hover:text-white font-serif font-bold text-lg"
+          >
             <span>Managevent Invitations</span>
           </Link>
           <div className="flex items-center gap-3">
@@ -48,7 +51,8 @@ export default function TemplatesPage() {
             Ceremony Themes & Templates
           </h1>
           <p className="mt-3 text-sm sm:text-base text-stone-400 max-w-xl mx-auto font-serif">
-            Each theme includes custom typography, ornamental borders, gate reveal styles, and WCAG AA contrast for an unforgettable guest experience.
+            Each theme includes custom typography, ornamental borders, gate reveal styles, and WCAG
+            AA contrast for an unforgettable guest experience.
           </p>
         </div>
 
@@ -83,10 +87,26 @@ export default function TemplatesPage() {
 
                   {/* Swatch Strip */}
                   <div className="flex h-8 w-full overflow-hidden rounded-button border border-stone-700/60 mb-5">
-                    <div className="flex-1" style={{ backgroundColor: colors.surface }} title="Surface" />
-                    <div className="flex-1" style={{ backgroundColor: colors.bgWarm }} title="Warm Background" />
-                    <div className="flex-1" style={{ backgroundColor: colors.accent }} title="Accent" />
-                    <div className="flex-1" style={{ backgroundColor: colors.accentInk }} title="Accent Ink" />
+                    <div
+                      className="flex-1"
+                      style={{ backgroundColor: colors.surface }}
+                      title="Surface"
+                    />
+                    <div
+                      className="flex-1"
+                      style={{ backgroundColor: colors.bgWarm }}
+                      title="Warm Background"
+                    />
+                    <div
+                      className="flex-1"
+                      style={{ backgroundColor: colors.accent }}
+                      title="Accent"
+                    />
+                    <div
+                      className="flex-1"
+                      style={{ backgroundColor: colors.accentInk }}
+                      title="Accent Ink"
+                    />
                   </div>
 
                   <h3 className="font-display text-xl font-bold text-white group-hover:text-amber-300 transition-colors">

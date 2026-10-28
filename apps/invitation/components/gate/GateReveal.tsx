@@ -94,7 +94,8 @@ export const GateReveal: React.FC<GateRevealProps> = ({
 
               {/* Envelope Body / Card Face */}
               <div className="p-8 text-center sm:p-10">
-                <div className="mb-4 inline-flex items-center justify-center gap-1.5 rounded-chip px-4 py-1 text-xs font-medium border"
+                <div
+                  className="mb-4 inline-flex items-center justify-center gap-1.5 rounded-chip px-4 py-1 text-xs font-medium border"
                   style={{
                     backgroundColor: colors.bgWarm,
                     borderColor: colors.rule,
@@ -105,7 +106,10 @@ export const GateReveal: React.FC<GateRevealProps> = ({
                   <span>{isMemorial ? "Personal Invitation" : "Exclusive Invitation"}</span>
                 </div>
 
-                <p className="font-serif text-sm uppercase tracking-widest text-ink-muted" style={{ color: colors.inkMuted }}>
+                <p
+                  className="font-serif text-sm uppercase tracking-widest text-ink-muted"
+                  style={{ color: colors.inkMuted }}
+                >
                   {isMemorial ? "In remembrance with" : "Warmly presented to"}
                 </p>
 
@@ -125,7 +129,11 @@ export const GateReveal: React.FC<GateRevealProps> = ({
                     whileTap={{ scale: 0.96 }}
                     animate={
                       isOpening
-                        ? { scale: [1, 1.2, 0], opacity: [1, 0.8, 0], transition: { duration: 0.6 } }
+                        ? {
+                            scale: [1, 1.2, 0],
+                            opacity: [1, 0.8, 0],
+                            transition: { duration: 0.6 },
+                          }
                         : { scale: 1 }
                     }
                     className="group relative flex h-20 w-20 items-center justify-center rounded-full shadow-lg transition-transform"
@@ -138,7 +146,10 @@ export const GateReveal: React.FC<GateRevealProps> = ({
                     <span className="font-serif text-xs font-bold uppercase tracking-wider text-white">
                       {isOpening ? "…" : isMemorial ? "Open" : "Open"}
                     </span>
-                    <span className="absolute -bottom-7 whitespace-nowrap text-[11px] font-medium" style={{ color: colors.inkMuted }}>
+                    <span
+                      className="absolute -bottom-7 whitespace-nowrap text-[11px] font-medium"
+                      style={{ color: colors.inkMuted }}
+                    >
                       {isMemorial ? "Tap to open" : "Tap to open"}
                     </span>
                   </motion.button>
@@ -150,9 +161,7 @@ export const GateReveal: React.FC<GateRevealProps> = ({
       </AnimatePresence>
 
       {/* Main Content behind the Gate */}
-      <div className={!isOpen ? "pointer-events-none select-none blur-sm" : ""}>
-        {children}
-      </div>
+      <div className={!isOpen ? "pointer-events-none select-none blur-sm" : ""}>{children}</div>
     </div>
   );
 };

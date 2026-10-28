@@ -44,18 +44,22 @@ export interface EventContent {
   dressCode?: string | undefined;
   parkingInfo?: string | undefined;
   faqs?: Array<{ question: string; answer: string }> | undefined;
-  wishingWell?: {
-    payId?: string | undefined;
-    bsb?: string | undefined;
-    accountNumber?: string | undefined;
-    accountName?: string | undefined;
-    message?: string | undefined;
-    registryUrl?: string | undefined;
-  } | undefined;
-  tributeBook?: {
-    prompt?: string | undefined;
-    donationUrl?: string | undefined;
-  } | undefined;
+  wishingWell?:
+    | {
+        payId?: string | undefined;
+        bsb?: string | undefined;
+        accountNumber?: string | undefined;
+        accountName?: string | undefined;
+        message?: string | undefined;
+        registryUrl?: string | undefined;
+      }
+    | undefined;
+  tributeBook?:
+    | {
+        prompt?: string | undefined;
+        donationUrl?: string | undefined;
+      }
+    | undefined;
 }
 
 export interface GuestMember {

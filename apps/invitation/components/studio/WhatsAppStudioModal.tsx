@@ -22,7 +22,8 @@ export const WhatsAppStudioModal: React.FC<WhatsAppStudioModalProps> = ({
 
   if (!isOpen || !party) return null;
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
+  const origin =
+    typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
   const guestLink = `${origin}/i/${event.slug}/${party.token}?lang=${localeChoice}`;
 
   const messageEn = `Dear ${party.displayName},\n\nYou are warmly invited to join us for ${event.title}.\n\nPlease view your personal invitation and RSVP here:\n${guestLink}\n\nWe look forward to celebrating with you!\n— ${event.content.coupleOrHostNames}`;
@@ -45,9 +46,7 @@ export const WhatsAppStudioModal: React.FC<WhatsAppStudioModalProps> = ({
         <div className="flex items-center justify-between border-b pb-3">
           <div className="flex items-center gap-2">
             <MessageCircle className="h-5 w-5 text-emerald-600" />
-            <h3 className="font-display text-lg font-bold text-neutral-900">
-              Share via WhatsApp
-            </h3>
+            <h3 className="font-display text-lg font-bold text-neutral-900">Share via WhatsApp</h3>
           </div>
           <button
             type="button"
@@ -105,7 +104,11 @@ export const WhatsAppStudioModal: React.FC<WhatsAppStudioModalProps> = ({
               onClick={handleCopy}
               className="inline-flex items-center gap-1.5 rounded-button border px-4 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50"
             >
-              {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+              {copied ? (
+                <Check className="h-3.5 w-3.5 text-emerald-600" />
+              ) : (
+                <Copy className="h-3.5 w-3.5" />
+              )}
               <span>{copied ? "Copied!" : "Copy Text"}</span>
             </button>
 

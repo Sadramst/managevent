@@ -27,7 +27,9 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
 
   const headerLine = lines[0] ?? "";
   const delimiter = headerLine.includes(";") ? ";" : ",";
-  const headers = headerLine.split(delimiter).map((h) => h.trim().toLowerCase().replace(/["']/g, ""));
+  const headers = headerLine
+    .split(delimiter)
+    .map((h) => h.trim().toLowerCase().replace(/["']/g, ""));
 
   const rows: CsvGuestRow[] = [];
 
@@ -39,7 +41,7 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
     let match: RegExpExecArray | null;
 
     while ((match = regex.exec(line)) !== null) {
-      const val = (match[1] !== undefined ? match[1] : match[2] ?? "").trim();
+      const val = (match[1] !== undefined ? match[1] : (match[2] ?? "")).trim();
       values.push(val);
     }
 
@@ -50,21 +52,28 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
       rowObj[header] = values[idx] ?? "";
     });
 
-    const name = rowObj.name || rowObj["guest name"] || rowObj["مهمان"] || rowObj["نام"] || values[0] || "";
+    const name =
+      rowObj.name || rowObj["guest name"] || rowObj["مهمان"] || rowObj["نام"] || values[0] || "";
     if (!name) continue;
 
-    const partyName = rowObj.party || rowObj["party name"] || rowObj["خانواده"] || rowObj.group || name;
-    const seats = Number.parseInt(rowObj.seats || rowObj["max seats"] || rowObj["تعداد"] || "1", 10);
+    const partyName =
+      rowObj.party || rowObj["party name"] || rowObj["خانواده"] || rowObj.group || name;
+    const seats = Number.parseInt(
+      rowObj.seats || rowObj["max seats"] || rowObj["تعداد"] || "1",
+      10,
+    );
     const table = rowObj.table || rowObj["table number"] || rowObj["میز"] || undefined;
     const email = rowObj.email || rowObj["ایمیل"] || undefined;
     const phone = rowObj.phone || rowObj["موبایل"] || rowObj["تلفن"] || undefined;
     const tags = rowObj.tags || rowObj["برچسب"] || undefined;
-    const isChild = (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "true" ||
-                    (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "yes" ||
-                    (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "بله";
-    const plusOnes = (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "true" ||
-                     (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "yes" ||
-                     (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "بله";
+    const isChild =
+      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "true" ||
+      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "yes" ||
+      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "بله";
+    const plusOnes =
+      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "true" ||
+      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "yes" ||
+      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "بله";
 
     rows.push({
       name,
@@ -86,7 +95,10 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
  * Builds CSV string prefixed with UTF-8 BOM (`\uFEFF`) so Microsoft Excel correctly displays
  * Persian / Arabic and unicode characters without manual encoding adjustments.
  */
-export function buildCsvWithBom(headers: string[], rows: Array<Array<string | number | boolean | null | undefined>>): string {
+export function buildCsvWithBom(
+  headers: string[],
+  rows: Array<Array<string | number | boolean | null | undefined>>,
+): string {
   const escapeCell = (val: string | number | boolean | null | undefined): string => {
     if (val === null || val === undefined) return '""';
     const str = String(val).replace(/"/g, '""');
@@ -143,4 +155,3 @@ export function generateGuestsBomCsv(rows: CsvGuestExportRow[]): string {
   ]);
   return buildCsvWithBom(headers, dataRows);
 }
-

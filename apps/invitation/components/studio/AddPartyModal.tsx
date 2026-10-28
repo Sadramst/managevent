@@ -9,11 +9,7 @@ interface AddPartyModalProps {
   onAdd: (partyName: string, seats: number, tags: string[], tableLabel?: string) => void;
 }
 
-export const AddPartyModal: React.FC<AddPartyModalProps> = ({
-  isOpen,
-  onClose,
-  onAdd,
-}) => {
+export const AddPartyModal: React.FC<AddPartyModalProps> = ({ isOpen, onClose, onAdd }) => {
   const [partyName, setPartyName] = useState("");
   const [seats, setSeats] = useState(2);
   const [tableLabel, setTableLabel] = useState("");

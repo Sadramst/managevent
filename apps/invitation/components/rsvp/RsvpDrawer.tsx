@@ -21,15 +21,14 @@ const DIETARY_OPTIONS: Array<{ value: DietaryTag; labelEn: string; labelFa: stri
   { value: "GLUTEN_FREE", labelEn: "Gluten-Free (Coeliac Safe)", labelFa: "بدون گلوتن" },
   { value: "NUT_ALLERGY", labelEn: "Nut Allergy", labelFa: "حساسیت به آجیل" },
   { value: "DAIRY_FREE", labelEn: "Dairy-Free", labelFa: "بدون لبنیات" },
-  { value: "SHELLFISH_ALLERGY", labelEn: "Seafood / Shellfish Allergy", labelFa: "حساسیت به غذاهای دریایی" },
+  {
+    value: "SHELLFISH_ALLERGY",
+    labelEn: "Seafood / Shellfish Allergy",
+    labelFa: "حساسیت به غذاهای دریایی",
+  },
 ];
 
-export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
-  event,
-  party,
-  theme,
-  locale,
-}) => {
+export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, locale }) => {
   const { colors } = theme;
   const isFa = locale === "fa";
   const isMemorial = event.experienceMode === "MEMORIAL";
@@ -203,7 +202,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
             <h3 className="font-display text-xl font-bold" style={{ color: colors.accentInk }}>
               {isFa ? "پاسخ شما با موفقیت ثبت شد!" : "Thank You! Your RSVP is Confirmed."}
             </h3>
-            <p className="font-serif text-sm sm:text-base max-w-md mx-auto" style={{ color: colors.ink }}>
+            <p
+              className="font-serif text-sm sm:text-base max-w-md mx-auto"
+              style={{ color: colors.ink }}
+            >
               {overallStatus === "YES"
                 ? isFa
                   ? "مشتاقانه در انتظار دیدار گرم شما هستیم."
@@ -279,7 +281,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                   "--tw-ring-color": colors.accent,
                 }}
               >
-                <div className="flex items-center justify-center gap-2 font-display text-sm sm:text-base font-bold" style={{ color: colors.accentInk }}>
+                <div
+                  className="flex items-center justify-center gap-2 font-display text-sm sm:text-base font-bold"
+                  style={{ color: colors.accentInk }}
+                >
                   <Check className="h-4 w-4" style={{ color: colors.accent }} />
                   <span>{isFa ? "با کمال میل حضور می‌یابیم" : "Joyfully Accepts"}</span>
                 </div>
@@ -298,7 +303,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                   "--tw-ring-color": colors.accent,
                 }}
               >
-                <div className="flex items-center justify-center gap-2 font-display text-sm sm:text-base font-bold" style={{ color: colors.accentInk }}>
+                <div
+                  className="flex items-center justify-center gap-2 font-display text-sm sm:text-base font-bold"
+                  style={{ color: colors.accentInk }}
+                >
                   <X className="h-4 w-4" style={{ color: colors.inkMuted }} />
                   <span>{isFa ? "متأسفانه امکان حضور نداریم" : "Regretfully Declines"}</span>
                 </div>
@@ -322,12 +330,18 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <div className="font-serif text-sm font-semibold" style={{ color: colors.accentInk }}>
+                      <div
+                        className="font-serif text-sm font-semibold"
+                        style={{ color: colors.accentInk }}
+                      >
                         {member.name} {member.isChild ? (isFa ? "(کودک)" : "(Child)") : ""}
                       </div>
 
                       {/* Attend toggle per guest */}
-                      <div className="inline-flex rounded-full border p-0.5" style={{ borderColor: colors.rule }}>
+                      <div
+                        className="inline-flex rounded-full border p-0.5"
+                        style={{ borderColor: colors.rule }}
+                      >
                         <button
                           type="button"
                           onClick={() => handleMemberStatusChange(idx, "YES")}
@@ -335,7 +349,8 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                             member.status === "YES" ? "shadow-xs" : "opacity-60"
                           }`}
                           style={{
-                            backgroundColor: member.status === "YES" ? colors.accent : "transparent",
+                            backgroundColor:
+                              member.status === "YES" ? colors.accent : "transparent",
                             color: member.status === "YES" ? "#FFFFFF" : colors.ink,
                           }}
                         >
@@ -348,7 +363,8 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                             member.status === "NO" ? "shadow-xs" : "opacity-60"
                           }`}
                           style={{
-                            backgroundColor: member.status === "NO" ? colors.inkMuted : "transparent",
+                            backgroundColor:
+                              member.status === "NO" ? colors.inkMuted : "transparent",
                             color: member.status === "NO" ? "#FFFFFF" : colors.ink,
                           }}
                         >
@@ -360,7 +376,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                     {/* Dietary tags if attending */}
                     {member.status === "YES" && (
                       <div className="pt-2">
-                        <label className="block text-xs font-medium mb-1.5" style={{ color: colors.inkMuted }}>
+                        <label
+                          className="block text-xs font-medium mb-1.5"
+                          style={{ color: colors.inkMuted }}
+                        >
                           {isFa ? "رژیم غذایی و حساسیت‌ها:" : "Dietary Needs & Allergies:"}
                         </label>
                         <div className="flex flex-wrap gap-1.5">
@@ -375,7 +394,9 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                                   isSelected ? "ring-1" : "opacity-75 hover:opacity-100"
                                 }`}
                                 style={{
-                                  backgroundColor: isSelected ? `${colors.accent}20` : colors.surface,
+                                  backgroundColor: isSelected
+                                    ? `${colors.accent}20`
+                                    : colors.surface,
                                   borderColor: isSelected ? colors.accent : colors.rule,
                                   color: isSelected ? colors.accentInk : colors.ink,
                                   // @ts-expect-error custom ring
@@ -407,8 +428,15 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
                     onChange={(e) => setHealthConsent(e.target.checked)}
                     className="mt-0.5 rounded border-gray-300 text-amber-600 focus:ring-amber-500"
                   />
-                  <label htmlFor="health-consent" className="leading-snug" style={{ color: colors.inkMuted }}>
-                    <ShieldAlert className="inline h-3.5 w-3.5 me-1" style={{ color: colors.accent }} />
+                  <label
+                    htmlFor="health-consent"
+                    className="leading-snug"
+                    style={{ color: colors.inkMuted }}
+                  >
+                    <ShieldAlert
+                      className="inline h-3.5 w-3.5 me-1"
+                      style={{ color: colors.accent }}
+                    />
                     {isFa
                       ? "رضایت می‌دهم اطلاعات رژیمی و آلرژی صرفاً جهت پذیرایی مناسب در این مراسم به کار گرفته و طبق مقررات حریم خصوصی استرالیا (APPs) نگهداری شود."
                       : "I consent to dietary & allergy information being processed solely for catering purposes for this event under Australian Privacy Principles (APPs)."}
@@ -417,7 +445,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
 
                 {/* Song Request (or Memorial Tribute Song) */}
                 <div>
-                  <label className="block text-xs font-semibold mb-1" style={{ color: colors.accentInk }}>
+                  <label
+                    className="block text-xs font-semibold mb-1"
+                    style={{ color: colors.accentInk }}
+                  >
                     {isMemorial
                       ? isFa
                         ? "آهنگی که یادآور ایشان است (اختیاری)"
@@ -446,7 +477,10 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
 
             {/* Note / Message to Host */}
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: colors.accentInk }}>
+              <label
+                className="block text-xs font-semibold mb-1"
+                style={{ color: colors.accentInk }}
+              >
                 {isMemorial
                   ? isFa
                     ? "پیام تسلیت و همدردی به خانواده (اختیاری)"
@@ -473,8 +507,13 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({
 
             {/* Contact for updates */}
             <div>
-              <label className="block text-xs font-semibold mb-1" style={{ color: colors.accentInk }}>
-                {isFa ? "شماره موبایل یا ایمیل جهت اطلاعیه‌های رویداد" : "Mobile / Email for Event Updates"}
+              <label
+                className="block text-xs font-semibold mb-1"
+                style={{ color: colors.accentInk }}
+              >
+                {isFa
+                  ? "شماره موبایل یا ایمیل جهت اطلاعیه‌های رویداد"
+                  : "Mobile / Email for Event Updates"}
               </label>
               <input
                 type="text"

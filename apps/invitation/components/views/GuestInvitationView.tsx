@@ -140,9 +140,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           />
 
           {/* Dynamic View Section */}
-          {currentMode === "story" && (
-            <StorySection event={event} theme={theme} locale={locale} />
-          )}
+          {currentMode === "story" && <StorySection event={event} theme={theme} locale={locale} />}
 
           {currentMode === "timeline" && (
             <TimelineSection event={event} theme={theme} locale={locale} />
@@ -168,7 +166,10 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         />
 
         {/* Subtle Footer */}
-        <footer className="border-t py-8 text-center text-xs opacity-60" style={{ borderColor: colors.rule }}>
+        <footer
+          className="border-t py-8 text-center text-xs opacity-60"
+          style={{ borderColor: colors.rule }}
+        >
           <p>
             {event.title} • {isFa ? "مدیریت رویداد با منیج‌ونت" : "Ceremony curated by Managevent"}
           </p>

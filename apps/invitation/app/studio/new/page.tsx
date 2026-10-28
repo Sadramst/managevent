@@ -18,12 +18,42 @@ import {
 } from "lucide-react";
 
 const CEREMONY_OPTIONS = [
-  { slug: "wedding", name: "Wedding Celebration", defaultTheme: "emerald-botanic" as InvitationThemeId, isMemorial: false },
-  { slug: "persian-ceremony", name: "Sofreh Aghd / Persian Ceremony", defaultTheme: "persian-azure" as InvitationThemeId, isMemorial: false },
-  { slug: "anniversary", name: "Wedding Anniversary", defaultTheme: "royal-ivory" as InvitationThemeId, isMemorial: false },
-  { slug: "birthday", name: "Milestone Birthday", defaultTheme: "alabaster-platinum" as InvitationThemeId, isMemorial: false },
-  { slug: "corporate-gala", name: "Corporate Gala / Dinner", defaultTheme: "midnight-celestial" as InvitationThemeId, isMemorial: false },
-  { slug: "memorial-service", name: "Memorial / Celebration of Life", defaultTheme: "memorial-alabaster" as InvitationThemeId, isMemorial: true },
+  {
+    slug: "wedding",
+    name: "Wedding Celebration",
+    defaultTheme: "emerald-botanic" as InvitationThemeId,
+    isMemorial: false,
+  },
+  {
+    slug: "persian-ceremony",
+    name: "Sofreh Aghd / Persian Ceremony",
+    defaultTheme: "persian-azure" as InvitationThemeId,
+    isMemorial: false,
+  },
+  {
+    slug: "anniversary",
+    name: "Wedding Anniversary",
+    defaultTheme: "royal-ivory" as InvitationThemeId,
+    isMemorial: false,
+  },
+  {
+    slug: "birthday",
+    name: "Milestone Birthday",
+    defaultTheme: "alabaster-platinum" as InvitationThemeId,
+    isMemorial: false,
+  },
+  {
+    slug: "corporate-gala",
+    name: "Corporate Gala / Dinner",
+    defaultTheme: "midnight-celestial" as InvitationThemeId,
+    isMemorial: false,
+  },
+  {
+    slug: "memorial-service",
+    name: "Memorial / Celebration of Life",
+    defaultTheme: "memorial-alabaster" as InvitationThemeId,
+    isMemorial: true,
+  },
 ];
 
 export default function NewEventWizardPage() {
@@ -40,10 +70,13 @@ export default function NewEventWizardPage() {
   const [venueName, setVenueName] = useState("");
   const [venueAddress, setVenueAddress] = useState("");
   const [themeId, setThemeId] = useState<InvitationThemeId>("emerald-botanic");
-  const [gateStyle, setGateStyle] = useState<"wax-seal" | "ribbon" | "arch" | "plain-fade">("wax-seal");
+  const [gateStyle, setGateStyle] = useState<"wax-seal" | "ribbon" | "arch" | "plain-fade">(
+    "wax-seal",
+  );
   const [isFaEnabled, setIsFaEnabled] = useState(false);
 
-  const selectedCeremony = CEREMONY_OPTIONS.find((c) => c.slug === ceremonySlug) ?? CEREMONY_OPTIONS[0]!;
+  const selectedCeremony =
+    CEREMONY_OPTIONS.find((c) => c.slug === ceremonySlug) ?? CEREMONY_OPTIONS[0]!;
   const isMemorial = selectedCeremony.isMemorial;
   const experienceMode: ExperienceMode = isMemorial ? "MEMORIAL" : "CELEBRATION";
 
@@ -98,7 +131,10 @@ export default function NewEventWizardPage() {
       {/* Header */}
       <header className="border-b bg-white px-6 py-4">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <Link href="/studio" className="flex items-center gap-2 text-stone-600 hover:text-stone-900 text-xs font-semibold">
+          <Link
+            href="/studio"
+            className="flex items-center gap-2 text-stone-600 hover:text-stone-900 text-xs font-semibold"
+          >
             <ArrowLeft className="h-4 w-4" />
             <span>Back to Studio</span>
           </Link>
@@ -120,7 +156,8 @@ export default function NewEventWizardPage() {
                   Select Ceremony Type
                 </h2>
                 <p className="mt-1 text-xs text-stone-500">
-                  Managevent tunes typography, tone, and privacy features specifically for your ceremony.
+                  Managevent tunes typography, tone, and privacy features specifically for your
+                  ceremony.
                 </p>
               </div>
 
@@ -203,7 +240,8 @@ export default function NewEventWizardPage() {
                   Ceremony Date & Location
                 </h2>
                 <p className="mt-1 text-xs text-stone-500">
-                  Guests will see deterministic countdowns, Apple/Google Maps links, and .ics calendar sync.
+                  Guests will see deterministic countdowns, Apple/Google Maps links, and .ics
+                  calendar sync.
                 </p>
               </div>
 
@@ -314,7 +352,9 @@ export default function NewEventWizardPage() {
                 </label>
                 <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2">
                   {Object.values(INVITATION_THEMES)
-                    .filter((t) => (isMemorial ? t.id.startsWith("memorial-") : !t.id.startsWith("memorial-")))
+                    .filter((t) =>
+                      isMemorial ? t.id.startsWith("memorial-") : !t.id.startsWith("memorial-"),
+                    )
                     .map((t) => {
                       const isSelected = themeId === t.id;
                       return (
@@ -335,7 +375,10 @@ export default function NewEventWizardPage() {
                           <div className="mt-2 flex h-3 w-full rounded overflow-hidden">
                             <div className="flex-1" style={{ backgroundColor: t.colors.surface }} />
                             <div className="flex-1" style={{ backgroundColor: t.colors.accent }} />
-                            <div className="flex-1" style={{ backgroundColor: t.colors.accentInk }} />
+                            <div
+                              className="flex-1"
+                              style={{ backgroundColor: t.colors.accentInk }}
+                            />
                           </div>
                         </button>
                       );

@@ -22,9 +22,23 @@ export const ArchDecoration: React.FC<ArchDecorationProps> = ({ theme, className
         aria-hidden="true"
         fill="none"
       >
-        <circle cx="200" cy="220" r="170" stroke={accentColor} strokeWidth="1.2" strokeDasharray="6 4" opacity="0.45" />
+        <circle
+          cx="200"
+          cy="220"
+          r="170"
+          stroke={accentColor}
+          strokeWidth="1.2"
+          strokeDasharray="6 4"
+          opacity="0.45"
+        />
         <circle cx="200" cy="220" r="185" stroke={accentColor} strokeWidth="0.6" opacity="0.25" />
-        <path d="M 15 220 L 15 690 L 385 690 L 385 220" stroke={accentColor} strokeWidth="0.8" opacity="0.3" vectorEffect="non-scaling-stroke" />
+        <path
+          d="M 15 220 L 15 690 L 385 690 L 385 220"
+          stroke={accentColor}
+          strokeWidth="0.8"
+          opacity="0.3"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
     );
   }
@@ -39,8 +53,28 @@ export const ArchDecoration: React.FC<ArchDecorationProps> = ({ theme, className
         aria-hidden="true"
         fill="none"
       >
-        <rect x="12" y="12" width="376" height="676" rx="24" stroke={accentColor} strokeWidth="1.2" opacity="0.5" vectorEffect="non-scaling-stroke" />
-        <rect x="20" y="20" width="360" height="660" rx="18" stroke={accentColor} strokeWidth="0.6" opacity="0.3" vectorEffect="non-scaling-stroke" />
+        <rect
+          x="12"
+          y="12"
+          width="376"
+          height="676"
+          rx="24"
+          stroke={accentColor}
+          strokeWidth="1.2"
+          opacity="0.5"
+          vectorEffect="non-scaling-stroke"
+        />
+        <rect
+          x="20"
+          y="20"
+          width="360"
+          height="660"
+          rx="18"
+          stroke={accentColor}
+          strokeWidth="0.6"
+          opacity="0.3"
+          vectorEffect="non-scaling-stroke"
+        />
       </svg>
     );
   }

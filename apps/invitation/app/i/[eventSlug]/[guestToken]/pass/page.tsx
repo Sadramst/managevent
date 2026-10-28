@@ -30,7 +30,10 @@ export default function GuestPassPage({ params }: PassPageProps) {
   const { colors } = theme;
 
   useEffect(() => {
-    const origin = typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
+    const origin =
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "https://invitation.managevent.com.au";
     const checkinPayload = `${origin}/i/${event.slug}/${party.token}`;
 
     QRCode.toDataURL(checkinPayload, {
@@ -85,7 +88,10 @@ export default function GuestPassPage({ params }: PassPageProps) {
             borderColor: colors.rule,
           }}
         >
-          <span className="font-mono text-[10px] uppercase tracking-widest" style={{ color: colors.accent }}>
+          <span
+            className="font-mono text-[10px] uppercase tracking-widest"
+            style={{ color: colors.accent }}
+          >
             Digital Ceremony Pass
           </span>
           <h1 className="mt-1 font-display text-2xl font-bold" style={{ color: colors.accentInk }}>
@@ -121,7 +127,10 @@ export default function GuestPassPage({ params }: PassPageProps) {
           </div>
 
           {/* Details Grid */}
-          <div className="mt-6 w-full grid grid-cols-2 gap-3 text-start border-t pt-4" style={{ borderColor: colors.rule }}>
+          <div
+            className="mt-6 w-full grid grid-cols-2 gap-3 text-start border-t pt-4"
+            style={{ borderColor: colors.rule }}
+          >
             <div>
               <span className="block text-[10px] font-mono uppercase text-stone-500">Seats</span>
               <span className="font-semibold text-xs">{party.maxSeats} Guest(s)</span>

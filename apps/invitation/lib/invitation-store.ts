@@ -1,5 +1,10 @@
 import type { DietaryTag, ExperienceMode } from "@managevent/types";
-import { generateEventSalt, generateEventSlug, generateGuestToken, isValidGuestTokenFormat } from "./tokens";
+import {
+  generateEventSalt,
+  generateEventSlug,
+  generateGuestToken,
+  isValidGuestTokenFormat,
+} from "./tokens";
 import type {
   EventModel,
   EventResponsesSummary,
@@ -40,7 +45,8 @@ const SEED_EVENTS: EventModel[] = [
       {
         time: "18:30",
         title: "Welcome Drinks & Canapés",
-        description: "Arrival reception with signature cocktails, champagne and live acoustic music.",
+        description:
+          "Arrival reception with signature cocktails, champagne and live acoustic music.",
       },
       {
         time: "19:30",
@@ -67,9 +73,11 @@ const SEED_EVENTS: EventModel[] = [
         { title: "Location", description: "The Grand Estate & Ballroom" },
         { title: "Dress Code", description: "Black Tie & Elegant Formal" },
       ],
-      audioUrl: "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
+      audioUrl:
+        "https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=romantic-piano-112199.mp3",
       audioTitle: "Nocturne in Gold — Ambient Waltz",
-      coverImageUrl: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
+      coverImageUrl:
+        "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1200&q=80",
       galleryImages: [
         "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=800&q=80",
         "https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=800&q=80",
@@ -83,7 +91,8 @@ const SEED_EVENTS: EventModel[] = [
         bsb: "066-000",
         accountNumber: "12345678",
         accountName: "Niloofar & Sadra",
-        message: "Your warm presence is our greatest present. If you wish to honor us with a gift, a contribution toward our anniversary adventure would be gratefully received.",
+        message:
+          "Your warm presence is our greatest present. If you wish to honor us with a gift, a contribution toward our anniversary adventure would be gratefully received.",
       },
     },
     parties: [
@@ -97,13 +106,30 @@ const SEED_EVENTS: EventModel[] = [
         childrenAllowed: true,
         tableLabel: "Table 1 (VIP)",
         tags: ["VIP", "Family"],
-        legacySlugs: ["armita-party-g9qtmt", "/anniversary/armita-party-g9qtmt", "/e/anniversary/armita-party-g9qtmt"],
+        legacySlugs: [
+          "armita-party-g9qtmt",
+          "/anniversary/armita-party-g9qtmt",
+          "/e/anniversary/armita-party-g9qtmt",
+        ],
         status: "YES",
         notes: "VIP family party",
         members: [
-          { id: "gst_armita", name: "Armita", isPrimary: true, isChild: false, status: "YES", dietary: ["NONE"] },
+          {
+            id: "gst_armita",
+            name: "Armita",
+            isPrimary: true,
+            isChild: false,
+            status: "YES",
+            dietary: ["NONE"],
+          },
           { id: "gst_hesam", name: "Hesam", isChild: false, status: "YES", dietary: ["NONE"] },
-          { id: "gst_negar", name: "Negar", isChild: false, status: "YES", dietary: ["VEGETARIAN"] },
+          {
+            id: "gst_negar",
+            name: "Negar",
+            isChild: false,
+            status: "YES",
+            dietary: ["VEGETARIAN"],
+          },
           { id: "gst_samyar", name: "Samyar", isChild: true, status: "YES", dietary: ["NONE"] },
         ],
       },
@@ -120,8 +146,23 @@ const SEED_EVENTS: EventModel[] = [
         legacySlugs: ["farhad-maryam-party-7kd92m"],
         status: "YES",
         members: [
-          { id: "gst_farhad", name: "Farhad", isPrimary: true, isChild: false, status: "YES", dietary: ["NONE"] },
-          { id: "gst_maryam", name: "Maryam", isChild: false, status: "YES", dietary: ["GLUTEN_FREE"], allergyNotes: "Coeliac", allergySeverity: "MODERATE" },
+          {
+            id: "gst_farhad",
+            name: "Farhad",
+            isPrimary: true,
+            isChild: false,
+            status: "YES",
+            dietary: ["NONE"],
+          },
+          {
+            id: "gst_maryam",
+            name: "Maryam",
+            isChild: false,
+            status: "YES",
+            dietary: ["GLUTEN_FREE"],
+            allergyNotes: "Coeliac",
+            allergySeverity: "MODERATE",
+          },
         ],
       },
       {
@@ -188,9 +229,21 @@ const SEED_EVENTS: EventModel[] = [
       dressCode: "Formal Persian Ceremony Attire",
     },
     schedule: [
-      { time: "16:00", title: "Sofreh Aghd Ceremony", description: "Traditional Persian marriage blessing by the mirror and candlelight." },
-      { time: "18:00", title: "Cocktail Hour & Garden Sunset", description: "Persian sweets, tea, and hors d'oeuvres overlooking the vineyard." },
-      { time: "19:30", title: "Dinner & Reception", description: "Feast with Persian saffron rice, kebabs, and live music." },
+      {
+        time: "16:00",
+        title: "Sofreh Aghd Ceremony",
+        description: "Traditional Persian marriage blessing by the mirror and candlelight.",
+      },
+      {
+        time: "18:00",
+        title: "Cocktail Hour & Garden Sunset",
+        description: "Persian sweets, tea, and hors d'oeuvres overlooking the vineyard.",
+      },
+      {
+        time: "19:30",
+        title: "Dinner & Reception",
+        description: "Feast with Persian saffron rice, kebabs, and live music.",
+      },
     ],
     content: {
       headline: "پیوند آسمانی و جشن شادمانی سارا و رضا",
@@ -200,7 +253,8 @@ const SEED_EVENTS: EventModel[] = [
         "در سایه‌سار مهر یزدان و در کنار زیباترین یادگارهای فرهنگ کهن ایرانی، آغاز با هم بودنمان را جشن می‌گیریم.",
         "حضور گرم شما در کنار سفره عقد، روشنی‌بخش محفل پر از امید و شادمانی ما خواهد بود.",
       ],
-      coverImageUrl: "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
+      coverImageUrl:
+        "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
     },
     parties: [
       {
@@ -214,7 +268,13 @@ const SEED_EVENTS: EventModel[] = [
         tags: ["فامیل داماد"],
         status: "PENDING",
         members: [
-          { id: "gst_asadi_1", name: "محسن اسدی", isPrimary: true, isChild: false, status: "PENDING" },
+          {
+            id: "gst_asadi_1",
+            name: "محسن اسدی",
+            isPrimary: true,
+            isChild: false,
+            status: "PENDING",
+          },
           { id: "gst_asadi_2", name: "زهرا رحیمی", isChild: false, status: "PENDING" },
           { id: "gst_asadi_3", name: "امیرعلی اسدی", isChild: true, status: "PENDING" },
         ],
@@ -249,12 +309,21 @@ const SEED_EVENTS: EventModel[] = [
       googleMapsUrl: "https://maps.google.com/?q=Karrakatta+Cemetery",
     },
     schedule: [
-      { time: "14:00", title: "Memorial Service & Readings", description: "Sharing reflections, poetry and cherished memories of Dariush." },
-      { time: "15:30", title: "Gathering & Refreshments", description: "Quiet fellowship, tea and light refreshments in the courtyard." },
+      {
+        time: "14:00",
+        title: "Memorial Service & Readings",
+        description: "Sharing reflections, poetry and cherished memories of Dariush.",
+      },
+      {
+        time: "15:30",
+        title: "Gathering & Refreshments",
+        description: "Quiet fellowship, tea and light refreshments in the courtyard.",
+      },
     ],
     content: {
       headline: "A Life Well Lived, Forever in Our Hearts",
-      subheadline: "Please join the family in celebrating and remembering the gentle life of Dariush.",
+      subheadline:
+        "Please join the family in celebrating and remembering the gentle life of Dariush.",
       coupleOrHostNames: "The Family of Dariush",
       honoureeName: "Dariush",
       invitationStory: [
@@ -277,7 +346,13 @@ const SEED_EVENTS: EventModel[] = [
         tags: ["Close Friends"],
         status: "PENDING",
         members: [
-          { id: "gst_cyrus", name: "Dr. Cyrus", isPrimary: true, isChild: false, status: "PENDING" },
+          {
+            id: "gst_cyrus",
+            name: "Dr. Cyrus",
+            isPrimary: true,
+            isChild: false,
+            status: "PENDING",
+          },
           { id: "gst_roya", name: "Roya", isChild: false, status: "PENDING" },
         ],
       },
@@ -340,7 +415,13 @@ class InvitationStore {
       }
 
       // Check legacy slug matches (e.g. armita-party-g9qtmt)
-      if (party.legacySlugs?.some((ls) => ls.toLowerCase() === normalizedToken || ls.toLowerCase().endsWith(`/${normalizedToken}`))) {
+      if (
+        party.legacySlugs?.some(
+          (ls) =>
+            ls.toLowerCase() === normalizedToken ||
+            ls.toLowerCase().endsWith(`/${normalizedToken}`),
+        )
+      ) {
         return {
           event,
           party,
@@ -369,7 +450,8 @@ class InvitationStore {
       const parts = normalizedToken.split("-");
       parts.pop(); // remove suffix
       const rawName = parts.join(" ").trim();
-      const isParty = rawName.includes("party") || rawName.includes("family") || rawName.includes("خانواده");
+      const isParty =
+        rawName.includes("party") || rawName.includes("family") || rawName.includes("خانواده");
 
       const cleanName =
         rawName
@@ -476,7 +558,8 @@ class InvitationStore {
     const parties: GuestParty[] = (params.parties || []).map((p, idx) => {
       const stableId = `stable_${idx + 1}_${Math.random().toString(36).slice(2, 8)}`;
       const token = generateGuestToken(p.name, PEPPER, salt, stableId);
-      const isParty = p.name.toLowerCase().includes("party") || p.name.toLowerCase().includes("family");
+      const isParty =
+        p.name.toLowerCase().includes("party") || p.name.toLowerCase().includes("family");
 
       return {
         id: `pty_${Date.now()}_${idx}`,

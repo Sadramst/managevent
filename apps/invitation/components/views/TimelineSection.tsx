@@ -10,11 +10,7 @@ interface TimelineSectionProps {
   locale: "en" | "fa";
 }
 
-export const TimelineSection: React.FC<TimelineSectionProps> = ({
-  event,
-  theme,
-  locale,
-}) => {
+export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme, locale }) => {
   const { colors } = theme;
   const isFa = locale === "fa";
 
@@ -41,14 +37,14 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
           >
             {isFa ? "برنامه مراسم" : "Celebration Timeline"}
           </h2>
-          <div
-            className="mt-2 h-0.5 w-12"
-            style={{ backgroundColor: colors.accent }}
-          />
+          <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
 
         {/* Vertical Timeline container */}
-        <div className="relative border-s ps-6 sm:ps-8 ms-4 sm:ms-8 space-y-8" style={{ borderColor: colors.rule }}>
+        <div
+          className="relative border-s ps-6 sm:ps-8 ms-4 sm:ms-8 space-y-8"
+          style={{ borderColor: colors.rule }}
+        >
           {event.schedule.map((item, idx) => {
             const displayTime = isFa ? toPersianDigits(item.time) : item.time;
             return (
@@ -103,10 +99,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({
                   )}
 
                   {item.venueName && (
-                    <div
-                      className="mt-2 text-xs font-medium"
-                      style={{ color: colors.accent }}
-                    >
+                    <div className="mt-2 text-xs font-medium" style={{ color: colors.accent }}>
                       📍 {item.venueName}
                     </div>
                   )}

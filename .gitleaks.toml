@@ -1,0 +1,22 @@
+# Gitleaks configuration for Managevent repository
+# See: https://github.com/gitleaks/gitleaks
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist mock invitation tokens and safe character alphabet"
+paths = [
+  '''apps/invitation/lib/invitation-store\.ts''',
+  '''apps/invitation/lib/tokens\.ts''',
+  '''packages/validators/src/primitives\.ts'''
+]
+regexes = [
+  '''armita-party-g9qtmt''',
+  '''farhad-family-7kd92m''',
+  '''kian-family-2j4p9q''',
+  '''sara-family-g9qtmt''',
+  '''asadi-family-8nm24p''',
+  '''cyrus-family-9xm42k''',
+  '''23456789abcdefghjkmnpqrstuvwxyz'''
+]

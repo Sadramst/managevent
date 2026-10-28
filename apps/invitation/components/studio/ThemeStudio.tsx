@@ -70,7 +70,10 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({
               }}
             >
               {/* Color swatches preview bar */}
-              <div className="flex h-6 w-full overflow-hidden rounded-button border mb-3" style={{ borderColor: colors.rule }}>
+              <div
+                className="flex h-6 w-full overflow-hidden rounded-button border mb-3"
+                style={{ borderColor: colors.rule }}
+              >
                 <div className="flex-1" style={{ backgroundColor: colors.surface }} />
                 <div className="flex-1" style={{ backgroundColor: colors.bgWarm }} />
                 <div className="flex-1" style={{ backgroundColor: colors.accent }} />
@@ -79,10 +82,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({
 
               {/* Title & Description */}
               <div className="flex items-center justify-between">
-                <span
-                  className="font-serif text-sm font-bold"
-                  style={{ color: colors.accentInk }}
-                >
+                <span className="font-serif text-sm font-bold" style={{ color: colors.accentInk }}>
                   {theme.name}
                 </span>
                 {isSelected && (
@@ -106,7 +106,10 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({
               </p>
 
               {/* Badge for theme ornaments */}
-              <div className="mt-3 flex items-center gap-1.5 text-[10px] font-mono uppercase" style={{ color: colors.accent }}>
+              <div
+                className="mt-3 flex items-center gap-1.5 text-[10px] font-mono uppercase"
+                style={{ color: colors.accent }}
+              >
                 <Sparkles className="h-3 w-3" />
                 <span>{theme.ornaments} ornament</span>
               </div>

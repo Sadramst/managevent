@@ -31,8 +31,7 @@ export const GuestTable: React.FC<GuestTableProps> = ({
       (p.tableLabel && p.tableLabel.toLowerCase().includes(searchTerm.toLowerCase())) ||
       p.tags.some((t) => t.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    const matchesStatus =
-      statusFilter === "ALL" || p.status === statusFilter;
+    const matchesStatus = statusFilter === "ALL" || p.status === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
@@ -163,9 +162,7 @@ export const GuestTable: React.FC<GuestTableProps> = ({
                         {party.maxSeats} {party.maxSeats === 1 ? "seat" : "seats"}
                       </div>
                       {party.tableLabel && (
-                        <div className="text-[11px] text-neutral-500">
-                          {party.tableLabel}
-                        </div>
+                        <div className="text-[11px] text-neutral-500">{party.tableLabel}</div>
                       )}
                     </td>
 

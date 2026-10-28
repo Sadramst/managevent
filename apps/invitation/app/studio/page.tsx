@@ -1,15 +1,7 @@
 import React from "react";
 import Link from "next/link";
 import { invitationStore } from "@/lib/invitation-store";
-import {
-  Plus,
-  Calendar,
-  Users,
-  ArrowRight,
-  ExternalLink,
-  Settings,
-  Sparkles,
-} from "lucide-react";
+import { Plus, Calendar, Users, ArrowRight, ExternalLink, Settings, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -60,7 +52,8 @@ export default function StudioDashboardPage() {
             Your Event Invitations
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-stone-500">
-            Manage invitations, track real-time RSVP responses, and coordinate catering dietary requirements.
+            Manage invitations, track real-time RSVP responses, and coordinate catering dietary
+            requirements.
           </p>
         </div>
 
@@ -68,7 +61,9 @@ export default function StudioDashboardPage() {
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
           {events.map((event) => {
             const summary = invitationStore.getEventResponsesSummary(event.id);
-            const attendingTotal = summary ? summary.confirmedAdults + summary.confirmedChildren : 0;
+            const attendingTotal = summary
+              ? summary.confirmedAdults + summary.confirmedChildren
+              : 0;
             const primaryParty = event.parties[0];
             const sampleGuestLink = primaryParty ? `/i/${event.slug}/${primaryParty.token}` : "#";
 
@@ -95,7 +90,11 @@ export default function StudioDashboardPage() {
                   <div className="mt-3 space-y-1.5 text-xs text-stone-600">
                     <div className="flex items-center gap-2">
                       <Calendar className="h-3.5 w-3.5 text-stone-400" />
-                      <span>{new Date(event.startsAt).toLocaleDateString("en-AU", { dateStyle: "medium" })}</span>
+                      <span>
+                        {new Date(event.startsAt).toLocaleDateString("en-AU", {
+                          dateStyle: "medium",
+                        })}
+                      </span>
                     </div>
                     <div className="flex items-center gap-2">
                       <Users className="h-3.5 w-3.5 text-stone-400" />

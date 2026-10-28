@@ -10,11 +10,7 @@ interface CsvImportModalProps {
   onImport: (rows: CsvGuestRow[]) => void;
 }
 
-export const CsvImportModal: React.FC<CsvImportModalProps> = ({
-  isOpen,
-  onClose,
-  onImport,
-}) => {
+export const CsvImportModal: React.FC<CsvImportModalProps> = ({ isOpen, onClose, onImport }) => {
   const [csvContent, setCsvContent] = useState("");
   const [parsedRows, setParsedRows] = useState<CsvGuestRow[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -32,7 +28,9 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
       try {
         const rows = parseGuestsCsv(text);
         if (rows.length === 0) {
-          setError("No valid guest rows found in CSV. Please ensure you have a header row (Name, Seats, Table, Tags).");
+          setError(
+            "No valid guest rows found in CSV. Please ensure you have a header row (Name, Seats, Table, Tags).",
+          );
           setParsedRows([]);
         } else {
           setParsedRows(rows);
@@ -88,7 +86,8 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({
 
         <div className="mt-4 space-y-4">
           <p className="text-xs text-neutral-500">
-            Upload or paste your guest list spreadsheet (Excel, Google Sheets, or CSV). Supports English and Persian headers (نام, تعداد, میز).
+            Upload or paste your guest list spreadsheet (Excel, Google Sheets, or CSV). Supports
+            English and Persian headers (نام, تعداد, میز).
           </p>
 
           {/* Upload input */}

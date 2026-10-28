@@ -28,6 +28,9 @@ export function buildBetterAuthConfig(
 ): BetterAuthOptions {
   const cookieDomain = options.cookieDomain ?? process.env.AUTH_COOKIE_DOMAIN ?? "localhost";
   const baseURL = options.baseURL ?? process.env.BETTER_AUTH_URL ?? "http://localhost:4000";
+  if (process.env.NODE_ENV === "production" && !options.secret && !process.env.BETTER_AUTH_SECRET) {
+    throw new Error("BETTER_AUTH_SECRET is required in production");
+  }
   const secret =
     options.secret ??
     process.env.BETTER_AUTH_SECRET ??

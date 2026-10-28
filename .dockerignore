@@ -1,0 +1,14 @@
+.git
+**/node_modules
+**/.next
+**/.turbo
+**/coverage
+**/test-results
+**/playwright-report
+**/.env
+**/.env.*
+**/*.key
+**/*.pem
+**/*.p12
+**/*.log
+.vercel

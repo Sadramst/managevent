@@ -11,6 +11,8 @@ export {
   type ManageventAuthConfigOptions,
 } from "./better-auth.js";
 
+export { prismaAdapter } from "better-auth/adapters/prisma";
+
 export {
   type AuthActor,
   AuthorizationError,

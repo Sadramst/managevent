@@ -1,0 +1,27 @@
+@import "@managevent/config/tailwind.css";
+
+/* Base theme tokens for guest invitations */
+:root {
+  --theme-bg: #faf7f2;
+  --theme-bg-warm: #f4efe6;
+  --theme-bg-surface: #ffffff;
+  --theme-text: #18181b;
+  --theme-text-muted: #52525b;
+  --theme-accent: #5c1a24;
+  --theme-gold: #c5a059;
+  --theme-gold-deep: #9a7736;
+  --theme-border: #e8dece;
+  --theme-font-display: "Cormorant Garamond", Georgia, serif;
+  --theme-font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+  --theme-font-fa: "Vazirmatn", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    background-color: var(--theme-bg, #faf7f2);
+    color: var(--theme-text, #18181b);
+    font-family: var(--theme-font-body, "Plus Jakarta Sans", sans-serif);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+}

@@ -2,7 +2,7 @@
  * Versioned indicative price list for the Ceremony Builder (`WEBSITE.md` §A6.4).
  *
  * All rates are in integer AUD cents, GST-inclusive.
- * // DECISION-NEEDED(FND-09): Founder to confirm final Perth launch unit rates and outer-metro travel fee before Phase 1 go-live.
+ * Internal placeholder rates only. The Builder is not public until the founder supplies real rates.
  */
 import type {
   BuilderEstimateRequest,

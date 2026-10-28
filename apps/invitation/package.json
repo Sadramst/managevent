@@ -1,11 +1,49 @@
 {
   "name": "@managevent/invitation",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "private": true,
   "description": "Invitations: invitation.managevent.com.au",
-  "scripts": {},
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@managevent/api-client": "workspace:*",
+    "@managevent/config": "workspace:*",
+    "@managevent/db": "workspace:*",
+    "@managevent/i18n": "workspace:*",
+    "@managevent/payments": "workspace:*",
+    "@managevent/types": "workspace:*",
+    "@managevent/ui": "workspace:*",
+    "@managevent/validators": "workspace:*",
+    "clsx": "^2.1.1",
+    "framer-motion": "12.38.0",
+    "lucide-react": "^1.16.0",
+    "next": "16.2.12",
+    "qrcode": "1.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@managevent/config": "workspace:*",
+    "@tailwindcss/postcss": "4.1.14",
+    "@types/node": "22.20.5",
+    "@types/qrcode": "1.5.5",
+    "@types/react": "19.1.0",
+    "@types/react-dom": "19.1.0",
+    "eslint": "9.39.5",
+    "postcss": "8.5.24",
+    "tailwindcss": "4.1.14",
+    "typescript": "5.9.3",
+    "vitest": "3.0.9"
+  },
   "managevent": {
-    "status": "not-scaffolded",
+    "status": "scaffolded",
     "phase": "Phase 2",
     "backlog": "INV-01 … INV-15",
     "spec": "`WEBSITE.md` Part B (all sections). Part C for cross-domain rules."

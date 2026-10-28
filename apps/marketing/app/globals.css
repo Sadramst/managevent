@@ -1,0 +1,339 @@
+@import "@managevent/config/tailwind.css";
+@import "@fontsource/cormorant-garamond/latin-600.css";
+@import "@fontsource/plus-jakarta-sans/latin-400.css";
+@import "@fontsource/plus-jakarta-sans/latin-600.css";
+@import "@fontsource/vazirmatn/arabic-400.css";
+@import "@fontsource/vazirmatn/arabic-600.css";
+
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-padding-block-start: 2rem;
+}
+body {
+  margin: 0;
+  color: var(--me-ink);
+  background: var(--me-surface);
+  font-family: "Plus Jakarta Sans", sans-serif;
+  line-height: 1.7;
+}
+html[lang="fa"] body {
+  font-family: Vazirmatn, sans-serif;
+}
+h1,
+h2,
+h3 {
+  font-family: "Cormorant Garamond", serif;
+  line-height: 1.15;
+  font-weight: 600;
+  text-wrap: balance;
+}
+html[lang="fa"] :is(h1, h2, h3) {
+  font-family: Vazirmatn, sans-serif;
+  line-height: 1.55;
+}
+h1 {
+  font-size: 3.8rem;
+  max-inline-size: 14ch;
+  margin-block: 0.25em;
+}
+h2 {
+  font-size: 2.8rem;
+  max-inline-size: 24ch;
+  margin-block: 0 1.5rem;
+  color: var(--me-primary);
+}
+h3 {
+  font-size: 1.8rem;
+  margin-block: 0 1rem;
+}
+p {
+  max-inline-size: 68ch;
+}
+a {
+  color: inherit;
+  text-underline-offset: 0.25em;
+}
+:focus-visible {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 5px;
+}
+.wrap {
+  max-inline-size: 1240px;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-block: 1.25rem;
+}
+.wordmark {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2.2rem;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--me-primary);
+}
+.wordmark span {
+  display: block;
+  margin-block-start: 0.6rem;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  font-size: 0.65rem;
+}
+nav {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+nav a {
+  font-size: 0.9rem;
+}
+.hero {
+  position: relative;
+  min-block-size: 570px;
+  display: flex;
+  align-items: center;
+  color: var(--me-on-primary);
+  background: var(--me-primary);
+}
+.hero > img {
+  object-fit: cover;
+}
+.hero-shade {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--me-ink) 68%, transparent);
+}
+.hero-copy {
+  position: relative;
+  inline-size: 100%;
+  padding-block: 3rem;
+}
+.hero-copy > p {
+  max-inline-size: 54ch;
+}
+.hero-brand {
+  font-family: "Cormorant Garamond", serif;
+  font-size: 2rem;
+  margin-block: 0;
+}
+.button {
+  display: inline-flex;
+  justify-content: center;
+  padding: 0.85rem 1.6rem;
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+}
+.button:hover {
+  text-decoration: underline;
+}
+.button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+.hero-button {
+  background: var(--me-surface);
+  color: var(--me-primary);
+  margin-block-start: 1.2rem;
+}
+.hero a:focus-visible {
+  outline-color: var(--me-on-primary);
+}
+.section {
+  padding-block: 5rem;
+}
+.kicker {
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.families {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem;
+  margin-block-start: 3rem;
+}
+.families article {
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--me-accent);
+  color: var(--me-ink);
+}
+.families article p {
+  color: var(--me-ink-muted);
+  font-size: 0.95rem;
+}
+.families article[data-experience-mode="memorial"] {
+  background: var(--me-surface);
+  padding-inline: 1rem;
+}
+.process {
+  background: var(--me-surface-raised);
+  border-block: 1px solid var(--me-accent);
+}
+.process ol {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 3rem;
+}
+.process li > span {
+  font-family: "Cormorant Garamond", serif;
+  color: var(--me-primary);
+  font-size: 2.8rem;
+}
+.enquiry {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr);
+  gap: 5rem;
+}
+form {
+  padding: 0;
+  color: var(--me-ink);
+}
+label {
+  display: block;
+  font-size: 0.9rem;
+}
+input,
+select,
+textarea {
+  display: block;
+  inline-size: 100%;
+  min-block-size: 48px;
+  margin-block: 0.4rem 1.2rem;
+  border: 1px solid var(--me-ink-muted);
+  border-radius: 8px;
+  padding: 0.65rem;
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  font: inherit;
+}
+input[aria-invalid="true"] {
+  outline: 2px solid var(--me-primary);
+}
+.fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 1.5rem;
+}
+.check {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  margin-block: 1.25rem;
+}
+.check input {
+  inline-size: 22px;
+  min-block-size: 22px;
+  flex: 0 0 22px;
+  margin-block: 0.15rem 0;
+  accent-color: var(--me-primary);
+}
+.notice {
+  font-size: 0.8rem;
+  color: var(--me-ink-muted);
+}
+.footer {
+  border-block-start: 1px solid var(--me-accent);
+  padding-block: 3rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 2rem;
+}
+.footer p {
+  font-size: 0.85rem;
+  margin-block: 0.5rem;
+}
+.footer > div > a {
+  display: block;
+  overflow-wrap: anywhere;
+}
+.legal {
+  max-inline-size: 880px;
+  min-block-size: 65vh;
+}
+.legal h1 {
+  font-size: 3.2rem;
+}
+.legal p {
+  margin-block: 1.5rem;
+}
+.draft {
+  color: var(--me-primary);
+  font-weight: 600;
+}
+.skip {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline-start: 1rem;
+  transform: translateY(-150%);
+  z-index: 10;
+  background: var(--me-surface);
+  padding: 1rem;
+}
+.skip:focus {
+  transform: none;
+}
+@media (max-width: 760px) {
+  .wrap {
+    padding-inline: 1.25rem;
+  }
+  h1 {
+    font-size: 2.65rem;
+  }
+  h2 {
+    font-size: 2.15rem;
+  }
+  .hero {
+    min-block-size: 520px;
+  }
+  .section {
+    padding-block: 3rem;
+  }
+  .families {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+  .enquiry {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .process ol {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+  .footer {
+    flex-direction: column;
+  }
+  .site-header {
+    gap: 1rem;
+  }
+  .site-header nav {
+    gap: 0.8rem;
+  }
+  .wordmark {
+    font-size: 1.8rem;
+  }
+}
+@media (max-width: 400px) {
+  .fields {
+    grid-template-columns: 1fr;
+  }
+  .families {
+    grid-template-columns: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto !important;
+  }
+}

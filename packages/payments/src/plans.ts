@@ -1,14 +1,13 @@
 /**
  * Invitation plans and entitlements (`WEBSITE.md` §B14 and `docs/business/PRICING_MODEL.md`).
  *
- * // DECISION-NEEDED(FND-08): Final Premium Event Pass price point ($39/$69/$99) and whether Memorial Mode gets Premium entitlements free.
  */
 import type { ExperienceMode, InvitationPlan } from "@managevent/types";
 
 export interface InvitationPlanEntitlements {
   plan: InvitationPlan;
   label: string;
-  /** Price in AUD cents incl. GST (placeholder 6900 = $69.00 incl. GST for PREMIUM). */
+  /** Price in AUD cents incl. GST. */
   priceIncGstCents: number;
   maxGuests: number | "unlimited";
   maxEmailInvitations: number | "unlimited";
@@ -51,7 +50,7 @@ export const INVITATION_PLANS: Readonly<Record<InvitationPlan, InvitationPlanEnt
   PREMIUM: {
     plan: "PREMIUM",
     label: "Premium Event Pass",
-    priceIncGstCents: 6900, // PLACEHOLDER: $69.00 AUD incl. GST (founder to confirm $39/$69/$99)
+    priceIncGstCents: 6900,
     maxGuests: "unlimited",
     maxEmailInvitations: "unlimited",
     allThemesAndAnimations: true,
@@ -102,8 +101,19 @@ export type BooleanEntitlementKey = {
 export function hasInvitationEntitlement(
   plan: InvitationPlan,
   entitlement: BooleanEntitlementKey,
+  experienceMode?: ExperienceMode,
 ): boolean {
-  return INVITATION_PLANS[plan][entitlement];
+  return getInvitationPlan(plan, experienceMode)[entitlement];
+}
+
+export function getInvitationPlan(
+  plan: InvitationPlan,
+  experienceMode?: ExperienceMode,
+): InvitationPlanEntitlements {
+  if (experienceMode === "MEMORIAL") {
+    return { ...INVITATION_PLANS[plan === "AGENCY" ? "AGENCY" : "PREMIUM"], priceIncGstCents: 0 };
+  }
+  return { ...INVITATION_PLANS[plan] };
 }
 
 /**
@@ -112,9 +122,10 @@ export function hasInvitationEntitlement(
 export function canAddGuestsUnderPlan(
   plan: InvitationPlan,
   guestCount: number,
-  _experienceMode?: ExperienceMode,
+  experienceMode?: ExperienceMode,
 ): boolean {
-  const max = INVITATION_PLANS[plan].maxGuests;
+  if (!Number.isSafeInteger(guestCount) || guestCount < 0) return false;
+  const max = getInvitationPlan(plan, experienceMode).maxGuests;
   if (max === "unlimited") return true;
   return guestCount <= max;
 }

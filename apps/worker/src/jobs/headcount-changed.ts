@@ -5,11 +5,10 @@
  */
 import { db, type ExtendedDbClient, generateId, Prisma } from "@managevent/db";
 import {
-  type DietaryBreakdownMap,
   generateLogisticsRecommendations,
   type LogisticsOrderLineSnapshot,
 } from "@managevent/logistics";
-import { EventHeadcountIdSchema, EventIdSchema } from "@managevent/validators";
+import { DietaryCountsSchema, EventHeadcountIdSchema, EventIdSchema } from "@managevent/validators";
 import { z } from "zod";
 import type { JobDefinition } from "../registry.js";
 
@@ -59,6 +58,9 @@ export function createHeadcountChangedJob(options?: {
       const headcount = await client.eventHeadcount.findUniqueOrThrow({
         where: { id: payload.headcountId },
       });
+      if (headcount.eventId !== payload.eventId) {
+        throw new Error("Headcount snapshot does not belong to the requested event");
+      }
 
       const activeOrder = await client.order.findFirst({
         where: {
@@ -78,7 +80,7 @@ export function createHeadcountChangedJob(options?: {
           finalNumbersDueAt: l.finalNumbersDueAt,
         }));
 
-      const dietaryBreakdown = (headcount.dietaryCountsJson ?? {}) as DietaryBreakdownMap;
+      const dietaryBreakdown = DietaryCountsSchema.parse(headcount.dietaryCountsJson);
       const result = generateLogisticsRecommendations({
         adultsYes: headcount.adultsYes,
         childrenYes: headcount.childrenYes,

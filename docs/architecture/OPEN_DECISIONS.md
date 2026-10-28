@@ -1,5 +1,16 @@
 # Open decisions
 
+## Resolved In Step 2 (2026-10-23)
+
+- D-01: Fly.io `syd` for API and worker; approved for this scope.
+- D-02: Supabase Sydney, using the **session pooler** for both database URLs.
+- D-13: `enc:v1` AES-256-GCM key versioning accepted. Preserve the v1 key for existing ciphertext during future rotation.
+- D-14: Premium Event Pass costs **6900 AUD cents, GST-inclusive**.
+- D-15: Memorial invitations receive Premium entitlements **free**; this does not imply agency fulfilment or waive messaging provider credit costs.
+- D-16: Builder price list remains an internal placeholder. No public Builder route or estimate offer until real founder-approved rates exist.
+
+The D-01/D-02 entries below remain as historical context; the resolved choices above supersede their interim status.
+
 Agents: **do not resolve these silently.** If your task touches one of them, comment on the issue and use the stated interim default.
 
 | ID   | Decision                                         | Options                                                                                                                                       | Interim default                                                                                       | Owner                       |

@@ -32,6 +32,7 @@ export {
   type BooleanEntitlementKey,
   canAddGuestsUnderPlan,
   hasInvitationEntitlement,
+  getInvitationPlan,
   INVITATION_PLANS,
   type InvitationPlanEntitlements,
 } from "./plans.js";

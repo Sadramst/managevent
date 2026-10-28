@@ -1,0 +1,9 @@
+User-agent: *
+Disallow: /i/
+Disallow: /studio/
+Disallow: /display/
+Disallow: /legacy/
+Disallow: /anniversary/
+Disallow: /e/
+Allow: /
+Allow: /templates

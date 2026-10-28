@@ -4,6 +4,8 @@
  * // TODO(fa-review): Have a native Persian cultural reviewer sign off on all `fa` strings before public launch.
  */
 
+import { launchEn, launchFa } from "./launch.js";
+
 export const I18N_NAMESPACES = [
   "common",
   "marketing",
@@ -39,6 +41,7 @@ export const enDictionary = {
     farsiAvailableBanner: "This page is also available in Persian.",
   },
   marketing: {
+    ...launchEn,
     heroTitle: "From 0 to 100.",
     heroSubtitle: "Every ceremony in Perth, planned and delivered end to end with calm precision.",
     seePackages: "See packages",
@@ -165,6 +168,7 @@ export const faDictionary: DictionaryShape = {
     farsiAvailableBanner: "این صفحه به فارسی هم هست.",
   },
   marketing: {
+    ...launchFa,
     heroTitle: "از صفر تا صد مراسم شما.",
     heroSubtitle: "برنامه‌ریزی و اجرای کامل هرگونه مراسم در پرث با آرامش و دقت.",
     seePackages: "مشاهده پکیج‌ها",

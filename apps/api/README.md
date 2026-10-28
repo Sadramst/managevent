@@ -14,6 +14,13 @@ The **only** writer to the database and the single authorisation layer for web, 
 
 ## Running locally
 
+Step 2 hardening: Better Auth uses the Prisma adapter. Private routes resolve
+roles from the database after session verification, never from arbitrary role
+headers. Staff/admin access requires enabled two-factor authentication. Production
+requires an explicit Better Auth secret; internal errors do not expose raw messages.
+CORS allows only the primary www origin. Public enquiry submission is rate-limited.
+Fly's release command runs migrations through Supabase session pooling.
+
 ```bash
 pnpm --filter @managevent/api dev
 ```

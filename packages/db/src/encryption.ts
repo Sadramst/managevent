@@ -9,7 +9,7 @@ export const ENCRYPTION_PREFIX = "enc:v1:" as const;
 /**
  * Resolves a 32-byte encryption key from a base64 string or `process.env.PII_ENCRYPTION_KEY`.
  *
- * // DECISION-NEEDED(FND-02): Key rotation version table for PII_ENCRYPTION_KEY (v1 prefix already encoded in ciphertext).
+ * The accepted envelope version is enc:v1; preserve that key when introducing future versions.
  */
 export function resolveEncryptionKey(keyInput?: string): Buffer {
   const raw = keyInput ?? process.env.PII_ENCRYPTION_KEY ?? "";
@@ -95,7 +95,10 @@ export function decryptField(payload: string, keyInput?: string): string {
 export function encryptRsvpWriteData<T extends Record<string, unknown>>(
   data: T,
   keyInput?: string,
-): T {
+): Omit<T, "dietary" | "allergySeverity"> & {
+  dietaryEncrypted?: string | null;
+  allergySeverityEncrypted?: string | null;
+} {
   const clone: Record<string, unknown> = { ...data };
 
   if (typeof clone.allergyNotes === "string" && clone.allergyNotes.length > 0) {
@@ -109,17 +112,28 @@ export function encryptRsvpWriteData<T extends Record<string, unknown>>(
   }
   if (typeof clone.allergySeverity === "string") {
     clone.allergySeverityEncrypted = encryptField(clone.allergySeverity, keyInput);
+  } else if (clone.allergySeverity === null) {
+    clone.allergySeverityEncrypted = null;
   }
 
-  return clone as T;
+  delete clone.dietary;
+  delete clone.allergySeverity;
+  return clone as Omit<T, "dietary" | "allergySeverity">;
 }
 
 /**
  * Decrypts sensitive 🔒 fields on an RSVP record returned from the database.
  */
-export function decryptRsvpRecord<T>(record: T, keyInput?: string): T {
+type DecryptedRsvp<T> = T extends object
+  ? T & {
+      dietary?: unknown;
+      allergySeverity?: unknown;
+    }
+  : T;
+
+export function decryptRsvpRecord<T>(record: T, keyInput?: string): DecryptedRsvp<T> {
   if (!record || typeof record !== "object") {
-    return record;
+    return record as DecryptedRsvp<T>;
   }
   const clone = { ...(record as Record<string, unknown>) };
 
@@ -142,7 +156,7 @@ export function decryptRsvpRecord<T>(record: T, keyInput?: string): T {
     clone.allergySeverity = decryptField(clone.allergySeverityEncrypted, keyInput);
   }
 
-  return clone as T;
+  return clone as DecryptedRsvp<T>;
 }
 
 /**

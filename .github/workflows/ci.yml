@@ -71,6 +71,10 @@ jobs:
         run: pnpm format:check
       - name: Run workspace lint, typecheck, test and build
         run: pnpm turbo run lint typecheck test build
+      - name: Install Chromium
+        run: pnpm --filter @managevent/marketing exec playwright install --with-deps chromium
+      - name: Marketing browser and accessibility checks
+        run: pnpm --filter @managevent/marketing test:e2e
 
   secrets-scan:
     name: Secret scan
@@ -82,3 +86,23 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  deploy-fly:
+    name: Deploy API and worker to Sydney
+    needs: [checks, secrets-scan]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: fly-production
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Deploy API and run release migrations
+        run: flyctl deploy --remote-only --config apps/api/fly.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+      - name: Deploy internal worker
+        run: flyctl deploy --remote-only --config apps/worker/fly.toml
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

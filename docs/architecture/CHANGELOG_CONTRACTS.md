@@ -1,5 +1,25 @@
 # Contract changelog
 
+Step 2 launch (2026-10-23): additive EN/FA marketing and draft legal dictionary
+keys; auth re-exports the Prisma adapter for the API's database-backed sessions.
+API lead authorization no longer trusts client role headers. Production email
+requires explicit domain verification and uses provider idempotency keys.
+
+Step 2 plans (2026-10-23): additive `getInvitationPlan(plan, mode)` and optional
+mode arguments on entitlement helpers grant memorial Premium access for zero cents.
+Agency-only logistics fulfilment remains agency-only. Premium celebration price
+confirmed at 6900 AUD cents inclusive of GST.
+
+## Step 2: Encrypted Health Storage (2026-10-23)
+
+Breaking database contract: remove `Rsvp.dietary` and `Rsvp.allergySeverity`.
+API health inputs remain typed; callers must use `encryptRsvpWriteData()` before
+persistence. API/worker consumers regenerate Prisma. Migration
+`20261023010000_encrypted_health_only` refuses legacy plaintext rows without a
+ciphertext mirror. Backfill with the application key before migration; never
+edit the initial migration. Worker snapshots accept validated counts only and
+reject cross-event snapshot references.
+
 Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`, `i18n` keys (renames or removals only) and `ui` tokens here, newest first.
 
 | Date       | PR     | Package                     | Change                                                                                               | Breaking? | Migration notes |

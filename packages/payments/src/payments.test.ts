@@ -12,6 +12,7 @@ import {
   formatAudCents,
   formatTaxInvoiceNumber,
   hasInvitationEntitlement,
+  getInvitationPlan,
   INVITATION_PLANS,
   priceLineFromUnitExGst,
   priceLineFromUnitIncGst,
@@ -26,6 +27,18 @@ import {
 const SAMPLE_UUID_V7 = "0192b400-0000-7000-8000-000000000001";
 
 describe("@managevent/payments", () => {
+  it("grants memorial invitations Premium entitlements free without granting the agency bridge", () => {
+    for (const plan of ["FREE", "PREMIUM"] as const) {
+      expect(getInvitationPlan(plan, "MEMORIAL").priceIncGstCents).toBe(0);
+      expect(canAddGuestsUnderPlan(plan, 500, "MEMORIAL")).toBe(true);
+      expect(hasInvitationEntitlement(plan, "qrPassesAndCheckin", "MEMORIAL")).toBe(true);
+      expect(hasInvitationEntitlement(plan, "automaticLogisticsBridge", "MEMORIAL")).toBe(false);
+    }
+    expect(getInvitationPlan("PREMIUM", "CELEBRATION").priceIncGstCents).toBe(6900);
+    expect(canAddGuestsUnderPlan("FREE", 31, "CELEBRATION")).toBe(false);
+    expect(canAddGuestsUnderPlan("PREMIUM", -1, "MEMORIAL")).toBe(false);
+    expect(hasInvitationEntitlement("AGENCY", "automaticLogisticsBridge", "MEMORIAL")).toBe(true);
+  });
   describe("Exhaustive GST rounding & AUD cents mathematics (PAYMENTS_AND_GST.md)", () => {
     it("rejects floats, NaN, and negative cent values where forbidden", () => {
       expect(() => assertIntegerCents(12.34)).toThrow(TypeError);

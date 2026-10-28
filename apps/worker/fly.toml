@@ -1,0 +1,18 @@
+app = "managevent-worker"
+primary_region = "syd"
+
+[build]
+  dockerfile = "apps/api/Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  NODE_ENV = "production"
+  TZ = "Australia/Perth"
+
+[processes]
+  app = "pnpm --filter @managevent/worker start"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1

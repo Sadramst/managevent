@@ -17,7 +17,7 @@
     "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
   },
   "dependencies": {
-    "@google/genai": "1.4.0",
+    "@google/genai": "2.31.0",
     "@managevent/i18n": "workspace:*",
     "@managevent/types": "workspace:*",
     "@managevent/validators": "workspace:*",

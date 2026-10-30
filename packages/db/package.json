@@ -29,7 +29,7 @@
     "eslint": "9.39.5",
     "prisma": "6.19.3",
     "tsx": "4.23.15",
-    "typescript": "5.9.3",
+    "typescript": "7.0.2",
     "vitest": "3.0.9"
   },
   "managevent": {

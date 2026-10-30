@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@managevent/types": "workspace:*",
-    "better-auth": "1.2.12"
+    "better-auth": "1.7.14"
   },
   "devDependencies": {
     "@managevent/config": "workspace:*",

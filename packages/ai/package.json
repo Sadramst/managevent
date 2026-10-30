@@ -21,7 +21,7 @@
     "@managevent/i18n": "workspace:*",
     "@managevent/types": "workspace:*",
     "@managevent/validators": "workspace:*",
-    "zod": "3.24.4"
+    "zod": "4.6.7"
   },
   "devDependencies": {
     "@managevent/config": "workspace:*",

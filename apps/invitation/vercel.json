@@ -2,6 +2,8 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": "nextjs",
   "cleanUrls": true,
+  "regions": ["syd1"],
+  "git": { "deploymentEnabled": true },
   "buildCommand": "pnpm run build",
   "installCommand": "pnpm install",
   "headers": [

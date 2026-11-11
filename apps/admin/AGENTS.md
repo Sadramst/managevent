@@ -49,4 +49,4 @@ Playwright: lead lifecycle, proposal → deposit link, vendor approval with audi
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+✅ Scaffolded (`@managevent/admin` domain & CRM workflow engine + `/admin` Command Centre UI in `apps/marketing`).

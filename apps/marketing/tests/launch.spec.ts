@@ -48,3 +48,14 @@ test("unknown pages and the private Builder return real 404s", async ({ page }) 
   const response = await page.goto("/plan");
   expect(response?.status()).toBe(404);
 });
+
+test("admin command centre renders CRM pipeline, events, partners and finance with no axe violations", async ({
+  page,
+}) => {
+  await page.goto("/admin");
+  await expect(page.locator("h1")).toContainText("Managevent Admin & Planner Command Centre");
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(
+    true,
+  );
+  expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+});

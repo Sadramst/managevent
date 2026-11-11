@@ -20,39 +20,70 @@ export default async function LocaleLayout({
         <a className="skip" href="#main">
           {t(locale, "marketing.launchSkip")}
         </a>
-        <header className="site-header wrap">
-          <a className="wordmark" href={localePath(locale)}>
-            Managevent<span>{t(locale, "common.byAppilico")}</span>
-          </a>
-          <nav aria-label={t(locale, "marketing.launchHome")}>
-            <a href={localePath(locale, "#enquiry")}>{t(locale, "common.talkToUs")}</a>
-            <a href={locale === "fa" ? "/" : "/fa"} lang={locale === "fa" ? "en" : "fa"}>
-              {locale === "fa" ? "English" : "فارسی"}
+        <header className="site-header-bar">
+          <div className="site-header wrap">
+            <a className="wordmark" href={localePath(locale)}>
+              Managevent<span>{t(locale, "common.byAppilico")} · Perth WA</span>
             </a>
-          </nav>
+            <nav aria-label={t(locale, "marketing.launchHome")}>
+              <a href={localePath(locale, "#services")}>
+                {t(locale, "marketing.launchServicesNav")}
+              </a>
+              <a href={localePath(locale, "#estimator")}>
+                {t(locale, "marketing.launchEstimatorNav")}
+              </a>
+              <a href={localePath(locale, "#venues")}>{t(locale, "marketing.launchVenuesNav")}</a>
+              <a href={localePath(locale, "/admin")} className="nav-pill">
+                {t(locale, "marketing.launchAdminNav")}
+              </a>
+              <a href={localePath(locale, "#enquiry")} className="nav-cta">
+                {t(locale, "common.talkToUs")}
+              </a>
+              <a
+                href={locale === "fa" ? "/" : "/fa"}
+                lang={locale === "fa" ? "en" : "fa"}
+                className="nav-lang"
+                title="Language expansion ready"
+              >
+                {locale === "fa" ? "EN" : "FA"}
+              </a>
+            </nav>
+          </div>
         </header>
         {children}
-        <footer className="wrap footer">
-          <div>
-            <strong>Managevent</strong>
-            <p>{t(locale, "common.byAppilico")}</p>
-            <p>{t(locale, "marketing.launchLocation")}</p>
-            <a href={`mailto:${contact.email}`}>
-              <bdi>{contact.email}</bdi>
-            </a>
-            {contact.phone && (
-              <a href={`tel:${contact.phone}`}>
-                <bdi>{contact.phone}</bdi>
+        <footer className="footer-shell">
+          <div className="wrap footer">
+            <div className="footer-brand">
+              <strong className="footer-wordmark">Managevent</strong>
+              <p>{t(locale, "common.byAppilico")}</p>
+              <p>{t(locale, "marketing.launchLocation")}</p>
+              <p className="footer-ack">{t(locale, "legal.acknowledgementOfCountry")}</p>
+              <div className="footer-contacts">
+                <a href={`mailto:${contact.email}`}>
+                  <bdi>{contact.email}</bdi>
+                </a>
+                {contact.phone && (
+                  <a href={`tel:${contact.phone}`}>
+                    <bdi>{contact.phone}</bdi>
+                  </a>
+                )}
+              </div>
+            </div>
+            <nav aria-label={t(locale, "marketing.launchTerms")} className="footer-nav">
+              <a href={localePath(locale, "#services")}>
+                {t(locale, "marketing.launchServicesNav")}
               </a>
-            )}
+              <a href={localePath(locale, "#estimator")}>
+                {t(locale, "marketing.launchEstimatorNav")}
+              </a>
+              <a href={localePath(locale, "/admin")}>{t(locale, "marketing.launchAdminNav")}</a>
+              <a href={localePath(locale, "/privacy")}>{t(locale, "marketing.launchPrivacy")}</a>
+              <a href={localePath(locale, "/terms")}>{t(locale, "marketing.launchTerms")}</a>
+              <a href={localePath(locale, "/accessibility")}>
+                {t(locale, "marketing.launchAccessibility")}
+              </a>
+            </nav>
           </div>
-          <nav aria-label={t(locale, "marketing.launchTerms")}>
-            <a href={localePath(locale, "/privacy")}>{t(locale, "marketing.launchPrivacy")}</a>
-            <a href={localePath(locale, "/terms")}>{t(locale, "marketing.launchTerms")}</a>
-            <a href={localePath(locale, "/accessibility")}>
-              {t(locale, "marketing.launchAccessibility")}
-            </a>
-          </nav>
         </footer>
       </body>
     </html>

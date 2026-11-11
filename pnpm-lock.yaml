@@ -23,7 +23,42 @@ importers:
         specifier: 5.9.3
         version: 5.9.3
 
-  apps/admin: {}
+  apps/admin:
+    dependencies:
+      '@managevent/i18n':
+        specifier: workspace:*
+        version: link:../../packages/i18n
+      '@managevent/logistics':
+        specifier: workspace:*
+        version: link:../../packages/logistics
+      '@managevent/payments':
+        specifier: workspace:*
+        version: link:../../packages/payments
+      '@managevent/types':
+        specifier: workspace:*
+        version: link:../../packages/types
+      '@managevent/validators':
+        specifier: workspace:*
+        version: link:../../packages/validators
+    devDependencies:
+      '@managevent/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@types/node':
+        specifier: 22.20.5
+        version: 22.20.5
+      '@vitest/coverage-v8':
+        specifier: 3.0.9
+        version: 3.0.9(vitest@3.0.9(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15)(yaml@2.9.1))
+      eslint:
+        specifier: 9.39.5
+        version: 9.39.5(jiti@2.7.0)
+      typescript:
+        specifier: 5.9.3
+        version: 5.9.3
+      vitest:
+        specifier: 3.0.9
+        version: 3.0.9(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.32.0)(tsx@4.23.15)(yaml@2.9.1)
 
   apps/api:
     dependencies:
@@ -3119,8 +3154,8 @@ packages:
     resolution: {integrity: sha512-lf6nEHwPlaWbUDw5rycPSkEVGVC7sF7hzY7kH0OryleqK8Ym0zZ+RjI8o+RpHHlxpbKVC1d+UoQSW8GFxGQf4Q==}
     engines: {node: '>=20.0.0'}
 
-  legacy-javascript@0.0.3:
-    resolution: {integrity: sha512-1r6MT4dVaJyXt4G07Cm2cQ0AUaLJdefiEp4SmIAylA++gnEQ82YvmzE58RkM5EP0fk5hROLCslUPGnwIYdZQVA==}
+  legacy-javascript@0.0.4:
+    resolution: {integrity: sha512-UTmeKBVxnfJcpmpOvzzNnLsQT99BXHpPlc/ZKddIRmWmrR0fw6335I3lq4+sJoP60UTbBNaYsGYVPc65YB1x3A==}
 
   levn@0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
@@ -4953,7 +4988,7 @@ snapshots:
 
   '@paulirish/trace_engine@0.0.65':
     dependencies:
-      legacy-javascript: 0.0.3
+      legacy-javascript: 0.0.4
       third-party-web: 0.30.0
 
   '@peculiar/asn1-android@2.11.0':
@@ -6444,7 +6479,7 @@ snapshots:
 
   kysely@0.28.18: {}
 
-  legacy-javascript@0.0.3: {}
+  legacy-javascript@0.0.4: {}
 
   levn@0.4.1:
     dependencies:

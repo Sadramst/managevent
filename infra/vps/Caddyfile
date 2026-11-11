@@ -1,0 +1,60 @@
+# Caddy configuration for Managevent on the dedicated Sydney VPS.
+# Caddy obtains and renews certificates automatically once each hostname resolves to
+# this server and ports 80/443 are reachable.
+{
+	email admin@managevent.com.au
+
+	# Pin the ACME CA to Let's Encrypt. Caddy's default order is Let's Encrypt then
+	# ZeroSSL; a stalled ZeroSSL order blocks the next Let's Encrypt attempt and can
+	# leave issuance hanging for many minutes. A single issuer keeps retries fast.
+	acme_ca https://acme-v02.api.letsencrypt.org/directory
+}
+
+api.managevent.com.au {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy api:4000 {
+		health_uri /health
+		health_interval 15s
+	}
+}
+
+www.managevent.com.au {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy marketing:3100
+}
+
+invitation.managevent.com.au {
+	encode zstd gzip
+
+	# Route this host through ZeroSSL's ACME endpoint (which issued its active cert).
+	tls {
+		issuer acme {
+			dir https://acme.zerossl.com/v2/DV90
+		}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	reverse_proxy invitation:3001
+}

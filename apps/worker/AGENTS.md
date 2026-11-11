@@ -49,4 +49,4 @@ Vitest per job with fixtures. An integration test for `headcount.changed` → `R
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+✅ Scaffolded and built (`apps/worker`: `pg-boss` worker, `WorkerJobRegistry`, `lead.created` email job, and `headcount.changed` → `RecommendationSet` job).

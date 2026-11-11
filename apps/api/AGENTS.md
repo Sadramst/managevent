@@ -58,4 +58,4 @@ Vitest with a Postgres test container. Contract tests: responses validated again
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+✅ Scaffolded and built (`apps/api`: Hono on Node 22, `/health`, Better Auth mount, `/v1/leads`, `/v1/invitations`, `/v1/rsvp`, `/v1/events`, OpenAPI 3.1 spec, Dockerfile & `fly.toml` targeting `syd`).

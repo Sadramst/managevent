@@ -58,4 +58,4 @@ Vitest. Playwright projects: iPhone Safari, Android Chrome, WhatsApp, Instagram 
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+✅ Scaffolded and built (`apps/invitation`: Host Studio create flow, AI wording assistant, 7 themes + Memorial Mode, server-rendered Guest Micro-site, RSVP & dietary bridge, QR passes, Photo Wall, Wishing Well & Tribute Book, and Legacy Slug import).

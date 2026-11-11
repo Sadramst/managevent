@@ -3,7 +3,20 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   trailingSlash: false,
-  transpilePackages: ["@managevent/ui"],
+  webpack(configuration) {
+    configuration.resolve.extensionAlias = { ".js": [".ts", ".tsx", ".js"] };
+    return configuration;
+  },
+  transpilePackages: [
+    "@managevent/ui",
+    "@managevent/i18n",
+    "@managevent/api-client",
+    "@managevent/validators",
+    "@managevent/payments",
+    "@managevent/types",
+    "@managevent/db",
+    "@managevent/config",
+  ],
   images: {
     remotePatterns: [
       {

@@ -59,4 +59,4 @@ Vitest (content loader, helpers). Playwright: home → Builder → estimate → 
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+✅ Scaffolded and built (`apps/marketing`: English-first with `/fa` RTL expansion, Ceremony showcase, Instant Cost Estimator `#estimator`, Perth Venues showcase, Digital Bridge explainer, Enquiry & Booking form, and `/admin` Command Centre).

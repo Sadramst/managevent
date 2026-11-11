@@ -1,17 +1,35 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useEffect, useState } from "react";
 import { getExperienceMode, t } from "@managevent/i18n";
 import type { EnabledLocale } from "@managevent/types";
 import { submitEnquiry } from "../app/actions";
 import { localePath } from "../lib/site";
+import type { EstimateTransferPayload } from "./event-estimator";
 
 export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
   const [state, action, pending] = useActionState(submitEnquiry, { status: "idle" });
   const [ceremony, setCeremony] = useState("");
   const [unknownDate, setUnknownDate] = useState(false);
+  const [guestEstimate, setGuestEstimate] = useState("");
+  const [message, setMessage] = useState("");
   const mode = getExperienceMode(ceremony);
   const invalid = (name: string) => state.fields?.includes(name) || undefined;
+
+  useEffect(() => {
+    const handleEstimate = (event: Event) => {
+      const customEvent = event as CustomEvent<EstimateTransferPayload>;
+      if (!customEvent.detail) return;
+      setCeremony(customEvent.detail.ceremonySlug);
+      setGuestEstimate(String(customEvent.detail.guests));
+      setMessage((prev) =>
+        prev ? `${customEvent.detail.summaryText}\n\n${prev}` : customEvent.detail.summaryText,
+      );
+    };
+    window.addEventListener("managevent:apply-estimate", handleEstimate);
+    return () => window.removeEventListener("managevent:apply-estimate", handleEstimate);
+  }, []);
+
   if (state.status === "sent")
     return (
       <p role="status" className="success">
@@ -95,6 +113,8 @@ export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
             min="1"
             max="5000"
             inputMode="numeric"
+            value={guestEstimate}
+            onChange={(event) => setGuestEstimate(event.target.value)}
             aria-invalid={invalid("guestEstimate")}
           />
         </label>
@@ -111,7 +131,13 @@ export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
       </label>
       <label>
         {t(locale, "marketing.launchMessage")}
-        <textarea name="message" rows={4} maxLength={4000} />
+        <textarea
+          name="message"
+          rows={4}
+          maxLength={4000}
+          value={message}
+          onChange={(event) => setMessage(event.target.value)}
+        />
       </label>
       <label>
         {t(locale, "marketing.launchLanguage")}

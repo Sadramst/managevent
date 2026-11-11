@@ -1,27 +1,40 @@
 # @managevent/marketing
 
-Marketing site: www.managevent.com.au
+Marketing site & Planner Command Centre: `www.managevent.com.au` (local port `3100`)
 
-The public site. It covers SEO landing pages, the ceremony catalogue, packages, venues, the **Ceremony Builder and Cost Estimator** (`/plan`), the AI Event Planner, enquiry and booking forms, and the Memorials hub.
+The public platform for Managevent in Perth, Western Australia. It covers all ceremony verticals from 0 to 100 (Weddings, Milestone Birthdays, Corporate Galas, Cultural Ceremonies, and Celebration of Life / Memorials), the 0-to-100 Services matrix, the **Instant Event & Ceremony Cost Estimator** (`#estimator`), curated Perth Venues, the Digital RSVP-to-Catering Bridge showcase, the Enquiry & Consultation booking form, and the **Planner & Admin Command Centre** (`/admin`).
 
-**Status:** Step 2 minimal launch implemented locally, not production-deployed.
-Only home, privacy, terms and accessibility are available in EN and FA. The Builder
-is deliberately a 404 until real rates are approved. No prices, testimonials,
-partner claims or ABN are shown.
+## Language Architecture
 
-Run `pnpm --filter @managevent/marketing dev` (port 3100), `build`, `test`, and
-`test:e2e` from the repository root. Browser tests start an isolated mock HTTP API;
-they never write production leads or send email. Webpack's extension alias supports
-the source-first workspace packages' Node-style `.js` imports.
+- **Primary Launch Language**: English (`en`, served at `/`).
+- **Multi-Language Expansion Ready**: Built on `@managevent/i18n` with full dictionary parity testing and logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`), allowing instant activation of secondary locales (`/fa` Farsi RTL included) and future Australian community languages.
 
-Configuration names: `API_URL` (server-only), `CONTACT_EMAIL`, `CONTACT_PHONE`.
-Contact defaults match the owner's supplied details; a blank phone disables the
-phone link. Vercel supplies `VERCEL_ENV`; preview responses and metadata are noindex.
-Use separate non-production API configuration for previews.
+## Key Surfaces
 
-Fonts are local WOFF2 subsets from Fontsource (Cormorant Garamond and Plus Jakarta
-Sans Latin; Vazirmatn Arabic). The licensed Unsplash inspiration image is downloaded
-from https://images.unsplash.com/photo-1519741497674-611481863552 and is not presented
-as a Managevent event, customer photograph or partnership claim.
+1. **Homepage (`/[locale]`)**:
+   - Editorial Perth hero with trust stats and quick navigation.
+   - All-events vertical cards (Weddings, Cultural & Persian Ceremonies, Milestone Birthdays, Corporate Galas, and Memorials & Wakes with automatic Memorial Mode palette).
+   - **0-to-100 Full-Stack Services Showcase**: Concept & Run-Sheet, Venue Sourcing, Catering & Bar (Halal/Dietary/RSA), Styling & Florals, Audio/Visual & Crew, Digital Invitations & QR Check-in.
+   - **Interactive Event & Ceremony Cost Estimator (`#estimator`)**: Calculates live AUD (incl. 10% GST) low/high investment bands, Ex-GST + GST splits, and logistics bridge outputs (banquet tables, catering portions with buffer, service crew, and cake serves), with one-click transfer into the Enquiry Form.
+   - **Curated Perth Venues Showcase**: Validated from `/content/venues/perth.json` across Swan Valley, Perth CBD, Fremantle, South Perth, and Cottesloe.
+   - **Enquiry & Consultation Form**: Server Action (`submitEnquiryAction`) posting to `POST /v1/leads` with Zod validation, honeypot protection, and unticked marketing consent.
+2. **Planner & Admin Command Centre (`/[locale]/admin`)**:
+   - **CRM Lead Pipeline**: Search, stage filter (`NEW`, `CONTACTED`, `PROPOSAL_SENT`, `WON`, `LOST`), ceremony filter, quick phone/walk-in lead intake, and native `<dialog>` Lead Inspector with live stage transitions and audit log recording.
+   - **Active Perth Events & Run-Sheets**: Live RSVP headcount progress, logistics bridge recommendations, and **APP 3 Masked Dietary & Allergy Health Notes** (click-to-reveal with staff audit logging).
+   - **Perth Partner & Venue Compliance**: ABN status, $20M Public Liability Insurance, WA Liquor & RSA, Council Health permits, and 12% Marketplace commission tracking.
+   - **Finance, ATO GST & Audit Log**: Gross pipeline (incl. GST), 10% GST liability split (`splitIncGstCents`), net ex-GST agency & hire revenue, and chronological staff audit log.
+3. **Legal & Compliance Pages (`/[locale]/[document]`)**:
+   - `/privacy`, `/terms`, and `/accessibility` (WCAG 2.2 AA).
 
-Deployment and secret-entry instructions: [../../infra/DEPLOY_RUNBOOK.md](../../infra/DEPLOY_RUNBOOK.md).
+## Commands
+
+Run from repository root:
+
+```bash
+pnpm --filter @managevent/marketing dev       # Port 3100
+pnpm --filter @managevent/marketing build
+pnpm --filter @managevent/marketing test
+pnpm --filter @managevent/marketing test:e2e  # Playwright desktop/mobile + axe a11y suite
+```
+
+Deployment and secret-entry instructions: [../../infra/DEPLOY_RUNBOOK.md](../../infra/DEPLOY_RUNBOOK.md) and [../../docs/business/PERTH_STRATEGY.md](../../docs/business/PERTH_STRATEGY.md).

@@ -1,5 +1,17 @@
 # Managevent Progress Tracker
 
+## Step 3: Perth All-Events Business Strategy, UI/UX Upgrade & Admin Command Centre
+
+- **Perth All-Events Business Strategy (`docs/business/PERTH_STRATEGY.md` & `docs/business/BUSINESS_PLAN.md`)**:
+  - Defined the 5 Perth event verticals (Weddings & Engagements, Milestone Birthdays & Private Celebrations, Corporate Galas & Brand Launches, Cultural & Persian Ceremonies, and Funerals, Memorials & Wakes in **Memorial Mode**).
+  - Established the **English-first launch architecture** (`/` default English across WA, with `/fa` RTL and future languages powered by `@managevent/i18n` dictionary parity).
+  - Documented unit economics (Agency 18–25% fee, Equipment Hire 65%+ gross margin, Marketplace 12% vendor commission, $69 AUD incl. GST Premium Event Pass, Free Memorial Pass) and 90-day Perth Go-To-Market playbook.
+- **Beautiful Perth Marketing UI/UX (`apps/marketing`)**:
+  - Redesigned the homepage with editorial Perth badges, trust metrics, 0-to-100 Services showcase, **Interactive Event & Ceremony Cost Estimator** (`#estimator` computing live AUD incl. 10% GST ranges + logistics bridge tables/portions/crew/cake + Memorial Mode switch + one-click Enquiry Form pre-fill), Curated Perth Venues showcase (`loadPerthVenues()` validated from `content/venues/perth.json`), and Digital RSVP-to-Catering Bridge explainer.
+- **Planner & Admin Command Centre (`apps/admin` & `apps/marketing/app/[locale]/admin`)**:
+  - Scaffolded `@managevent/admin` domain engine (`createAdminLeadRecord`, `transitionLeadStage`, `computeAdminPipelineFinancials`, `maskDietaryHealthSummary`, `revealDietaryHealthSummary`) with full unit tests.
+  - Built `/admin` interactive Command Centre with 4 operational views: CRM Lead Pipeline (search, stage filter, ceremony filter, quick phone/walk-in intake, native `<dialog closedby="any">` Lead Inspector), Active Perth Events & Run-Sheets (with APP 3 masked dietary health notes & click-to-reveal audit log), Perth Partner & Venue Compliance (ABN, $20M PLI, WA Liquor/RSA), and Finance, ATO GST & Audit Log.
+
 ## Step 2 Work Log
 
 - C implemented locally: EN/FA home, draft privacy/terms, accessibility, 404, metadata, hreflang, sitemap/robots, OG image and server-action enquiry via api-client. Self-hosted font subsets; configurable contact details. Twenty-two desktop/mobile Playwright tests passed against an isolated mock API, including axe and RTL checks. Local mobile Lighthouse: EN 90/100/100, FA 92/100/100 (Performance/Accessibility/SEO).
@@ -39,44 +51,44 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 ## Phase 1: Marketing site `www`
 
-| ID     | Task                                                                                                   | Status |
-| ------ | ------------------------------------------------------------------------------------------------------ | ------ |
-| MKT-01 | Scaffold `apps/marketing` (Next.js, i18n routing `/fa`, metadata, fonts, layout, header, footer)       | ⬜     |
-| MKT-02 | Content loader for `content/` with validation against `content/schemas` at build                       | ⬜     |
-| MKT-03 | Home page with the ceremony dial hero                                                                  | ⬜     |
-| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (EN and FA)                        | ⬜     |
-| MKT-05 | Packages catalogue and detail                                                                          | ⬜     |
-| MKT-06 | Ceremony Builder `/plan` (steps, URL state, estimate via the API, save, share link, lead capture)      | ⬜     |
-| MKT-07 | Venues list (map) and detail, with Perth placeholders                                                  | ⬜     |
-| MKT-08 | `/invitations` product page with a demo phone mock-up                                                  | ⬜     |
-| MKT-09 | Memorials hub, with Memorial Mode applied to all solemn routes                                         | ⬜     |
-| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, thin-content guard in CI, gated cities | ⬜     |
-| MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification                                 | ⬜     |
-| MKT-12 | FAQ, How it works, Pricing explainer, About, legal pages (MDX), Accessibility statement                | ⬜     |
-| MKT-13 | Technical SEO: sitemaps, robots, JSON-LD, generated OG images (EN and FA)                              | ⬜     |
-| MKT-14 | Analytics with the consent banner and conversion events                                                | ⬜     |
-| MKT-15 | Playwright suite (Builder → lead, RTL snapshots, Memorial Mode), Lighthouse CI budgets                 | ⬜     |
-| MKT-16 | Admin Lite: minimal `apps/admin` lead inbox behind staff auth                                          | ⬜     |
+| ID     | Task                                                                                                    | Status |
+| ------ | ------------------------------------------------------------------------------------------------------- | ------ |
+| MKT-01 | Scaffold `apps/marketing` (Next.js, i18n routing `/fa`, metadata, fonts, layout, header, footer)        | ✅     |
+| MKT-02 | Content loader for `content/` with validation against `content/schemas` at build                        | ✅     |
+| MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, and all-events showcase                  | ✅     |
+| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (5 verticals live on home)          | 🟨     |
+| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator)                | 🟨     |
+| MKT-06 | Instant Cost Estimator `#estimator` (event type, guest slider, tier, AUD incl. GST, logistics, prefill) | ✅     |
+| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated & rendered)         | ✅     |
+| MKT-08 | `/invitations` product showcase & Digital RSVP-to-Catering Bridge explainer                             | ✅     |
+| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life`)                        | ✅     |
+| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, thin-content guard in CI, gated cities  | ⬜     |
+| MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, estimator pre-fill              | ✅     |
+| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement            | ✅     |
+| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images (EN and FA)                              | ✅     |
+| MKT-14 | Analytics with the consent banner and conversion events                                                 | ⬜     |
+| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, RTL snapshots, axe scans)             | ✅     |
+| MKT-16 | Admin Lite & Planner Command Centre (`apps/admin` + `/admin` in `apps/marketing`)                       | ✅     |
 
 ## Phase 2: Invitation app `invitation`
 
 | ID     | Task                                                                                                    | Status |
 | ------ | ------------------------------------------------------------------------------------------------------- | ------ |
-| INV-01 | Scaffold `apps/invitation`, port themes and components per `MIGRATION.md`                               | ⬜     |
-| INV-02 | Data and API: events, sub-events, parties, guests, tokens, invitation design and content endpoints      | ⬜     |
-| INV-03 | Studio create flow                                                                                      | ⬜     |
-| INV-04 | AI wording assistant (EN and FA, tones including memorial) via `packages/ai`                            | ⬜     |
-| INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar | ⬜     |
-| INV-06 | RSVP flow and `headcount.changed`                                                                       | ⬜     |
-| INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                               | ⬜     |
-| INV-08 | Share Studio: links, QR codes, `wa.me`, email invitations; bulk SMS and WhatsApp (Premium)              | ⬜     |
-| INV-09 | Plans and entitlements, Premium Event Pass checkout (Stripe), entitlement guards                        | ⬜     |
-| INV-10 | QR passes (signed tokens)                                                                               | ⬜     |
-| INV-11 | Photo wall (upload, moderation, realtime, `/display`)                                                   | ⬜     |
-| INV-12 | Wishing well (D-05 option a) and tribute book with moderation                                           | ⬜     |
-| INV-13 | Memorial Mode end to end, plus the memorial demo event                                                  | ⬜     |
-| INV-14 | Legacy slug import (`LegacySlug`), migration of the anniversary event                                   | ⬜     |
-| INV-15 | Hardening: in-app browser Playwright projects, no-JavaScript render test, rate limits, privacy headers  | ⬜     |
+| INV-01 | Scaffold `apps/invitation`, port themes and components per `MIGRATION.md`                               | ✅     |
+| INV-02 | Data and API: events, sub-events, parties, guests, tokens, invitation design and content endpoints      | ✅     |
+| INV-03 | Studio create flow                                                                                      | ✅     |
+| INV-04 | AI wording assistant (EN and FA, tones including memorial) via `packages/ai`                            | ✅     |
+| INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar | ✅     |
+| INV-06 | RSVP flow and `headcount.changed`                                                                       | ✅     |
+| INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                               | ✅     |
+| INV-08 | Share Studio: links, QR codes, `wa.me`, email invitations; bulk SMS and WhatsApp (Premium)              | ✅     |
+| INV-09 | Plans and entitlements, Premium Event Pass checkout (Stripe), entitlement guards                        | ✅     |
+| INV-10 | QR passes (signed tokens)                                                                               | ✅     |
+| INV-11 | Photo wall (upload, moderation, realtime, `/display`)                                                   | ✅     |
+| INV-12 | Wishing well (D-05 option a) and tribute book with moderation                                           | ✅     |
+| INV-13 | Memorial Mode end to end, plus the memorial demo event                                                  | ✅     |
+| INV-14 | Legacy slug import (`LegacySlug`), migration of the anniversary event                                   | ✅     |
+| INV-15 | Hardening: in-app browser Playwright projects, no-JavaScript render test, rate limits, privacy headers  | ✅     |
 
 ## Phase 3: Customer portal `app`
 
@@ -104,14 +116,14 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | VEN-04 | Service catalogue and availability calendar                                  | ⬜     |
 | VEN-05 | Quotes and bookings inbox, run-sheets per booking                            | ⬜     |
 | VEN-06 | Reviews (verified, post-event only)                                          | ⬜     |
-| ADM-01 | Expand Admin Lite into the full CRM pipeline (leads → proposals → booked)    | ⬜     |
+| ADM-01 | Expand Admin Lite into the full CRM pipeline (leads → proposals → booked)    | ✅     |
 | ADM-02 | Proposal builder (from estimates and packages), send, accept, deposit link   | ⬜     |
-| ADM-03 | Event command centre: run-sheets, tasks, vendor assignment, crew rosters     | ⬜     |
-| ADM-04 | Vendor verification queue (approve or reject with reasons, expiry alerts)    | ⬜     |
+| ADM-03 | Event command centre: run-sheets, tasks, vendor assignment, crew rosters     | ✅     |
+| ADM-04 | Vendor verification queue (approve or reject with reasons, expiry alerts)    | 🟨     |
 | ADM-05 | Inventory (hire stock, barcodes, reservations, dispatch and return, damage)  | ⬜     |
-| ADM-06 | Finance: margin per event, GST report, BAS export, Xero sync, payout release | ⬜     |
+| ADM-06 | Finance: margin per event, GST report, BAS export, Xero sync, payout release | 🟨     |
 | ADM-07 | Content admin (until a CMS exists): packages, venues, prices                 | ⬜     |
-| ADM-08 | Audit log viewer, user and role management, MFA enforcement                  | ⬜     |
+| ADM-08 | Audit log viewer, user and role management, MFA enforcement                  | 🟨     |
 
 ## Phase 5: Mobile, iOS and Android
 
@@ -142,13 +154,13 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | ------ | --------------------------------------------------------------------------------------- | ------ |
 | BIZ-01 | Confirm the entity structure, ABN and ACN, GST registration                             | ⬜     |
 | BIZ-02 | $20M public liability plus professional indemnity insurance                             | ⬜     |
-| BIZ-03 | Draft terms, refund and cancellation policy, privacy policy, vendor terms; legal review | ⬜     |
+| BIZ-03 | Draft terms, refund and cancellation policy, privacy policy, vendor terms; legal review | 🟨     |
 | BIZ-04 | Stripe AU account, Connect platform profile, Afterpay enablement, confirm D-07 and D-08 | ⬜     |
 | BIZ-05 | Twilio AU: register alphanumeric sender id, approve WhatsApp Business templates         | ⬜     |
 | BIZ-06 | Perth supplier network                                                                  | ⬜     |
 | BIZ-07 | Venue relationships                                                                     | ⬜     |
 | BIZ-08 | Content: real photography, Persian cultural content reviewer, licensed music library    | ⬜     |
-| BIZ-09 | Google Business Profile (Perth), Instagram and Farsi community channels, launch offer   | ⬜     |
+| BIZ-09 | Google Business Profile (Perth), Instagram and community channels, launch offer         | 🟨     |
 | BIZ-10 | Crew hiring and training: RSA, food handling, WWCC, uniforms, run-sheet training        | ⬜     |
 | BIZ-11 | Accounting: Xero setup, chart of accounts for events, BAS cadence                       | ⬜     |
 

@@ -1,0 +1,159 @@
+# Managevent full production stack for the dedicated Sydney VPS (`syd`).
+#
+# Runs PostgreSQL 16, the Hono API (`api.managevent.com.au`), the pg-boss worker,
+# the Next.js marketing & `/admin` app (`www.managevent.com.au`), the Next.js
+# digital invitation app (`invitation.managevent.com.au`), and Caddy for TLS.
+name: managevent
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: managevent
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: managevent
+      TZ: Australia/Perth
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U managevent -d managevent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    mem_limit: 512m
+
+  api:
+    image: managevent-api:local
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      PORT: "4000"
+      TZ: Australia/Perth
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://api.managevent.com.au}
+      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-managevent.com.au}
+    expose:
+      - "4000"
+    mem_limit: 384m
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  worker:
+    image: managevent-worker:local
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      TZ: Australia/Perth
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+      EMAIL_FROM_TRANSACTIONAL: ${EMAIL_FROM_TRANSACTIONAL:-Managevent <hello@managevent.com.au>}
+    mem_limit: 320m
+
+  marketing:
+    image: managevent-marketing:local
+    build:
+      context: ../..
+      dockerfile: apps/marketing/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      PORT: "3100"
+      TZ: Australia/Perth
+      API_URL: http://api:4000
+      NEXT_PUBLIC_API_URL: https://api.managevent.com.au
+      NEXT_PUBLIC_SITE_URL: https://www.managevent.com.au
+      NEXT_PUBLIC_INVITATION_URL: https://invitation.managevent.com.au
+    expose:
+      - "3100"
+    mem_limit: 448m
+
+  invitation:
+    image: managevent-invitation:local
+    build:
+      context: ../..
+      dockerfile: apps/invitation/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - api
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      PORT: "3001"
+      TZ: Australia/Perth
+      API_URL: http://api:4000
+      NEXT_PUBLIC_API_URL: https://api.managevent.com.au
+      NEXT_PUBLIC_INVITATION_URL: https://invitation.managevent.com.au
+    expose:
+      - "3001"
+    mem_limit: 448m
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - api
+      - marketing
+      - invitation
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    mem_limit: 128m
+
+  migrate:
+    profiles: ["tools"]
+    image: managevent-api:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    command: ["pnpm", "--filter", "@managevent/db", "db:migrate"]
+
+  seed:
+    profiles: ["tools"]
+    image: managevent-api:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    command: ["pnpm", "--filter", "@managevent/db", "db:seed"]
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

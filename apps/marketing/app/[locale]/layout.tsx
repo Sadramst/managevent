@@ -2,6 +2,7 @@ import type { ReactNode, CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { getDir, t } from "@managevent/i18n";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
+import { BrandLogo } from "@managevent/ui";
 import { contact, localePath } from "../../lib/site";
 import "../globals.css";
 
@@ -22,8 +23,8 @@ export default async function LocaleLayout({
         </a>
         <header className="site-header-bar">
           <div className="site-header wrap">
-            <a className="wordmark" href={localePath(locale)}>
-              Managevent<span>{t(locale, "common.byAppilico")} · Perth WA</span>
+            <a className="wordmark inline-flex items-center gap-3" href={localePath(locale)}>
+              <BrandLogo variant="compact" size="md" subtitle="Perth WA" theme="gold" />
             </a>
             <nav aria-label={t(locale, "marketing.launchHome")}>
               <a href={localePath(locale, "#services")}>
@@ -46,7 +47,9 @@ export default async function LocaleLayout({
         <footer className="footer-shell">
           <div className="wrap footer">
             <div className="footer-brand">
-              <strong className="footer-wordmark">Managevent</strong>
+              <div className="mb-3">
+                <BrandLogo variant="compact" size="sm" subtitle="Perth WA" theme="gold" />
+              </div>
               <p>{t(locale, "common.byAppilico")}</p>
               <p>{t(locale, "marketing.launchLocation")}</p>
               <p className="footer-ack">{t(locale, "legal.acknowledgementOfCountry")}</p>

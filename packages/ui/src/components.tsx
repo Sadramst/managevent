@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * RTL-safe and Memorial-Mode-aware base UI components (`docs/design/DESIGN_SYSTEM.md`).
  *

@@ -2,7 +2,7 @@ import type { ReactNode, CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { getDir, t } from "@managevent/i18n";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
-import { BrandLogo } from "@managevent/ui";
+import { BrandLogo } from "../../components/BrandLogo";
 import { contact, localePath } from "../../lib/site";
 import "../globals.css";
 

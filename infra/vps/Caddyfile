@@ -1,6 +1,6 @@
-# Caddy configuration for the Managevent API on a single VPS.
-# Caddy obtains and renews the certificate automatically once
-# api.managevent.com.au resolves to this server and ports 80/443 are reachable.
+# Caddy configuration for Managevent on a single VPS.
+# Caddy obtains and renews certificates automatically once each hostname resolves to
+# this server and ports 80/443 are reachable.
 {
 	email admin@managevent.com.au
 
@@ -20,9 +20,43 @@ api.managevent.com.au {
 		-Server
 	}
 
-	# The API sets its own request ids; Caddy only forwards.
 	reverse_proxy api:4000 {
 		health_uri /health
 		health_interval 15s
+	}
+}
+
+www.managevent.com.au {
+	encode zstd gzip
+	root * /srv/www
+	file_server
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+}
+
+invitation.managevent.com.au {
+	encode zstd gzip
+	root * /srv/invitation
+	file_server
+
+	# Route this host through ZeroSSL's ACME endpoint. Let's Encrypt already cached a
+	# negative (NXDOMAIN) answer before the record existed, which blocks LE issuance for
+	# ~1 hour. ZeroSSL has not queried this name, so it issues once DNS resolves.
+	tls {
+		issuer acme {
+			dir https://acme.zerossl.com/v2/DV90
+		}
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
 	}
 }

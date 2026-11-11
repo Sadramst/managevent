@@ -1,8 +1,13 @@
 # Caddy configuration for the Managevent API on a single VPS.
-# Caddy obtains and renews the Let's Encrypt certificate automatically once
+# Caddy obtains and renews the certificate automatically once
 # api.managevent.com.au resolves to this server and ports 80/443 are reachable.
 {
 	email admin@managevent.com.au
+
+	# Pin the ACME CA to Let's Encrypt. Caddy's default order is Let's Encrypt then
+	# ZeroSSL; a stalled ZeroSSL order blocks the next Let's Encrypt attempt and can
+	# leave issuance hanging for many minutes. A single issuer keeps retries fast.
+	acme_ca https://acme-v02.api.letsencrypt.org/directory
 }
 
 api.managevent.com.au {

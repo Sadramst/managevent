@@ -12,6 +12,10 @@ The **only** writer to the database and the single authorisation layer for web, 
 - `GET /v1/leads`: Staff CRM lead list (`requirePermission(actor, "lead:read")`).
 - `GET /openapi.json`: Generated OpenAPI 3.1 document.
 
+## Request handling
+
+`middleware/context.ts` accepts a caller `X-Request-Id` only if it matches `[A-Za-z0-9._-]{1,128}`, otherwise it generates one. The in-memory rate limiter prunes expired entries each window, and Hono `HTTPException`s map to the standard error envelope. Tests: `middleware/context.test.ts`.
+
 ## Running locally
 
 Step 2 hardening: Better Auth uses the Prisma adapter. Private routes resolve

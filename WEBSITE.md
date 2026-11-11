@@ -126,7 +126,7 @@ Sections, in order:
    - Each lists 4–6 ceremonies.
    - The cultural block leads with community and multicultural ceremonies.
 4. **The invitation bridge:** a short demo showing an invitation RSVP count updating a catering estimate. It links to `/invitations`. This is the core hook, explained visually.
-5. **Perth venues strip** `[content]`: Swan Valley, Kings Park and Matilda Bay setups, Fremantle heritage, council halls, backyard marquees. Links to `/venues`.
+5. **Perth venues strip** `[content]`: Swan Valley, Kings Park and Matilda Bay setups, Fremantle heritage, council halls, backyard marquees. Links to `/venues`. Each venue card carries an "Ask about this venue" link to `/?venue=<slug>#enquiry`; the enquiry form prefills a neutral, editable message for a known slug and ignores unknown values. It makes no booking or availability claim.
 6. **Featured packages** `[content]`: three packages with "from $X incl. GST".
 7. **Proof:** testimonials and real-event gallery items `[content]`. Hide the section until real ones exist; never show fake reviews (Australian Consumer Law).
 8. **How it works:** consult → proposal → deposit → planning → event day → after.
@@ -440,6 +440,7 @@ This merges `appilico-invitations` (multi-tenant studio, themes, dashboard, RSVP
 | `/studio/[eventId]/guests`                 | Host            | Guest list, parties, import (CSV or XLSX, UTF-8 BOM), tags, tables                                                 | `noindex` |
 | `/studio/[eventId]/share`                  | Host            | Share studio: links, QR codes, WhatsApp, SMS, email, scheduling                                                    | `noindex` |
 | `/studio/[eventId]/responses`              | Host            | RSVPs, dietary breakdown, song requests, exports                                                                   | `noindex` |
+| `/studio/[eventId]/awaiting`               | Host or co-host | Awaiting replies: counts, deadline line, per-party reminder text with copy button (read-only; no auto-send)        | `noindex` |
 | `/studio/[eventId]/wall`                   | Host            | Photo wall moderation                                                                                              | `noindex` |
 | `/studio/[eventId]/well`                   | Host            | Wishing well or tribute book entries                                                                               | `noindex` |
 | `/studio/[eventId]/settings`               | Host            | Privacy (PIN), RSVP deadline, languages, co-hosts, plan and upgrade                                                | `noindex` |

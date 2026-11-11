@@ -18,7 +18,7 @@ The **Host Studio** (create, design, AI wording, guests, share, responses, photo
 
 ## Stack
 
-Next.js (App Router), Tailwind v4, Framer Motion (gate reveal), `packages/ui` themes. Server-rendered guest pages.
+English only (en-AU). Next.js (App Router), Tailwind v4, Framer Motion (gate reveal), `packages/ui` themes. Server-rendered guest pages.
 
 ## Depends on (contracts; do not modify from this app)
 

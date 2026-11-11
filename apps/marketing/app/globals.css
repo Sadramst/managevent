@@ -506,6 +506,21 @@ nav a:hover {
   gap: 0.4rem;
   margin-block-start: 0.5rem;
 }
+.venue-ask {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  margin-block-start: 0.75rem;
+  padding-inline: 0.25rem;
+  font-weight: 600;
+  color: var(--me-primary);
+  text-underline-offset: 0.25em;
+}
+.venue-note {
+  margin-block: 0 1rem;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
 .venue-tag {
   font-size: 0.74rem;
   padding: 0.2rem 0.6rem;

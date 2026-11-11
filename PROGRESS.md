@@ -1,5 +1,13 @@
 # Managevent Progress Tracker
 
+## Step 4: English-only en-AU, Awaiting replies and venue enquiry prefill
+
+- **English-only (en-AU):** the Persian locale, ceremonies and themes were removed (`deb3a5b`). The site is English-only for Australia; `packages/i18n` keeps its parity architecture so languages can be added later by a new decision.
+- **Host "Awaiting replies" (`apps/invitation`, `/studio/[eventId]/awaiting`):** server component, `noindex`, real 404 for an unknown event. Shows awaiting, replied and total party counts, a deadline line (event time zone, Perth boundary handled) and per-party seats, table label and a read-only reminder with a copy button. Logic in `lib/rsvp-chase.ts` with tests; copy in `lib/rsvp-chase-copy.ts`. Memorial Mode is read through `getExperienceMode()` ("Replies requested by DD/MM/YYYY", calm text). `DECISION-NEEDED`: migrate the copy to `packages/i18n`; the route is as open as other studio routes until the auth gate lands. No link from `studio/[eventId]/page.tsx` yet.
+- **Venue enquiry prefill (`apps/marketing`):** venue cards link to `/?venue=<slug>#enquiry`; the form prefills an editable neutral message via `lib/venue-prefill.ts` (`resolveVenueName`, with tests). Adds `launchVenueAsk`, `launchVenueNote` and `launchVenuePrefill` to `packages/i18n/src/launch.ts` (contract-change, additive).
+- **Invitation and API hardening:** guest `NoscriptFallback`, `.ics` helpers split into `ics-helpers.ts`, `apps/invitation/tests/a1-correctness.test.ts`, API `middleware/context.ts` test, and `packages/api-client` updates. The `infra/vps` Caddyfile, compose and README were updated for the Sydney VPS.
+- **Not verified in this pass:** `pnpm lint`, `test` and `build` (Node 20 locally); server build and migration are pending.
+
 ## Step 3: Perth All-Events Business Strategy, UI/UX Upgrade & Admin Command Centre
 
 - **Perth All-Events Business Strategy (`docs/business/PERTH_STRATEGY.md` & `docs/business/BUSINESS_PLAN.md`)**:

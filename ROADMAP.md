@@ -72,23 +72,24 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 
 **Exit criteria:** the WEBSITE.md §B18 checklist is complete, and the Appilico anniversary event migration path is implemented.
 
-| ID     | Task                                                                                                                               | Depends on     | Status |
-| ------ | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| INV-01 | Scaffold `apps/invitation`, port themes and components from `appilico-invitations` and `anniversary-invitation` per `MIGRATION.md` | FND-06         | ✅     |
-| INV-02 | Data and API: events, sub-events, parties, guests, tokens (HMAC with `stableId`), invitation design and content endpoints          | FND-11         | ✅     |
-| INV-03 | Studio create flow (basics → template → wording → personalise → guests → RSVP settings → preview → publish)                        | INV-02         | ✅     |
-| INV-04 | AI wording assistant (English, tones including memorial) via `packages/ai`                                                         | FND-16         | ✅     |
-| INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar, maps                      | INV-02         | ✅     |
-| INV-06 | RSVP flow (party members, dietary per person, idempotent, editable until deadline) and `headcount.changed`                         | INV-05, FND-10 | ✅     |
-| INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                                                          | INV-06         | ✅     |
-| INV-08 | Share Studio: links, QR codes, `wa.me`, email invitations; bulk SMS and WhatsApp (Premium)                                         | FND-13         | ✅     |
-| INV-09 | Plans and entitlements, Premium Event Pass checkout (Stripe), entitlement guards                                                   | FND-08         | ✅     |
-| INV-10 | QR passes (signed tokens)                                                                                                          | INV-06         | ✅     |
-| INV-11 | Photo wall (upload, moderation, realtime, `/display`)                                                                              | FND-13         | ✅     |
-| INV-12 | Wishing well (D-05 option a) and tribute book with moderation                                                                      | INV-05         | ✅     |
-| INV-13 | Memorial Mode end to end, plus the memorial demo event                                                                             | INV-05         | ✅     |
-| INV-14 | Legacy slug import (`LegacySlug`), the `appilico.com.au` rewrite note, migration of the anniversary event                          | INV-02         | ✅     |
-| INV-15 | Hardening: in-app browser Playwright projects, no-JavaScript render test, rate limits, privacy headers                             | INV-05         | ✅     |
+| ID     | Task                                                                                                                                                            | Depends on     | Status |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
+| INV-01 | Scaffold `apps/invitation`, port themes and components from `appilico-invitations` and `anniversary-invitation` per `MIGRATION.md`                              | FND-06         | ✅     |
+| INV-02 | Data and API: events, sub-events, parties, guests, tokens (HMAC with `stableId`), invitation design and content endpoints                                       | FND-11         | ✅     |
+| INV-03 | Studio create flow (basics → template → wording → personalise → guests → RSVP settings → preview → publish)                                                     | INV-02         | ✅     |
+| INV-04 | AI wording assistant (English, tones including memorial) via `packages/ai`                                                                                      | FND-16         | ✅     |
+| INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar, maps                                                   | INV-02         | ✅     |
+| INV-06 | RSVP flow (party members, dietary per person, idempotent, editable until deadline) and `headcount.changed`                                                      | INV-05, FND-10 | ✅     |
+| INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                                                                                       | INV-06         | ✅     |
+| INV-08 | Share Studio: links, QR codes, `wa.me`, email invitations; bulk SMS and WhatsApp (Premium)                                                                      | FND-13         | ✅     |
+| INV-09 | Plans and entitlements, Premium Event Pass checkout (Stripe), entitlement guards                                                                                | FND-08         | ✅     |
+| INV-10 | QR passes (signed tokens)                                                                                                                                       | INV-06         | ✅     |
+| INV-11 | Photo wall (upload, moderation, realtime, `/display`)                                                                                                           | FND-13         | ✅     |
+| INV-12 | Wishing well (D-05 option a) and tribute book with moderation                                                                                                   | INV-05         | ✅     |
+| INV-13 | Memorial Mode end to end, plus the memorial demo event                                                                                                          | INV-05         | ✅     |
+| INV-14 | Legacy slug import (`LegacySlug`), the `appilico.com.au` rewrite note, migration of the anniversary event                                                       | INV-02         | ✅     |
+| INV-15 | Hardening: in-app browser Playwright projects, no-JavaScript render test, rate limits, privacy headers                                                          | INV-05         | ✅     |
+| INV-16 | Host "Awaiting replies" page with copy-ready reminder text (`/studio/[eventId]/awaiting`); next: link from Studio home, auth gate, move copy to `packages/i18n` | INV-06         | 🟨     |
 
 ### Phase 3: Customer portal `app` (≈ 5 weeks) ⬜
 

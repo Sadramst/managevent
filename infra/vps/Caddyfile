@@ -26,6 +26,10 @@ api.managevent.com.au {
 	}
 }
 
+managevent.com.au {
+	redir https://www.managevent.com.au{uri} permanent
+}
+
 www.managevent.com.au {
 	encode zstd gzip
 

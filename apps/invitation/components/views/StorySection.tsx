@@ -1,5 +1,6 @@
 import React from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
+import { getExperienceMode } from "@managevent/i18n";
 import type { EventModel } from "@/lib/types";
 import { Heart, Sparkles, BookOpen } from "lucide-react";
 
@@ -10,7 +11,7 @@ interface StorySectionProps {
 
 export const StorySection: React.FC<StorySectionProps> = ({ event, theme }) => {
   const { colors } = theme;
-  const isMemorial = event.experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
   const { content } = event;
 
   return (

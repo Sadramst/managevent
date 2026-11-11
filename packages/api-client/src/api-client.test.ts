@@ -71,4 +71,21 @@ describe("@managevent/api-client", () => {
     // Cleanup
     await db.lead.delete({ where: { id: createdLead.id } });
   });
+
+  it("throws ManageventApiClientError with HTTP_<status> on a non-JSON error body", async () => {
+    const client = createApiClient({
+      baseUrl: "http://api.test",
+      fetchImpl: async () =>
+        new Response("<html>Bad Gateway</html>", {
+          status: 502,
+          headers: { "x-request-id": "req_gw" },
+        }),
+    });
+    await expect(client.getHealth()).rejects.toMatchObject({
+      name: "ManageventApiClientError",
+      status: 502,
+      code: "HTTP_502",
+      requestId: "req_gw",
+    });
+  });
 });

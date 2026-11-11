@@ -450,8 +450,7 @@ class InvitationStore {
       const parts = normalizedToken.split("-");
       parts.pop(); // remove suffix
       const rawName = parts.join(" ").trim();
-      const isParty =
-        rawName.includes("party") || rawName.includes("family");
+      const isParty = rawName.includes("party") || rawName.includes("family");
 
       const cleanName =
         rawName

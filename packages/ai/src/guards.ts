@@ -5,8 +5,7 @@
 import { getExperienceMode } from "@managevent/i18n";
 import type { ExperienceMode } from "@managevent/types";
 
-export type CopywriterTone =
-  "poetic" | "formal" | "casual" | "memorial-respectful";
+export type CopywriterTone = "poetic" | "formal" | "casual" | "memorial-respectful";
 
 /**
  * Ensures `@managevent/ai` is never executed in a browser environment.

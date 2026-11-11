@@ -1,19 +1,13 @@
 import { NextResponse } from "next/server";
 import { invitationStore } from "@/lib/invitation-store";
+import { formatCeremonyDate } from "@/lib/i18n";
+import { escapeIcsText, formatIcsDate } from "./ics-helpers";
 
 interface RouteContext {
   params: Promise<{
     eventSlug: string;
     guestToken: string;
   }>;
-}
-
-function formatIcsDate(isoString: string): string {
-  const date = new Date(isoString);
-  return date
-    .toISOString()
-    .replace(/[-:]/g, "")
-    .replace(/\.\d{3}/, "");
 }
 
 export async function GET(request: Request, context: RouteContext) {
@@ -32,6 +26,11 @@ export async function GET(request: Request, context: RouteContext) {
         new Date(new Date(event.startsAt).getTime() + 5 * 60 * 60 * 1000).toISOString(),
       );
 
+  const localWhen = formatCeremonyDate(event.startsAt, "en", {
+    includeTime: true,
+    includeWeekday: true,
+    timeZone: event.timeZone,
+  });
   const origin = new URL(request.url).origin;
   const guestUrl = `${origin}/i/${event.slug}/${party.token}`;
 
@@ -46,9 +45,9 @@ export async function GET(request: Request, context: RouteContext) {
     `DTSTAMP:${formatIcsDate(new Date().toISOString())}`,
     `DTSTART:${startIcs}`,
     `DTEND:${endIcs}`,
-    `SUMMARY:${event.title.replace(/[,;]/g, "\\$&")}`,
-    `DESCRIPTION:${event.content.headline.replace(/[,;]/g, "\\$&")}\\n\\nPersonal invitation for ${party.displayName}.\\nAccess details: ${guestUrl}`,
-    `LOCATION:${`${event.venue.name}, ${event.venue.address}`.replace(/[,;]/g, "\\$&")}`,
+    `SUMMARY:${escapeIcsText(event.title)}`,
+    `DESCRIPTION:${escapeIcsText(event.content.headline)}\\n\\n${escapeIcsText(`When: ${localWhen}`)}\\nPersonal invitation for ${escapeIcsText(party.displayName)}.\\nAccess details: ${escapeIcsText(guestUrl)}`,
+    `LOCATION:${escapeIcsText(`${event.venue.name}, ${event.venue.address}`)}`,
     `URL:${guestUrl}`,
     "STATUS:CONFIRMED",
     "END:VEVENT",

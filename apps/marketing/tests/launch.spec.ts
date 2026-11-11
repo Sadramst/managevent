@@ -63,3 +63,14 @@ test("admin command centre renders CRM pipeline, events, partners and finance wi
   );
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
 });
+
+test("venue ask link prefills the enquiry and unknown venues are ignored", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#venues .venue-ask").first().click();
+  await expect(page).toHaveURL(/venue=.*#enquiry/);
+  await expect(page.locator(".venue-note")).toBeVisible();
+  await expect(page.locator('textarea[name="message"]')).not.toHaveValue("");
+  await page.goto("/?venue=nope");
+  await expect(page.locator(".venue-note")).toHaveCount(0);
+  await expect(page.locator('textarea[name="message"]')).toHaveValue("");
+});

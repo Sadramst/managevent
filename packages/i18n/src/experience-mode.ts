@@ -44,14 +44,11 @@ export function getExperienceMode(input: ExperienceModeInput): ExperienceMode {
     if (normalized === "memorial" || normalized === "solemn") {
       return "MEMORIAL";
     }
-    if (MEMORIAL_SLUG_SET.has(normalized)) {
-      return "MEMORIAL";
-    }
-    if (normalized.startsWith("/memorials") || normalized.includes("/memorials/")) {
-      return "MEMORIAL";
-    }
-    for (const slug of MEMORIAL_CEREMONY_SLUGS) {
-      if (normalized.endsWith(`/${slug}`) || normalized.includes(`/${slug}/`)) {
+    // Drop query and hash, then match whole path segments (tolerates trailing slashes).
+    const pathOnly = normalized.split(/[?#]/, 1)[0] ?? "";
+    const segments = pathOnly.split("/").filter((segment) => segment.length > 0);
+    for (const segment of segments) {
+      if (segment === "memorials" || MEMORIAL_SLUG_SET.has(segment)) {
         return "MEMORIAL";
       }
     }

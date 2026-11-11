@@ -5,16 +5,36 @@ import { getExperienceMode, t } from "@managevent/i18n";
 import type { EnabledLocale } from "@managevent/types";
 import { submitEnquiry } from "../app/actions";
 import { localePath } from "../lib/site";
+import { resolveVenueName, type VenueRef } from "../lib/venue-prefill";
 import type { EstimateTransferPayload } from "./event-estimator";
 
-export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
+export function EnquiryForm({
+  locale,
+  venues = [],
+}: {
+  locale: EnabledLocale;
+  venues?: readonly VenueRef[];
+}) {
   const [state, action, pending] = useActionState(submitEnquiry, { status: "idle" });
   const [ceremony, setCeremony] = useState("");
   const [unknownDate, setUnknownDate] = useState(false);
   const [guestEstimate, setGuestEstimate] = useState("");
   const [message, setMessage] = useState("");
+  const [venueName, setVenueName] = useState<string | undefined>();
   const mode = getExperienceMode(ceremony);
   const invalid = (name: string) => state.fields?.includes(name) || undefined;
+
+  useEffect(() => {
+    const name = resolveVenueName(
+      new URLSearchParams(window.location.search).getAll("venue").length === 1
+        ? new URLSearchParams(window.location.search).get("venue")
+        : null,
+      venues,
+    );
+    if (!name) return;
+    setVenueName(name);
+    setMessage((prev) => prev || t(locale, "marketing.launchVenuePrefill", { venue: name }));
+  }, [locale, venues]);
 
   useEffect(() => {
     const handleEstimate = (event: Event) => {
@@ -44,6 +64,11 @@ export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
         </p>
       )}
       {state.status === "failed" && <p role="alert">{t(locale, "marketing.launchFailure")}</p>}
+      {venueName && (
+        <p role="status" className="venue-note">
+          {t(locale, "marketing.launchVenueNote", { venue: venueName })}
+        </p>
+      )}
       <div className="fields">
         <label>
           {t(locale, "marketing.launchName")}

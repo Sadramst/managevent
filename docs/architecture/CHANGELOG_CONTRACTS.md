@@ -1,5 +1,13 @@
 # Contract changelog
 
+## Venue enquiry prefill keys (2026-11-11)
+
+Additive `contract-change`. No breaking change.
+
+- `@managevent/i18n` (`launch.ts`): new `en` keys `launchVenueAsk`, `launchVenueNote` and `launchVenuePrefill`. They back the "Ask about this venue" link on marketing venue cards (`/?venue=<slug>#enquiry`), which prefills the enquiry message with a neutral line the visitor can edit.
+- `@managevent/validators` and `@managevent/db`: no change.
+- Consumers: `apps/marketing` only.
+
 ## Remove Persian (`fa`) locale and Persian ceremonies (2026-11-11)
 
 Breaking contract change (`contract-change`). The platform is now English (en-AU) only, aimed at Australian customers.

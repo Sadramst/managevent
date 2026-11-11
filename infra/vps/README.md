@@ -28,11 +28,20 @@ Only ports 22, 80 and 443 are reachable through UFW. Postgres and internal app p
 cd /opt/managevent
 git pull
 cd infra/vps
-docker compose build
+export COMPOSE_PARALLEL_LIMIT=1
+# Build one service at a time. The 2 GB host cannot run parallel Next.js builds.
+docker compose build api && docker compose build worker \
+  && docker compose build marketing && docker compose build invitation
 docker compose run --rm migrate
 docker compose run --rm seed
 docker compose up -d
 ```
+
+Never start a second build while one is running (check `ps aux | grep "docker compose"` first). `COMPOSE_PARALLEL_LIMIT=1` makes Compose build and start at most one service at a time, which avoids out-of-memory stalls on this plan. The memory limits in `docker-compose.yml` are unchanged. Plan size is DECISION-NEEDED.
+
+The apex `managevent.com.au` permanently redirects to `https://www.managevent.com.au`. Its DNS A record must point at this server for Caddy to issue a certificate.
+
+`marketing` and `invitation` wait for `api` to be healthy (`/health`). They have no healthcheck of their own because no health endpoint is confirmed for them.
 
 ## Secrets
 

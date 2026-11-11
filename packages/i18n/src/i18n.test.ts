@@ -75,6 +75,14 @@ describe("@managevent/i18n", () => {
       expect(getExperienceMode({ experienceMode: "MEMORIAL" })).toBe("MEMORIAL");
     });
 
+    it("matches memorial routes with locale prefix, trailing slash, query and hash", () => {
+      expect(getExperienceMode("/en/memorials")).toBe("MEMORIAL");
+      expect(getExperienceMode("/perth/wake/")).toBe("MEMORIAL");
+      expect(getExperienceMode("/wake?x=1")).toBe("MEMORIAL");
+      expect(getExperienceMode("/en/memorial-service#details")).toBe("MEMORIAL");
+      expect(getExperienceMode("/weddings?next=/wake")).toBe("CELEBRATION");
+    });
+
     it("returns CELEBRATION for wedding, engagement, corporate, and empty inputs", () => {
       expect(getExperienceMode("wedding")).toBe("CELEBRATION");
       expect(getExperienceMode("engagement-party")).toBe("CELEBRATION");

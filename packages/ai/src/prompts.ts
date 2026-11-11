@@ -39,12 +39,7 @@ export type CeremonyArchitectOutput = z.infer<typeof CeremonyArchitectOutputSche
 export const InvitationCopywriterOutputSchema = z.object({
   promptVersion: z.string().min(1),
   isAiGenerated: z.literal(true),
-  tone: z.enum([
-    "poetic",
-    "formal",
-    "casual",
-    "memorial-respectful",
-  ]),
+  tone: z.enum(["poetic", "formal", "casual", "memorial-respectful"]),
   en: z.object({
     headline: z.string().min(1),
     invitationBody: z.string().min(1),

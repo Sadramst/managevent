@@ -188,6 +188,12 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                       </span>
                     ))}
                   </div>
+                  <a
+                    className="venue-ask"
+                    href={`${localePath(locale)}?venue=${encodeURIComponent(venue.slug)}#enquiry`}
+                  >
+                    {t(locale, "marketing.launchVenueAsk")}
+                  </a>
                 </article>
               );
             })}
@@ -265,7 +271,10 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           </div>
         </div>
         <div className="enquiry-form-card">
-          <EnquiryForm locale={locale} />
+          <EnquiryForm
+            locale={locale}
+            venues={venues.map((v) => ({ slug: v.slug, name: v.name }))}
+          />
         </div>
       </section>
     </main>

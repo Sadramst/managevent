@@ -44,7 +44,7 @@ Tests in `packages/ui` assert every documented text pairing is ≥ 4.5:1 (or ≥
 - **Arch frame:** a thin accent-colour arch around hero media. It comes from the Appilico invitations and is the brand's structural signature.
 - **Layered panels:** content panels overlap slightly, like laid cloths. Hierarchy comes from overlap and spacing, **not** identical shadowed cards.
 - **Corner radius by hierarchy:** sheets 24px, panels 12px, controls 8px, chips 999px. Never one radius everywhere.
-- **Grid:** a 12-column grid on desktop and 4 columns on mobile. Text is start-aligned, which means right-aligned in RTL. Centre alignment is only for invitation hero text.
+- **Grid:** a 12-column grid on desktop and 4 columns on mobile. Text is start-aligned (logical properties, so a right-to-left language could be added later without rework). Centre alignment is only for invitation hero text.
 
 ## Motion
 

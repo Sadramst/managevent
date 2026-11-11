@@ -102,11 +102,11 @@ export default function HomePage() {
         <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-stone-400">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Zero-JS First Paint</span>
+            <span>Core details load without JavaScript</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Australian Privacy Act Compliant</span>
+            <span>Built for Australian privacy</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -130,7 +130,7 @@ export default function HomePage() {
               Experience the Guest Journey
             </h2>
             <p className="mt-2 text-sm text-stone-400 max-w-lg mx-auto">
-              Test each ceremony style with animated gate reveals, bilingual toggles, and live RSVP.
+              Test each ceremony style with animated gate reveals and live RSVP.
             </p>
           </div>
 
@@ -183,8 +183,8 @@ export default function HomePage() {
                   Winery Wedding & Reception
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Botanical filigree borders, an animated wax-seal reveal, live music,
-                  and dietary-aware catering options.
+                  Botanical filigree borders, an animated wax-seal reveal, live music, and
+                  dietary-aware catering options.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
@@ -222,7 +222,7 @@ export default function HomePage() {
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
                 <span className="text-[11px] text-stone-500 font-mono">/memorial</span>
                 <Link
-                  href="/i/memorial/robert-memorial-456"
+                  href="/i/dariush-memorial-3kp/cyrus-family-9xm42k"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-300 hover:text-white"
                 >
                   <span>Open Invite</span>

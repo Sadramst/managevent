@@ -125,6 +125,12 @@ importers:
 
   apps/invitation:
     dependencies:
+      '@fontsource/cormorant-garamond':
+        specifier: 5.3.0
+        version: 5.3.0
+      '@fontsource/plus-jakarta-sans':
+        specifier: 5.3.0
+        version: 5.3.0
       '@managevent/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client

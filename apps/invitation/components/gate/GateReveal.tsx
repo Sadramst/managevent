@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
+import { getExperienceMode } from "@managevent/i18n";
 import { Sparkles } from "lucide-react";
 
 interface GateRevealProps {
@@ -25,7 +26,7 @@ export const GateReveal: React.FC<GateRevealProps> = ({
   const [isOpen, setIsOpen] = useState(isOpenedDefault);
   const [isOpening, setIsOpening] = useState(false);
 
-  const isMemorial = experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode({ experienceMode }) === "MEMORIAL";
   const { gate, colors } = theme;
 
   const handleOpen = () => {
@@ -102,7 +103,7 @@ export const GateReveal: React.FC<GateRevealProps> = ({
                     color: colors.inkMuted,
                   }}
                 >
-                  <Sparkles className="h-3 w-3 text-accent" />
+                  {!isMemorial && <Sparkles className="h-3 w-3 text-accent" />}
                   <span>{isMemorial ? "Personal Invitation" : "Exclusive Invitation"}</span>
                 </div>
 

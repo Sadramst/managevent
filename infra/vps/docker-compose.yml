@@ -79,7 +79,8 @@ services:
       dockerfile: apps/marketing/Dockerfile
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     environment:
       APP_ENV: production
       NODE_ENV: production
@@ -100,7 +101,8 @@ services:
       dockerfile: apps/invitation/Dockerfile
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     environment:
       APP_ENV: production
       NODE_ENV: production
@@ -157,4 +159,3 @@ volumes:
   db-data:
   caddy-data:
   caddy-config:
-

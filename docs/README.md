@@ -10,3 +10,5 @@
 | `legacy/`       | Notes on the reference repos and the AI Studio prototype                                                                                          |
 
 Top-level specifications: `../ARCHITECTURE.md`, `../ROADMAP.md`, `../WEBSITE.md`, `../packages/db/DATA_MODEL.md`.
+
+Sprint board and team roster: `teams/BOARD.md`.

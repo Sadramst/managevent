@@ -1,5 +1,7 @@
 # Deployment Guide: invitation.managevent.com.au
 
+> The live production stack currently runs on the Sydney VPS with Docker Compose and Caddy. See [../../infra/vps/README.md](../../infra/vps/README.md). The Vercel steps below are the alternative target (`vercel.json` pins `syd1`). The site is English only (en-AU).
+
 This guide outlines how to deploy the **Managevent Digital Invitations & Host Studio** (`apps/invitation`) to Vercel targeting the production custom domain `invitation.managevent.com.au`.
 
 ---

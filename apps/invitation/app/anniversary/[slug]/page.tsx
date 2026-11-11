@@ -1,5 +1,10 @@
 import { redirect, notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { invitationStore } from "@/lib/invitation-store";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false, noarchive: true },
+};
 
 interface LegacyAnniversaryProps {
   params: Promise<{ slug: string }>;
@@ -27,6 +32,8 @@ export default async function LegacyAnniversaryPage({
   for (const [key, val] of Object.entries(query)) {
     if (typeof val === "string") {
       search.set(key, val);
+    } else if (Array.isArray(val)) {
+      for (const item of val) search.append(key, item);
     }
   }
 

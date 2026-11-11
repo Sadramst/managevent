@@ -13,6 +13,7 @@ import { VenueMapSection } from "@/components/views/VenueMapSection";
 import { GallerySection } from "@/components/views/GallerySection";
 import { RsvpDrawer } from "@/components/rsvp/RsvpDrawer";
 import { AudioPlayer } from "@/components/views/AudioPlayer";
+import { getExperienceMode } from "@managevent/i18n";
 import { QrCode } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -41,6 +42,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   const [currentMode, setCurrentMode] = useState<ViewMode>("story");
 
   const { colors } = theme;
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
   const hasGallery = Boolean(event.content.galleryImages && event.content.galleryImages.length > 0);
 
   const handleOpenGate = () => {
@@ -64,7 +66,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
       <GateReveal
         theme={theme}
         guestName={party.displayName}
-        experienceMode={event.experienceMode}
+        experienceMode={isMemorial ? "MEMORIAL" : "CELEBRATION"}
         isOpenedDefault={isGateOpen}
         onOpen={handleOpenGate}
       >
@@ -83,7 +85,6 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             <QrCode className="h-3.5 w-3.5" style={{ color: colors.accent }} />
             <span>{"Entry Pass"}</span>
           </a>
-
         </div>
 
         {/* Main Invitation Sections */}
@@ -100,7 +101,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           <CountdownSection
             targetDateISO={event.startsAt}
             theme={theme}
-            experienceMode={event.experienceMode}
+            experienceMode={isMemorial ? "MEMORIAL" : "CELEBRATION"}
           />
 
           {/* Segmented View Mode Tab Switcher */}
@@ -114,13 +115,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           {/* Dynamic View Section */}
           {currentMode === "story" && <StorySection event={event} theme={theme} />}
 
-          {currentMode === "timeline" && (
-            <TimelineSection event={event} theme={theme} />
-          )}
+          {currentMode === "timeline" && <TimelineSection event={event} theme={theme} />}
 
-          {currentMode === "gallery" && (
-            <GallerySection event={event} theme={theme} />
-          )}
+          {currentMode === "gallery" && <GallerySection event={event} theme={theme} />}
 
           {/* Venue, Maps & Dress Code */}
           <VenueMapSection event={event} theme={theme} />
@@ -141,9 +138,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           className="border-t py-8 text-center text-xs opacity-60"
           style={{ borderColor: colors.rule }}
         >
-          <p>
-            {event.title} • {"Ceremony curated by Managevent"}
-          </p>
+          <p>{isMemorial ? event.title : `${event.title} • Ceremony curated by Managevent`}</p>
         </footer>
       </GateReveal>
     </div>

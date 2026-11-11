@@ -8,18 +8,18 @@ the same box. Those static pages are a **holding page and invitation teaser**, n
 product: `apps/marketing` and `apps/invitation` are still `"status": "not-scaffolded"`, so
 no Vercel project exists and none can be deployed yet.
 
-| Item | Value |
-| --- | --- |
-| Provider / region | Vultr `syd` — Sydney, NSW, AU (`ap-southeast-2` equivalent) |
-| Plan | `vc2-1c-2gb` — 1 vCPU, 2 GB RAM, 55 GB SSD, 5 GB swap |
-| Host | `managevent-prod` (`managevent-api`), Ubuntu 24.04 |
-| Public IP | `139.180.163.128` |
-| API hostname | `api.managevent.com.au` (live, Let's Encrypt) |
-| Marketing hostname | `www.managevent.com.au` (static page, Let's Encrypt) |
-| Invitation hostname | `invitation.managevent.com.au` (static page, ZeroSSL) |
-| Repo on server | `/opt/managevent` |
-| Stack definition | [`infra/vps/docker-compose.yml`](infra/vps/docker-compose.yml) |
-| Operator runbook | [`infra/vps/README.md`](infra/vps/README.md) |
+| Item                | Value                                                          |
+| ------------------- | -------------------------------------------------------------- |
+| Provider / region   | Vultr `syd` — Sydney, NSW, AU (`ap-southeast-2` equivalent)    |
+| Plan                | `vc2-1c-2gb` — 1 vCPU, 2 GB RAM, 55 GB SSD, 5 GB swap          |
+| Host                | `managevent-prod` (`managevent-api`), Ubuntu 24.04             |
+| Public IP           | `139.180.163.128`                                              |
+| API hostname        | `api.managevent.com.au` (live, Let's Encrypt)                  |
+| Marketing hostname  | `www.managevent.com.au` (static page, Let's Encrypt)           |
+| Invitation hostname | `invitation.managevent.com.au` (static page, ZeroSSL)          |
+| Repo on server      | `/opt/managevent`                                              |
+| Stack definition    | [`infra/vps/docker-compose.yml`](infra/vps/docker-compose.yml) |
+| Operator runbook    | [`infra/vps/README.md`](infra/vps/README.md)                   |
 
 ## Architecture
 
@@ -64,11 +64,11 @@ in their CDN, which stores nothing.
 
 At VentraIP VIPcontrol → Domains → `managevent.com.au` → DNS:
 
-| Type | Name | Value | TTL |
-| --- | --- | --- | --- |
-| `A` | `api` | `139.180.163.128` | 3600 |
-| `A` | `www` | `139.180.163.128` | 14400 |
-| `A` | `invitation` | `139.180.163.128` | 3600 |
+| Type | Name         | Value             | TTL   |
+| ---- | ------------ | ----------------- | ----- |
+| `A`  | `api`        | `139.180.163.128` | 3600  |
+| `A`  | `www`        | `139.180.163.128` | 14400 |
+| `A`  | `invitation` | `139.180.163.128` | 3600  |
 
 The apex (`managevent.com.au`) still points at `103.42.108.46`; leave it alone until a
 real marketing app replaces the holding page and a redirect decision is made.
@@ -168,7 +168,7 @@ Never commit `.env`, `.env.*` or generated key files. Only `.env.example` is tra
 
 **Certificate will not issue even though DNS is correct.**
 ACME CAs cache negative answers for the zone's SOA minimum. This zone uses
-`3600` (1 hour), so a validation that ran *before* the A record existed can keep returning
+`3600` (1 hour), so a validation that ran _before_ the A record existed can keep returning
 `NXDOMAIN` for up to an hour, even though `dig` and public resolvers show the record.
 Diagnose with DNS-over-HTTPS, which bypasses every intermediate cache:
 
@@ -194,9 +194,9 @@ row and does not call Resend. A real adapter must be wired before launch.
 
 ## Known gaps
 
-| Gap | Impact |
-| --- | --- |
+| Gap                                                | Impact                                                                           |
+| -------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `apps/marketing`, `apps/invitation` not scaffolded | No Vercel deployment possible; checklist URLs (`/i/...`, `/studio`) do not exist |
-| Worker email adapter is mocked | No transactional email is sent |
-| No off-server database backups | Single point of failure; volume `managevent_db-data` is on one disk |
-| ACME contact is a placeholder | `admin@managevent.com.au` in the Caddyfile — confirm the mailbox exists |
+| Worker email adapter is mocked                     | No transactional email is sent                                                   |
+| No off-server database backups                     | Single point of failure; volume `managevent_db-data` is on one disk              |
+| ACME contact is a placeholder                      | `admin@managevent.com.au` in the Caddyfile — confirm the mailbox exists          |

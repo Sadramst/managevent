@@ -11,11 +11,7 @@ interface AudioPlayerProps {
   theme: InvitationThemeTokens;
 }
 
-export const AudioPlayer: React.FC<AudioPlayerProps> = ({
-  audioUrl,
-  audioTitle,
-  theme,
-}) => {
+export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, audioTitle, theme }) => {
   const { colors } = theme;
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
@@ -76,7 +72,8 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
         type="button"
         onClick={toggleMute}
         aria-label={isMuted ? "Unmute music" : "Mute music"}
-        className="group relative flex items-center gap-2 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105"
+        aria-pressed={isPlaying && !isMuted}
+        className="group relative flex items-center gap-2 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100"
         style={{
           backgroundColor: colors.surface,
           borderColor: colors.rule,
@@ -85,7 +82,7 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({
       >
         <div
           className={`flex h-7 w-7 items-center justify-center rounded-full transition-transform ${
-            isPlaying && !isMuted ? "animate-spin" : ""
+            isPlaying && !isMuted ? "animate-spin motion-reduce:animate-none" : ""
           }`}
           style={{
             backgroundColor: `${colors.accent}20`,

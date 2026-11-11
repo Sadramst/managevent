@@ -78,7 +78,7 @@ export class ManageventApiClient {
   constructor(options: ApiClientOptions = {}) {
     this.baseUrl = (
       options.baseUrl ??
-      process.env.NEXT_PUBLIC_API_URL ??
+      (typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_API_URL : undefined) ??
       "http://localhost:4000"
     ).replace(/\/$/, "");
     if (options.bearerToken) {
@@ -117,16 +117,31 @@ export class ManageventApiClient {
       ...(params.body !== undefined ? { body: JSON.stringify(params.body) } : {}),
     });
 
-    const json: unknown = await res.json();
+    const text = await res.text();
+    let json: unknown;
+    let parsedOk = true;
+    try {
+      json = text.length > 0 ? JSON.parse(text) : undefined;
+    } catch {
+      parsedOk = false;
+    }
 
     if (!res.ok) {
       const parsedErr = ApiErrorSchema.safeParse(json);
-      if (parsedErr.success) {
+      if (parsedOk && parsedErr.success) {
         throw new ManageventApiClientError(res.status, parsedErr.data.error);
       }
       throw new ManageventApiClientError(res.status, {
         code: `HTTP_${res.status}`,
         message: `API request failed with status ${res.status}`,
+        requestId: res.headers.get("x-request-id") ?? "req_unknown",
+      });
+    }
+
+    if (!parsedOk) {
+      throw new ManageventApiClientError(res.status, {
+        code: `HTTP_${res.status}`,
+        message: "API returned a non-JSON response",
         requestId: res.headers.get("x-request-id") ?? "req_unknown",
       });
     }

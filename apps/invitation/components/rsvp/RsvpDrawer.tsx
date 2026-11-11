@@ -1,5 +1,6 @@
 "use client";
 
+import { getExperienceMode } from "@managevent/i18n";
 import React, { useState } from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
 import type { DietaryTag, RsvpStatus } from "@managevent/types";
@@ -29,7 +30,7 @@ const DIETARY_OPTIONS: Array<{ value: DietaryTag; labelEn: string }> = [
 
 export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, locale }) => {
   const { colors } = theme;
-  const isMemorial = event.experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
 
   // Form State
   const [overallStatus, setOverallStatus] = useState<RsvpStatus>(
@@ -201,7 +202,8 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
               style={{ color: colors.ink }}
             >
               {overallStatus === "YES"
-                ?"We cannot wait to celebrate this special day together.":"We will miss having you there, but thank you warmly for letting us know."}
+                ? "We cannot wait to celebrate this special day together."
+                : "We will miss having you there, but thank you warmly for letting us know."}
             </p>
 
             {overallStatus === "YES" && (
@@ -426,7 +428,9 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                       className="inline h-3.5 w-3.5 me-1"
                       style={{ color: colors.accent }}
                     />
-                    {"I consent to dietary & allergy information being processed solely for catering purposes for this event under Australian Privacy Principles (APPs)."}
+                    {
+                      "I consent to dietary & allergy information being processed solely for catering purposes for this event under Australian Privacy Principles (APPs)."
+                    }
                   </label>
                 </div>
 
@@ -437,7 +441,8 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                     style={{ color: colors.accentInk }}
                   >
                     {isMemorial
-                      ?"A song that reminds you of them (optional)":"Song Request for the Dance Floor (optional)"}
+                      ? "A song that reminds you of them (optional)"
+                      : "Song Request for the Dance Floor (optional)"}
                   </label>
                   <input
                     type="text"
@@ -464,7 +469,8 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                 style={{ color: colors.accentInk }}
               >
                 {isMemorial
-                  ?"Message of Condolence to Family (optional)":"Warm message to the hosts (optional)"}
+                  ? "Message of Condolence to Family (optional)"
+                  : "Warm message to the hosts (optional)"}
               </label>
               <textarea
                 rows={2}
@@ -516,8 +522,7 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                 color: "#FFFFFF",
               }}
             >
-              {isSubmitting
-                ?"Submitting...":"Submit RSVP Response"}
+              {isSubmitting ? "Submitting..." : "Submit RSVP Response"}
             </button>
           </form>
         )}

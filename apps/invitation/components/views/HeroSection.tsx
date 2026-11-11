@@ -4,6 +4,7 @@ import { formatCeremonyDate } from "@/lib/i18n";
 import type { EventModel } from "@/lib/types";
 import { ArchDecoration } from "../invitation/ArchDecoration";
 import { VectorFlorals } from "../invitation/VectorFlorals";
+import { getExperienceMode } from "@managevent/i18n";
 import { Sparkles, Calendar, MapPin } from "lucide-react";
 
 interface HeroSectionProps {
@@ -14,12 +15,13 @@ interface HeroSectionProps {
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ event, theme, greetingName, locale }) => {
-  const isMemorial = event.experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
   const { colors } = theme;
 
   const formattedDate = formatCeremonyDate(event.startsAt, locale, {
     includeTime: true,
     includeWeekday: true,
+    timeZone: event.timeZone,
   });
 
   return (
@@ -35,7 +37,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ event, theme, greeting
           borderColor: colors.rule,
         }}
       >
-        <Sparkles className="h-3.5 w-3.5" style={{ color: colors.accent }} />
+        {!isMemorial && <Sparkles className="h-3.5 w-3.5" style={{ color: colors.accent }} />}
         <span
           className="font-serif text-xs font-semibold tracking-wide"
           style={{ color: colors.accentInk }}

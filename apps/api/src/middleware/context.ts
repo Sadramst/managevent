@@ -3,6 +3,7 @@
  * auth actor extraction, and unified error handling (`{ error: { code, message, details?, requestId } }`).
  */
 import type { Context, MiddlewareHandler } from "hono";
+import { HTTPException } from "hono/http-exception";
 import { AuthorizationError, type AuthActor } from "@managevent/auth";
 import { redactForLog, redactUrl } from "@managevent/config";
 import { generateUuidV7 } from "@managevent/db";
@@ -25,13 +26,17 @@ export interface StructuredLogEntry {
   [key: string]: unknown;
 }
 
+/** Caller-supplied request ids must be short and header/log safe. */
+const SAFE_REQUEST_ID = /^[A-Za-z0-9._-]{1,128}$/;
+
 /**
  * Attaches a unique `X-Request-Id` header and context variable to every request.
  */
 export function requestIdMiddleware(): MiddlewareHandler<ApiEnv> {
   return async (c, next) => {
     const incoming = c.req.header("x-request-id")?.trim();
-    const requestId = incoming && incoming.length > 0 ? incoming : `req_${generateUuidV7()}`;
+    const requestId =
+      incoming && SAFE_REQUEST_ID.test(incoming) ? incoming : `req_${generateUuidV7()}`;
     c.set("requestId", requestId);
     c.header("x-request-id", requestId);
     await next();
@@ -89,6 +94,7 @@ export interface RateLimiterOptions {
  */
 export function createRateLimiter(options: RateLimiterOptions): MiddlewareHandler<ApiEnv> {
   const hits = new Map<string, { count: number; resetAtMs: number }>();
+  let lastPruneMs = 0;
 
   return async (c, next) => {
     const ip =
@@ -96,6 +102,14 @@ export function createRateLimiter(options: RateLimiterOptions): MiddlewareHandle
       c.req.header("x-real-ip")?.trim() ??
       "127.0.0.1";
     const nowMs = Date.now();
+    if (nowMs - lastPruneMs >= options.windowMs) {
+      lastPruneMs = nowMs;
+      for (const [key, entry] of hits) {
+        if (nowMs >= entry.resetAtMs) {
+          hits.delete(key);
+        }
+      }
+    }
     const current = hits.get(ip);
 
     if (!current || nowMs >= current.resetAtMs) {
@@ -152,6 +166,33 @@ export function handleApiError(err: unknown, c: Context<ApiEnv>): Response {
         },
       },
       400,
+    );
+  }
+
+  if (err instanceof SyntaxError) {
+    return c.json(
+      {
+        error: {
+          code: "BAD_REQUEST",
+          message: "Malformed JSON request body",
+          requestId,
+        },
+      },
+      400,
+    );
+  }
+
+  if (err instanceof HTTPException) {
+    const status = err.status;
+    return c.json(
+      {
+        error: {
+          code: status === 400 ? "BAD_REQUEST" : `HTTP_${status}`,
+          message: status >= 500 ? "Internal server error" : err.message || "Request failed",
+          requestId,
+        },
+      },
+      status,
     );
   }
 

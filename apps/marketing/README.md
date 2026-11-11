@@ -6,7 +6,7 @@ The public platform for Managevent in Perth, Western Australia. It covers all ce
 
 ## Language Architecture
 
-- **Primary Launch Language**: English (`en`, served at `/`).
+- **Language**: English only (en-AU), served at `/`. Legacy `/fa` URLs redirect to English. No Persian content is shipped.
 - **Multi-Language Expansion Ready**: Built on `@managevent/i18n` with full dictionary parity testing and logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`), allowing other locales to be added later through a `contract-change`.
 
 ## Key Surfaces
@@ -17,6 +17,7 @@ The public platform for Managevent in Perth, Western Australia. It covers all ce
    - **0-to-100 Full-Stack Services Showcase**: Concept & Run-Sheet, Venue Sourcing, Catering & Bar (Halal/Dietary/RSA), Styling & Florals, Audio/Visual & Crew, Digital Invitations & QR Check-in.
    - **Interactive Event & Ceremony Cost Estimator (`#estimator`)**: Calculates live AUD (incl. 10% GST) low/high investment bands, Ex-GST + GST splits, and logistics bridge outputs (banquet tables, catering portions with buffer, service crew, and cake serves), with one-click transfer into the Enquiry Form.
    - **Curated Perth Venues Showcase**: Validated from `/content/venues/perth.json` across Swan Valley, Perth CBD, Fremantle, South Perth, and Cottesloe.
+   - **Ask about this venue**: each venue card links to `/?venue=<slug>#enquiry`. The enquiry form reads `venue` on the client, and a known slug shows a note and prefills the editable message. Unknown, empty or repeated values are ignored (`lib/venue-prefill.ts`, `resolveVenueName`). Copy keys: `launchVenueAsk`, `launchVenueNote`, `launchVenuePrefill` in `packages/i18n/src/launch.ts`. It makes no booking or availability claim.
    - **Enquiry & Consultation Form**: Server Action (`submitEnquiryAction`) posting to `POST /v1/leads` with Zod validation, honeypot protection, and unticked marketing consent.
 2. **Planner & Admin Command Centre (`/[locale]/admin`)**:
    - **CRM Lead Pipeline**: Search, stage filter (`NEW`, `CONTACTED`, `PROPOSAL_SENT`, `WON`, `LOST`), ceremony filter, quick phone/walk-in lead intake, and native `<dialog>` Lead Inspector with live stage transitions and audit log recording.

@@ -21,20 +21,22 @@ export default function GuestPassPage({ params }: PassPageProps) {
 
   const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
 
-  if (!lookup) {
-    notFound();
-  }
-
-  const { event, party } = lookup;
-  const theme = INVITATION_THEMES[event.themeId] || INVITATION_THEMES["royal-ivory"];
+  // Hooks must run before any conditional return (notFound throws).
+  const event = lookup?.event;
+  const party = lookup?.party;
+  const theme =
+    INVITATION_THEMES[event?.themeId ?? "royal-ivory"] || INVITATION_THEMES["royal-ivory"];
   const { colors } = theme;
+  const eventSlugForQr = event?.slug;
+  const partyTokenForQr = party?.token;
 
   useEffect(() => {
+    if (!eventSlugForQr || !partyTokenForQr) return;
     const origin =
       typeof window !== "undefined"
         ? window.location.origin
         : "https://invitation.managevent.com.au";
-    const checkinPayload = `${origin}/i/${event.slug}/${party.token}`;
+    const checkinPayload = `${origin}/i/${eventSlugForQr}/${partyTokenForQr}`;
 
     QRCode.toDataURL(checkinPayload, {
       width: 280,
@@ -46,7 +48,11 @@ export default function GuestPassPage({ params }: PassPageProps) {
     })
       .then((url) => setQrDataUrl(url))
       .catch((err) => console.error("Error creating pass QR", err));
-  }, [event.slug, party.token, colors.accentInk]);
+  }, [eventSlugForQr, partyTokenForQr, colors.accentInk]);
+
+  if (!event || !party) {
+    notFound();
+  }
 
   const handlePrint = () => {
     window.print();
@@ -121,10 +127,25 @@ export default function GuestPassPage({ params }: PassPageProps) {
             {party.displayName}
           </h2>
 
-          <div className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-            <CheckCircle2 className="h-3.5 w-3.5" />
-            <span>RSVP Confirmed</span>
-          </div>
+          {party.status === "YES" ? (
+            <div className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+              <CheckCircle2 className="h-3.5 w-3.5" />
+              <span>RSVP Confirmed</span>
+            </div>
+          ) : (
+            <div
+              className="mt-2 inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full border"
+              style={{ color: colors.inkMuted, borderColor: colors.rule }}
+            >
+              <span>
+                {party.status === "NO"
+                  ? "RSVP declined"
+                  : party.status === "MAYBE"
+                    ? "RSVP tentative"
+                    : "RSVP pending"}
+              </span>
+            </div>
+          )}
 
           {/* Details Grid */}
           <div

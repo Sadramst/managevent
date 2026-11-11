@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getExperienceMode } from "@managevent/i18n";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
 
 interface CountdownSectionProps {
@@ -29,7 +30,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
     passed: false,
   });
 
-  const isMemorial = experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode({ experienceMode }) === "MEMORIAL";
   const { colors } = theme;
 
   useEffect(() => {
@@ -77,10 +78,10 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
   };
 
   const labels = {
-    days:"Days",
-    hours:"Hours",
-    minutes:"Mins",
-    seconds:"Secs",
+    days: "Days",
+    hours: "Hours",
+    minutes: "Mins",
+    seconds: "Secs",
   };
 
   return (

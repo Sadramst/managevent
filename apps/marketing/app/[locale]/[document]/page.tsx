@@ -30,11 +30,7 @@ export async function generateMetadata({
   const { document } = await params;
   if (!(document in documents)) notFound();
   const keys = documents[document as keyof typeof documents];
-  return pageMetadata(
-    "en",
-    t("en", keys[0]),
-    `/${document}`,
-  );
+  return pageMetadata("en", t("en", keys[0]), `/${document}`);
 }
 
 export default async function Document({

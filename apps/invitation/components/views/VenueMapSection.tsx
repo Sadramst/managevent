@@ -1,5 +1,6 @@
 import React from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
+import { getExperienceMode } from "@managevent/i18n";
 import type { EventModel } from "@/lib/types";
 import { MapPin, Navigation, Car, Shirt, Gift, HeartHandshake } from "lucide-react";
 
@@ -10,7 +11,7 @@ interface VenueMapSectionProps {
 
 export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme }) => {
   const { colors } = theme;
-  const isMemorial = event.experienceMode === "MEMORIAL";
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
   const { venue, content } = event;
 
   const googleMapsUrl =
@@ -125,9 +126,7 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme }
                 {"Parking Details"}
               </div>
               <p className="mt-1 text-xs" style={{ color: colors.inkMuted }}>
-                {venue.parkingInfo ||
-                  content.parkingInfo ||
-                  "On-site parking available."}
+                {venue.parkingInfo || content.parkingInfo || "On-site parking available."}
               </p>
             </div>
           </div>
@@ -154,9 +153,7 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme }
                 {"Dress Code"}
               </div>
               <p className="mt-1 text-xs" style={{ color: colors.inkMuted }}>
-                {venue.dressCode ||
-                  content.dressCode ||
-                  "Formal / Cocktail Attire"}
+                {venue.dressCode || content.dressCode || "Formal / Cocktail Attire"}
               </p>
             </div>
           </div>

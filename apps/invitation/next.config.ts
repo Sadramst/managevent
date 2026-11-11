@@ -25,22 +25,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async rewrites() {
-    return [
-      {
-        source: "/anniversary",
-        destination: "/legacy/anniversary",
-      },
-      {
-        source: "/anniversary/:guestSlug",
-        destination: "/legacy/anniversary/:guestSlug",
-      },
-      {
-        source: "/e/:eventSlug/:guestSlug",
-        destination: "/legacy/e/:eventSlug/:guestSlug",
-      },
-    ];
-  },
   async headers() {
     return [
       // Standard security headers on all routes
@@ -92,6 +76,42 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/legacy/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/anniversary/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/e/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "X-Robots-Tag",
+            value: "noindex, nofollow, noarchive",
+          },
+        ],
+      },
+      {
+        source: "/studio/new",
         headers: [
           {
             key: "X-Robots-Tag",

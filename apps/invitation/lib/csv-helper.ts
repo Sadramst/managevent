@@ -52,16 +52,11 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
       rowObj[header] = values[idx] ?? "";
     });
 
-    const name =
-      rowObj.name || rowObj["guest name"] || values[0] || "";
+    const name = rowObj.name || rowObj["guest name"] || values[0] || "";
     if (!name) continue;
 
-    const partyName =
-      rowObj.party || rowObj["party name"] || rowObj.group || name;
-    const seats = Number.parseInt(
-      rowObj.seats || rowObj["max seats"] || "1",
-      10,
-    );
+    const partyName = rowObj.party || rowObj["party name"] || rowObj.group || name;
+    const seats = Number.parseInt(rowObj.seats || rowObj["max seats"] || "1", 10);
     const table = rowObj.table || rowObj["table number"] || undefined;
     const email = rowObj.email || undefined;
     const phone = rowObj.phone || undefined;
@@ -99,7 +94,10 @@ export function buildCsvWithBom(
 ): string {
   const escapeCell = (val: string | number | boolean | null | undefined): string => {
     if (val === null || val === undefined) return '""';
-    const str = String(val).replace(/"/g, '""');
+    let str = String(val);
+    // Neutralise spreadsheet formula injection (OWASP CSV injection).
+    if (typeof val === "string" && /^[=+\-@\t\r]/.test(str)) str = `'${str}`;
+    str = str.replace(/"/g, '""');
     return `"${str}"`;
   };
 

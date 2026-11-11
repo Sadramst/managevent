@@ -1,5 +1,7 @@
 import React from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
+import { getExperienceMode } from "@managevent/i18n";
+import { formatScheduleTime } from "@/lib/i18n";
 import type { EventModel } from "@/lib/types";
 import { Clock, CalendarCheck } from "lucide-react";
 
@@ -10,6 +12,7 @@ interface TimelineSectionProps {
 
 export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme }) => {
   const { colors } = theme;
+  const isMemorial = getExperienceMode(event) === "MEMORIAL";
 
   return (
     <section className="relative px-4 py-8 sm:px-8 sm:py-12">
@@ -32,7 +35,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme }
             className="font-display text-2xl font-bold tracking-tight sm:text-3xl"
             style={{ color: colors.accentInk }}
           >
-            {"Celebration Timeline"}
+            {isMemorial ? "Order of Service" : "Celebration Timeline"}
           </h2>
           <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
@@ -43,12 +46,12 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme }
           style={{ borderColor: colors.rule }}
         >
           {event.schedule.map((item, idx) => {
-            const displayTime = item.time;
+            const displayTime = formatScheduleTime(item.time);
             return (
               <div key={idx} className="relative group">
                 {/* Node marker on the vertical rule */}
                 <div
-                  className="absolute -start-[31px] sm:-start-[39px] top-1.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full border-2 transition-transform duration-200 group-hover:scale-125"
+                  className={`absolute -start-[31px] sm:-start-[39px] top-1.5 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full border-2 duration-200 ${isMemorial ? "" : "transition-transform motion-reduce:transition-none group-hover:scale-125 motion-reduce:group-hover:scale-100"}`}
                   style={{
                     backgroundColor: colors.surface,
                     borderColor: colors.accent,

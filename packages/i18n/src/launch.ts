@@ -97,6 +97,9 @@ export const launchEn = {
   launchVenuesIntro:
     "Already have a venue or hosting at home? We come to you. Need the right space? We source and coordinate permits across Perth's finest settings.",
   launchVenueCapLabel: "Capacity up to {max} guests",
+  launchVenueAsk: "Ask about this venue",
+  launchVenueNote: "Asking about {venue}",
+  launchVenuePrefill: "I would like to ask about {venue}.",
   launchBridgeKicker: "The Managevent advantage",
   launchBridgeTitle: "Connected from digital invitation to event day",
   launchBridgeIntro:

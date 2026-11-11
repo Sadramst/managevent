@@ -14,8 +14,10 @@ RUN pnpm --filter @managevent/db db:generate
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV NODE_OPTIONS="--max-old-space-size=1280"
 RUN pnpm --filter @managevent/invitation build
 
+ENV NODE_OPTIONS="--max-old-space-size=384"
 ENV PORT=3001
 EXPOSE 3001
 

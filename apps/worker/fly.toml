@@ -1,0 +1,26 @@
+# Fly.io configuration for apps/worker (Sydney region: syd per ADR-0003 and OPEN_DECISIONS D-01)
+#
+# The worker is a long-running pg-boss consumer with no HTTP listener, so this file
+# deliberately declares `[processes]` and no `[http_service]`: Fly must not expect a
+# port, health check, or public IP here.
+app = "managevent-worker"
+primary_region = "syd"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_ENV = "production"
+  NODE_ENV = "production"
+  TZ = "Australia/Perth"
+
+[processes]
+  worker = "pnpm --filter @managevent/worker start"
+
+[[vm]]
+  memory = "512mb"
+  cpu_kind = "shared"
+  cpus = 1
+
+[deploy]
+  strategy = "rolling"

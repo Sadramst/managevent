@@ -1,5 +1,10 @@
 # Deployment
 
+> **Current reality:** the API, worker and PostgreSQL run on a single Sydney VPS. See
+> [`../DEPLOYMENT.md`](../DEPLOYMENT.md) for the live topology and
+> [`vps/README.md`](vps/README.md) for the operator runbook. The Vercel/Fly/EAS/Tauri plan
+> below is the intended target and is **not** what is deployed today.
+
 - **Web apps:** one Vercel project each, with root directory `apps/<name>`, the build command `turbo run build --filter=@managevent/<name>`, and functions in `syd1`. Ignored build step: `npx turbo-ignore`.
 - **API and worker:** Docker images built in GitHub Actions, deployed to Fly.io `syd` (D-01). Migrations run as a release command: `prisma migrate deploy`.
 - **Mobile:** EAS Build (profiles: development, preview, production), EAS Submit, and EAS Update channels per environment.

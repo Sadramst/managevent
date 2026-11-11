@@ -1,0 +1,23 @@
+# Caddy configuration for the Managevent API on a single VPS.
+# Caddy obtains and renews the Let's Encrypt certificate automatically once
+# api.managevent.com.au resolves to this server and ports 80/443 are reachable.
+{
+	email admin@managevent.com.au
+}
+
+api.managevent.com.au {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# The API sets its own request ids; Caddy only forwards.
+	reverse_proxy api:4000 {
+		health_uri /health
+		health_interval 15s
+	}
+}

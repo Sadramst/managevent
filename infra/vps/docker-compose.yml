@@ -1,0 +1,125 @@
+# Managevent production stack for one dedicated VPS (Sydney region).
+#
+# Shared by a single PostgreSQL instance, the Hono API, the pg-boss worker, and
+# Caddy for automatic TLS. All state is in named volumes; all secrets come from
+# the environment file next to this compose file (never committed).
+#
+#   cp .env.example .env    # then fill it in
+#   docker compose build
+#   docker compose run --rm migrate
+#   docker compose run --rm seed
+#   docker compose up -d
+name: managevent
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: managevent
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: managevent
+      TZ: Australia/Perth
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U managevent -d managevent"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    mem_limit: 640m
+
+  api:
+    image: managevent-api:local
+    build:
+      context: ../..
+      dockerfile: apps/api/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      PORT: "4000"
+      TZ: Australia/Perth
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://api.managevent.com.au}
+      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-managevent.com.au}
+    expose:
+      - "4000"
+    mem_limit: 512m
+    healthcheck:
+      # node:22-alpine ships busybox wget; no curl in the image.
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
+
+  worker:
+    image: managevent-worker:local
+    build:
+      context: ../..
+      dockerfile: apps/worker/Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: production
+      NODE_ENV: production
+      TZ: Australia/Perth
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+      # The worker ships MockSafeResendAdapter, so this is persisted but not sent yet.
+      EMAIL_FROM_TRANSACTIONAL: ${EMAIL_FROM_TRANSACTIONAL:-Managevent <hello@managevent.com.au>}
+    mem_limit: 448m
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    mem_limit: 128m
+
+  # One-shot tasks: `docker compose run --rm migrate` / `docker compose run --rm seed`.
+  migrate:
+    profiles: ["tools"]
+    image: managevent-api:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    command: ["pnpm", "--filter", "@managevent/db", "db:migrate"]
+
+  seed:
+    profiles: ["tools"]
+    image: managevent-api:local
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    command: ["pnpm", "--filter", "@managevent/db", "db:seed"]
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

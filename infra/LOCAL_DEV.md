@@ -45,7 +45,7 @@ curl http://localhost:4000/health
 
 curl -X POST http://localhost:4000/v1/leads \
   -H "Content-Type: application/json" \
-  -d '{"source":"BUILDER","name":"Sara Ahmadi","email":"sara@example.com","preferredLanguage":"fa"}'
+  -d '{"source":"BUILDER","name":"Sara Ahmadi","email":"sara@example.com","preferredLanguage":"en"}'
 ```
 
 ## 4. Quality checks (run before every PR)

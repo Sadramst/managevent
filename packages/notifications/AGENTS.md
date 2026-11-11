@@ -11,7 +11,7 @@
 
 ## Rules
 
-- Every send checks consent and suppression first. Templates exist in EN and FA.
+- Every send checks consent and suppression first. Templates exist in EN (en-AU).
 - Used by `apps/worker` (and the API for synchronous transactional sends only).
 
 ## Done means

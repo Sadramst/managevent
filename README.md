@@ -1,6 +1,6 @@
 # Managevent
 
-**Every ceremony, from 0 to 100.** Managevent plans, styles, supplies and runs ceremonies and events of every kind in Perth, Western Australia (Swan Valley, Perth CBD, Fremantle, Cottesloe, South Perth & metropolitan WA), then nationally: Weddings, Milestone Birthdays, Corporate Galas & Brand Launches, Cultural & Persian Ceremonies, and Funerals, Memorials & Wakes (served in respectful **Memorial Mode**).
+**Every ceremony, from 0 to 100.** Managevent plans, styles, supplies and runs ceremonies and events of every kind in Perth, Western Australia (Swan Valley, Perth CBD, Fremantle, Cottesloe, South Perth & metropolitan WA), then nationally: Weddings, Milestone Birthdays, Corporate Galas & Brand Launches, Cultural & Community Ceremonies, and Funerals, Memorials & Wakes (served in respectful **Memorial Mode**).
 
 Our full-service planning and vendor marketplace are powered by our own digital invitation, RSVP, dietary & allergy bridge, and check-in tools.
 
@@ -8,7 +8,7 @@ _A product by **Appilico**._
 
 | Surface                                                           | Domain                         | App folder         | Status                                                                                 |
 | ----------------------------------------------------------------- | ------------------------------ | ------------------ | -------------------------------------------------------------------------------------- |
-| Marketing site, Instant Cost Estimator, Venues & `/admin` Console | `www.managevent.com.au`        | `apps/marketing`   | ✅ Built & verified locally (English-first + `/fa` expansion ready)                    |
+| Marketing site, Instant Cost Estimator, Venues & `/admin` Console | `www.managevent.com.au`        | `apps/marketing`   | ✅ Built & verified locally (English (en-AU), multi-language ready)                    |
 | Digital invitations, Host Studio, guest micro-sites & QR passes   | `invitation.managevent.com.au` | `apps/invitation`  | ✅ Built & verified locally (`INV-01` … `INV-15`)                                      |
 | Admin and planner command centre (CRM, Run-sheets, GST, Audit)    | `admin.managevent.com.au`      | `apps/admin`       | ✅ Domain engine (`@managevent/admin`) + integrated UI at `/admin` in `apps/marketing` |
 | Backend API and webhooks (Hono on Node 22 + OpenAPI 3.1)          | `api.managevent.com.au`        | `apps/api`         | ✅ Built & verified locally (`Dockerfile` + `fly.toml` pinned to Sydney `syd`)         |
@@ -21,8 +21,8 @@ _A product by **Appilico**._
 ## Repository status
 
 - **Phase 0 (Foundations `FND-01` … `FND-16`)**: ✅ **Complete**. All 17 shared packages (`config`, `db`, `validators`, `types`, `i18n`, `ui`, `auth`, `payments`, `pricing`, `logistics`, `notifications`, `storage`, `api-client`, `ai`), `apps/api`, and `apps/worker` are implemented and covered by unit & integration tests.
-- **Phase 1 (Marketing Platform & Admin Command Centre `apps/marketing` + `apps/admin`)**: ✅ **Core Launch & Admin Complete**. Built with an English-first UI/UX (`en` default at `/`) and full architectural support for multi-language expansion (`/fa` RTL included), featuring the all-events showcase, 0-to-100 services matrix, interactive Instant Cost Estimator (`#estimator`), curated Perth venues showcase, digital RSVP-to-catering bridge explainer, enquiry & consultation booking form, and the **Planner & Admin Command Centre** (`/admin`).
-- **Phase 2 (Digital Invitations `apps/invitation`)**: ✅ **Complete (`INV-01` … `INV-15`)**. Host Studio, AI wording assistant, 7 themes + Memorial Mode, server-rendered Guest Micro-site, encrypted RSVP dietary bridge, QR passes, Photo Wall, Wishing Well / Tribute Book, and Legacy Slug migration are implemented and verified.
+- **Phase 1 (Marketing Platform & Admin Command Centre `apps/marketing` + `apps/admin`)**: ✅ **Core Launch & Admin Complete**. Built with an English-first UI/UX (`en` default at `/`) and architectural support for adding languages later, featuring the all-events showcase, 0-to-100 services matrix, interactive Instant Cost Estimator (`#estimator`), curated Perth venues showcase, digital RSVP-to-catering bridge explainer, enquiry & consultation booking form, and the **Planner & Admin Command Centre** (`/admin`).
+- **Phase 2 (Digital Invitations `apps/invitation`)**: ✅ **Complete (`INV-01` … `INV-15`)**. Host Studio, AI wording assistant, 6 themes + Memorial Mode, server-rendered Guest Micro-site, encrypted RSVP dietary bridge, QR passes, Photo Wall, Wishing Well / Tribute Book, and Legacy Slug migration are implemented and verified.
 - **See [`PROGRESS.md`](PROGRESS.md) and [`ROADMAP.md`](ROADMAP.md)** for the full Done (`✅`) vs Undone (`⬜`) breakdown across all product and business tracks.
 
 ## Start here
@@ -60,7 +60,7 @@ managevent/
 │   ├── validators/      Zod schemas: the contract between every app and the API
 │   ├── ui/              design tokens (Celebration & Memorial Mode) + web components
 │   ├── ui-native/       React Native components on the same tokens (Planned — Phase 5)
-│   ├── i18n/            EN-first + FA/multi-language dictionaries, RTL helpers, Jalali & Gregorian dates
+│   ├── i18n/            English (en-AU) dictionaries, locale and RTL plumbing, Gregorian dates
 │   ├── ai/              Gemini client, prompts, output schemas, PII scrubber, memorial tone guard
 │   ├── auth/            Better Auth config, RBAC roles and 22-permission matrix
 │   ├── payments/        Stripe + Stripe Connect, GST maths (integer AUD cents), tax invoices

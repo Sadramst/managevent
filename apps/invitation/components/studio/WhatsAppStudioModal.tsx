@@ -18,19 +18,16 @@ export const WhatsAppStudioModal: React.FC<WhatsAppStudioModalProps> = ({
   onClose,
 }) => {
   const [copied, setCopied] = useState(false);
-  const [localeChoice, setLocaleChoice] = useState<"en" | "fa">(event.defaultLanguage || "en");
 
   if (!isOpen || !party) return null;
 
   const origin =
     typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
-  const guestLink = `${origin}/i/${event.slug}/${party.token}?lang=${localeChoice}`;
+  const guestLink = `${origin}/i/${event.slug}/${party.token}`;
 
   const messageEn = `Dear ${party.displayName},\n\nYou are warmly invited to join us for ${event.title}.\n\nPlease view your personal invitation and RSVP here:\n${guestLink}\n\nWe look forward to celebrating with you!\n— ${event.content.coupleOrHostNames}`;
 
-  const messageFa = `با درود به ${party.displayName} گرامی،\n\nبا کمال احترام و محبت شما را به جشن ${event.title} دعوت می‌نماییم.\n\nجهت مشاهده دعوت‌نامه اختصاصی و اعلام حضور، لطفاً پیوند زیر را باز فرمایید:\n${guestLink}\n\nمشتاقانه در انتظار دیدار گرم شما هستیم.\n— ${event.content.coupleOrHostNames}`;
-
-  const currentMessage = localeChoice === "fa" ? messageFa : messageEn;
+  const currentMessage = messageEn;
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(currentMessage)}`;
 
   const handleCopy = () => {
@@ -62,28 +59,6 @@ export const WhatsAppStudioModal: React.FC<WhatsAppStudioModalProps> = ({
             <span className="text-xs font-semibold text-neutral-600">
               Guest: <strong className="text-neutral-900">{party.displayName}</strong>
             </span>
-
-            {/* Language toggle */}
-            <div className="inline-flex rounded-full border bg-neutral-100 p-0.5 text-xs">
-              <button
-                type="button"
-                onClick={() => setLocaleChoice("en")}
-                className={`rounded-full px-2.5 py-1 font-medium transition-all ${
-                  localeChoice === "en" ? "bg-white shadow-xs font-bold" : "text-neutral-600"
-                }`}
-              >
-                English
-              </button>
-              <button
-                type="button"
-                onClick={() => setLocaleChoice("fa")}
-                className={`rounded-full px-2.5 py-1 font-medium transition-all ${
-                  localeChoice === "fa" ? "bg-white shadow-xs font-bold" : "text-neutral-600"
-                }`}
-              >
-                فارسی
-              </button>
-            </div>
           </div>
 
           <div>

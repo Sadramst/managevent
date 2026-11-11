@@ -1,7 +1,7 @@
 # Managevent — Perth Business & Product Strategy (0 to 100)
 
 > **Operating Market:** Perth & Western Australia (Metro, Swan Valley, Perth Hills, Fremantle, Peel)
-> **Language Strategy:** English-first experience across all customer, planner, and admin surfaces, architected on `@managevent/i18n` for zero-friction expansion into additional languages (Persian/Farsi, Arabic, Mandarin, Hindi) as community verticals scale.
+> **Language Strategy:** English-first experience across all customer, planner, and admin surfaces, architected on `@managevent/i18n` for zero-friction expansion into additional languages (Arabic, Mandarin, Hindi) as community verticals scale.
 
 ---
 
@@ -25,7 +25,7 @@ Managevent is structured to serve **five high-demand event pillars** in Western 
 | **1. Weddings & Engagements**                  | Modern Australian weddings, vineyard receptions, elopements, engagement parties, bridal showers              | Swan Valley wineries, Kings Park, Matilda Bay foreshore, Cottesloe, Perth Hills orchards           | Package fee + 15–25% styling/hire margin + vendor commission                                  |
 | **2. Milestone & Private Celebrations**        | 21st, 30th, 40th, 50th+ birthdays, anniversaries, baby showers, gender reveals, graduations, housewarmings   | Fremantle heritage spaces, riverside venues, private residences (backyard marquees), South Perth   | Tiered fixed-price packages ($2.5k–$25k+) + custom add-ons                                    |
 | **3. Corporate & Community Events**            | End-of-year galas, product launches, award nights, conferences, charity fundraisers, council & school events | Perth CBD hotels/rooftops, Elizabeth Quay, Crown/Optus precincts, Joondalup/Canning/Melville halls | B2B fixed proposals + recurring corporate accounts + AV/hire                                  |
-| **4. Cultural & Traditional Ceremonies**       | Sofreh Aghd, Baleh Boroon, Nowruz, Shab-e Yalda, Mehmooni, multicultural weddings & community festivals      | Swan Valley estates, community banquet halls, riverfront pavilions                                 | Specialist styling & cultural prop hire (high margin, low competition)                        |
+| **4. Cultural & Traditional Ceremonies**       | multicultural weddings, engagements & community festivals                                                    | Swan Valley estates, community banquet halls, riverfront pavilions                                 | Specialist styling & cultural prop hire (high margin, low competition)                        |
 | **5. Memorials, Wakes & Celebrations of Life** | Post-service wakes, celebrations of life, unveiling gatherings, anniversary remembrances                     | Kings Park pavilions, river yacht clubs, suburban community halls, family homes                    | Dignified fixed-fee coordination + wake catering + free Premium Memorial digital tribute/RSVP |
 
 ---
@@ -38,7 +38,7 @@ Managevent is structured to serve **five high-demand event pillars** in Western 
 - **Dignified Calm (`MEMORIAL` Mode):** Automatically triggered for memorials, wakes, and celebrations of life via `getExperienceMode()`. Switches to Soft Alabaster (`#F8F9FA`), Deep Ink (`#1E293B`), Muted Slate (`#64748B`), and Warm Bronze (`#8C7A6B`) with gentle fade transitions and zero celebratory language or upsells.
 - **English-First, Multi-Language Ready:**
   - All primary UI flows, navigation, CTAs, estimator tools, and admin workflows are crafted in clear Australian English (`en-AU`, `AUD incl. GST`, `Australia/Perth` AWST timezone).
-  - Every string is backed by `@managevent/i18n` dictionaries and logical CSS layout properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`) so secondary languages (`/fa` Persian, and future `/ar`, `/zh`, `/hi`) work seamlessly without layout refactoring.
+  - Every string is backed by `@managevent/i18n` dictionaries and logical CSS layout properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`) so future languages (`/ar`, `/zh`, `/hi`) work seamlessly without layout refactoring.
 
 ### 3.2 Surface-by-Surface UX Architecture
 

@@ -4,7 +4,7 @@
 import { z } from "zod";
 
 export type PromptFeatureKey =
-  "ai.ceremony_architect" | "ai.bilingual_copywriter" | "ai.budget_allocator";
+  "ai.ceremony_architect" | "ai.invitation_copywriter" | "ai.budget_allocator";
 
 export type ModelTier = "FAST" | "REASONING";
 
@@ -15,7 +15,7 @@ export const CeremonyArchitectOutputSchema = z.object({
     .array(
       z.object({
         weeksBefore: z.number().int().min(0),
-        title: z.object({ en: z.string().min(1), fa: z.string().min(1) }),
+        title: z.object({ en: z.string().min(1) }),
       }),
     )
     .min(1),
@@ -36,15 +36,13 @@ export const CeremonyArchitectOutputSchema = z.object({
 
 export type CeremonyArchitectOutput = z.infer<typeof CeremonyArchitectOutputSchema>;
 
-export const BilingualCopywriterOutputSchema = z.object({
+export const InvitationCopywriterOutputSchema = z.object({
   promptVersion: z.string().min(1),
   isAiGenerated: z.literal(true),
   tone: z.enum([
     "poetic",
     "formal",
     "casual",
-    "persian-classical",
-    "persian-modern",
     "memorial-respectful",
   ]),
   en: z.object({
@@ -53,15 +51,9 @@ export const BilingualCopywriterOutputSchema = z.object({
     storyParagraphs: z.array(z.string().min(1)).min(1),
     scheduleSummary: z.string().min(1),
   }),
-  fa: z.object({
-    headline: z.string().min(1),
-    invitationBody: z.string().min(1),
-    storyParagraphs: z.array(z.string().min(1)).min(1),
-    scheduleSummary: z.string().min(1),
-  }),
 });
 
-export type BilingualCopywriterOutput = z.infer<typeof BilingualCopywriterOutputSchema>;
+export type InvitationCopywriterOutput = z.infer<typeof InvitationCopywriterOutputSchema>;
 
 export const BudgetAllocatorOutputSchema = z.object({
   promptVersion: z.string().min(1),
@@ -99,15 +91,15 @@ export const PROMPT_REGISTRY = {
       `Plan a ${ctx.ceremonySlug ?? "wedding"} ceremony in Perth for ${ctx.guestCount ?? 80} guests. Brief: ${ctx.brief ?? ""}`,
   } satisfies VersionedPromptEntry<typeof CeremonyArchitectOutputSchema>,
 
-  "ai.bilingual_copywriter": {
-    key: "ai.bilingual_copywriter",
+  "ai.invitation_copywriter": {
+    key: "ai.invitation_copywriter",
     version: "1.0.0",
     modelTier: "FAST",
     maxOutputTokens: 1536,
-    outputSchema: BilingualCopywriterOutputSchema,
+    outputSchema: InvitationCopywriterOutputSchema,
     buildUserPrompt: (ctx) =>
-      `Write parallel EN and FA invitation wording for ${ctx.ceremonySlug ?? "sofreh-aghd"} in tone '${ctx.tone ?? "formal"}'. Details: ${ctx.details ?? ""}`,
-  } satisfies VersionedPromptEntry<typeof BilingualCopywriterOutputSchema>,
+      `Write en-AU invitation wording for ${ctx.ceremonySlug ?? "wedding"} in tone '${ctx.tone ?? "formal"}'. Details: ${ctx.details ?? ""}`,
+  } satisfies VersionedPromptEntry<typeof InvitationCopywriterOutputSchema>,
 
   "ai.budget_allocator": {
     key: "ai.budget_allocator",
@@ -125,8 +117,8 @@ export const PROMPT_REGISTRY = {
  */
 export const AI_EVAL_FIXTURES: Readonly<{
   ceremonyArchitect: CeremonyArchitectOutput;
-  copywriterCelebration: BilingualCopywriterOutput;
-  copywriterMemorial: BilingualCopywriterOutput;
+  copywriterCelebration: InvitationCopywriterOutput;
+  copywriterMemorial: InvitationCopywriterOutput;
   budgetAllocator: BudgetAllocatorOutput;
 }> = {
   ceremonyArchitect: {
@@ -136,43 +128,34 @@ export const AI_EVAL_FIXTURES: Readonly<{
       {
         weeksBefore: 16,
         title: {
-          en: "Confirm Swan Valley venue and sofreh stylist",
-          fa: "تأیید محل برگزاری در سوان ولی و طراح سفره عقد",
+          en: "Confirm Swan Valley venue and stylist",
         },
       },
       {
         weeksBefore: 6,
         title: {
-          en: "Send bilingual digital invitations",
-          fa: "ارسال دعوت‌نامه‌های دیجیتال دوزبانه",
+          en: "Send digital invitations",
         },
       },
     ],
-    vendorChecklist: ["venue", "sofreh-set", "catering", "florals", "photo-video"],
+    vendorChecklist: ["venue", "av-lighting", "catering", "florals", "photo-video"],
     budgetSplitPercent: [
       { category: "catering", percent: 45 },
       { category: "venue", percent: 25 },
-      { category: "sofreh-set", percent: 15 },
+      { category: "av-lighting", percent: 15 },
       { category: "florals", percent: 15 },
     ],
   },
   copywriterCelebration: {
     promptVersion: "1.0.0",
     isAiGenerated: true,
-    tone: "persian-modern",
+    tone: "poetic",
     en: {
-      headline: "Together at Our Sofreh Aghd",
+      headline: "Together at Our Wedding",
       invitationBody:
-        "With joy in our hearts, we invite you to share in our Sofreh Aghd ceremony and reception in Perth.",
+        "With joy in our hearts, we invite you to share in our wedding ceremony and reception in Perth.",
       storyParagraphs: ["Our journey began in Perth and brings our families together."],
-      scheduleSummary: "4:00 PM Sofreh Aghd · 6:30 PM Dinner Reception",
-    },
-    fa: {
-      headline: "همراه ما در پای سفره عقد",
-      invitationBody:
-        "با دلی سرشار از شادی، از شما دعوت می‌کنیم در مراسم عقد و جشن ما در پرث حضور به هم رسانید.",
-      storyParagraphs: ["داستان ما در پرث آغاز شد و اکنون خانواده‌های ما را گرد هم می‌آورد."],
-      scheduleSummary: "ساعت ۱۶:۰۰ مراسم عقد · ساعت ۱۸:۳۰ پذیرایی شام",
+      scheduleSummary: "4:00 PM Ceremony · 6:30 PM Dinner Reception",
     },
   },
   copywriterMemorial: {
@@ -185,15 +168,6 @@ export const AI_EVAL_FIXTURES: Readonly<{
         "You are warmly invited to join our family in remembering and honouring a cherished life.",
       storyParagraphs: ["We gather quietly with family and friends to share memories together."],
       scheduleSummary: "10:30 AM Service of Remembrance · 11:30 AM Refreshments",
-    },
-    fa: {
-      headline: "به یاد و احترام",
-      invitationBody:
-        "با احترام از شما دعوت می‌کنیم در گردهمایی یادبود و گرامیداشت عزیز سفرکرده‌مان همراه خانواده ما باشید.",
-      storyParagraphs: [
-        "در کنار خانواده و دوستان گرد هم می‌آییم تا یاد و خاطره ایشان را گرامی بداریم.",
-      ],
-      scheduleSummary: "ساعت ۱۰:۳۰ مراسم یادبود · ساعت ۱۱:۳۰ پذیرایی",
     },
   },
   budgetAllocator: {

@@ -115,7 +115,7 @@ seeds preserve IDs and invoice sequence. Keep the Builder unpublished.
 
 ## Verification
 
-After DNS confirmation, verify HTTPS, apex 301 redirect, EN and FA pages, `/health`,
+After DNS confirmation, verify HTTPS, apex 301 redirect, the English site and legacy `/fa` redirects, `/health`,
 the Sydney runtime and Resend domain status. Only after Resend is verified, submit
 one clearly labelled real test enquiry from the live site and confirm the row,
 queue completion, notification receipt and translated auto-reply receipt. Do not

@@ -27,12 +27,12 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string; document: string }>;
 }) {
-  const { locale, document } = await params;
+  const { document } = await params;
   if (!(document in documents)) notFound();
   const keys = documents[document as keyof typeof documents];
   return pageMetadata(
-    locale === "fa" ? "fa" : "en",
-    t(locale === "fa" ? "fa" : "en", keys[0]),
+    "en",
+    t("en", keys[0]),
     `/${document}`,
   );
 }
@@ -43,7 +43,7 @@ export default async function Document({
   params: Promise<{ locale: string; document: string }>;
 }) {
   const { locale, document } = await params;
-  if ((locale !== "fa" && locale !== "en") || !(document in documents)) notFound();
+  if (locale !== "en" || !(document in documents)) notFound();
   const keys = documents[document as keyof typeof documents];
   return (
     <main id="main" className="wrap section legal">

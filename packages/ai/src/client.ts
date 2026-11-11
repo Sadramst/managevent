@@ -4,7 +4,6 @@
  * Model IDs are read from `GEMINI_MODEL_FAST` and `GEMINI_MODEL_REASONING` environment variables.
  */
 import { GoogleGenAI } from "@google/genai";
-import { normalizePersianText } from "@managevent/i18n";
 import type { ExperienceMode } from "@managevent/types";
 import {
   assertServerEnvironment,
@@ -15,8 +14,8 @@ import {
 } from "./guards.js";
 import {
   AI_EVAL_FIXTURES,
-  type BilingualCopywriterOutput,
-  BilingualCopywriterOutputSchema,
+  type InvitationCopywriterOutput,
+  InvitationCopywriterOutputSchema,
   type BudgetAllocatorOutput,
   type CeremonyArchitectOutput,
   type ModelTier,
@@ -99,7 +98,7 @@ export class ManageventAiClient {
           if (params.userPrompt.includes("Allocate category weights")) {
             return AI_EVAL_FIXTURES.budgetAllocator;
           }
-          if (params.userPrompt.includes("Write parallel EN and FA invitation wording")) {
+          if (params.userPrompt.includes("Write en-AU invitation wording")) {
             return params.systemInstruction.includes("Memorial Mode")
               ? AI_EVAL_FIXTURES.copywriterMemorial
               : AI_EVAL_FIXTURES.copywriterCelebration;
@@ -116,14 +115,14 @@ export class ManageventAiClient {
     experienceMode?: ExperienceMode;
     requestedTone?: CopywriterTone;
     details: string;
-  }): Promise<BilingualCopywriterOutput> {
+  }): Promise<InvitationCopywriterOutput> {
     assertServerEnvironment();
     this.quotaManager.consume({
       subjectKey: params.subjectKey,
       ...(params.isAnonymous !== undefined ? { isAnonymous: params.isAnonymous } : {}),
     });
 
-    const entry = PROMPT_REGISTRY["ai.bilingual_copywriter"];
+    const entry = PROMPT_REGISTRY["ai.invitation_copywriter"];
     const model = resolveGeminiModelId(entry.modelTier, this.env);
     const guard = enforceMemorialToneGuard({
       ceremonySlug: params.ceremonySlug,
@@ -154,16 +153,7 @@ export class ManageventAiClient {
       }
     }
 
-    const parsed = BilingualCopywriterOutputSchema.parse(rawOutput);
-    return {
-      ...parsed,
-      fa: {
-        headline: normalizePersianText(parsed.fa.headline),
-        invitationBody: normalizePersianText(parsed.fa.invitationBody),
-        storyParagraphs: parsed.fa.storyParagraphs.map(normalizePersianText),
-        scheduleSummary: normalizePersianText(parsed.fa.scheduleSummary),
-      },
-    };
+    return InvitationCopywriterOutputSchema.parse(rawOutput);
   }
 
   async generateCeremonyPlan(params: {

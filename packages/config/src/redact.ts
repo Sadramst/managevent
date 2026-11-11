@@ -88,7 +88,7 @@ export function isSensitiveKey(key: string): boolean {
  * Redacts guest tokens and sensitive query parameters from URLs.
  *
  * Examples:
- * - `/i/sara-ali-aghd/sara-family-g9qtmt` -> `/i/sara-ali-aghd/[REDACTED]`
+ * - `/i/sara-ali-engage/sara-family-g9qtmt` -> `/i/sara-ali-engage/[REDACTED]`
  * - `/display/evt_123/disp_tok_abc` -> `/display/evt_123/[REDACTED]`
  * - `/legacy/anniversary/armita-party-g9qtmt` -> `/legacy/anniversary/[REDACTED]`
  */

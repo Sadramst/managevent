@@ -1,7 +1,9 @@
 {
   "slug": "gold-coast",
   "status": "hidden",
-  "name": { "en": "Gold Coast", "fa": "گلد کوست" },
+  "name": {
+    "en": "Gold Coast"
+  },
   "state": "QLD",
   "timeZone": "Australia/Brisbane",
   "areasServed": []

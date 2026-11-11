@@ -105,8 +105,8 @@ export interface EventModel {
   startsAt: string; // ISO datetime
   endsAt?: string | undefined;
   timeZone: string;
-  languages: Array<"en" | "fa">;
-  defaultLanguage: "en" | "fa";
+  languages: Array<"en">;
+  defaultLanguage: "en";
   rsvpDeadline?: string | undefined;
   venue: VenueInfo;
   schedule: ScheduleItem[];
@@ -137,7 +137,7 @@ export interface RsvpSubmissionPayload {
   songRequests?: string[] | undefined;
   messageToHost?: string | undefined;
   contactForUpdates?: string | undefined;
-  locale: "en" | "fa";
+  locale: "en";
 }
 
 export interface EventResponsesSummary {

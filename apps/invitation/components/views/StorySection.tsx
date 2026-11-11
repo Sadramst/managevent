@@ -6,10 +6,9 @@ import { Heart, Sparkles, BookOpen } from "lucide-react";
 interface StorySectionProps {
   event: EventModel;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
 }
 
-export const StorySection: React.FC<StorySectionProps> = ({ event, theme, locale }) => {
+export const StorySection: React.FC<StorySectionProps> = ({ event, theme }) => {
   const { colors } = theme;
   const isMemorial = event.experienceMode === "MEMORIAL";
   const { content } = event;
@@ -39,13 +38,7 @@ export const StorySection: React.FC<StorySectionProps> = ({ event, theme, locale
             className="font-display text-2xl font-bold tracking-tight sm:text-3xl"
             style={{ color: colors.accentInk }}
           >
-            {locale === "fa"
-              ? isMemorial
-                ? "یادبود و خاطرات"
-                : "داستان ما"
-              : isMemorial
-                ? "In Loving Memory"
-                : "Our Story"}
+            {isMemorial ? "In Loving Memory" : "Our Story"}
           </h2>
           <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>

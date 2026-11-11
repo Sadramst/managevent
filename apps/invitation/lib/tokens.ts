@@ -194,7 +194,7 @@ export function generateGuestToken(
 
 /**
  * Generates an event-level slug matching `SafeEventSlugSchema`:
- * `{words}-{suffix3to6}` (e.g. `sara-ali-aghd-7kq`).
+ * `{words}-{suffix3to6}` (e.g. `emily-james-wedding-7kq`).
  */
 export function generateEventSlug(title: string, salt: string): string {
   const base = sanitizeSlugName(title, "event");

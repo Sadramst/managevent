@@ -11,7 +11,7 @@ export interface LeadCreatedJobPayload {
   leadId: string;
   name: string;
   email: string;
-  preferredLanguage: "en" | "fa";
+  preferredLanguage: "en";
   source: LeadCreate["source"];
   ceremonySlug: string | null;
 }
@@ -76,13 +76,12 @@ export class LeadService {
 
     let jobId: string | null = null;
     if (createdNew) {
-      const preferredLanguage: "en" | "fa" = lead.preferredLanguage === "fa" ? "fa" : "en";
       jobId = await this.queue.enqueueLeadCreated(
         {
           leadId: lead.id,
           name: lead.name,
           email: lead.email,
-          preferredLanguage,
+          preferredLanguage: "en",
           source: lead.source,
           ceremonySlug: lead.ceremonySlug,
         },

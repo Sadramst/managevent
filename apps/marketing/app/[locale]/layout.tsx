@@ -13,7 +13,7 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  if (locale !== "en" && locale !== "fa") notFound();
+  if (locale !== "en") notFound();
   return (
     <html lang={locale} dir={getDir(locale)}>
       <body style={getCssVariablesForMode("CELEBRATION") as CSSProperties}>
@@ -38,14 +38,6 @@ export default async function LocaleLayout({
               </a>
               <a href={localePath(locale, "#enquiry")} className="nav-cta">
                 {t(locale, "common.talkToUs")}
-              </a>
-              <a
-                href={locale === "fa" ? "/" : "/fa"}
-                lang={locale === "fa" ? "en" : "fa"}
-                className="nav-lang"
-                title="Language expansion ready"
-              >
-                {locale === "fa" ? "EN" : "FA"}
               </a>
             </nav>
           </div>

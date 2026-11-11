@@ -12,8 +12,8 @@ import { ManageventAiClient } from "@managevent/ai";
 const ai = new ManageventAiClient();
 const wording = await ai.generateInvitationWording({
   subjectKey: "usr_123",
-  ceremonySlug: "sofreh-aghd",
-  requestedTone: "persian-modern",
+  ceremonySlug: "wedding",
+  requestedTone: "poetic",
   details: "Outdoor Swan Valley ceremony at 4pm",
 });
 ```

@@ -4,12 +4,12 @@ import type { RsvpSubmissionPayload } from "../lib/types";
 
 describe("RSVP Submission & Idempotency", () => {
   const eventSlug = "anniversary";
-  const guestToken = "armita-party-g9qtmt";
+  const guestToken = "emma-party-g9qtmt";
 
   it("verifies and finds party by token", () => {
     const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
     expect(lookup).not.toBeNull();
-    expect(lookup?.party.displayName).toBe("Armita & Hesam");
+    expect(lookup?.party.displayName).toBe("Emma & Liam");
     expect(lookup?.event.slug).toBe(eventSlug);
   });
 
@@ -25,21 +25,21 @@ describe("RSVP Submission & Idempotency", () => {
       status: "YES",
       guests: [
         {
-          id: "gst_armita",
-          name: "Armita",
+          id: "gst_emma",
+          name: "Emma",
           status: "YES",
           dietary: ["VEGAN", "GLUTEN_FREE"],
           healthDataConsentGranted: true,
         },
         {
-          id: "gst_hesam",
-          name: "Hesam",
+          id: "gst_liam",
+          name: "Liam",
           status: "YES",
           dietary: ["HALAL"],
           healthDataConsentGranted: true,
         },
       ],
-      songRequests: ["Hayedeh — Gol-e Sangam"],
+      songRequests: ["Kylie Minogue — Padam Padam"],
       messageToHost: "Wishing you both endless happiness!",
       locale: "en",
     };
@@ -68,8 +68,8 @@ describe("RSVP Submission & Idempotency", () => {
       status: "YES",
       guests: [
         {
-          id: "gst_armita",
-          name: "Armita",
+          id: "gst_emma",
+          name: "Emma",
           status: "YES",
           dietary: ["NONE"],
           healthDataConsentGranted: true,

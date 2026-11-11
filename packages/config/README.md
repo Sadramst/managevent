@@ -20,6 +20,6 @@ import { redactForLog, createEslintConfig } from "@managevent/config";
 const safeLog = redactForLog({
   eventId: "evt_0192",
   email: "guest@example.com",
-  url: "/i/sara-ali-aghd/sara-family-g9qtmt",
+  url: "/i/sara-ali-engage/sara-family-g9qtmt",
 });
 ```

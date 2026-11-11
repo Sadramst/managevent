@@ -7,7 +7,6 @@
   "properties": {
     "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
     "status": { "enum": ["placeholder", "draft", "published"] },
-    "faReview": { "enum": ["needed", "done"] },
     "family": { "enum": ["CELEBRATION", "CULTURAL", "CORPORATE", "SOLEMN"] },
     "experienceMode": { "enum": ["CELEBRATION", "MEMORIAL"] },
     "name": { "$ref": "localized.schema.json" },

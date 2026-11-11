@@ -24,47 +24,47 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 - `apps/api` has health, auth and leads endpoints ready for staging/production.
 - CI and preview deploy configs work.
 
-| ID     | Task                                                                                                                                                                                                                      | Paths                 | Depends on             | Status |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ---------------------- | ------ |
-| FND-01 | Scaffold `packages/config` (tsconfig presets, ESLint flat config, Prettier, Tailwind v4 preset with brand tokens, Vitest preset)                                                                                          | `packages/config`     | —                      | ✅     |
-| FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md` (core: identity, events, guests, RSVP, leads, catalogue, orders, payments, audit), migrations, seed (Perth placeholder content)                                         | `packages/db`         | FND-01                 | ✅     |
-| FND-03 | `packages/validators`: Zod schemas for every API input and output in the MVP, plus content schemas (mirrors `content/schemas`)                                                                                            | `packages/validators` | FND-02                 | ✅     |
-| FND-04 | `packages/types`: domain types inferred from validators, plus ID prefix helpers                                                                                                                                           | `packages/types`      | FND-03                 | ✅     |
-| FND-05 | `packages/i18n`: EN and FA dictionaries (`common`, `marketing`, `invitation`, `ceremonies`, `legal`), parity test, RTL helpers, deterministic date formatter (Gregorian and Jalali), digit helpers, `getExperienceMode()` | `packages/i18n`       | FND-01                 | ✅     |
-| FND-06 | `packages/ui`: design tokens (celebration and memorial), 7 invitation themes, shadcn/ui base components, logical-property utilities, Memorial Mode provider                                                               | `packages/ui`         | FND-01, FND-05         | ✅     |
-| FND-07 | `packages/auth`: Better Auth config, roles, permission matrix, resource scoping helpers, tests                                                                                                                            | `packages/auth`       | FND-02                 | ✅     |
-| FND-08 | `packages/payments`: GST maths, money helpers, plan and entitlement config, tax invoice model, Stripe client wrappers (test mode)                                                                                         | `packages/payments`   | FND-03                 | ✅     |
-| FND-09 | `packages/pricing`: Builder estimator engine with fixtures                                                                                                                                                                | `packages/pricing`    | FND-08                 | ✅     |
-| FND-10 | `packages/logistics`: headcount → recommendations engine, as pure functions with fixtures                                                                                                                                 | `packages/logistics`  | FND-03                 | ✅     |
-| FND-11 | `apps/api` skeleton: Hono, `/health`, Better Auth mount, `/v1/leads`, OpenAPI generation, error model, rate limiting, request logging with redaction                                                                      | `apps/api`            | FND-02, FND-03, FND-07 | ✅     |
-| FND-12 | `apps/worker` skeleton: pg-boss, job registry, `lead.created` → email (Resend test)                                                                                                                                       | `apps/worker`         | FND-11                 | ✅     |
-| FND-13 | `packages/notifications` (Resend and Twilio wrappers plus bilingual templates) and `packages/storage` (R2 signed URLs)                                                                                                    | `packages/*`          | FND-03                 | ✅     |
-| FND-14 | `packages/api-client`: typed client generated from OpenAPI                                                                                                                                                                | `packages/api-client` | FND-11                 | ✅     |
-| FND-15 | CI: lint, typecheck, test, build, i18n parity, migration check. Vercel preview per PR. Staging environment.                                                                                                               | `.github`, `infra`    | FND-01                 | ✅     |
-| FND-16 | `packages/ai`: Gemini client, prompt registry, Zod output schemas, quotas, memorial tone guard, eval fixtures                                                                                                             | `packages/ai`         | FND-03                 | ✅     |
+| ID     | Task                                                                                                                                                                                        | Paths                 | Depends on             | Status |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ---------------------- | ------ |
+| FND-01 | Scaffold `packages/config` (tsconfig presets, ESLint flat config, Prettier, Tailwind v4 preset with brand tokens, Vitest preset)                                                            | `packages/config`     | —                      | ✅     |
+| FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md` (core: identity, events, guests, RSVP, leads, catalogue, orders, payments, audit), migrations, seed (Perth placeholder content)           | `packages/db`         | FND-01                 | ✅     |
+| FND-03 | `packages/validators`: Zod schemas for every API input and output in the MVP, plus content schemas (mirrors `content/schemas`)                                                              | `packages/validators` | FND-02                 | ✅     |
+| FND-04 | `packages/types`: domain types inferred from validators, plus ID prefix helpers                                                                                                             | `packages/types`      | FND-03                 | ✅     |
+| FND-05 | `packages/i18n`: English dictionaries (`common`, `marketing`, `invitation`, `ceremonies`, `legal`), parity test, RTL helpers, deterministic Gregorian date formatter, `getExperienceMode()` | `packages/i18n`       | FND-01                 | ✅     |
+| FND-06 | `packages/ui`: design tokens (celebration and memorial), 6 invitation themes, shadcn/ui base components, logical-property utilities, Memorial Mode provider                                 | `packages/ui`         | FND-01, FND-05         | ✅     |
+| FND-07 | `packages/auth`: Better Auth config, roles, permission matrix, resource scoping helpers, tests                                                                                              | `packages/auth`       | FND-02                 | ✅     |
+| FND-08 | `packages/payments`: GST maths, money helpers, plan and entitlement config, tax invoice model, Stripe client wrappers (test mode)                                                           | `packages/payments`   | FND-03                 | ✅     |
+| FND-09 | `packages/pricing`: Builder estimator engine with fixtures                                                                                                                                  | `packages/pricing`    | FND-08                 | ✅     |
+| FND-10 | `packages/logistics`: headcount → recommendations engine, as pure functions with fixtures                                                                                                   | `packages/logistics`  | FND-03                 | ✅     |
+| FND-11 | `apps/api` skeleton: Hono, `/health`, Better Auth mount, `/v1/leads`, OpenAPI generation, error model, rate limiting, request logging with redaction                                        | `apps/api`            | FND-02, FND-03, FND-07 | ✅     |
+| FND-12 | `apps/worker` skeleton: pg-boss, job registry, `lead.created` → email (Resend test)                                                                                                         | `apps/worker`         | FND-11                 | ✅     |
+| FND-13 | `packages/notifications` (Resend and Twilio wrappers plus English templates) and `packages/storage` (R2 signed URLs)                                                                        | `packages/*`          | FND-03                 | ✅     |
+| FND-14 | `packages/api-client`: typed client generated from OpenAPI                                                                                                                                  | `packages/api-client` | FND-11                 | ✅     |
+| FND-15 | CI: lint, typecheck, test, build, i18n parity, migration check. Vercel preview per PR. Staging environment.                                                                                 | `.github`, `infra`    | FND-01                 | ✅     |
+| FND-16 | `packages/ai`: Gemini client, prompt registry, Zod output schemas, quotas, memorial tone guard, eval fixtures                                                                               | `packages/ai`         | FND-03                 | ✅     |
 
 ### Phase 1: Marketing site `www` (≈ 4–5 weeks) ✅ (Core Launch & Admin Ready)
 
 **Exit criteria:** the core Perth launch site, Instant Cost Estimator, Venues showcase, Enquiry capture, and Admin Command Centre are built and verified; multi-page programmatic SEO (`MKT-04`, `MKT-05`, `MKT-10`) expands as real photography and rates are finalised.
 
-| ID     | Task                                                                                                                                                | Depends on     | Status |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| MKT-01 | Scaffold `apps/marketing` (Next.js, English-first with i18n routing `/fa`, metadata, fonts, layout, header, footer, language switch, mode provider) | FND-05, FND-06 | ✅     |
-| MKT-02 | Content loader for `content/` with validation against `content/schemas` at build (`loadLaunchCeremonies`, `loadPerthCity`, `loadPerthVenues`)       | FND-03         | ✅     |
-| MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, all-events showcase, and digital RSVP-to-catering bridge explainer                   | MKT-01, MKT-02 | ✅     |
-| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (EN and FA; 5 verticals live on home, standalone detail pages expanding)        | MKT-02         | 🟨     |
-| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator; standalone `/packages` catalogue pending final rate card)  | MKT-02         | 🟨     |
-| MKT-06 | **Instant Cost Estimator (`#estimator`)** (interactive event type, guest slider, tier & bar mode, AUD incl. GST & logistics calculation → enquiry)  | FND-09, FND-11 | ✅     |
-| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated and rendered on home; standalone map detail pages next)         | MKT-02         | ✅     |
-| MKT-08 | `/invitations` product showcase & Digital RSVP Bridge explainer (plus full `apps/invitation` app built in Phase 2)                                  | MKT-01         | ✅     |
-| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life` in Estimator, Ceremony cards, and Admin CRM)                        | MKT-04         | ✅     |
-| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, the thin-content guard in CI, gated cities                                          | MKT-04, MKT-07 | ⬜     |
-| MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, plus one-click pre-fill from Instant Cost Estimator                         | FND-11, FND-12 | ✅     |
-| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement (`/accessibility`)                                     | MKT-02         | ✅     |
-| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images (EN and FA)                                                                          | MKT-04         | ✅     |
-| MKT-14 | Analytics with the consent banner and conversion events                                                                                             | MKT-01         | ⬜     |
-| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, RTL checks, axe accessibility scans), Lighthouse CI budgets                       | MKT-06         | ✅     |
-| MKT-16 | **Admin Lite & Planner Command Centre:** `/admin` lead inbox, detail inspector, status transitions, active event run-sheets, and `apps/admin`       | FND-11         | ✅     |
+| ID     | Task                                                                                                                                               | Depends on     | Status |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
+| MKT-01 | Scaffold `apps/marketing` (Next.js, English (en-AU) with i18n routing, metadata, fonts, layout, header, footer, language switch, mode provider)    | FND-05, FND-06 | ✅     |
+| MKT-02 | Content loader for `content/` with validation against `content/schemas` at build (`loadLaunchCeremonies`, `loadPerthCity`, `loadPerthVenues`)      | FND-03         | ✅     |
+| MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, all-events showcase, and digital RSVP-to-catering bridge explainer                  | MKT-01, MKT-02 | ✅     |
+| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (English; 5 verticals live on home, standalone detail pages expanding)         | MKT-02         | 🟨     |
+| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator; standalone `/packages` catalogue pending final rate card) | MKT-02         | 🟨     |
+| MKT-06 | **Instant Cost Estimator (`#estimator`)** (interactive event type, guest slider, tier & bar mode, AUD incl. GST & logistics calculation → enquiry) | FND-09, FND-11 | ✅     |
+| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated and rendered on home; standalone map detail pages next)        | MKT-02         | ✅     |
+| MKT-08 | `/invitations` product showcase & Digital RSVP Bridge explainer (plus full `apps/invitation` app built in Phase 2)                                 | MKT-01         | ✅     |
+| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life` in Estimator, Ceremony cards, and Admin CRM)                       | MKT-04         | ✅     |
+| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, the thin-content guard in CI, gated cities                                         | MKT-04, MKT-07 | ⬜     |
+| MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, plus one-click pre-fill from Instant Cost Estimator                        | FND-11, FND-12 | ✅     |
+| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement (`/accessibility`)                                    | MKT-02         | ✅     |
+| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images                                                                                     | MKT-04         | ✅     |
+| MKT-14 | Analytics with the consent banner and conversion events                                                                                            | MKT-01         | ⬜     |
+| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, axe accessibility scans), Lighthouse CI budgets                                  | MKT-06         | ✅     |
+| MKT-16 | **Admin Lite & Planner Command Centre:** `/admin` lead inbox, detail inspector, status transitions, active event run-sheets, and `apps/admin`      | FND-11         | ✅     |
 
 > MKT-16 is delivered both as the `@managevent/admin` domain engine (`apps/admin`) and the interactive Planner & Admin Command Centre at `/admin` in `apps/marketing`.
 
@@ -77,7 +77,7 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 | INV-01 | Scaffold `apps/invitation`, port themes and components from `appilico-invitations` and `anniversary-invitation` per `MIGRATION.md` | FND-06         | ✅     |
 | INV-02 | Data and API: events, sub-events, parties, guests, tokens (HMAC with `stableId`), invitation design and content endpoints          | FND-11         | ✅     |
 | INV-03 | Studio create flow (basics → template → wording → personalise → guests → RSVP settings → preview → publish)                        | INV-02         | ✅     |
-| INV-04 | AI wording assistant (EN and FA, tones including memorial) via `packages/ai`                                                       | FND-16         | ✅     |
+| INV-04 | AI wording assistant (English, tones including memorial) via `packages/ai`                                                         | FND-16         | ✅     |
 | INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar, maps                      | INV-02         | ✅     |
 | INV-06 | RSVP flow (party members, dietary per person, idempotent, editable until deadline) and `headcount.changed`                         | INV-05, FND-10 | ✅     |
 | INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                                                          | INV-06         | ✅     |
@@ -135,7 +135,7 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 | MOB-04 | Crew setup and delivery checklists with photo evidence                                                                   | ⬜     |
 | MOB-05 | Offline sync engine, conflict rules, background sync                                                                     | ⬜     |
 | MOB-06 | Push notifications (Expo), deep links into `invitation.` and `app.`                                                      | ⬜     |
-| MOB-07 | EAS build, store listings (EN and FA), privacy nutrition labels, TestFlight and internal testing                         | ⬜     |
+| MOB-07 | EAS build, store listings, privacy nutrition labels, TestFlight and internal testing                                     | ⬜     |
 
 ### Phase 6: Windows, Tauri (≈ 6 weeks) ⬜
 
@@ -143,7 +143,7 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 | ------ | ----------------------------------------------------------------------------------------------------------------------- | ------ |
 | WIN-01 | Scaffold Tauri v2 (React UI on shared packages), auth, auto-updater, MSI or MSIX signing                                | ⬜     |
 | WIN-02 | Inventory and warehouse: barcode HID scanning, stock moves, dispatch and returns                                        | ⬜     |
-| WIN-03 | 2D floorplan and seating editor (venue templates, tables, dance floor, sofreh placement), sync with `app.`              | ⬜     |
+| WIN-03 | 2D floorplan and seating editor (venue templates, tables, dance floor, ceremony setup placement), sync with `app.`      | ⬜     |
 | WIN-04 | Batch printing: QR place cards, table numbers, welcome boards (print templates, printer selection)                      | ⬜     |
 | WIN-05 | Offline check-in kiosk (event pack, scanner or camera, kiosk lockdown mode)                                             | ⬜     |
 | WIN-06 | Live Display Controller: second screen or projector, slideshow, tribute reel, moderated photo wall, offline media cache | ⬜     |
@@ -169,7 +169,7 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 | BIZ-05 | Twilio AU: register the alphanumeric sender id, approve WhatsApp Business templates                                                               | Phase 2                 | ⬜     |
 | BIZ-06 | Perth supplier network: 3 caterers (including Halal), 2 cake makers, 2 florists, 2 DJs or MCs, 2 photographers, a hire partner, a marquee partner | Phase 1–2               | ⬜     |
 | BIZ-07 | Venue relationships: Swan Valley, Fremantle, council halls (Joondalup, Canning, Melville), riverside function centre                              | Phase 1–2               | ⬜     |
-| BIZ-08 | Content: real photography, a Persian cultural content reviewer, a licensed music library                                                          | Phase 1–2               | ⬜     |
+| BIZ-08 | Content: real photography, a cultural content reviewer, a licensed music library                                                                  | Phase 1–2               | ⬜     |
 | BIZ-09 | Google Business Profile (Perth), Instagram and community channels, launch offer (see `docs/business/PERTH_STRATEGY.md`)                           | Phase 1                 | 🟨     |
 | BIZ-10 | Crew hiring and training: RSA, food handling, WWCC for kids' events, uniforms, run-sheet training                                                 | Phase 3–5               | ⬜     |
 | BIZ-11 | Accounting: Xero setup, chart of accounts for events (deposits as liabilities until delivery), BAS cadence                                        | Phase 1                 | ⬜     |

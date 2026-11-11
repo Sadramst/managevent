@@ -3,8 +3,8 @@
 ## Step 3: Perth All-Events Business Strategy, UI/UX Upgrade & Admin Command Centre
 
 - **Perth All-Events Business Strategy (`docs/business/PERTH_STRATEGY.md` & `docs/business/BUSINESS_PLAN.md`)**:
-  - Defined the 5 Perth event verticals (Weddings & Engagements, Milestone Birthdays & Private Celebrations, Corporate Galas & Brand Launches, Cultural & Persian Ceremonies, and Funerals, Memorials & Wakes in **Memorial Mode**).
-  - Established the **English-first launch architecture** (`/` default English across WA, with `/fa` RTL and future languages powered by `@managevent/i18n` dictionary parity).
+  - Defined the 5 Perth event verticals (Weddings & Engagements, Milestone Birthdays & Private Celebrations, Corporate Galas & Brand Launches, Cultural & Community Ceremonies, and Funerals, Memorials & Wakes in **Memorial Mode**).
+  - Established the **English-first launch architecture** (`/` default English across WA, with future languages powered by `@managevent/i18n` dictionary parity).
   - Documented unit economics (Agency 18–25% fee, Equipment Hire 65%+ gross margin, Marketplace 12% vendor commission, $69 AUD incl. GST Premium Event Pass, Free Memorial Pass) and 90-day Perth Go-To-Market playbook.
 - **Beautiful Perth Marketing UI/UX (`apps/marketing`)**:
   - Redesigned the homepage with editorial Perth badges, trust metrics, 0-to-100 Services showcase, **Interactive Event & Ceremony Cost Estimator** (`#estimator` computing live AUD incl. 10% GST ranges + logistics bridge tables/portions/crew/cake + Memorial Mode switch + one-click Enquiry Form pre-fill), Curated Perth Venues showcase (`loadPerthVenues()` validated from `content/venues/perth.json`), and Digital RSVP-to-Catering Bridge explainer.
@@ -14,7 +14,7 @@
 
 ## Step 2 Work Log
 
-- C implemented locally: EN/FA home, draft privacy/terms, accessibility, 404, metadata, hreflang, sitemap/robots, OG image and server-action enquiry via api-client. Self-hosted font subsets; configurable contact details. Twenty-two desktop/mobile Playwright tests passed against an isolated mock API, including axe and RTL checks. Local mobile Lighthouse: EN 90/100/100, FA 92/100/100 (Performance/Accessibility/SEO).
+- C implemented locally: English home, draft privacy/terms, accessibility, 404, metadata, hreflang, sitemap/robots, OG image and server-action enquiry via api-client. Self-hosted font subsets; configurable contact details. Twenty-two desktop/mobile Playwright tests passed against an isolated mock API, including axe. Local mobile Lighthouse: 90/100/100 (Performance/Accessibility/SEO).
 - D prepared, not deployed: Fly API release migrations, internal worker, Docker environment exclusions, post-CI deploy job and deployment runbook. Real email adapter remains gated by verified domain; notifications use the confirmed inbox via configuration. Forged role headers no longer authorize access to private lead data.
 
 - A4 done: ADR-0004 pins Prisma 6.x and records Supabase Sydney session-mode pooling for both database URLs.
@@ -36,15 +36,15 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md`, UUIDv7 ID generator, AES-256-GCM field encryption extension, initial migration, Perth placeholder seed         | ✅     |
 | FND-03 | `packages/validators`: Zod schemas for every MVP API input/output, content schemas, primitives, fixture tests                                                     | ✅     |
 | FND-04 | `packages/types`: domain types inferred from validators, branded ID types and helpers                                                                             | ✅     |
-| FND-05 | `packages/i18n`: EN and FA dictionaries, `t()`, `getDir()`, Persian digits & ی/ک normalisation, Gregorian & Jalali formatters, `getExperienceMode()`, parity test | ✅     |
-| FND-06 | `packages/ui`: celebration & memorial tokens, 7 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | ✅     |
+| FND-05 | `packages/i18n`: English dictionaries, `t()`, `getDir()`, Gregorian formatters, `getExperienceMode()`, parity test                                                | ✅     |
+| FND-06 | `packages/ui`: celebration & memorial tokens, 6 invitation themes, CSS variables, Tailwind theme export, `ExperienceModeProvider`, base components, contrast test | ✅     |
 | FND-07 | `packages/auth`: Better Auth config, roles, `PERMISSIONS.md` matrix, `requirePermission()`, resource scoping helpers, allowed/denied tests per permission         | ✅     |
 | FND-08 | `packages/payments`: cents helpers, GST maths (`PAYMENTS_AND_GST.md`), tax invoice model, invitation plans/entitlements, Stripe test wrappers, rounding tests     | ✅     |
 | FND-09 | `packages/pricing`: Builder estimator engine (`WEBSITE.md` §A6.4) with fixtures for every ceremony family                                                         | ✅     |
 | FND-10 | `packages/logistics`: headcount → recommendations engine (`ARCHITECTURE.md` §6), pure functions, 100% branch coverage target                                      | ✅     |
 | FND-11 | `apps/api`: Hono on Node 22, `/health`, Better Auth mount, `POST /v1/leads`, error model, request id, redaction, rate limit, idempotency, OpenAPI, Dockerfile     | ✅     |
 | FND-12 | `apps/worker`: pg-boss setup, job registry (Zod, idempotent, dedupe key, retries), `lead.created` → email job                                                     | ✅     |
-| FND-13 | `packages/notifications` (Resend, Twilio, consent, suppression, quiet hours, EN/FA templates) and `packages/storage` (R2 signed URLs)                             | ✅     |
+| FND-13 | `packages/notifications` (Resend, Twilio, consent, suppression, quiet hours, English templates) and `packages/storage` (R2 signed URLs)                           | ✅     |
 | FND-14 | `packages/api-client`: typed client generated from `apps/api` OpenAPI spec, generate script, up-to-date verification test                                         | ✅     |
 | FND-15 | CI: extend `.github/workflows/ci.yml` (Postgres service, migrate & drift check, i18n parity, content validation, tests) and write `infra/LOCAL_DEV.md`            | ✅     |
 | FND-16 | `packages/ai`: `@google/genai` client, versioned prompt registry, Zod output schemas, quotas, PII scrubber, memorial tone guard, eval fixtures                    | ✅     |
@@ -53,7 +53,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 | ID     | Task                                                                                                    | Status |
 | ------ | ------------------------------------------------------------------------------------------------------- | ------ |
-| MKT-01 | Scaffold `apps/marketing` (Next.js, i18n routing `/fa`, metadata, fonts, layout, header, footer)        | ✅     |
+| MKT-01 | Scaffold `apps/marketing` (Next.js, i18n routing, metadata, fonts, layout, header, footer)              | ✅     |
 | MKT-02 | Content loader for `content/` with validation against `content/schemas` at build                        | ✅     |
 | MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, and all-events showcase                  | ✅     |
 | MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (5 verticals live on home)          | 🟨     |
@@ -65,9 +65,9 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, thin-content guard in CI, gated cities  | ⬜     |
 | MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, estimator pre-fill              | ✅     |
 | MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement            | ✅     |
-| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images (EN and FA)                              | ✅     |
+| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images (English)                                | ✅     |
 | MKT-14 | Analytics with the consent banner and conversion events                                                 | ⬜     |
-| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, RTL snapshots, axe scans)             | ✅     |
+| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, axe scans)                            | ✅     |
 | MKT-16 | Admin Lite & Planner Command Centre (`apps/admin` + `/admin` in `apps/marketing`)                       | ✅     |
 
 ## Phase 2: Invitation app `invitation`
@@ -77,7 +77,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | INV-01 | Scaffold `apps/invitation`, port themes and components per `MIGRATION.md`                               | ✅     |
 | INV-02 | Data and API: events, sub-events, parties, guests, tokens, invitation design and content endpoints      | ✅     |
 | INV-03 | Studio create flow                                                                                      | ✅     |
-| INV-04 | AI wording assistant (EN and FA, tones including memorial) via `packages/ai`                            | ✅     |
+| INV-04 | AI wording assistant (English, tones including memorial) via `packages/ai`                              | ✅     |
 | INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar | ✅     |
 | INV-06 | RSVP flow and `headcount.changed`                                                                       | ✅     |
 | INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                               | ✅     |
@@ -135,7 +135,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | MOB-04 | Crew setup and delivery checklists with photo evidence                                                | ⬜     |
 | MOB-05 | Offline sync engine, conflict rules, background sync                                                  | ⬜     |
 | MOB-06 | Push notifications (Expo), deep links into `invitation.` and `app.`                                   | ⬜     |
-| MOB-07 | EAS build, store listings (EN and FA), privacy nutrition labels, TestFlight and internal testing      | ⬜     |
+| MOB-07 | EAS build, store listings (English), privacy nutrition labels, TestFlight and internal testing        | ⬜     |
 
 ## Phase 6: Windows, Tauri
 
@@ -159,7 +159,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | BIZ-05 | Twilio AU: register alphanumeric sender id, approve WhatsApp Business templates         | ⬜     |
 | BIZ-06 | Perth supplier network                                                                  | ⬜     |
 | BIZ-07 | Venue relationships                                                                     | ⬜     |
-| BIZ-08 | Content: real photography, Persian cultural content reviewer, licensed music library    | ⬜     |
+| BIZ-08 | Content: real photography, cultural content reviewer, licensed music library            | ⬜     |
 | BIZ-09 | Google Business Profile (Perth), Instagram and community channels, launch offer         | 🟨     |
 | BIZ-10 | Crew hiring and training: RSA, food handling, WWCC, uniforms, run-sheet training        | ⬜     |
 | BIZ-11 | Accounting: Xero setup, chart of accounts for events, BAS cadence                       | ⬜     |
@@ -186,13 +186,13 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 - **FND-04 (`packages/types`):**
   - Domain types inferred from `@managevent/validators` (`z.infer`), compile-time branded entity ID types (`EventId`, `UserId`, `LeadId`, etc.), `AudCents`, and runtime type guards (`isBrandedId`, `asBrandedId`, `isAudCents`).
 - **FND-05 (`packages/i18n`):**
-  - Typed `en` and `fa` dictionaries across all 11 namespaces in `I18N_RTL.md` (`common`, `marketing`, `invitation`, `portal`, `vendors`, `admin`, `mobile`, `desktop`, `ceremonies`, `legal`, `emails`).
-  - `t()`, `getDir()`, `toPersianDigits()`, `toLatinDigits()`, `normalizePersianText()` (normalising Arabic `ي`/`ى`/`ك` to Persian `ی`/`ک`), and `isolateLtr()`.
-  - Deterministic Gregorian and Jalali (Solar Hijri) date formatters (`formatGregorianDate`, `formatJalaliDate`, `formatCeremonyDate`) with zero `Intl` calls in SSR paths.
+  - Typed `en` dictionaries across all 11 namespaces in `I18N_RTL.md` (`common`, `marketing`, `invitation`, `portal`, `vendors`, `admin`, `mobile`, `desktop`, `ceremonies`, `legal`, `emails`).
+  - `t()` and `getDir()`.
+  - Deterministic Gregorian date formatters (`formatGregorianDate`, `formatCeremonyDate`) with zero `Intl` calls in SSR paths.
   - Canonical `getExperienceMode()` helper and dictionary parity test.
 - **FND-06 (`packages/ui`):**
   - Celebration and Memorial palette tokens, typography, corner radius hierarchy, and motion tokens per `DESIGN_SYSTEM.md`.
-  - All 7 invitation themes (`royal-ivory`, `midnight-celestial`, `emerald-botanic`, `persian-azure`, `alabaster-platinum`, `memorial-alabaster`, `memorial-slate`) with `isThemeCompatibleWithMode()`.
+  - All 6 invitation themes (`royal-ivory`, `midnight-celestial`, `emerald-botanic`, `alabaster-platinum`, `memorial-alabaster`, `memorial-slate`) with `isThemeCompatibleWithMode()`.
   - `ExperienceModeProvider`, RTL-safe base components (`Button`, `Panel`, `Input`, `Badge`), `ArchFrame` motif, and WCAG 2.2 contrast ratio tests for every documented text pairing.
 - **FND-07 (`packages/auth`):**
   - Self-hosted Better Auth configuration (`buildBetterAuthConfig`, `createManageventAuth`) with `organization`, `twoFactor`, `magicLink`, and `bearer` plugins and cross-subdomain cookies (`AUTH_COOKIE_DOMAIN`).
@@ -210,7 +210,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 - **FND-12 (`apps/worker`):**
   - `pg-boss` worker and `WorkerJobRegistry` (Zod payload validation, idempotency `dedupeKey`, exponential backoff retries, dead-letter queues), `lead.created` localised email job, and `headcount.changed` → `RecommendationSet` job.
 - **FND-13 (`packages/notifications` & `packages/storage`):**
-  - Resend and Twilio clients enforcing Spam Act 2003 consent, global channel suppression, 8am–8pm quiet hours in recipient local time, and bilingual `en`/`fa` templates.
+  - Resend and Twilio clients enforcing Spam Act 2003 consent, global channel suppression, 8am–8pm quiet hours in recipient local time, and `en` templates.
   - Cloudflare R2 storage helper with public/private bucket selection, short-lived AWS SigV4 signed upload/download URLs, EXIF-strip guards, and AVIF/WebP/H.264 variant descriptors.
 - **FND-14 (`packages/api-client`):**
   - Typed API client generated from `apps/api`'s OpenAPI 3.1 spec (`src/generated.ts`), with `generate` and `generate:check` scripts and verification tests.
@@ -227,15 +227,15 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | `@managevent/db`            | 1          | 8            | UUIDv7 monotonicity, AES-256-GCM encryption, Postgres seed & RSVP round-trip                                           |
 | `@managevent/validators`    | 1          | 14           | Valid & invalid fixtures for every primitive, `/content` file, and API schema                                          |
 | `@managevent/types`         | 1          | 2            | Branded IDs (`EventId`, `UserId`) and domain type guards                                                               |
-| `@managevent/i18n`          | 1          | 10           | 11-namespace EN/FA parity, Persian script hygiene, Jalali/Gregorian dates, mode                                        |
-| `@managevent/ui`            | 1          | 6            | WCAG 2.2 AA contrast tests, 7 invitation themes, `ExperienceModeProvider`, arch                                        |
+| `@managevent/i18n`          | 1          | 10           | 11-namespace dictionaries, Gregorian dates, mode                                                                       |
+| `@managevent/ui`            | 1          | 6            | WCAG 2.2 AA contrast tests, 6 invitation themes, `ExperienceModeProvider`, arch                                        |
 | `@managevent/auth`          | 1          | 28           | Better Auth config, scoping helpers, allowed & denied tests for all 22 perms                                           |
 | `@managevent/payments`      | 1          | 10           | **Coverage:** 99.49% Stmts · 93.40% Branches · 100% Funcs · 99.49% Lines (`gst.ts`, `invoice.ts`, `plans.ts` all 100%) |
 | `@managevent/pricing`       | 1          | 3            | **Coverage:** 100% Stmts · 97.14% Branches · 100% Funcs · 100% Lines                                                   |
 | `@managevent/logistics`     | 1          | 3            | **Coverage:** 100% Stmts · 100% Branches · 100% Funcs · 100% Lines                                                     |
 | `@managevent/api`           | 1          | 5            | `/health`, `/openapi.json`, `POST /v1/leads` (DB + job + idempotency + 429), RBAC                                      |
 | `@managevent/worker`        | 1          | 2            | `lead.created` email job & `headcount.changed` → `RecommendationSet` DB test                                           |
-| `@managevent/notifications` | 1          | 3            | EN/FA templates, quiet hours (8am–8pm), suppression, Resend & Twilio wrappers                                          |
+| `@managevent/notifications` | 1          | 3            | English templates, quiet hours (8am–8pm), suppression, Resend & Twilio wrappers                                        |
 | `@managevent/storage`       | 1          | 3            | R2 bucket selection, short-lived signed URLs, EXIF guard, media variants                                               |
 | `@managevent/api-client`    | 1          | 2            | OpenAPI client freshness check & end-to-end typed client calls                                                         |
 | `@managevent/ai`            | 1          | 5            | Env model resolution, PII/health scrubber, Memorial tone guard, quotas, fixtures                                       |
@@ -270,14 +270,14 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 - **BIZ-01 / D-10:** Confirm operating entity structure (`Appilico Pty Ltd` trading as Managevent), real 11-digit ABN/ACN, and GST registration before issuing production tax invoices.
 - **BIZ-04 / D-07 / D-08:** Live Stripe Australia account credentials, Connect Express platform profile approval, and legal sign-off on holding customer deposits/milestones prior to event delivery.
-- **BIZ-05:** ACMA registration of the alphanumeric SMS sender ID `Managevent` and Meta approval for EN/FA WhatsApp Business templates.
-- **BIZ-08 (`TODO(fa-review)`):** Native Persian cultural reviewer sign-off on all `fa` strings in `@managevent/i18n` and `/content/ceremonies/*.json`.
+- **BIZ-05:** ACMA registration of the alphanumeric SMS sender ID `Managevent` and Meta approval for English WhatsApp Business templates.
+- **BIZ-08:** Cultural reviewer sign-off on strings in `@managevent/i18n` and `/content/ceremonies/*.json`.
 - **Production secrets (for staging/production deployment only; mocked locally):** `PII_ENCRYPTION_KEY`, `BETTER_AUTH_SECRET`, `GUEST_TOKEN_PEPPER`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `TWILIO_AUTH_TOKEN`, `R2_SECRET_ACCESS_KEY`, `GEMINI_API_KEY`.
 
 ### 6. Known gaps or risks before Phase 1 (`apps/marketing`)
 
-- **Content expansion (MKT-04 / MKT-05):** `/content` currently contains 3 ceremonies (`wedding`, `sofreh-aghd`, `celebration-of-life`), 3 packages, and 9 Perth placeholder venues. Phase 1 (`MKT-04`, `MKT-05`) will expand `/content` to 8 fully written ceremonies and 6 packages to pass the 300-word local SEO thin-content guard (`MKT-10`).
-- **Font subsetting (MKT-01):** Self-hosted WOFF2 subsets for `Cormorant Garamond`, `Plus Jakarta Sans`, and `Vazirmatn` need to be bundled in `apps/marketing` and `apps/invitation` to meet the `< 2.5s` 4G LCP budget.
+- **Content expansion (MKT-04 / MKT-05):** `/content` currently contains 2 ceremonies (`wedding`, `celebration-of-life`), 2 packages, and 9 Perth placeholder venues. Phase 1 (`MKT-04`, `MKT-05`) will expand `/content` to 8 fully written ceremonies and 6 packages to pass the 300-word local SEO thin-content guard (`MKT-10`).
+- **Font subsetting (MKT-01):** Self-hosted WOFF2 subsets for `Cormorant Garamond`, and `Plus Jakarta Sans` need to be bundled in `apps/marketing` and `apps/invitation` to meet the `< 2.5s` 4G LCP budget.
 
 ## STEP 2 REPORT
 
@@ -285,8 +285,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 ### URLs
 
-- Local: http://localhost:3100 and http://localhost:3100/fa.
-- Intended production: https://www.managevent.com.au, https://www.managevent.com.au/fa and https://api.managevent.com.au/health. Not verified live by this session.
+- Local: http://localhost:3100.
+- Intended production: https://www.managevent.com.au, and https://api.managevent.com.au/health. Not verified live by this session.
 - Apex HTTPS and the requested 301 redirect have not been provisioned or verified.
 
 ### Completed Code
@@ -295,7 +295,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 - A2: new guarded migration drops plaintext RSVP dietary/severity columns. Encryption removes plaintext write keys. Raw-row tests prove encrypted-only storage; worker snapshots validate counts only and reject cross-event references.
 - A4: ADR-0004 pins Prisma 6.x and requires Supabase Sydney session pooling for both database URLs.
 - B: enc:v1 accepted; Premium confirmed at 6900 AUD cents incl. GST; memorial Premium entitlements are free without granting agency fulfilment; Builder stays unpublished with placeholder rates.
-- C: minimal EN/FA marketing site, full RTL, local font subsets, enquiry server action calling api-client, honeypot, unticked marketing consent, bilingual success/errors, draft legal pages, accessibility, 404, sitemap/robots, metadata/hreflang and OG image. No fake prices, reviews, ABN or partner venues. Configurable owner contact defaults retained.
+- C: minimal English marketing site, local font subsets, enquiry server action calling api-client, honeypot, unticked marketing consent, success/error states, draft legal pages, accessibility, 404, sitemap/robots, metadata and OG image. No fake prices, reviews, ABN or partner venues. Configurable owner contact defaults retained.
 - D preparation only: Sydney Fly configs, API migration release command, internal worker without public ports, Docker secret exclusions, post-CI Fly deployment job and `infra/DEPLOY_RUNBOOK.md`.
 - Production safety: verified-session lead authorization replaces forged role headers; production auth requires an explicit secret; errors omit raw internal details. Resend production transport is verification-gated and uses stable per-email idempotency keys. Lead notifications default to the confirmed inbox via configurable environment settings.
 
@@ -303,8 +303,8 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 
 - Scoped Turbo lint/typecheck/test/build: **69 tasks passed**, excluding the concurrently edited invitation app only.
 - Unit/integration tests in the implemented scope: **120** across 18 test files (including the final worker adapter tests).
-- Marketing Playwright: **22 passed** across desktop/mobile, EN/FA, mocked server-to-server API submission, validation, image rendering, overflow, axe scans and private Builder 404.
-- Local production-build mobile Lighthouse: **EN Performance 90, Accessibility 100, SEO 100; FA Performance 92, Accessibility 100, SEO 100**. These are local measurements, not live production scores.
+- Marketing Playwright: **22 passed** across desktop/mobile, mocked server-to-server API submission, validation, image rendering, overflow, axe scans and private Builder 404.
+- Local production-build mobile Lighthouse: **Performance 90, Accessibility 100, SEO 100**. These are local measurements, not live production scores.
 - Full root gates were attempted: formatting fails in concurrent invitation files; Turbo stops on invitation lint (`prefer-const` in its i18n helper). That unrelated work was not changed, staged or committed here. CI is not claimed green.
 - Docker build, Supabase migration/seed, provider deploys, live HTTPS and real email receipt remain unverified.
 
@@ -315,7 +315,7 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 - Add `FLY_API_TOKEN` as a repository secret. Resolve concurrent invitation checks before merging to `main`. Contract-change label lookup returned 404; GitHub issue/PR tracking remains pending.
 - Obtain actual Vercel, Fly certificate/IP and Resend domain DNS records. One exact DNS table is pending provider access; no guessed records were supplied. Wait for owner confirmation before verification. DMARC policy is `p=none`.
 - Verify Resend domain before enabling the email gate or submitting any live enquiry. Confirm the lead row, queue completion, notification receipt and translated auto-reply after deployment.
-- Legal/cultural review of draft bilingual copy remains pending. Preview noindex is implemented, but a real Vercel preview and its configuration are not verified.
+- Legal/cultural review of draft copy remains pending. Preview noindex is implemented, but a real Vercel preview and its configuration are not verified.
 
 ### Monthly Cost Estimate
 

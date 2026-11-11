@@ -5,7 +5,7 @@
  * - Express / attested consent checks
  * - Global per-channel suppression (unsubscribe) checks
  * - Quiet-hours enforcement (8:00 AM – 8:00 PM in recipient time zone, default `Australia/Perth`)
- * - Bilingual (`en` and `fa`) templates with sender identification and opt-out instructions
+ * - `en` (en-AU) templates with sender identification and opt-out instructions
  */
 import { createHash } from "node:crypto";
 import { PERTH_UTC_OFFSET_MINUTES } from "@managevent/i18n";
@@ -16,7 +16,7 @@ export type NotificationCategory = "TRANSACTIONAL" | "INVITATION_REMINDER" | "MA
 export type NotificationTemplateKey =
   "lead.auto_reply" | "invitation.send" | "rsvp.reminder" | "event.day_of_update";
 
-export interface BilingualRenderedTemplate {
+export interface RenderedTemplate {
   subject: string;
   body: string;
 }
@@ -41,19 +41,11 @@ const TEMPLATES: Readonly<
       subject: "We have received your enquiry — Managevent Perth",
       body: "Dear {guestName}, thank you for contacting Managevent. A Perth coordinator will respond within 1 business hour.\n\nManagevent (Appilico) · Unsubscribe: {unsubscribeUrl}",
     },
-    fa: {
-      subject: "درخواست شما دریافت شد — منج‌ایونت پرث",
-      body: "{guestName} عزیز، از تماس شما با منج‌ایونت سپاسگزاریم. هماهنگ‌کننده ما در پرث ظرف ۱ ساعت کاری با شما تماس می‌گیرد.\n\nمنج‌ایونت · لغو عضویت: {unsubscribeUrl}",
-    },
   },
   "invitation.send": {
     en: {
       subject: "You are invited to {eventTitle} — from {hostName} via Managevent",
       body: "Dear {guestName}, {hostName} warmly invites you to {eventTitle}. View your personal invitation and RSVP by {rsvpBy}: {link}\n\nSent by Managevent on behalf of {hostName}. Unsubscribe: {unsubscribeUrl} or reply STOP.",
-    },
-    fa: {
-      subject: "دعوت‌نامه مراسم {eventTitle} — از طرف {hostName} (منج‌ایونت)",
-      body: "{guestName} عزیز، {hostName} با احترام از شما برای حضور در مراسم {eventTitle} دعوت می‌کند. مشاهده دعوت‌نامه و ثبت پاسخ تا {rsvpBy}: {link}\n\nارسال شده توسط منج‌ایونت از طرف {hostName}. لغو عضویت: {unsubscribeUrl} یا ارسال STOP.",
     },
   },
   "rsvp.reminder": {
@@ -61,36 +53,28 @@ const TEMPLATES: Readonly<
       subject: "Friendly RSVP reminder for {eventTitle} — Managevent",
       body: "Dear {guestName}, a gentle reminder from {hostName} to RSVP for {eventTitle} by {rsvpBy}: {link}\n\nManagevent · Unsubscribe: {unsubscribeUrl} or reply STOP.",
     },
-    fa: {
-      subject: "یادآوری ثبت پاسخ دعوت‌نامه {eventTitle} — منج‌ایونت",
-      body: "{guestName} عزیز، یادآوری دوستانه از طرف {hostName} جهت ثبت پاسخ حضور در مراسم {eventTitle} تا تاریخ {rsvpBy}: {link}\n\nمنج‌ایونت · لغو عضویت: {unsubscribeUrl} یا ارسال STOP.",
-    },
   },
   "event.day_of_update": {
     en: {
       subject: "Day-of update for {eventTitle} — Managevent",
       body: "Dear {guestName}, update for {eventTitle} from {hostName}: {link}\n\nManagevent · Reply STOP to opt out.",
     },
-    fa: {
-      subject: "اطلاعیه روز مراسم {eventTitle} — منج‌ایونت",
-      body: "{guestName} عزیز، اطلاعیه روز مراسم {eventTitle} از طرف {hostName}: {link}\n\nمنج‌ایونت · برای لغو ارسال STOP را بفرستید.",
-    },
   },
 };
 
 /**
- * Renders a bilingual notification template in `en` or `fa` with variable interpolation.
+ * Renders a notification template in `en` with variable interpolation.
  */
 export function renderNotificationTemplate(
   templateKey: NotificationTemplateKey,
   locale: EnabledLocale,
   vars: TemplateVariables,
-): BilingualRenderedTemplate {
+): RenderedTemplate {
   const tpl = TEMPLATES[templateKey][locale];
   const mergedVars: Record<string, string> = {
-    guestName: vars.guestName ?? (locale === "fa" ? "مهمان" : "Guest"),
+    guestName: vars.guestName ?? "Guest",
     hostName: vars.hostName ?? "Managevent Host",
-    eventTitle: vars.eventTitle ?? (locale === "fa" ? "مراسم" : "Ceremony"),
+    eventTitle: vars.eventTitle ?? "Ceremony",
     link: vars.link ?? "https://invitation.managevent.com.au",
     rsvpBy: vars.rsvpBy ?? "",
     unsubscribeUrl: vars.unsubscribeUrl ?? "https://www.managevent.com.au/unsubscribe",

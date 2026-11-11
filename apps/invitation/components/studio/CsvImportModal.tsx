@@ -87,7 +87,7 @@ export const CsvImportModal: React.FC<CsvImportModalProps> = ({ isOpen, onClose,
         <div className="mt-4 space-y-4">
           <p className="text-xs text-neutral-500">
             Upload or paste your guest list spreadsheet (Excel, Google Sheets, or CSV). Supports
-            English and Persian headers (نام, تعداد, میز).
+            English headers (name, seats, table).
           </p>
 
           {/* Upload input */}

@@ -6,7 +6,6 @@
  */
 import { createRoute, OpenAPIHono, z } from "@hono/zod-openapi";
 import { requirePermission } from "@managevent/auth";
-import { normalizePersianText } from "@managevent/i18n";
 import { ApiErrorSchema, LeadCreateSchema, LeadResponseSchema } from "@managevent/validators";
 import type { ApiEnv } from "../../middleware/context.js";
 import { LeadService } from "./service.js";
@@ -128,15 +127,8 @@ export function createCrmRoutes(service: LeadService = new LeadService()) {
     const ipAddress =
       c.req.header("x-forwarded-for")?.split(",")[0]?.trim() ?? c.req.header("x-real-ip")?.trim();
 
-    // Normalize Persian characters on save (`docs/design/I18N_RTL.md`)
-    const normalizedInput = {
-      ...validatedBody,
-      name: normalizePersianText(validatedBody.name),
-      ...(validatedBody.message ? { message: normalizePersianText(validatedBody.message) } : {}),
-    };
-
     const { lead, createdNew } = await service.submitLead({
-      input: normalizedInput,
+      input: validatedBody,
       ...(idempotencyKey ? { idempotencyKey } : {}),
       ...(ipAddress ? { ipAddress } : {}),
     });

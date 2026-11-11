@@ -98,14 +98,14 @@ describe("@managevent/validators", () => {
 
     it("LocaleSchema, SlugSchema, SafeEventSlugSchema, GuestTokenSchema, and PrefixedIdSchema", () => {
       expect(LocaleSchema.safeParse("en").success).toBe(true);
-      expect(LocaleSchema.safeParse("fa").success).toBe(true);
+      expect(LocaleSchema.safeParse("fa").success).toBe(false);
       expect(LocaleSchema.safeParse("de").success).toBe(false);
 
-      expect(SlugSchema.safeParse("sofreh-aghd").success).toBe(true);
+      expect(SlugSchema.safeParse("engagement-party").success).toBe(true);
       expect(SlugSchema.safeParse("Invalid Slug!").success).toBe(false);
 
       // SafeEventSlugSchema forbids 0, 1, i, l, o
-      expect(SafeEventSlugSchema.safeParse("sara-aghd-7kq").success).toBe(true);
+      expect(SafeEventSlugSchema.safeParse("sara-engage-7kq").success).toBe(true);
       expect(SafeEventSlugSchema.safeParse("sara-ali-10").success).toBe(false);
 
       expect(GuestTokenSchema.safeParse("sara-family-g9qtmt").success).toBe(true);
@@ -118,9 +118,9 @@ describe("@managevent/validators", () => {
 
   describe("Content schemas (mirroring content/schemas and validating /content files)", () => {
     it("validates LocalizedTextSchema (valid and invalid)", () => {
-      expect(LocalizedTextSchema.safeParse({ en: "Weddings", fa: "عروسی" }).success).toBe(true);
-      expect(LocalizedTextSchema.safeParse({ fa: "عروسی" }).success).toBe(false);
-      expect(LocalizedTextSchema.safeParse({ en: "", fa: "عروسی" }).success).toBe(false);
+      expect(LocalizedTextSchema.safeParse({ en: "Weddings" }).success).toBe(true);
+      expect(LocalizedTextSchema.safeParse({ ar: "x" }).success).toBe(false);
+      expect(LocalizedTextSchema.safeParse({ en: "" }).success).toBe(false);
     });
 
     it("validates all /content JSON files against Content* schemas and rejects invalid fixtures", () => {
@@ -227,9 +227,9 @@ describe("@managevent/validators", () => {
           name: "Sara Ahmadi",
           email: "sara@example.com",
           phone: "+61412345678",
-          preferredLanguage: "fa",
+          preferredLanguage: "en",
           preferredChannel: "WHATSAPP",
-          ceremonySlug: "sofreh-aghd",
+          ceremonySlug: "engagement-party",
           guestEstimate: 80,
           marketingConsent: false,
         }).success,
@@ -253,9 +253,9 @@ describe("@managevent/validators", () => {
           name: "Sara Ahmadi",
           email: "sara@example.com",
           phone: "+61412345678",
-          preferredLanguage: "fa",
+          preferredLanguage: "en",
           preferredChannel: "WHATSAPP",
-          ceremonySlug: "sofreh-aghd",
+          ceremonySlug: "engagement-party",
           eventDate: null,
           dateFlexible: true,
           guestEstimate: 80,
@@ -270,7 +270,7 @@ describe("@managevent/validators", () => {
 
     it("BuilderEstimateRequestSchema, BuilderEstimateResponseSchema, and BuilderSessionSaveSchema", () => {
       const validReq = {
-        ceremonySlug: "sofreh-aghd",
+        ceremonySlug: "engagement-party",
         adults: 80,
         children: 10,
         venueType: "WINERY" as const,
@@ -278,7 +278,7 @@ describe("@managevent/validators", () => {
         durationHours: 6,
         services: [{ category: "catering" as const, tier: "SIGNATURE" as const }],
         extras: ["photo-wall" as const],
-        locale: "fa" as const,
+        locale: "en" as const,
       };
       expect(BuilderEstimateRequestSchema.safeParse(validReq).success).toBe(true);
       expect(
@@ -289,7 +289,7 @@ describe("@managevent/validators", () => {
         BuilderSessionSaveSchema.safeParse({
           anonymousKey: "anon-key-12345",
           locale: "en",
-          ceremonySlug: "sofreh-aghd",
+          ceremonySlug: "engagement-party",
           state: validReq,
         }).success,
       ).toBe(true);
@@ -331,8 +331,8 @@ describe("@managevent/validators", () => {
     it("EventCreateSchema, EventUpdateSchema, and EventResponseSchema", () => {
       expect(
         EventCreateSchema.safeParse({
-          title: { en: "Sara & Ali Aghd", fa: "عقد سارا و علی" },
-          ceremonySlug: "sofreh-aghd",
+          title: { en: "Sara & Ali Engagement" },
+          ceremonySlug: "engagement-party",
           startsAt: "2026-12-15T08:00:00.000Z",
           timeZone: "Australia/Perth",
         }).success,
@@ -346,8 +346,8 @@ describe("@managevent/validators", () => {
         EventResponseSchema.safeParse({
           id: `evt_${SAMPLE_UUID_V7}`,
           ownerUserId: `usr_${SAMPLE_UUID_V7}`,
-          title: { en: "Sara & Ali Aghd" },
-          ceremonySlug: "sofreh-aghd",
+          title: { en: "Sara & Ali Engagement" },
+          ceremonySlug: "engagement-party",
           experienceMode: "CELEBRATION",
           status: "PLANNING",
           startsAt: "2026-12-15T08:00:00.000Z",
@@ -370,11 +370,11 @@ describe("@managevent/validators", () => {
         InvitationCreateSchema.safeParse({
           eventId: `evt_${SAMPLE_UUID_V7}`,
           experienceMode: "CELEBRATION",
-          eventSlug: "sara-aghd-7kq",
+          eventSlug: "sara-engage-7kq",
           templateSlug: "classic-arch",
-          themeId: "persian-azure",
-          languages: ["en", "fa"],
-          defaultLanguage: "fa",
+          themeId: "emerald-botanic",
+          languages: ["en"],
+          defaultLanguage: "en",
           gateStyle: "arch",
         }).success,
       ).toBe(true);
@@ -415,11 +415,11 @@ describe("@managevent/validators", () => {
         InvitationResponseSchema.safeParse({
           id: `inv_${SAMPLE_UUID_V7}`,
           eventId: `evt_${SAMPLE_UUID_V7}`,
-          eventSlug: "sara-aghd-7kq",
+          eventSlug: "sara-engage-7kq",
           templateSlug: "classic-arch",
-          themeId: "persian-azure",
-          languages: ["en", "fa"],
-          defaultLanguage: "fa",
+          themeId: "emerald-botanic",
+          languages: ["en"],
+          defaultLanguage: "en",
           gateStyle: "arch",
           plan: "PREMIUM",
           rsvpDeadline: null,

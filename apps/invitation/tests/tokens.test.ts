@@ -12,14 +12,14 @@ describe("Guest Token and Slug derivation", () => {
   const salt = "salt-test-event-123";
 
   it("generates deterministic tokens for identical inputs", () => {
-    const token1 = generateGuestToken("Armita & Hesam", pepper, salt, "party_1");
-    const token2 = generateGuestToken("Armita & Hesam", pepper, salt, "party_1");
+    const token1 = generateGuestToken("Emma & Liam", pepper, salt, "party_1");
+    const token2 = generateGuestToken("Emma & Liam", pepper, salt, "party_1");
     expect(token1).toBe(token2);
   });
 
   it("generates distinct tokens for different party IDs or salts", () => {
-    const token1 = generateGuestToken("Armita & Hesam", pepper, salt, "party_1");
-    const token2 = generateGuestToken("Armita & Hesam", pepper, salt, "party_2");
+    const token1 = generateGuestToken("Emma & Liam", pepper, salt, "party_1");
+    const token2 = generateGuestToken("Emma & Liam", pepper, salt, "party_2");
     expect(token1).not.toBe(token2);
   });
 
@@ -31,7 +31,7 @@ describe("Guest Token and Slug derivation", () => {
   });
 
   it("validates token formats correctly", () => {
-    expect(isValidGuestTokenFormat("armita-party-g9qtmt")).toBe(true);
+    expect(isValidGuestTokenFormat("emma-party-g9qtmt")).toBe(true);
     expect(isValidGuestTokenFormat("sample-token-234567")).toBe(true);
     // Invalid characters (uppercase, spaces, punctuation, or too short suffix)
     expect(isValidGuestTokenFormat("Invalid Token!")).toBe(false);
@@ -40,10 +40,10 @@ describe("Guest Token and Slug derivation", () => {
   });
 
   it("generates URL-safe event slugs", () => {
-    const slug1 = generateEventSlug("Niloofar & Sadra — 10th Anniversary", "salt123");
-    expect(slug1).toMatch(/^niloofar-sadra-10th-anniversary-[a-z0-9]+$/);
+    const slug1 = generateEventSlug("Emma & Liam — 10th Anniversary", "salt123");
+    expect(slug1).toMatch(/^emma-liam-10th-anniversary-[a-z0-9]+$/);
 
-    const slug2 = generateEventSlug("سفره عقد رویا و کیان", "salt456");
+    const slug2 = generateEventSlug("Emily & James Wedding", "salt456");
     expect(slug2.length).toBeGreaterThan(0);
   });
 

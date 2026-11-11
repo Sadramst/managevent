@@ -27,7 +27,7 @@ export const CEREMONY_FAMILY_BUILDER_FIXTURES: Readonly<
     locale: "en",
   },
   CULTURAL: {
-    ceremonySlug: "sofreh-aghd",
+    ceremonySlug: "cultural-celebration",
     adults: 60,
     children: 6,
     venueType: "PRIVATE_HOME",
@@ -35,14 +35,13 @@ export const CEREMONY_FAMILY_BUILDER_FIXTURES: Readonly<
     durationHours: 5,
     services: [
       { category: "planning", tier: "SIGNATURE" },
-      { category: "sofreh-set", tier: "LUXE" },
       { category: "florals", tier: "SIGNATURE" },
       { category: "catering", tier: "SIGNATURE" },
       { category: "cake-sweets", tier: "SIGNATURE" },
       { category: "invitations", tier: "SIGNATURE" },
     ],
     extras: ["wishing-well"],
-    locale: "fa",
+    locale: "en",
   },
   CORPORATE: {
     ceremonySlug: "gala-dinner",

@@ -16,3 +16,4 @@ ENV NODE_ENV=production
 
 # No HTTP port: this is a pg-boss consumer, not a web service.
 CMD ["pnpm", "--filter", "@managevent/worker", "start"]
+

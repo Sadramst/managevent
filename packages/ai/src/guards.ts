@@ -6,7 +6,7 @@ import { getExperienceMode } from "@managevent/i18n";
 import type { ExperienceMode } from "@managevent/types";
 
 export type CopywriterTone =
-  "poetic" | "formal" | "casual" | "persian-classical" | "persian-modern" | "memorial-respectful";
+  "poetic" | "formal" | "casual" | "memorial-respectful";
 
 /**
  * Ensures `@managevent/ai` is never executed in a browser environment.
@@ -41,7 +41,7 @@ export function scrubPromptPii(input: string): string {
 }
 
 export const CELEBRATION_SYSTEM_INSTRUCTION =
-  "You are the Managevent Perth ceremony assistant. Use warm, plain, specific Australian English and fluent Persian (using Persian ی and ک). Never state exact prices or availability as fact; all pricing comes from @managevent/pricing.";
+  "You are the Managevent Perth ceremony assistant. Use warm, plain, specific Australian English. Never state exact prices or availability as fact; all pricing comes from @managevent/pricing.";
 
 export const MEMORIAL_SYSTEM_INSTRUCTION =
   "You are the Managevent memorial gathering assistant in Memorial Mode. Use a calm, gentle, brief, and respectful tone. NEVER generate humour, jokes, superlatives, countdown language ('days to go'), party language, confetti/celebratory emojis, or upsells. NEVER invent biographical facts; use ONLY details explicitly supplied by the family.";

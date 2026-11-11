@@ -15,23 +15,11 @@ Jane Smith,1,Table 2,Family`;
     expect(rows[0]!.tags).toBe("VIP");
   });
 
-  it("parses CSV with Persian headers", () => {
-    const csv = `نام,تعداد,میز,گروه
-آرمیتا و حسام,2,میز ۱,خانواده
-دکتر سارا جنکینز,1,میز ۲,مهمان ویژه`;
-
-    const rows = parseGuestsCsv(csv);
-    expect(rows).toHaveLength(2);
-    expect(rows[0]!.name).toBe("آرمیتا و حسام");
-    expect(rows[0]!.seats).toBe(2);
-    expect(rows[0]!.table).toBe("میز ۱");
-  });
-
   it("generates CSV with mandatory UTF-8 BOM (\\uFEFF) for Excel compatibility", () => {
     const sampleRows: CsvGuestExportRow[] = [
       {
-        partyName: "آرمیتا و حسام",
-        guestName: "آرمیتا",
+        partyName: "Emma & Liam Family",
+        guestName: "Emma",
         isChild: false,
         status: "YES",
         table: "Table 1",
@@ -39,7 +27,7 @@ Jane Smith,1,Table 2,Family`;
         dietary: "VEGAN",
         allergyNotes: "No peanuts",
         tags: "VIP",
-        inviteUrl: "https://invitation.managevent.com.au/i/anniversary/armita-party-g9qtmt",
+        inviteUrl: "https://invitation.managevent.com.au/i/anniversary/emma-party-g9qtmt",
         notes: "Happy anniversary!",
       },
     ];
@@ -49,8 +37,8 @@ Jane Smith,1,Table 2,Family`;
     // Must start with UTF-8 BOM
     expect(csvOutput.charCodeAt(0)).toBe(0xfeff);
 
-    // Contains Farsi text preserved
-    expect(csvOutput).toContain("آرمیتا و حسام");
+    // Contains party name preserved
+    expect(csvOutput).toContain("Emma & Liam Family");
     expect(csvOutput).toContain("VEGAN");
     expect(csvOutput).toContain("Table 1");
   });

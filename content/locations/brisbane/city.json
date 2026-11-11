@@ -1,7 +1,9 @@
 {
   "slug": "brisbane",
   "status": "hidden",
-  "name": { "en": "Brisbane", "fa": "بریزبن" },
+  "name": {
+    "en": "Brisbane"
+  },
   "state": "QLD",
   "timeZone": "Australia/Brisbane",
   "areasServed": []

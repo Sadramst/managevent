@@ -26,7 +26,7 @@ describe("@managevent/ai", () => {
 
   it("scrubs guest emails, AU phone numbers, guest tokens, and health/allergy data from prompts (ADR-0008)", () => {
     const raw =
-      "Guest Sara (sara@example.com, +61 412 345 678, /i/aghd-7kq/sara-family-g9qtmt) has severe peanut allergy and anaphylaxis carrying EpiPen.";
+      "Guest Sara (sara@example.com, +61 412 345 678, /i/engage-7kq/sara-family-g9qtmt) has severe peanut allergy and anaphylaxis carrying EpiPen.";
     const scrubbed = scrubPromptPii(raw);
     expect(scrubbed).not.toContain("sara@example.com");
     expect(scrubbed).not.toContain("412 345 678");
@@ -72,7 +72,7 @@ describe("@managevent/ai", () => {
     );
   });
 
-  it("executes ceremony architect, bilingual copywriter (celebration & memorial), and budget allocator against eval fixtures", async () => {
+  it("executes ceremony architect, invitation copywriter (celebration & memorial), and budget allocator against eval fixtures", async () => {
     const capturedPrompts: string[] = [];
     const client = new ManageventAiClient({
       env: testEnv,
@@ -82,7 +82,7 @@ describe("@managevent/ai", () => {
           if (params.userPrompt.includes("Allocate category weights")) {
             return AI_EVAL_FIXTURES.budgetAllocator;
           }
-          if (params.userPrompt.includes("Write parallel EN and FA invitation wording")) {
+          if (params.userPrompt.includes("Write en-AU invitation wording")) {
             return params.systemInstruction.includes("Memorial Mode")
               ? AI_EVAL_FIXTURES.copywriterMemorial
               : AI_EVAL_FIXTURES.copywriterCelebration;
@@ -94,9 +94,9 @@ describe("@managevent/ai", () => {
 
     const plan = await client.generateCeremonyPlan({
       subjectKey: "usr_1",
-      ceremonySlug: "sofreh-aghd",
+      ceremonySlug: "wedding",
       guestCount: 80,
-      brief: "Outdoor Swan Valley sofreh aghd, contact host@example.com",
+      brief: "Outdoor Swan Valley wedding, contact host@example.com",
     });
     expect(plan.isAiGenerated).toBe(true);
     expect(capturedPrompts[0]).not.toContain("host@example.com");

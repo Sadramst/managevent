@@ -13,7 +13,7 @@ export const ArchDecoration: React.FC<ArchDecorationProps> = ({ theme, className
   if (ornaments === "none") return null;
 
   if (ornaments === "tile") {
-    // Isfahan / Persian Azure geometric arch
+    // Geometric tiled arch
     return (
       <svg
         className={`pointer-events-none absolute inset-x-2 top-2 bottom-2 h-[calc(100%-1rem)] w-[calc(100%-1rem)] ${className}`}

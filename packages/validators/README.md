@@ -11,6 +11,6 @@ const lead = LeadCreateSchema.parse({
   source: "BUILDER",
   name: "Sara Ahmadi",
   email: "sara@example.com",
-  preferredLanguage: "fa",
+  preferredLanguage: "en",
 });
 ```

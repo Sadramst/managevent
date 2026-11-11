@@ -1,13 +1,13 @@
 {
   "slug": "wedding",
   "status": "placeholder",
-  "faReview": "needed",
   "family": "CELEBRATION",
   "experienceMode": "CELEBRATION",
-  "name": { "en": "Weddings", "fa": "عروسی" },
+  "name": {
+    "en": "Weddings"
+  },
   "summary": {
-    "en": "PLACEHOLDER – Your whole wedding, from the first idea to the last dance.",
-    "fa": "PLACEHOLDER – عروسی شما، از نخستین ایده تا آخرین رقص."
+    "en": "PLACEHOLDER – Your whole wedding, from the first idea to the last dance."
   },
   "includes": [
     "planning",

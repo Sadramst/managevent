@@ -6,7 +6,7 @@ import { Sparkles, ArrowRight, ShieldCheck, Heart } from "lucide-react";
 export const metadata = {
   title: "Invitation Templates & Themes",
   description:
-    "Explore luxury invitation themes for Australian weddings, Persian Sofreh Aghd, anniversaries, birthdays, galas, and memorial services.",
+    "Explore luxury invitation themes for Australian weddings, anniversaries, birthdays, galas, and memorial services.",
 };
 
 export default function TemplatesPage() {
@@ -120,8 +120,6 @@ export default function TemplatesPage() {
                       "Western Australia coastal botanic greens paired with brushed metallic gold, perfect for winery and garden weddings."}
                     {theme.id === "midnight-celestial" &&
                       "Deep midnight navy luxury with celestial starlight accents and glowing champagne typography."}
-                    {theme.id === "persian-azure" &&
-                      "Isfahan Persian azure tiles, turquoise motifs, and gold leaf framing for Sofreh Aghd and celebrations."}
                     {theme.id === "alabaster-platinum" &&
                       "Sleek minimalist alabaster and platinum for contemporary galas and modern milestone birthdays."}
                     {theme.id === "memorial-alabaster" &&

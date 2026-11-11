@@ -9,7 +9,6 @@ interface ViewModeSelectorProps {
   currentMode: ViewMode;
   onChange: (mode: ViewMode) => void;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
   hasGallery: boolean;
 }
 
@@ -17,23 +16,19 @@ export const ViewModeSelector: React.FC<ViewModeSelectorProps> = ({
   currentMode,
   onChange,
   theme,
-  locale,
   hasGallery,
 }) => {
   const { colors } = theme;
-  const isFa = locale === "fa";
 
-  const tabs: Array<{ id: ViewMode; labelEn: string; labelFa: string; icon: React.ReactNode }> = [
+  const tabs: Array<{ id: ViewMode; labelEn: string; icon: React.ReactNode }> = [
     {
       id: "story",
       labelEn: "Story",
-      labelFa: "داستان",
       icon: <BookOpen className="h-4 w-4" />,
     },
     {
       id: "timeline",
       labelEn: "Schedule",
-      labelFa: "برنامه",
       icon: <Clock className="h-4 w-4" />,
     },
     ...(hasGallery
@@ -41,7 +36,6 @@ export const ViewModeSelector: React.FC<ViewModeSelectorProps> = ({
           {
             id: "gallery" as ViewMode,
             labelEn: "Gallery",
-            labelFa: "گالری",
             icon: <ImageIcon className="h-4 w-4" />,
           },
         ]
@@ -73,7 +67,7 @@ export const ViewModeSelector: React.FC<ViewModeSelectorProps> = ({
               }}
             >
               {tab.icon}
-              <span>{isFa ? tab.labelFa : tab.labelEn}</span>
+              <span>{tab.labelEn}</span>
             </button>
           );
         })}

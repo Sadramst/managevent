@@ -111,7 +111,7 @@ export function Button({
 }
 
 export interface PanelProps extends React.HTMLAttributes<HTMLDivElement> {
-  /** Whether to apply Sofreh-inspired subtle overlap layering (`DESIGN_SYSTEM.md`). */
+  /** Whether to apply subtle overlap layering (`DESIGN_SYSTEM.md`). */
   layered?: boolean;
   experienceMode?: ExperienceMode;
 }

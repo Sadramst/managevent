@@ -97,7 +97,7 @@ export const ThemeStudio: React.FC<ThemeStudioProps> = ({
 
               <p className="mt-1 text-xs" style={{ color: colors.inkMuted }}>
                 {theme.ornaments === "tile"
-                  ? "Persian geometric tile motifs & gold foils"
+                  ? "Geometric tile motifs & gold foils"
                   : theme.ornaments === "florals"
                     ? "Subtle botanical filigree borders"
                     : theme.ornaments === "arch"

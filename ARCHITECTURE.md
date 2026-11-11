@@ -9,7 +9,7 @@ Status: **v0.1, the baseline specification.** Decisions are recorded as ADRs in 
 3. **Contracts first.** `packages/validators` (Zod) and `packages/db` (Prisma) are the contracts. Each app is built by a different agent against those contracts, in parallel.
 4. **Australian data residency.** All PII lives in Sydney (`ap-southeast-2`). Any exception needs an ADR.
 5. **Offline where the venue is.** The crew mobile app and the Windows kiosk keep working without Wi-Fi and sync later.
-6. **Bilingual and RTL from day one.** EN and FA are fully supported. AR, ZH and HI can be switched on through configuration.
+6. **English (en-AU) first, language-ready.** Logical CSS and typed locales mean AR, ZH and HI can be switched on later through configuration.
 7. **Memorial Mode is a first-class experience mode,** not a theme toggle.
 
 ## 2. System context
@@ -156,7 +156,7 @@ Rules (owned by `packages/logistics`, which has pure functions and full test cov
 | `catalog`     | Ceremony types, packages, services, add-ons, vendor services, venues                                  | `pricing`                  |
 | `builder`     | Ceremony Builder sessions, estimates, conversion to leads and quotes                                  | `pricing`, `ai`            |
 | `crm`         | Leads, enquiries, follow-ups, pipeline                                                                | —                          |
-| `events`      | Events, sub-events (for example Aghd and reception), run-sheets, tasks, timeline                      | —                          |
+| `events`      | Events, sub-events (for example ceremony and reception), run-sheets, tasks, timeline                  | —                          |
 | `invitations` | Invitation designs, guest list, parties, tokens, RSVP, passes, wishing well, photo wall, tribute book | `storage`, `notifications` |
 | `orders`      | Quotes, orders, order lines, change requests, recommendations                                         | `logistics`, `pricing`     |
 | `payments`    | Payment schedules, deposits, milestones, refunds, Connect transfers, tax invoices                     | `payments`                 |
@@ -203,7 +203,7 @@ Event packs are signed by the API and expire 48h after the event ends. Health da
 - All model calls go through `packages/ai` → `apps/api /v1/ai/*`. API keys never reach a client.
 - **Features:**
   - **AI Ceremony Architect:** brief → timeline, checklist and budget split
-  - **Bilingual copywriter:** EN/FA invitation wording in different tones, including Persian classical and modern styles and a respectful memorial tone
+  - **Copywriter:** English invitation wording in different tones, including classic and modern styles and a respectful memorial tone
   - **Smart budget allocator**
   - **Planner assistant** (staff-only, phase 3)
 - Outputs are validated against Zod schemas, using structured JSON output. Prompts are versioned. Each user has a daily quota. Generated text is always editable and never auto-sent.

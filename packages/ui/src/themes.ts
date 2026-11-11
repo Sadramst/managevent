@@ -1,5 +1,5 @@
 /**
- * The 7 launch invitation themes (`WEBSITE.md` §B4) and theme/mode compatibility helpers.
+ * The 6 launch invitation themes (`WEBSITE.md` §B4) and theme/mode compatibility helpers.
  */
 import type { ExperienceMode, InvitationThemeId } from "@managevent/types";
 
@@ -20,8 +20,6 @@ export interface InvitationThemeTokens {
   fonts: {
     display: string;
     body: string;
-    faDisplay: string;
-    faBody: string;
   };
   ornaments: "arch" | "florals" | "tile" | "none";
   gate: {
@@ -50,8 +48,6 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "arch",
     gate: {
@@ -78,8 +74,6 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "arch",
     gate: {
@@ -106,42 +100,12 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "florals",
     gate: {
       sealColor: "#1B3B2B",
       ribbonColor: "#B89650",
       style: "ribbon",
-    },
-    motion: "full",
-  },
-  "persian-azure": {
-    id: "persian-azure",
-    name: "Persian Azure & Isfahan Turquoise",
-    mode: "celebration",
-    colors: {
-      bg: "#FAF6EF",
-      bgWarm: "#F2E9DA",
-      surface: "#FFFFFF",
-      ink: "#162436",
-      inkMuted: "#475569",
-      accent: "#1C6E8C",
-      accentInk: "#FAF6EF",
-      rule: "#C5A059",
-    },
-    fonts: {
-      display: "'Cormorant Garamond', Georgia, serif",
-      body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
-    },
-    ornaments: "tile",
-    gate: {
-      sealColor: "#1C6E8C",
-      ribbonColor: "#C5A059",
-      style: "arch",
     },
     motion: "full",
   },
@@ -162,8 +126,6 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "arch",
     gate: {
@@ -190,8 +152,6 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "none",
     gate: {
@@ -218,8 +178,6 @@ export const INVITATION_THEMES: Readonly<Record<InvitationThemeId, InvitationThe
     fonts: {
       display: "'Cormorant Garamond', Georgia, serif",
       body: "'Plus Jakarta Sans', system-ui, sans-serif",
-      faDisplay: "'Vazirmatn', system-ui, sans-serif",
-      faBody: "'Vazirmatn', system-ui, sans-serif",
     },
     ornaments: "none",
     gate: {

@@ -1,15 +1,14 @@
 /**
  * @managevent/i18n
  *
- * Typed EN and FA dictionaries, `t()`, `getDir()`, Persian digit and character helpers,
- * deterministic Gregorian and Jalali date formatters, and `getExperienceMode()`.
+ * Typed `en` (en-AU) dictionary, `t()`, `getDir()`, deterministic Gregorian date formatters,
+ * and `getExperienceMode()`.
  */
 import type { EnabledLocale, Locale } from "@managevent/types";
 import {
   dictionaries,
   type DictionaryShape,
   enDictionary,
-  faDictionary,
   I18N_NAMESPACES,
   type I18nNamespace,
   type TranslationKey,
@@ -19,7 +18,6 @@ export {
   dictionaries,
   type DictionaryShape,
   enDictionary,
-  faDictionary,
   I18N_NAMESPACES,
   type I18nNamespace,
   type TranslationKey,
@@ -29,13 +27,8 @@ export {
   type DateFormatOptions,
   formatCeremonyDate,
   formatGregorianDate,
-  formatJalaliDate,
-  gregorianToJalali,
-  type JalaliDateParts,
   PERTH_UTC_OFFSET_MINUTES,
 } from "./dates.js";
-
-export { isolateLtr, normalizePersianText, toLatinDigits, toPersianDigits } from "./digits.js";
 
 export {
   type ExperienceModeInput,
@@ -43,20 +36,20 @@ export {
   MEMORIAL_CEREMONY_SLUGS,
 } from "./experience-mode.js";
 
-export const ENABLED_LOCALES: readonly EnabledLocale[] = ["en", "fa"] as const;
-export const CONFIGURED_LOCALES: readonly Locale[] = ["en", "fa", "ar", "zh", "hi"] as const;
+export const ENABLED_LOCALES: readonly EnabledLocale[] = ["en"] as const;
+export const CONFIGURED_LOCALES: readonly Locale[] = ["en", "ar", "zh", "hi"] as const;
 
 /**
  * Returns the document text direction (`"ltr"` or `"rtl"`) for a locale.
  */
 export function getDir(locale: Locale): "ltr" | "rtl" {
-  return locale === "fa" || locale === "ar" ? "rtl" : "ltr";
+  return locale === "ar" ? "rtl" : "ltr";
 }
 
 /**
  * Looks up a typed translation key (`"namespace.key"`) for the given locale and interpolates `{param}` placeholders.
  *
- * @param locale - `"en"` or `"fa"`.
+ * @param locale - `"en"`.
  * @param key - Typed translation key, e.g. `"common.planMyCeremony"`.
  * @param params - Optional interpolation parameters.
  */

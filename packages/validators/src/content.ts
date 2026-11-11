@@ -15,7 +15,6 @@ import {
 export const LocalizedTextSchema = z
   .object({
     en: z.string().min(1),
-    fa: z.string().optional(),
     ar: z.string().optional(),
     zh: z.string().optional(),
     hi: z.string().optional(),

@@ -89,18 +89,18 @@ const INITIAL_LEADS: AdminLeadItem[] = [
   {
     id: "ld_0196a7c2",
     createdAt: "Yesterday, 16:20 AWST",
-    name: "Parisa & Kian Rahimi",
-    email: "parisa.kian@example.com.au",
+    name: "Hannah & Tom Whitfield",
+    email: "hannah.tom@example.com.au",
     phone: "0433 701 445",
-    ceremonySlug: "sofreh-aghd",
-    ceremonyLabel: "Sofreh Aghd & Wedding Reception",
+    ceremonySlug: "wedding",
+    ceremonyLabel: "Foreshore Wedding & Reception",
     eventDate: "2027-04-10",
     guests: 180,
     venueArea: "Matilda Bay & South Perth",
     estimatedValueCents: 4120000,
     stage: "QUALIFIED",
     notes:
-      "Traditional Sofreh Aghd styling on the foreshore followed by Halal banquet reception, Persian sweets table, and bilingual digital invitations.",
+      "Foreshore ceremony styling followed by a Halal banquet reception, dessert table, and digital invitations with RSVP.",
     experienceMode: "CELEBRATION",
   },
   {
@@ -210,7 +210,7 @@ const PERTH_PARTNERS: PerthPartnerVendor[] = [
   },
   {
     id: "ven_02",
-    businessName: "Atelier Botanica & Sofreh Styling Perth",
+    businessName: "Atelier Botanica & Event Styling Perth",
     category: "Styling, Arches & Florals",
     suburb: "Subiaco",
     abn: "33 109 482 119",
@@ -335,7 +335,6 @@ export function AdminDashboard() {
       wedding: "Wedding & Reception",
       "birthday-milestone": "Milestone Birthday Party",
       "gala-dinner": "Corporate Gala / Brand Event",
-      "sofreh-aghd": "Sofreh Aghd & Cultural Ceremony",
       "celebration-of-life": "Celebration of Life Gathering",
     };
     const created: AdminLeadItem = {
@@ -612,7 +611,6 @@ export function AdminDashboard() {
                   <option value="wedding">Wedding & Reception</option>
                   <option value="birthday-milestone">Milestone Birthday Party</option>
                   <option value="gala-dinner">Corporate Gala / Brand Event</option>
-                  <option value="sofreh-aghd">Sofreh Aghd / Cultural Ceremony</option>
                   <option value="celebration-of-life">Celebration of Life (Memorial Mode)</option>
                 </select>
               </div>

@@ -92,14 +92,14 @@ export const IanaTimeZoneSchema = z
   );
 
 /**
- * All configured platform locales (`en` and `fa` live; `ar`, `zh`, `hi` configured).
+ * All configured platform locales (`en` live; `ar`, `zh`, `hi` configured).
  */
-export const LocaleSchema = z.enum(["en", "fa", "ar", "zh", "hi"]);
+export const LocaleSchema = z.enum(["en", "ar", "zh", "hi"]);
 
 /**
- * Currently enabled live locales (`en` and `fa`).
+ * Currently enabled live locales (`en` only).
  */
-export const EnabledLocaleSchema = z.enum(["en", "fa"]);
+export const EnabledLocaleSchema = z.enum(["en"]);
 
 /**
  * Standard URL slug (`lowercase-alphanumeric-with-hyphens`).
@@ -111,7 +111,7 @@ export const SlugSchema = z
   .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, "Invalid slug format");
 
 /**
- * Invitation `eventSlug`: human-readable words plus a suffix from the 31-character safe alphabet (`no 0 1 i l o`) (`WEBSITE.md` §B6.1, e.g. `sara-ali-aghd-7kq`).
+ * Invitation `eventSlug`: human-readable words plus a suffix from the 31-character safe alphabet (`no 0 1 i l o`) (`WEBSITE.md` §B6.1, e.g. `sara-ali-engage-7kq`).
  */
 export const SafeEventSlugSchema = z
   .string()
@@ -324,7 +324,6 @@ export const CELEBRATION_THEME_IDS = [
   "royal-ivory",
   "midnight-celestial",
   "emerald-botanic",
-  "persian-azure",
   "alabaster-platinum",
 ] as const;
 

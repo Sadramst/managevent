@@ -1,12 +1,12 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-for (const locale of ["en", "fa"] as const) {
-  const prefix = locale === "fa" ? "/fa" : "";
+for (const locale of ["en"] as const) {
+  const prefix = "";
   test(`${locale} renders, is accessible and fits the viewport`, async ({ page }, testInfo) => {
     await page.goto(`${prefix}/`);
-    await expect(page.locator("html")).toHaveAttribute("dir", locale === "fa" ? "rtl" : "ltr");
-    await expect(page.locator("h1")).toContainText(locale === "fa" ? "صفر تا صد" : "from 0 to 100");
+    await expect(page.locator("html")).toHaveAttribute("dir", "ltr");
+    await expect(page.locator("h1")).toContainText("from 0 to 100");
     await expect(page.locator('input[name="marketingConsent"]')).not.toBeChecked();
     await expect(page.locator(".hero img")).toBeVisible();
     await expect
@@ -27,12 +27,10 @@ for (const locale of ["en", "fa"] as const) {
     await page.locator('button[type="submit"]').click();
     await expect(page.locator("#form-errors")).toBeVisible();
     await expect(page.locator('input[name="email"]')).toHaveAttribute("aria-invalid", "true");
-    await page.locator('input[name="name"]').fill(locale === "fa" ? "سارا" : "Test Host");
+    await page.locator('input[name="name"]').fill("Test Host");
     await page.locator('input[name="email"]').fill("host@example.com");
     await page.locator('button[type="submit"]').click();
-    await expect(page.getByRole("status")).toContainText(
-      locale === "fa" ? "درخواست شما دریافت شد" : "Your enquiry has been received",
-    );
+    await expect(page.getByRole("status")).toContainText("Your enquiry has been received");
   });
 
   for (const document of ["privacy", "terms", "accessibility"]) {
@@ -43,6 +41,12 @@ for (const locale of ["en", "fa"] as const) {
     });
   }
 }
+
+test("legacy /fa URLs permanently redirect to the English site", async ({ request }) => {
+  const response = await request.get("/fa/privacy", { maxRedirects: 0 });
+  expect(response.status()).toBe(301);
+  expect(new URL(response.headers()["location"] ?? "", "http://x").pathname).toBe("/privacy");
+});
 
 test("unknown pages and the private Builder return real 404s", async ({ page }) => {
   const response = await page.goto("/plan");

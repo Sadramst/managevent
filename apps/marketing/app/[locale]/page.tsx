@@ -10,12 +10,12 @@ import { contact, localePath, pageMetadata } from "../../lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  return pageMetadata(locale === "fa" ? "fa" : "en", "Managevent");
+  return pageMetadata("en", "Managevent");
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  if (locale !== "en" && locale !== "fa") notFound();
+  if (locale !== "en") notFound();
   loadCeremonies();
   const venues = loadPerthVenues().slice(0, 6);
 
@@ -176,7 +176,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                     <span className="venue-area">{venue.area}</span>
                     <span className="venue-type">{venue.type.replace("_", " ")}</span>
                   </div>
-                  <h3>{locale === "fa" && venue.name.fa ? venue.name.fa : venue.name.en}</h3>
+                  <h3>{venue.name.en}</h3>
                   <p className="venue-cap">
                     {t(locale, "marketing.launchVenueCapLabel", { max: maxCap })} ·{" "}
                     {venue.indoorOutdoor ?? "INDOOR / OUTDOOR"}

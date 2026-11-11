@@ -53,12 +53,12 @@ Configure the following environment variables in Vercel (**Settings** → **Envi
 After deployment completes:
 
 1. **Guest Micro-site**:
-   - Open `https://invitation.managevent.com.au/i/anniversary/armita-party-g9qtmt`
-   - Test wax-seal gate reveal animation, live countdown, bilingual toggle, and RSVP submission.
+   - Open `https://invitation.managevent.com.au/i/anniversary/emma-party-g9qtmt`
+   - Test wax-seal gate reveal animation, live countdown, and RSVP submission.
 2. **Privacy Headers**:
    - Verify `X-Robots-Tag: noindex, nofollow, noarchive` is present on `/i/*`, `/studio/*`, `/legacy/*`.
 3. **Legacy Redirection**:
-   - Verify `https://invitation.managevent.com.au/anniversary/armita-party-g9qtmt` redirects (307) to canonical `/i/anniversary/armita-party-g9qtmt`.
+   - Verify `https://invitation.managevent.com.au/anniversary/emma-party-g9qtmt` redirects (307) to canonical `/i/anniversary/emma-party-g9qtmt`.
 4. **Host Studio**:
    - Access `https://invitation.managevent.com.au/studio`
    - Test guest search, table assignment, WhatsApp 1-click message generation, and Excel BOM CSV export.

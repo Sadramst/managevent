@@ -1,7 +1,7 @@
 /**
  * @managevent/ui
  *
- * Design tokens (Celebration & Memorial), 7 invitation themes, CSS custom properties,
+ * Design tokens (Celebration & Memorial), 6 invitation themes, CSS custom properties,
  * `ExperienceModeProvider`, RTL-safe base components, and the `ArchFrame` motif.
  */
 

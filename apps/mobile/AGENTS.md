@@ -37,8 +37,8 @@ lib/offline/  (event pack store, scan queue, sync)
 - **pnpm and Metro:** configure `node-linker=hoisted` for this workspace (an app-level `.npmrc`) or use Expo's monorepo guidance for the current SDK. Verify before the first commit.
 - Tokens live in secure storage only. Event packs are encrypted at rest and wiped 48h after the event.
 - The scanner works fully offline. Scans queue with a client UUID. Duplicate detection runs locally first.
-- RTL: `I18nManager` with an app-restart flow when switching to or from Farsi. Test both directions.
-- Store listings and privacy labels in EN and FA. Camera permission strings must explain the QR use.
+- Copy is English (`en-AU`) only for now. Use logical layout props so another locale can be added later.
+- Store listings and privacy labels in English. Camera permission strings must explain the QR use.
 
 ## Environment variables
 

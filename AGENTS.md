@@ -4,7 +4,7 @@ These rules apply to **every agent and every human** working anywhere in this re
 
 ## 1. What Managevent is (read once)
 
-Managevent runs ceremonies of every kind from 0 to 100: weddings, Persian ceremonies (Sofreh Aghd, Baleh Boroon, Nowruz, Shab-e Yalda, Mehmooni), birthdays, corporate galas, and funerals and memorials. Perth (WA) comes first, then other Australian cities. It has three business lines that share one platform:
+Managevent runs ceremonies of every kind from 0 to 100: weddings, engagements, birthdays, corporate galas, and funerals and memorials. Perth (WA) comes first, then other Australian cities. It has three business lines that share one platform:
 
 1. **Agency:** our planners deliver the event.
 2. **Marketplace:** vetted vendors take bookings through us, and we take commission via Stripe Connect.
@@ -53,10 +53,10 @@ Managevent runs ceremonies of every kind from 0 to 100: weddings, Persian ceremo
 
 ### Internationalisation and RTL
 
-- No hard-coded user-facing strings. Everything goes through `packages/i18n`. Add the `en` and `fa` keys **in the same PR**. A parity test fails the build otherwise.
+- No hard-coded user-facing strings. Everything goes through `packages/i18n`. Copy is English (`en-AU`) for now. Add keys to `en` in the same PR. To add a language later, extend the `Locale` type in `packages/i18n` through a `contract-change`.
 - Use **logical CSS properties only** (`ms-*`, `me-*`, `ps-*`, `pe-*`, `start`, `end`, `text-start`). Never use `ml`, `mr`, `left` or `right` for layout.
 - Directional icons (arrows, chevrons) flip in RTL. Logos, media controls and numbers inside LTR runs do not.
-- The language lives in the URL (`/fa/...` or `?lang=fa`), **never only in storage**. WhatsApp and Instagram in-app browsers can throw on `localStorage`. This is a lesson from `anniversary-invitation`.
+- If a locale other than `en` is ever enabled, the language lives in the URL (`/<locale>/...` or `?lang=`), **never only in storage**. WhatsApp and Instagram in-app browsers can throw on `localStorage`. This is a lesson from `anniversary-invitation`.
 
 ### Memorial Mode
 
@@ -90,7 +90,7 @@ These are defined in `packages/auth`. Never invent new roles in an app.
 
 - [ ] `pnpm lint`, `pnpm typecheck`, `pnpm test` and `pnpm build` pass from the repo root.
 - [ ] Tests cover the new behaviour. Use Vitest for logic, Playwright for web flows, and Maestro or Detox for mobile where the issue requires it.
-- [ ] Both `en` and `fa` strings are added and the RTL layout has been checked, with screenshots in the PR for UI work.
+- [ ] `en` strings are added (en-AU spelling, DD/MM/YYYY dates), with screenshots in the PR for UI work.
 - [ ] Memorial Mode has been checked if the UI can show a memorial event.
 - [ ] No new PII leaves Australia. No secrets are committed.
 - [ ] The docs are updated: the app's `README.md`, plus `DATA_MODEL.md` and `WEBSITE.md` if they changed.

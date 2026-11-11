@@ -8,12 +8,10 @@ import { Image as ImageIcon, X } from "lucide-react";
 interface GallerySectionProps {
   event: EventModel;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
 }
 
-export const GallerySection: React.FC<GallerySectionProps> = ({ event, theme, locale }) => {
+export const GallerySection: React.FC<GallerySectionProps> = ({ event, theme }) => {
   const { colors } = theme;
-  const isFa = locale === "fa";
   const images = event.content.galleryImages || [];
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -40,7 +38,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ event, theme, lo
             className="font-display text-2xl font-bold tracking-tight sm:text-3xl"
             style={{ color: colors.accentInk }}
           >
-            {isFa ? "گالری خاطرات" : "Memories & Moments"}
+            {"Memories & Moments"}
           </h2>
           <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
@@ -67,7 +65,7 @@ export const GallerySection: React.FC<GallerySectionProps> = ({ event, theme, lo
               />
               <div className="absolute inset-0 bg-black/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-center justify-center">
                 <span className="rounded-full bg-black/60 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-xs">
-                  {isFa ? "بزرگنمایی" : "View"}
+                  {"View"}
                 </span>
               </div>
             </button>

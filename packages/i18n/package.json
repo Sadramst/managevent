@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Translations, RTL, deterministic Gregorian/Jalali date formatters, Persian digits and getExperienceMode()",
+  "description": "Translations (en-AU), RTL-ready direction helper, deterministic Gregorian date formatters and getExperienceMode()",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

@@ -213,9 +213,6 @@ importers:
       '@fontsource/plus-jakarta-sans':
         specifier: 5.3.0
         version: 5.3.0
-      '@fontsource/vazirmatn':
-        specifier: 5.3.0
-        version: 5.3.0
       '@managevent/api-client':
         specifier: workspace:*
         version: link:../../packages/api-client
@@ -1138,9 +1135,6 @@ packages:
 
   '@fontsource/plus-jakarta-sans@5.3.0':
     resolution: {integrity: sha512-9WRw3G74Ve4cyPApAZSXLPY5DiLOZXDn7Q7dIBjFBpA0Pj56ljDItEdy2UUajjJxRuTg2HkMLO5C3K2nAQORWg==}
-
-  '@fontsource/vazirmatn@5.3.0':
-    resolution: {integrity: sha512-XC/2yN2r5gwhFT3klSuWaqncODX2DOfRYfNmbyzgtWYxHxMC+tcoaX+tgggrm6hSkEgpR1TuSDEf1PiI91G7qg==}
 
   '@formatjs/ecma402-abstract@2.3.6':
     resolution: {integrity: sha512-HJnTFeRM2kVFVr5gr5kH1XP6K0JcJtE7Lzvtr3FS/so5f1kpsqqqxy5JF+FRaO6H2qmcMfAUIox7AJteieRtVw==}
@@ -4554,8 +4548,6 @@ snapshots:
   '@fontsource/cormorant-garamond@5.3.0': {}
 
   '@fontsource/plus-jakarta-sans@5.3.0': {}
-
-  '@fontsource/vazirmatn@5.3.0': {}
 
   '@formatjs/ecma402-abstract@2.3.6':
     dependencies:

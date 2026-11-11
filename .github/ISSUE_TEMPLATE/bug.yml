@@ -26,7 +26,7 @@ body:
     attributes:
       label: Locale / mode
       multiple: true
-      options: [EN, FA (RTL), Memorial Mode, In-app browser (WhatsApp/Instagram)]
+      options: [Standard, Memorial Mode, In-app browser (WhatsApp/Instagram)]
   - type: markdown
     attributes:
       value: "⚠️ Do not paste real guest names, phone numbers, dietary info or payment details."

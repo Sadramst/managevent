@@ -30,8 +30,8 @@ export {
 
 export {
   AI_EVAL_FIXTURES,
-  type BilingualCopywriterOutput,
-  BilingualCopywriterOutputSchema,
+  type InvitationCopywriterOutput,
+  InvitationCopywriterOutputSchema,
   type BudgetAllocatorOutput,
   BudgetAllocatorOutputSchema,
   type CeremonyArchitectOutput,

@@ -19,5 +19,5 @@
 ## 3. Notification (if eligible data breach)
 
 1. Prepare statement for the **Office of the Australian Information Commissioner (OAIC)**.
-2. Notify affected individuals in English and Farsi with actionable remediation steps.
+2. Notify affected individuals in plain English with actionable remediation steps.
 3. Record the incident in the Admin Breach Register (`AuditLog`).

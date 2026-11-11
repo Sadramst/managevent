@@ -29,7 +29,6 @@ export const tailwindBrandTokens: Readonly<{
   fonts: Readonly<{
     displayLatin: string;
     bodyLatin: string;
-    farsi: string;
   }>;
   motion: Readonly<{
     microMs: number;
@@ -66,7 +65,6 @@ export const tailwindBrandTokens: Readonly<{
   fonts: {
     displayLatin: "'Cormorant Garamond', Georgia, serif",
     bodyLatin: "'Plus Jakarta Sans', system-ui, sans-serif",
-    farsi: "'Vazirmatn', system-ui, sans-serif",
   },
   motion: {
     microMs: 120,
@@ -123,7 +121,6 @@ export function generateTailwindV4ThemeCss(): string {
 
   --font-display: ${fonts.displayLatin};
   --font-sans: ${fonts.bodyLatin};
-  --font-farsi: ${fonts.farsi};
 
   --ease-brand: ${motion.easing};
 }

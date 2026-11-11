@@ -10,7 +10,7 @@ interface HeroSectionProps {
   event: EventModel;
   theme: InvitationThemeTokens;
   greetingName: string;
-  locale: "en" | "fa";
+  locale: "en";
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ event, theme, greetingName, locale }) => {
@@ -40,7 +40,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ event, theme, greeting
           className="font-serif text-xs font-semibold tracking-wide"
           style={{ color: colors.accentInk }}
         >
-          {locale === "fa" ? `${greetingName} عزیز` : `Dear ${greetingName}`}
+          {`Dear ${greetingName}`}
         </span>
       </div>
 

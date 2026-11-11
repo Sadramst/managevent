@@ -78,7 +78,7 @@ export default function HomePage() {
 
         <p className="mx-auto mt-6 max-w-2xl font-serif text-lg sm:text-xl text-stone-300 leading-relaxed">
           From animated wax-seal reveals to zero-friction RSVP, privacy-safe dietary tracking, and
-          Perth’s finest Persian & Australian ceremony themes.
+          Perth’s finest ceremony themes.
         </p>
 
         {/* Action Buttons */}
@@ -91,7 +91,7 @@ export default function HomePage() {
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/i/anniversary/armita-party-g9qtmt"
+            href="/i/anniversary/emma-party-g9qtmt"
             className="inline-flex items-center gap-2 rounded-button border border-stone-700 bg-stone-800/80 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md hover:bg-stone-700 transition-all"
           >
             <span>Explore Live Demo Experience</span>
@@ -110,7 +110,7 @@ export default function HomePage() {
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Bilingual English & Persian (RTL)</span>
+            <span>Built for Australian ceremonies</span>
           </div>
           <div className="flex items-center gap-2">
             <CheckCircle2 className="h-4 w-4 text-emerald-400" />
@@ -145,7 +145,7 @@ export default function HomePage() {
                   <Heart className="h-4 w-4 text-amber-400" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                  Niloofar & Sadra
+                  Emma & Liam
                 </h3>
                 <p className="text-xs font-serif italic text-amber-400/80 mt-0.5">
                   10th Wedding Anniversary
@@ -158,7 +158,7 @@ export default function HomePage() {
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
                 <span className="text-[11px] text-stone-500 font-mono">/anniversary</span>
                 <Link
-                  href="/i/anniversary/armita-party-g9qtmt"
+                  href="/i/anniversary/emma-party-g9qtmt"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
                 >
                   <span>Open Invite</span>
@@ -167,30 +167,30 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* 2. Persian Wedding Demo */}
+            {/* 2. Wedding Demo */}
             <div className="group rounded-card border border-stone-800 bg-stone-900/90 p-6 transition-all duration-300 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-950/20 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="rounded-full bg-rose-500/10 border border-rose-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-rose-300">
-                    Persian Rose Theme
+                    Emerald Botanic Theme
                   </span>
                   <Sparkles className="h-4 w-4 text-rose-400" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-white group-hover:text-rose-300 transition-colors">
-                  Roya & Kian
+                  Emily & James
                 </h3>
                 <p className="text-xs font-serif italic text-rose-400/80 mt-0.5">
-                  Sofreh Aghd & Persian Celebration
+                  Winery Wedding & Reception
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Architectural arch decoration, dual Jalali calendar conversion, traditional setar
-                  music, and Halal catering options.
+                  Botanical filigree borders, an animated wax-seal reveal, live music,
+                  and dietary-aware catering options.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
                 <span className="text-[11px] text-stone-500 font-mono">/wedding</span>
                 <Link
-                  href="/i/wedding/roya-kian-wedding-987"
+                  href="/i/emily-james-wedding-7kq/taylor-family-8nm24p"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-300"
                 >
                   <span>Open Invite</span>
@@ -209,7 +209,7 @@ export default function HomePage() {
                   <ShieldCheck className="h-4 w-4 text-stone-400" />
                 </div>
                 <h3 className="font-display text-xl font-bold text-white group-hover:text-stone-300 transition-colors">
-                  Dariush Memorial
+                  Robert Memorial
                 </h3>
                 <p className="text-xs font-serif italic text-stone-400 mt-0.5">
                   Celebration of Life & Remembrance
@@ -222,7 +222,7 @@ export default function HomePage() {
               <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
                 <span className="text-[11px] text-stone-500 font-mono">/memorial</span>
                 <Link
-                  href="/i/memorial/dariush-memorial-456"
+                  href="/i/memorial/robert-memorial-456"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-300 hover:text-white"
                 >
                   <span>Open Invite</span>

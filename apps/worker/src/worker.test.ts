@@ -26,16 +26,16 @@ describe("@managevent/worker", () => {
       leadId,
       name: "Sara Ahmadi",
       email: "sara@example.com",
-      preferredLanguage: "fa" as const,
+      preferredLanguage: "en" as const,
       source: "BUILDER" as const,
-      ceremonySlug: "sofreh-aghd",
+      ceremonySlug: "wedding",
     };
 
-    // First execution sends auto-reply (in FA) + planner alert (in EN) and writes Message row
+    // First execution sends auto-reply (in EN) + planner alert (in EN) and writes Message row
     const firstRun = await registry.executeJob("lead.created", jobPayload);
     expect(firstRun.deduplicated).toBe(false);
     expect(sentEmails).toHaveLength(2);
-    expect(sentEmails[0]?.subject).toContain("منج‌ایونت");
+    expect(sentEmails[0]?.subject).toContain("Managevent");
     expect(sentEmails[1]?.to).toBe(process.env.LEAD_NOTIFICATION_EMAIL ?? "m.sadra.mst@gmail.com");
 
     // Second execution with same leadId is deduplicated by registry

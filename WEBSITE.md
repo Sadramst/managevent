@@ -1,12 +1,12 @@
 # WEBSITE.md: web specification
 
 **Covers:** Part A, `www.managevent.com.au` (`apps/marketing`). Part B, `invitation.managevent.com.au` (`apps/invitation`). Part C, the rules that apply across both domains.
-**Status:** v0.1 specification. Step 2 implements a deliberately minimal launch subset locally: `/`, `/fa`, `/privacy`, `/terms`, `/accessibility` and their FA equivalents, server-action enquiry, 404 and SEO metadata. Production deployment is pending provider access and verification. The Builder and all catalogue/price/review/venue pages remain unpublished; `/plan` returns 404 until real rates are approved. The remainder of this document is the future product specification.
+**Status:** v0.1 specification. Step 2 implements a deliberately minimal launch subset locally: `/`, `/privacy`, `/terms`, `/accessibility`, server-action enquiry, 404 and SEO metadata. Production deployment is pending provider access and verification. The Builder and all catalogue/price/review/venue pages remain unpublished; `/plan` returns 404 until real rates are approved. The remainder of this document is the future product specification.
 **Read with:** `AGENTS.md`, `ARCHITECTURE.md`, `docs/design/DESIGN_SYSTEM.md`, `docs/design/MEMORIAL_MODE.md`, `packages/db/DATA_MODEL.md`, `content/README.md`.
 
 Conventions used in this document:
 
-- **Route paths are written for English.** The Farsi version of every public `www.` route is the same path prefixed with `/fa` (§A4).
+- **Route paths are written for English.** Other locales, if enabled later, use the same path prefixed with the locale code (§A4).
 - **Source tags:**
   - `[content]` means the data comes from the `content/` JSON or MDX files (and later a CMS).
   - `[api]` means it comes from `apps/api`.
@@ -19,20 +19,19 @@ Conventions used in this document:
 
 ## A1. Goals
 
-| Goal                                                | Measure (targets set by founder)                            |
-| --------------------------------------------------- | ----------------------------------------------------------- |
-| Turn Perth visitors into qualified enquiries        | Enquiry and consultation bookings per 1,000 sessions        |
-| Make the 0-to-100 offer tangible                    | Ceremony Builder starts → completed estimates → leads       |
-| Rank for "[ceremony] + Perth" searches in EN and FA | Organic sessions on `/perth/*` pages, plus top-10 positions |
-| Feed the invitation product                         | Clicks from `www.` → `invitation.` Host Studio sign-ups     |
-| Recruit vendors (phase 2)                           | Applications from `/vendors/join`                           |
+| Goal                                         | Measure (targets set by founder)                            |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Turn Perth visitors into qualified enquiries | Enquiry and consultation bookings per 1,000 sessions        |
+| Make the 0-to-100 offer tangible             | Ceremony Builder starts → completed estimates → leads       |
+| Rank for "[ceremony] + Perth" searches       | Organic sessions on `/perth/*` pages, plus top-10 positions |
+| Feed the invitation product                  | Clicks from `www.` → `invitation.` Host Studio sign-ups     |
+| Recruit vendors (phase 2)                    | Applications from `/vendors/join`                           |
 
 ## A2. Audiences and their main journeys
 
 | Audience                                      | Arrives via                            | Main journey                                                                     |
 | --------------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------- |
-| Couple planning a wedding or Aghd             | Google, Instagram, word of mouth       | Home → Ceremony page → Builder → estimate → book a consultation                  |
-| Persian-Australian family (FA-first)          | Farsi social posts, community groups   | `/fa` home → Persian ceremonies → Builder in FA → WhatsApp or phone enquiry      |
+| Couple planning a wedding                     | Google, Instagram, word of mouth       | Home → Ceremony page → Builder → estimate → book a consultation                  |
 | Parent planning a kids' or milestone birthday | Google "birthday party packages Perth" | City page → package detail → add-ons → book                                      |
 | Grieving family arranging a memorial or wake  | Google, a funeral director's referral  | `/perth/celebration-of-life` (Memorial Mode) → gentle enquiry form or phone call |
 | Corporate EA or office manager                | Google, LinkedIn                       | Corporate page → quote request, B2B subscription interest                        |
@@ -45,7 +44,7 @@ Conventions used in this document:
 | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ---------- | --------------------- | ------------------------------------------------------------------------------------- |
 | `/`                                                                                                                  | Home                                                                                           | P0         | content               | §A6.1                                                                                 |
 | `/ceremonies`                                                                                                        | All ceremony types hub                                                                         | P0         | content               | Grouped into the 4 families (§A6.2)                                                   |
-| `/ceremonies/[slug]`                                                                                                 | Ceremony detail (for example `wedding`, `sofreh-aghd`, `celebration-of-life`)                  | P0         | content               | City-neutral version. Canonical for non-local intent.                                 |
+| `/ceremonies/[slug]`                                                                                                 | Ceremony detail (for example `wedding`, `celebration-of-life`)                                 | P0         | content               | City-neutral version. Canonical for non-local intent.                                 |
 | `/packages`                                                                                                          | Packages catalogue                                                                             | P0         | content, later api    | Filter by ceremony, guest count and budget                                            |
 | `/packages/[slug]`                                                                                                   | Package detail                                                                                 | P0         | content, later api    | Includes, add-ons, "from" price incl. GST                                             |
 | `/plan`                                                                                                              | **Ceremony Builder and Cost Estimator**                                                        | P0         | api (`/v1/builder/*`) | §A6.4. This is the signature feature.                                                 |
@@ -55,7 +54,7 @@ Conventions used in this document:
 | `/venues/[slug]`                                                                                                     | Venue detail                                                                                   | P0         | content, later api    | Capacity, setups, rules (curfew, BYO, noise)                                          |
 | `/services`                                                                                                          | Services hub                                                                                   | P0         | content               | Styling, catering, hire, entertainment, photo and video, florals, cakes, staffing, AV |
 | `/services/[slug]`                                                                                                   | Service detail                                                                                 | P1         | content               |                                                                                       |
-| `/hire`                                                                                                              | Equipment hire catalogue (chairs, arches, sofreh sets, linen, staging)                         | P1         | api (`inventory`)     | Availability by date (P2)                                                             |
+| `/hire`                                                                                                              | Equipment hire catalogue (chairs, arches, ceremony sets, linen, staging)                       | P1         | api (`inventory`)     | Availability by date (P2)                                                             |
 | `/invitations`                                                                                                       | Digital invitations product page                                                               | P0         | static, content       | Hands off to `invitation.` (§A6.8)                                                    |
 | `/gallery`                                                                                                           | Portfolio of real events                                                                       | P0         | content               | Filter by ceremony and venue. Real photos only, with consent.                         |
 | `/stories`                                                                                                           | Testimonials and case studies                                                                  | P1         | content               |                                                                                       |
@@ -69,7 +68,7 @@ Conventions used in this document:
 | `/memorials`                                                                                                         | Memorials, celebrations of life and wakes hub                                                  | P0         | content               | **Memorial Mode** for the whole subtree                                               |
 | `/vendors`                                                                                                           | Become a partner (marketing)                                                                   | P1         | static                |                                                                                       |
 | `/vendors/join`                                                                                                      | Hand-off to `vendors.managevent.com.au/signup`                                                 | P1         | —                     |                                                                                       |
-| `/journal`                                                                                                           | Blog and guides                                                                                | P1         | content (MDX)         | For example "Sofreh Aghd checklist", "Council hall hire in Perth"                     |
+| `/journal`                                                                                                           | Blog and guides                                                                                | P1         | content (MDX)         | For example "Wedding day checklist", "Council hall hire in Perth"                     |
 | `/journal/[slug]`                                                                                                    | Article                                                                                        | P1         | content               |                                                                                       |
 | `/[city]`                                                                                                            | City landing (`perth` live; `sydney`, `melbourne`, `brisbane`, `adelaide`, `gold-coast` gated) | P0 (perth) | content               | §A7                                                                                   |
 | `/[city]/[ceremony-slug]`                                                                                            | Programmatic local SEO page                                                                    | P0 (perth) | content               | §A7                                                                                   |
@@ -83,13 +82,12 @@ Redirects: `managevent.com.au/*` returns 301 to `www.`. The legacy Appilico invi
 
 ## A4. Locales and URLs
 
-- Supported locales: `en-AU` (default, no URL prefix) and `fa-IR` (`/fa` prefix). Later locales (`ar`, `zh`, `hi`) are enabled through `packages/i18n` config and use the prefixes `/ar`, `/zh`, `/hi`.
-- `<html lang dir>` is set on the server for each locale. `fa` and `ar` use `dir="rtl"`.
+- Supported locale: `en-AU` (default, no URL prefix). Later locales (`ar`, `zh`, `hi`) are enabled through `packages/i18n` config and use the prefixes `/ar`, `/zh`, `/hi`.
+- `<html lang dir>` is set on the server for each locale. `ar` uses `dir="rtl"` if enabled.
 - `hreflang` alternates go on every page, plus `x-default` pointing to EN.
-- The language switcher keeps the current path and query. The choice lives in the URL, and a cookie is used only to _suggest_ a locale on the first visit. Never redirect automatically by `Accept-Language` (it harms SEO and annoys bilingual users). Show a dismissible banner instead: "این صفحه به فارسی هم هست".
+- The language switcher keeps the current path and query. The choice lives in the URL, and a cookie is used only to _suggest_ a locale on the first visit. Never redirect automatically by `Accept-Language` (it harms SEO and annoys bilingual users). Show a dismissible banner instead.
 - Slugs stay in English in every locale, which keeps routing simple. Page content, `<title>`, meta and Open Graph are all translated.
-- **Numbers:** Farsi UI shows Persian digits (۱۲۳) for display copy, but **prices and phone numbers stay in Latin digits** with an LTR isolate (`<bdi>`) so they cannot be misread. This matches the existing Appilico behaviour.
-- **Dates:** Gregorian by default. Farsi pages also show the Jalali date in brackets for ceremony dates, via the `packages/i18n` formatter.
+- **Dates:** Gregorian `DD/MM/YYYY` (en-AU), via the `packages/i18n` formatter.
 
 ## A5. Global layout
 
@@ -97,7 +95,7 @@ Redirects: `managevent.com.au/*` returns 301 to `www.`. The legacy Appilico invi
 
 - The wordmark, linking to home.
 - Primary navigation: Ceremonies (mega menu grouped by the 4 families), Packages, Venues, Invitations, How it works, Journal (P1).
-- Utility links: a language switch (EN / فارسی), "Sign in" (to `app.`), and the main button **"Plan my ceremony"** (to `/plan`).
+- Utility links: "Sign in" (to `app.`), and the main button **"Plan my ceremony"** (to `/plan`).
 - On mobile, the menu is a full-height sheet. The "Plan my ceremony" button and a WhatsApp button stay visible in a bottom bar.
 
 **Footer:**
@@ -118,7 +116,7 @@ Redirects: `managevent.com.au/*` returns 301 to `www.`. The legacy Appilico invi
 Sections, in order:
 
 1. **Hero: "From 0 to 100."**
-   - The signature moment is an interactive **ceremony dial**. The visitor taps a ceremony type (Wedding, Sofreh Aghd, Birthday, Gala, Celebration of Life, …) and the hero image, the headline and a short "what we handle" list change to match.
+   - The signature moment is an interactive **ceremony dial**. The visitor taps a ceremony type (Wedding, Engagement, Birthday, Gala, Celebration of Life, …) and the hero image, the headline and a short "what we handle" list change to match.
    - The main button is "Plan my ceremony", which opens `/plan` with the type preselected. The secondary button is "See packages".
    - **Motion:** a single orchestrated transition on selection. Respect `prefers-reduced-motion`.
    - The _Celebration of Life_ option previews Memorial Mode. Its tile is visually calm.
@@ -126,7 +124,7 @@ Sections, in order:
 3. **Ceremony families:**
    - Four entry points: Celebrations and milestones; Cultural and religious; Corporate and community; Solemn and life tributes.
    - Each lists 4–6 ceremonies.
-   - The cultural block leads with Persian ceremonies in EN and FA.
+   - The cultural block leads with community and multicultural ceremonies.
 4. **The invitation bridge:** a short demo showing an invitation RSVP count updating a catering estimate. It links to `/invitations`. This is the core hook, explained visually.
 5. **Perth venues strip** `[content]`: Swan Valley, Kings Park and Matilda Bay setups, Fremantle heritage, council halls, backyard marquees. Links to `/venues`.
 6. **Featured packages** `[content]`: three packages with "from $X incl. GST".
@@ -143,7 +141,7 @@ The **detail page template** (content model `Ceremony`, §A8):
 
 - **Hero:** ceremony name, a one-line promise, and the main button "Plan this ceremony" (opens `/plan?type=slug`).
 - **What we handle:** a checklist built from the `includes[]` service categories.
-- **Cultural notes block** (cultural ceremonies only): for example, the elements of a Sofreh Aghd (mirror and candelabra, sugar cones, honey, sweets, the needle and thread tradition). Write respectfully, reviewed by a community member. Fully bilingual.
+- **Cultural notes block** (cultural ceremonies only): for example, the key elements and traditions of a ceremony. Write respectfully, reviewed by a community member.
 - **Typical timeline:** a run-sheet preview built from `timelineTemplate[]`.
 - **Packages for this ceremony** `[content/api]`.
 - **Suggested Perth venues:** filtered by `suitableFor` and capacity.
@@ -155,7 +153,7 @@ The **detail page template** (content model `Ceremony`, §A8):
 Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively):
 
 - **Celebrations:** `wedding`, `engagement`, `proposal`, `birthday-kids`, `birthday-milestone`, `anniversary`, `surprise-party`, `baby-shower`, `gender-reveal`, `graduation`
-- **Cultural:** `sofreh-aghd`, `baleh-boroon`, `nowruz`, `shab-e-yalda`, `mehmooni`, `arabic-wedding`, `south-asian-wedding`, `mehndi`, `chinese-tea-ceremony`, `faith-ceremony`
+- **Cultural:** `arabic-wedding`, `south-asian-wedding`, `mehndi`, `chinese-tea-ceremony`, `faith-ceremony`
 - **Corporate:** `gala-dinner`, `product-launch`, `end-of-year-party`, `community-hall-event`
 - **Solemn:** `funeral-coordination`, `memorial-service`, `celebration-of-life`, `wake`
 
@@ -175,12 +173,12 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 
 **Steps.** These are a real sequence, so a stepper is appropriate. State is saved in the URL and on the server.
 
-1. **Ceremony:** type, plus any sub-events (for example Aghd + reception), date or a flexible month, and Perth area.
+1. **Ceremony:** type, plus any sub-events (for example ceremony + reception), date or a flexible month, and Perth area.
 2. **Guests:** adults and children. This can be set to "I'll use my invitation RSVPs later", which links to the bridge.
 3. **Venue:** "I have one" (enter it), "Help me choose" (show suggestions), or one of the venue types: home or backyard, council hall, winery, park or reserve, restaurant, hotel or function centre.
 4. **Style:** theme moodboards using the 5 luxury themes plus Memorial palettes, and a colour accent.
 5. **Services:** toggle each category, with tiers per category.
-   - Categories: styling and décor, catering, cake and sweets, florals, photo and video, entertainment (DJ, live music, MC), hire (furniture, tableware, marquee), staffing, AV and lighting, invitations, and the cultural elements set (for example a Sofreh).
+   - Categories: styling and décor, catering, cake and sweets, florals, photo and video, entertainment (DJ, live music, MC), hire (furniture, tableware, marquee), staffing, AV and lighting, invitations, and cultural ceremony sets.
    - Tiers: Essential, Signature, Luxe.
 6. **Extras:** transport, accommodation blocks, kids' entertainment, live photo wall, and the digital wishing well.
 7. **Summary:**
@@ -211,7 +209,7 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 
 **Acceptance criteria:**
 
-- The Builder can be completed with keyboard only and in RTL.
+- The Builder can be completed with keyboard only.
 - Refreshing the page or switching locale keeps the state.
 - The estimate matches `packages/pricing` unit-test fixtures.
 - The page works on a 360px-wide screen.
@@ -248,7 +246,7 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 ### A6.8 Invitations product page `/invitations`
 
 - **Hero:** a live demo invitation (a seeded, `noindex` demo event on `invitation.`) shown on a phone mock-up with the gate animation.
-- **Feature walkthrough:** the envelope reveal, bilingual EN/FA, RSVP with dietary requirements, QR entry pass, live photo wall, wishing well or tribute book, and WhatsApp sharing.
+- **Feature walkthrough:** the envelope reveal, RSVP with dietary requirements, QR entry pass, live photo wall, wishing well or tribute book, and WhatsApp sharing.
 - **Comparison:** Free invitation vs Premium Event Pass, as a table that pulls entitlements from `packages/payments` plan config.
 - **The bridge:** "Your RSVPs size your catering automatically when Managevent runs your event."
 - The main button is "Create your invitation", linking to `invitation.managevent.com.au/studio/new` (with SSO).
@@ -263,7 +261,7 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 
 ### A6.10 Contact `/contact`, Book `/book`
 
-- **Enquiry form:** name, email, phone, ceremony type, date or "not sure", guest estimate, Perth area, message, preferred contact channel (phone, email or WhatsApp), preferred language (EN or FA), and marketing consent (unticked).
+- **Enquiry form:** name, email, phone, ceremony type, date or "not sure", guest estimate, Perth area, message, preferred contact channel (phone, email or WhatsApp), and marketing consent (unticked).
 - **Protection:** server-side Zod validation, a honeypot field, and rate limiting. Use privacy-friendly bot protection; do not use any CAPTCHA that sends PII offshore without disclosure.
 - **On submit:** `POST /v1/leads`, which sends an auto-reply email in the chosen locale and a CRM notification to planners. Store UTM and source.
 - **Book (P0):**
@@ -277,12 +275,11 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 - `/[city]`
 - `/[city]/[ceremony-slug]`
 - `/[city]/venues/[area]` (P1)
-- `/[city]/[service-slug]` (P2, for example `/perth/sofreh-hire`)
+- `/[city]/[service-slug]` (P2, for example `/perth/arch-hire`)
 
 **Launch matrix (Perth, P0):** every ceremony slug in §A6.2, plus these commercial aliases, each mapped to a ceremony and package filter:
 
 - `/perth/weddings`
-- `/perth/persian-aghd` (canonical slug `sofreh-aghd`; the alias returns 301 to `/perth/sofreh-aghd`, or the reverse; pick one and record the choice in `content/routes.json`)
 - `/perth/birthday-party-packages`
 - `/perth/kids-party-packages`
 - `/perth/engagement-parties`
@@ -325,7 +322,7 @@ Initial ceremony slugs (all P0 as content stubs; copy is filled in progressively
 
 ## A8. Content model (`content/`, later a CMS)
 
-Schemas live in `content/schemas/*.schema.json`, and the matching Zod mirrors live in `packages/validators/content`. Every entity has `id`, `slug`, `status` (`draft` | `published` | `placeholder`), `locales.{en,fa}` (translated fields) and `updatedAt`.
+Schemas live in `content/schemas/*.schema.json`, and the matching Zod mirrors live in `packages/validators/content`. Every entity has `id`, `slug`, `status` (`draft` | `published` | `placeholder`), `locales.{en}` (translated fields) and `updatedAt`.
 
 | Entity        | Key fields                                                                                                                                                                                                                                                                                 |
 | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -334,7 +331,7 @@ Schemas live in `content/schemas/*.schema.json`, and the matching Zod mirrors li
 | `Venue`       | `area`, `type`, `capacity` ({`banquet`, `rounds`, `cocktail`, `theatre`}), `indoorOutdoor`, `rules` ({`curfew`, `byo`, `noiseNotes`, `insuranceRequiredCents`, `decorationLimits`}), `facilities[]`, `accessible`, `geo` ({`lat`, `lng`}), `suitableFor[]`, `partnerStatus` (`placeholder` | `prospect`      | `partner`), `images[]` |
 | `Service`     | `category`, `tiers[]` ({`name`, `priceRule`, `inclusions[]`}), `images[]`                                                                                                                                                                                                                  |
 | `Testimonial` | `ceremonySlug`, `venueSlug?`, `quote`, `author` (first name plus suburb), `consentRecordId`, `date`, `verified` (bool). **Only `verified: true` items can be published.**                                                                                                                  |
-| `GalleryItem` | `image`, `alt` (EN and FA), `ceremonySlug`, `venueSlug?`, `city`, `consentRecordId`, `credit`                                                                                                                                                                                              |
+| `GalleryItem` | `image`, `alt`, `ceremonySlug`, `venueSlug?`, `city`, `consentRecordId`, `credit`                                                                                                                                                                                                          |
 | `FAQ`         | `question`, `answer`, `scope` (`global`                                                                                                                                                                                                                                                    | `ceremony:slug` | `city:slug`)           |
 | `City`        | `status`, `name`, `areasServed[]`, `travelZones`, `localIntro`, `seo`                                                                                                                                                                                                                      |
 | `Article`     | MDX with frontmatter: `title`, `excerpt`, `cover`, `ceremonySlugs[]`, `city?`, `author`, `publishedAt`                                                                                                                                                                                     |
@@ -362,11 +359,10 @@ The tokens are owned by `packages/ui` and fully specified in `docs/design/DESIGN
 - **Type:**
   - Cormorant Garamond for display and headings. Playfair Display is a fallback only and is never mixed on the same page.
   - Plus Jakarta Sans for the UI.
-  - Vazirmatn for Farsi, used for both UI and headings. A decorative Persian display face is allowed only for invitation names (§B4).
   - One serif and one sans per page.
 - **Distinctiveness.** The palette sits close to the generic "luxury cream and serif" look, so distinctiveness must come from **structure**, not colour:
   - The **arch** motif from the Appilico invitations (a thin gold arch that frames hero media).
-  - A **sofreh-inspired layered layout**, where content panels overlap like laid cloths.
+  - A **layered layout**, where content panels overlap slightly.
   - The ceremony dial in the hero.
 - **Avoid:** tracked-out all-caps eyebrows, one italicised word in a headline, identical rounded cards with the same shadow, decorative numbering on non-sequences, and fade-up animation on every section.
 - **Motion:** one orchestrated moment per page (the hero dial on home, the step transition in the Builder). Everything else responds to the visitor's actions.
@@ -375,7 +371,7 @@ The tokens are owned by `packages/ui` and fully specified in `docs/design/DESIGN
 ## A10. Technical SEO and metadata
 
 - Use the Next.js Metadata API for each route: title template `%s | Managevent Perth`, a description of 150–160 characters, a canonical URL, `hreflang`, and Open Graph and Twitter cards.
-- Open Graph images are generated per page with the brand frame, and FA variants are rendered in RTL.
+- Open Graph images are generated per page with the brand frame.
 - `sitemap.xml` is split by locale and type. It excludes `noindex`, gated-city and estimate pages.
 - `robots.txt` allows all and points to the sitemap. Staging and preview environments are `noindex` with basic auth.
 - Mark up with JSON-LD as described in §A7, plus `Organization` (with `parentOrganization: Appilico`) and `WebSite` with a `SearchAction` (P2).
@@ -399,15 +395,15 @@ The tokens are owned by `packages/ui` and fully specified in `docs/design/DESIGN
 
 - **Lighthouse (mobile):** Performance ≥ 90, Accessibility 100, Best Practices ≥ 95, SEO 100 on home, a ceremony page, `/plan` and a city page.
 - **Size:** JS ≤ 170 KB gzip on initial load for content pages. The Builder can lazy-load its step modules.
-- **Fonts:** self-hosted and subset (Latin plus Arabic script for Vazirmatn), with `font-display: swap`. Preload the display face only.
+- **Fonts:** self-hosted and subset (Latin), with `font-display: swap`. Preload the display face only.
 - **Tests:**
-  - Playwright covers: home → Builder → estimate → lead; FA RTL snapshots; Memorial Mode routes have no celebration tokens.
+  - Playwright covers: home → Builder → estimate → lead; Memorial Mode routes have no celebration tokens.
   - An axe scan runs on every page template.
 
 ## A14. MVP slice for `www.` (launch checklist)
 
-- [ ] Global layout with EN and FA, the language switch and Memorial Mode
-- [ ] Home, ceremonies hub, 8 fully written ceremony pages (wedding, sofreh-aghd, birthday-milestone, birthday-kids, engagement, gala-dinner, celebration-of-life, community-hall-event), with stubs for the rest
+- [ ] Global layout with the header, footer and Memorial Mode
+- [ ] Home, ceremonies hub, 8 fully written ceremony pages (wedding, birthday-milestone, birthday-kids, engagement, gala-dinner, celebration-of-life, community-hall-event), with stubs for the rest
 - [ ] 6 packages, `/packages` and the detail page
 - [ ] `/plan` Builder with estimate, save and lead capture (no online deposit yet)
 - [ ] Venues list and detail with ≥ 8 Perth placeholders, clearly labelled
@@ -420,11 +416,11 @@ The tokens are owned by `packages/ui` and fully specified in `docs/design/DESIGN
 
 # Part B: `invitation.managevent.com.au`
 
-This merges `appilico-invitations` (multi-tenant studio, themes, dashboard, RSVP, pricing) with `anniversary-invitation` (a polished static guest experience, permanent hashed links, bilingual RTL, in-app browser hardening). The AI Studio prototype contributes the gate reveal, view modes and the AI assistant. See `apps/invitation/MIGRATION.md`.
+This merges `appilico-invitations` (multi-tenant studio, themes, dashboard, RSVP, pricing) with `anniversary-invitation` (a polished static guest experience, permanent hashed links, in-app browser hardening). The AI Studio prototype contributes the gate reveal, view modes and the AI assistant. See `apps/invitation/MIGRATION.md`.
 
 ## B1. Goals
 
-- A host can create, personalise and send a beautiful bilingual invitation in **under 15 minutes**.
+- A host can create, personalise and send a beautiful invitation in **under 15 minutes**.
 - A guest can open the invitation inside WhatsApp or Instagram on a mid-range phone and RSVP in **under 60 seconds**.
 - RSVP data (headcount, adults and children, dietary needs) flows into `app.` for the logistics bridge.
 - Guest pages are private by default.
@@ -441,7 +437,7 @@ This merges `appilico-invitations` (multi-tenant studio, themes, dashboard, RSVP
 | `/studio/[eventId]`                        | Host or co-host | Studio home: overview, stats, checklist                                                                            | `noindex` |
 | `/studio/[eventId]/design`                 | Host            | Template, theme, typography, music, cover media, gate style                                                        | `noindex` |
 | `/studio/[eventId]/content`                | Host            | Wording (AI assistant), story, schedule or sub-events, venue, dress code, FAQ                                      | `noindex` |
-| `/studio/[eventId]/guests`                 | Host            | Guest list, parties, import (CSV or XLSX, UTF-8 BOM, Farsi names), tags, tables                                    | `noindex` |
+| `/studio/[eventId]/guests`                 | Host            | Guest list, parties, import (CSV or XLSX, UTF-8 BOM), tags, tables                                                 | `noindex` |
 | `/studio/[eventId]/share`                  | Host            | Share studio: links, QR codes, WhatsApp, SMS, email, scheduling                                                    | `noindex` |
 | `/studio/[eventId]/responses`              | Host            | RSVPs, dietary breakdown, song requests, exports                                                                   | `noindex` |
 | `/studio/[eventId]/wall`                   | Host            | Photo wall moderation                                                                                              | `noindex` |
@@ -462,12 +458,11 @@ This merges `appilico-invitations` (multi-tenant studio, themes, dashboard, RSVP
 
 1. **Event basics:**
    - Ceremony type: the same list as `www.`. It sets `experienceMode` automatically, and memorial types switch the whole studio to Memorial Mode.
-   - Title, date and time, time zone (default `Australia/Perth`), and multi-part events (for example Aghd at 4pm and reception at 7pm, each with its own venue).
-   - Languages: EN, FA or both, and which is the default for guests.
+   - Title, date and time, time zone (default `Australia/Perth`), and multi-part events (for example ceremony at 4pm and reception at 7pm, each with its own venue).
 2. **Template:** pick from the gallery (§B4), filtered by ceremony type. Previews are live, using the host's own details.
 3. **Wording with the AI assistant:**
-   - Inputs are tone (poetic, formal, casual, Persian classical, Persian modern, or memorial-respectful), the names, and the key details.
-   - It generates headline, invitation text, story paragraphs and a schedule, in EN and FA as parallel versions rather than a literal translation.
+   - Inputs are tone (poetic, formal, casual, or memorial-respectful), the names, and the key details.
+   - It generates headline, invitation text, story paragraphs and a schedule, in English.
    - The host edits every field. Never auto-publish AI text.
 4. **Personalise:**
    - Cover photo or video, gate style (wax seal, ribbon, gate or arch, or a plain fade in Memorial Mode), and background music (§B11).
@@ -485,15 +480,14 @@ A **template** is layout plus motion: the structure of the gate and the order of
 
 Themes at launch, ported from `appilico-invitations/src/lib/themes.ts` and re-expressed as `packages/ui` theme tokens:
 
-| Theme id             | Name                              | Mode        | Notes                                                                        |
-| -------------------- | --------------------------------- | ----------- | ---------------------------------------------------------------------------- |
-| `royal-ivory`        | Royal Ivory & Gold Burgundy       | celebration | The house style, matching the brand palette                                  |
-| `midnight-celestial` | Midnight Celestial & Rose Gold    | celebration | Night indigo with constellation arches                                       |
-| `emerald-botanic`    | Emerald Botanic Garden            | celebration | Emerald with antique gold foliage                                            |
-| `persian-azure`      | Persian Azure & Isfahan Turquoise | celebration | Tilework and sandstone. Default for Persian ceremonies.                      |
-| `alabaster-platinum` | Minimalist Alabaster & Platinum   | celebration | Modern monochrome                                                            |
-| `memorial-alabaster` | Alabaster & Bronze                | memorial    | **Default for memorial events.** Calm, with no ornaments beyond a fine rule. |
-| `memorial-slate`     | Slate & Linen                     | memorial    | Muted, photo-forward                                                         |
+| Theme id             | Name                            | Mode        | Notes                                                                        |
+| -------------------- | ------------------------------- | ----------- | ---------------------------------------------------------------------------- |
+| `royal-ivory`        | Royal Ivory & Gold Burgundy     | celebration | The house style, matching the brand palette                                  |
+| `midnight-celestial` | Midnight Celestial & Rose Gold  | celebration | Night indigo with constellation arches                                       |
+| `emerald-botanic`    | Emerald Botanic Garden          | celebration | Emerald with antique gold foliage                                            |
+| `alabaster-platinum` | Minimalist Alabaster & Platinum | celebration | Modern monochrome                                                            |
+| `memorial-alabaster` | Alabaster & Bronze              | memorial    | **Default for memorial events.** Calm, with no ornaments beyond a fine rule. |
+| `memorial-slate`     | Slate & Linen                   | memorial    | Muted, photo-forward                                                         |
 
 The theme token schema in `packages/ui/themes` contains:
 
@@ -506,16 +500,14 @@ The theme token schema in `packages/ui/themes` contains:
 
 **Compatibility rule:** memorial events can only choose themes where `mode = memorial`, and celebration events cannot choose memorial themes. This is enforced in the validators.
 
-The Farsi display face for names is configurable per theme (as in `anniversary-invitation`'s `--font-fa-display`). It must have a licence that permits web embedding.
-
 ## B5. Guest micro-site: `/i/[eventSlug]/[guestToken]`
 
 ### B5.1 First paint (server-rendered, no JavaScript required)
 
 The core details render on the server and show even with JavaScript blocked:
 
-- The greeting by name in the guest's language ("Dear Sara & family" / «سارا جان و خانواده‌ی عزیز»)
-- The event title, date and time (in the event's time zone, with the Jalali date shown in FA)
+- The greeting by name by name ("Dear Sara & family")
+- The event title, date and time (in the event's time zone)
 - The venue name and address
 - An RSVP link
 - An "Add to calendar" link
@@ -547,10 +539,10 @@ The `.ics` file is embedded or linked on the server, not generated in JavaScript
    10. RSVP
    11. Wishing well or tribute book
    12. Footer
-2. **Timeline:** the schedule and sub-events as a vertical timeline, each with its own venue, map, time and calendar button. This suits multi-part Persian weddings.
+2. **Timeline:** the schedule and sub-events as a vertical timeline, each with its own venue, map, time and calendar button. This suits multi-part weddings.
 3. **Gallery:** a memory photo grid with a lightbox, plus host-curated albums. If enabled, the live wall appears as a tab here.
 
-The menu gives access to the language switch (EN / فارسی, full RTL mirroring, kept in the URL with `?lang=`), mute, add to calendar, directions, view my pass, and "Share" (only if the host allows forwarding).
+The menu gives access to mute, add to calendar, directions, view my pass, and "Share" (only if the host allows forwarding).
 
 ### B5.4 Section behaviour
 
@@ -571,7 +563,7 @@ The menu gives access to the language switch (EN / فارسی, full RTL mirrorin
 
 `/i/{eventSlug}/{guestToken}`
 
-- **`eventSlug`:** human-readable, chosen at publish, unique, and from the 31-character safe alphabet plus hyphens. Example: `sara-ali-aghd-7kq`.
+- **`eventSlug`:** human-readable, chosen at publish, unique, and from the 31-character safe alphabet plus hyphens. Example: `sara-ali-wedding-7kq`.
 - **`guestToken`:** `{readableName}-{suffix}`, for example `sara-family-g9qtmt`.
   - The suffix is 6+ characters from the **31-character alphabet** (no `0 1 i l o`), derived from HMAC-SHA256(`GUEST_TOKEN_PEPPER`, `event.salt` + `party.stableId`).
   - Use 8 characters for events with more than 2,000 links.
@@ -623,7 +615,7 @@ Imported Appilico events keep their old URLs (for example `appilico.com.au/anniv
 - **Validation:** Zod, shared between client and server. The submit is idempotent (`Idempotency-Key` header).
 - **Offline or poor connection:** if the POST fails, the form keeps its state and retries. Never lose a guest's answers.
 - **Every change** writes an `EventHeadcount` snapshot and enqueues `headcount.changed` (ARCHITECTURE §6).
-- **Host view:** totals (yes, no, pending), adults and children, a dietary breakdown with a separate count for each allergen, song requests, a CSV or XLSX export (UTF-8 BOM so Farsi names display correctly in Excel), and filters by party, tag, table and status.
+- **Host view:** totals (yes, no, pending), adults and children, a dietary breakdown with a separate count for each allergen, song requests, a CSV or XLSX export (UTF-8 BOM so names display correctly in Excel), and filters by party, tag, table and status.
 
 ## B8. QR pass and check-in
 
@@ -685,7 +677,7 @@ Imported Appilico events keep their old URLs (for example `appilico.com.au/anniv
 | Scheduled send and RSVP reminders                                      | —        | ✓       | Reminders go only to pending guests, at most 2                                                                             |
 | Printable QR place cards and welcome board (PDF)                       | —        | ✓       | Also available from the Windows app                                                                                        |
 
-Message templates are bilingual, with `{guestName}`, `{eventTitle}`, `{link}` and `{rsvpBy}` variables. Previews are shown before sending, and a send log is kept.
+Message templates use `{guestName}`, `{eventTitle}`, `{link}` and `{rsvpBy}` variables. Previews are shown before sending, and a send log is kept.
 
 ## B14. Plans and entitlements
 
@@ -695,7 +687,6 @@ Plan config lives in `packages/payments/plans`. **Prices are placeholders** for 
 | ----------------------------- | --------------------------------- | ---------------------------------------------------------------- | --------------------------------------- |
 | Guests and links              | up to 30                          | unlimited                                                        | unlimited                               |
 | Templates and themes          | 2 classic and the memorial themes | all, plus premium animations                                     | all                                     |
-| Languages EN + FA             | ✓                                 | ✓                                                                | ✓                                       |
 | RSVP and dietary requirements | ✓                                 | ✓                                                                | ✓                                       |
 | Custom event slug             | —                                 | ✓                                                                | ✓                                       |
 | Background music              | library (2 tracks)                | full library and upload                                          | ✓                                       |
@@ -740,8 +731,8 @@ Memorial Mode is triggered by the ceremony type, and the host cannot switch it o
 
 ## B18. Acceptance criteria and MVP slice for `invitation.`
 
-- [ ] Host can sign up or sign in (SSO with `www.` and `app.`), create an event, pick a template and theme, write or AI-generate EN and FA wording, add guests (manual and CSV), preview, publish, and copy WhatsApp links.
-- [ ] The guest page renders the core details without JavaScript. The gate reveal works with music starting on tap, and the reduced-motion path works. Story, Timeline and Gallery views work. EN and FA switching keeps the URL state.
+- [ ] Host can sign up or sign in (SSO with `www.` and `app.`), create an event, pick a template and theme, write or AI-generate wording, add guests (manual and CSV), preview, publish, and copy WhatsApp links.
+- [ ] The guest page renders the core details without JavaScript. The gate reveal works with music starting on tap, and the reduced-motion path works. Story, Timeline and Gallery views work.
 - [ ] RSVP with party members, adults and children, dietary needs per person, song requests and messages. Answers can be edited until the deadline and are idempotent.
 - [ ] The host responses dashboard shows totals, the dietary breakdown, and CSV export with a UTF-8 BOM.
 - [ ] The `headcount.changed` event is emitted, and a linked Order shows the recommendation (the bridge's end-to-end test).
@@ -763,12 +754,12 @@ Memorial Mode is triggered by the ceremony type, and the host cannot switch it o
 4. **One design system:** both apps consume `packages/ui` tokens and themes. Never fork tokens inside an app.
 5. **One i18n source:** `packages/i18n`, with namespaces `common`, `marketing`, `invitation`, `ceremonies` and `legal`.
 6. **Content reuse:** ceremony names, the `experienceMode` mapping and venue data are shared entities. `invitation.` reads them through the API, never by duplicating them.
-7. **Status and errors:** a friendly bilingual error page on both apps, with a reference id (no stack traces).
+7. **Status and errors:** a friendly error page on both apps, with a reference id (no stack traces).
 
 ## Appendix: open content tasks for the founder
 
 - The final logo and wordmark (D-11). Real photography of past events, with consent records. The real package prices and "from" prices.
 - Venue partnership confirmations, to turn placeholders into partners.
-- A Persian cultural-content review for Aghd, Baleh Boroon, Nowruz, Yalda and Mehmooni pages.
+- A cultural-content review for the cultural ceremony pages.
 - The licensed music library (shortlist about 30 tracks: 20 celebration, 10 memorial).
 - The Acknowledgement of Country wording, and legal review of terms, privacy and refunds.

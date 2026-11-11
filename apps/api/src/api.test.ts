@@ -47,7 +47,7 @@ describe("@managevent/api", () => {
     expect(directSpec.openapi).toBe("3.1.0");
   });
 
-  it("POST /v1/leads validates with Zod, normalises Farsi text, stores Lead + ConsentRecord in Postgres, enqueues lead.created job, and supports Idempotency-Key", async () => {
+  it("POST /v1/leads validates with Zod, stores Lead + ConsentRecord in Postgres, enqueues lead.created job, and supports Idempotency-Key", async () => {
     const enqueuedJobs: Array<{ payload: LeadCreatedJobPayload; singletonKey: string }> = [];
     const mockProducer: JobQueueProducer = {
       async enqueueLeadCreated(payload, singletonKey) {
@@ -62,12 +62,12 @@ describe("@managevent/api", () => {
     const idempotencyKey = `idem-lead-${Date.now()}`;
     const payload = {
       source: "BUILDER",
-      name: "سارا احمدي", // Contains Arabic Yeh (\u064A) -> should be normalised to Persian Yeh (\u06CC)
+      name: "Sara Ahmadi",
       email: `sara-${Date.now()}@example.com`,
       phone: "+61412345678",
-      preferredLanguage: "fa",
+      preferredLanguage: "en",
       preferredChannel: "WHATSAPP",
-      ceremonySlug: "sofreh-aghd",
+      ceremonySlug: "wedding",
       guestEstimate: 90,
       area: "Swan Valley",
       marketingConsent: true,
@@ -86,7 +86,7 @@ describe("@managevent/api", () => {
     expect(res1.status).toBe(201);
     const body1: unknown = await res1.json();
     const parsedLead = LeadResponseSchema.parse(body1);
-    expect(parsedLead.name).toBe("سارا احمدی"); // Normalised Persian Yeh!
+    expect(parsedLead.name).toBe("Sara Ahmadi");
     expect(parsedLead.marketingConsentId).toMatch(/^cns_/);
     expect(enqueuedJobs).toHaveLength(1);
     expect(enqueuedJobs[0]?.payload.leadId).toBe(parsedLead.id);

@@ -10,4 +10,4 @@ Admin & Planner Command Centre domain and workflow engine for Managevent (`admin
 
 ## UI Surface
 
-The interactive Planner & Admin Command Centre UI is served at `/admin` (and `/fa/admin`) via [`apps/marketing/app/[locale]/admin/page.tsx`](../marketing/app/[locale]/admin/page.tsx) and [`apps/marketing/components/admin-dashboard.tsx`](../marketing/components/admin-dashboard.tsx).
+The interactive Planner & Admin Command Centre UI is served at `/admin` via [`apps/marketing/app/[locale]/admin/page.tsx`](../marketing/app/[locale]/admin/page.tsx) and [`apps/marketing/components/admin-dashboard.tsx`](../marketing/components/admin-dashboard.tsx).

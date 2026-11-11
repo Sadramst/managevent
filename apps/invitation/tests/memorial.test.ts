@@ -8,7 +8,7 @@ describe("Memorial Mode Safety and Theme Rules", () => {
     expect(isThemeCompatibleWithMode("memorial-alabaster", "MEMORIAL")).toBe(true);
     expect(isThemeCompatibleWithMode("memorial-slate", "MEMORIAL")).toBe(true);
     expect(isThemeCompatibleWithMode("royal-ivory", "MEMORIAL")).toBe(false);
-    expect(isThemeCompatibleWithMode("persian-azure", "MEMORIAL")).toBe(false);
+    expect(isThemeCompatibleWithMode("emerald-botanic", "MEMORIAL")).toBe(false);
 
     // Celebration mode rejects memorial themes
     expect(isThemeCompatibleWithMode("royal-ivory", "CELEBRATION")).toBe(true);

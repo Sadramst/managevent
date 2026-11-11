@@ -9,12 +9,12 @@ Managevent runs every kind of event and ceremony from 0 to 100 in Perth, Western
 ## Language & market positioning
 
 - **English-first UX (`en-AU`):** Built for the broad Perth event market (couples, families, corporate hosts, community organisations, and funeral/memorial coordinators) with clear Australian English copy and GST-inclusive AUD pricing.
-- **Multi-language ready (`@managevent/i18n`):** Architected with logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`), deterministic date formatters, and typed dictionaries (`en` + `fa` active today, with `ar`, `zh`, and `hi` pre-configured) so additional languages can be enabled at any time without layout changes.
+- **Multi-language ready (`@managevent/i18n`):** Architected with logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`), deterministic date formatters, and typed dictionaries (`en` active today, with `ar`, `zh`, and `hi` pre-configured) so additional languages can be enabled at any time without layout changes.
 
 ## The problem
 
 - Hosts juggle 6 to 12 suppliers, spreadsheets and messaging groups. Headcounts change constantly, and catering, cakes and seating are sized by guesswork.
-- Cultural and traditional ceremonies are under-served by mainstream planners (including Persian Sofreh Aghd, Baleh Boroon, Nowruz, Yalda, Mehmooni, as well as Arabic, South Asian and Chinese traditions).
+- Cultural and traditional ceremonies are under-served by mainstream planners (including Arabic, South Asian and Chinese traditions).
 - Corporate teams and community groups need reliable, turnkey event delivery across Perth CBD, Swan Valley, Fremantle and local council halls without agency mark-up opacity.
 - Families arranging memorials and wakes need calm, competent help with the gathering itself (venue, wake catering, tribute displays, digital RSVP) at a difficult time.
 - Digital invitations today are disconnected pages, detached from real-world catering and seating fulfilment.
@@ -34,7 +34,7 @@ Managevent runs every kind of event and ceremony from 0 to 100 in Perth, Western
 | **Couples (weddings & engagements)**                          | One accountable Perth team, transparent instant cost estimates, and seamless digital invitations                          |
 | **Families (birthdays, anniversaries, showers, graduations)** | Turnkey 0-to-100 packages with clear GST-inclusive prices, styling, cakes, catering, and furniture hire                   |
 | **Corporates & community groups**                             | End-of-year galas, product launches, award nights, and council hall know-how across Perth Metro                           |
-| **Cultural & multicultural communities**                      | Specialist styling and cultural know-how (Sofreh Aghd sets, Halal catering coordination, multi-language support)          |
+| **Cultural & multicultural communities**                      | Specialist styling and cultural know-how (traditional ceremony sets, Halal catering coordination)                         |
 | **Families arranging memorials & wakes**                      | Dignified coordination and calm Memorial Mode tools (complimentary Premium features), working alongside funeral directors |
 
 ## Revenue streams

@@ -2,17 +2,14 @@ import React from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
 import type { EventModel } from "@/lib/types";
 import { Clock, CalendarCheck } from "lucide-react";
-import { toPersianDigits } from "@/lib/i18n";
 
 interface TimelineSectionProps {
   event: EventModel;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
 }
 
-export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme, locale }) => {
+export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme }) => {
   const { colors } = theme;
-  const isFa = locale === "fa";
 
   return (
     <section className="relative px-4 py-8 sm:px-8 sm:py-12">
@@ -35,7 +32,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme, 
             className="font-display text-2xl font-bold tracking-tight sm:text-3xl"
             style={{ color: colors.accentInk }}
           >
-            {isFa ? "برنامه مراسم" : "Celebration Timeline"}
+            {"Celebration Timeline"}
           </h2>
           <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
@@ -46,7 +43,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme, 
           style={{ borderColor: colors.rule }}
         >
           {event.schedule.map((item, idx) => {
-            const displayTime = isFa ? toPersianDigits(item.time) : item.time;
+            const displayTime = item.time;
             return (
               <div key={idx} className="relative group">
                 {/* Node marker on the vertical rule */}
@@ -122,7 +119,7 @@ export const TimelineSection: React.FC<TimelineSectionProps> = ({ event, theme, 
             }}
           >
             <CalendarCheck className="h-4 w-4" style={{ color: colors.accent }} />
-            <span>{isFa ? "افزودن به تقویم شخصی" : "Add to Calendar (.ics)"}</span>
+            <span>{"Add to Calendar (.ics)"}</span>
           </a>
         </div>
       </div>

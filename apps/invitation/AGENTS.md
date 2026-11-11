@@ -54,8 +54,8 @@ NEXT_PUBLIC_INVITATION_URL, NEXT_PUBLIC_API_URL, NEXT_PUBLIC_MEDIA_CDN_URL, NEXT
 
 ## Tests required
 
-Vitest. Playwright projects: iPhone Safari, Android Chrome, WhatsApp, Instagram and Facebook in-app user agents, no-JavaScript, reduced-motion, FA RTL, memorial fixture. Axe scan.
+Vitest. Playwright projects: iPhone Safari, Android Chrome, WhatsApp, Instagram and Facebook in-app user agents, no-JavaScript, reduced-motion, memorial fixture. Axe scan.
 
 ## Status
 
-✅ Scaffolded and built (`apps/invitation`: Host Studio create flow, AI wording assistant, 7 themes + Memorial Mode, server-rendered Guest Micro-site, RSVP & dietary bridge, QR passes, Photo Wall, Wishing Well & Tribute Book, and Legacy Slug import).
+✅ Scaffolded and built (`apps/invitation`: Host Studio create flow, AI wording assistant, 6 themes + Memorial Mode, server-rendered Guest Micro-site, RSVP & dietary bridge, QR passes, Photo Wall, Wishing Well & Tribute Book, and Legacy Slug import).

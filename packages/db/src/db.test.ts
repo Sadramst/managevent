@@ -52,8 +52,8 @@ describe("@managevent/db", () => {
   describe("AES-256-GCM field encryption", () => {
     const testKey = Buffer.alloc(32, 7).toString("base64");
 
-    it("encrypts and decrypts UTF-8 strings including Farsi text", () => {
-      const plaintext = "Severe peanut anaphylaxis – حساسیت شدید به بادام زمینی";
+    it("encrypts and decrypts UTF-8 strings including non-ASCII text", () => {
+      const plaintext = "Severe peanut anaphylaxis – café, naïve, jalapeño";
       const encrypted = encryptField(plaintext, testKey);
       expect(encrypted.startsWith(ENCRYPTION_PREFIX)).toBe(true);
       expect(isEncryptedValue(encrypted)).toBe(true);
@@ -140,8 +140,8 @@ describe("@managevent/db", () => {
           data: {
             id: eventId,
             ownerUserId: userId,
-            title: { en: "Test Aghd" },
-            ceremonySlug: "sofreh-aghd",
+            title: { en: "Test Engagement" },
+            ceremonySlug: "engagement-party",
             experienceMode: "CELEBRATION",
             startsAt: new Date("2026-12-01T08:00:00.000Z"),
           },
@@ -155,7 +155,7 @@ describe("@managevent/db", () => {
             templateSlug: "classic-arch",
             themeId: "royal-ivory",
             contentJson: {},
-            languages: ["en", "fa"],
+            languages: ["en"],
             gateStyle: "arch",
             rsvpConfigJson: {},
             salt: "00112233445566778899aabbccddeeff00112233445566778899aabbccddeeff",

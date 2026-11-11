@@ -1,5 +1,17 @@
 # Contract changelog
 
+## Remove Persian (`fa`) locale and Persian ceremonies (2026-11-11)
+
+Breaking contract change (`contract-change`). The platform is now English (en-AU) only, aimed at Australian customers.
+
+- `@managevent/validators`: `LocaleSchema` is `en | ar | zh | hi`; `EnabledLocaleSchema` is `en`. `fa` removed from `LocalizedTextSchema`. Theme id `persian-azure` and builder category `sofreh-set` removed.
+- `@managevent/i18n`: `fa` dictionaries, Jalali dates and Persian digit helpers removed. `ENABLED_LOCALES` is `["en"]`.
+- `@managevent/ui`: `persian-azure` theme and Vazirmatn font tokens removed (6 launch themes).
+- `@managevent/pricing`: `sofreh-set` price-list entry removed.
+- `content/`: Persian ceremony and package content removed.
+- `@managevent/db`: no schema change. Data migration `remove_persian` sets `locale='en'` on existing `fa` rows and remaps removed themes and ceremony slugs.
+- Consumers: remove `fa` usage; old `/fa/...` URLs redirect to `/en/...`.
+
 Step 2 launch (2026-10-23): additive EN/FA marketing and draft legal dictionary
 keys; auth re-exports the Prisma adapter for the API's database-backed sessions.
 API lead authorization no longer trusts client role headers. Production email

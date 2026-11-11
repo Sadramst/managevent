@@ -87,8 +87,8 @@ describe("@managevent/config", () => {
     });
 
     it("redacts guest tokens, display tokens, legacy paths, and sensitive query parameters in URLs", () => {
-      expect(redactUrl("/i/sara-ali-aghd/sara-family-g9qtmt")).toBe(
-        `/i/sara-ali-aghd/${REDACTED_PLACEHOLDER}`,
+      expect(redactUrl("/i/sara-ali-engage/sara-family-g9qtmt")).toBe(
+        `/i/sara-ali-engage/${REDACTED_PLACEHOLDER}`,
       );
       expect(redactUrl("/display/evt_0192/secret-display-token")).toBe(
         `/display/evt_0192/${REDACTED_PLACEHOLDER}`,
@@ -96,8 +96,8 @@ describe("@managevent/config", () => {
       expect(redactUrl("/legacy/anniversary/armita-party-g9qtmt")).toBe(
         `/legacy/anniversary/${REDACTED_PLACEHOLDER}`,
       );
-      expect(redactUrl("/plan?token=abc123&lang=fa&email=test@example.com#top")).toBe(
-        `/plan?token=${REDACTED_PLACEHOLDER}&lang=fa&email=${REDACTED_PLACEHOLDER}#top`,
+      expect(redactUrl("/plan?token=abc123&lang=en&email=test@example.com#top")).toBe(
+        `/plan?token=${REDACTED_PLACEHOLDER}&lang=en&email=${REDACTED_PLACEHOLDER}#top`,
       );
     });
 

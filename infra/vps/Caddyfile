@@ -58,3 +58,4 @@ invitation.managevent.com.au {
 
 	reverse_proxy invitation:3001
 }
+

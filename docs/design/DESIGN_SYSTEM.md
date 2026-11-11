@@ -29,11 +29,11 @@ Tests in `packages/ui` assert every documented text pairing is ≥ 4.5:1 (or ≥
 
 ## Typography
 
-| Role                           | Latin                        | Farsi / Arabic script                          |
-| ------------------------------ | ---------------------------- | ---------------------------------------------- |
-| Display and headings           | Cormorant Garamond (500–600) | Vazirmatn (600–700)                            |
-| UI and body                    | Plus Jakarta Sans (400–600)  | Vazirmatn (400–500)                            |
-| Invitation names (themes only) | The theme's display face     | A licensed decorative Persian face (per theme) |
+| Role                           | Latin                        |
+| ------------------------------ | ---------------------------- |
+| Display and headings           | Cormorant Garamond (500–600) |
+| UI and body                    | Plus Jakarta Sans (400–600)  |
+| Invitation names (themes only) | The theme's display face     |
 
 - **Scale:** a modular ratio of 1.25 (mobile) or 1.333 (desktop). Base 16px for the UI. Serif body text gets +0.1 extra line-height.
 - **Line length:** 60–75 characters for prose.
@@ -42,7 +42,7 @@ Tests in `packages/ui` assert every documented text pairing is ≥ 4.5:1 (or ≥
 ## Layout and motifs
 
 - **Arch frame:** a thin accent-colour arch around hero media. It comes from the Appilico invitations and is the brand's structural signature.
-- **Sofreh layering:** content panels overlap slightly, like laid cloths. Hierarchy comes from overlap and spacing, **not** identical shadowed cards.
+- **Layered panels:** content panels overlap slightly, like laid cloths. Hierarchy comes from overlap and spacing, **not** identical shadowed cards.
 - **Corner radius by hierarchy:** sheets 24px, panels 12px, controls 8px, chips 999px. Never one radius everywhere.
 - **Grid:** a 12-column grid on desktop and 4 columns on mobile. Text is start-aligned, which means right-aligned in RTL. Centre alignment is only for invitation hero text.
 

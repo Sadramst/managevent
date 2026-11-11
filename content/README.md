@@ -4,7 +4,7 @@ Structured content for `www.` and the shared catalogue. This is the CMS until D-
 
 - Schemas: `schemas/*.schema.json` (JSON Schema 2020-12). Zod mirrors live in `packages/validators/content`. **The build validates every file.**
 - `status`: `placeholder` (fake or unconfirmed: never shown as a real partner or review), `draft`, `published`.
-- Every translatable field is `{ "en": "...", "fa": "..." }`. Farsi entries marked `"faReview": "needed"` must be reviewed by a fluent speaker before they are published.
+- Every translatable field is `{ "en": "..." }`. Other locales (`ar`, `zh`, `hi`) may be added later through a `contract-change`.
 - **Never** put real customer names, photos or reviews here without a consent record id.
 
 ```text

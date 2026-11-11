@@ -73,14 +73,13 @@ describe("@managevent/ui", () => {
     });
   });
 
-  describe("7 Invitation themes & theme/mode compatibility", () => {
-    it("exports all 7 themes with valid body text contrast (>= 4.5:1)", () => {
+  describe("6 Invitation themes & theme/mode compatibility", () => {
+    it("exports all 6 themes with valid body text contrast (>= 4.5:1)", () => {
       const themeIds = Object.keys(INVITATION_THEMES);
       expect(themeIds).toEqual([
         "royal-ivory",
         "midnight-celestial",
         "emerald-botanic",
-        "persian-azure",
         "alabaster-platinum",
         "memorial-alabaster",
         "memorial-slate",
@@ -96,7 +95,7 @@ describe("@managevent/ui", () => {
 
     it("enforces strict theme/mode compatibility", () => {
       expect(isThemeCompatibleWithMode("royal-ivory", "CELEBRATION")).toBe(true);
-      expect(isThemeCompatibleWithMode("persian-azure", "CELEBRATION")).toBe(true);
+      expect(isThemeCompatibleWithMode("emerald-botanic", "CELEBRATION")).toBe(true);
       expect(isThemeCompatibleWithMode("memorial-alabaster", "CELEBRATION")).toBe(false);
 
       expect(isThemeCompatibleWithMode("memorial-alabaster", "MEMORIAL")).toBe(true);
@@ -111,10 +110,10 @@ describe("@managevent/ui", () => {
   describe("ExperienceModeProvider, base components, and ArchFrame", () => {
     it("renders Celebration Mode with arch SVG and RTL logical attributes", () => {
       const html = renderToStaticMarkup(
-        <ExperienceModeProvider ceremonyOrRoute="sofreh-aghd" dir="rtl">
+        <ExperienceModeProvider ceremonyOrRoute="wedding" dir="rtl">
           <ArchFrame>
             <Panel layered>
-              <Badge>Sofreh Aghd</Badge>
+              <Badge>Wedding</Badge>
               <Input defaultValue="Sara" />
               <Button variant="primary">Plan my ceremony</Button>
             </Panel>

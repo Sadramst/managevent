@@ -78,7 +78,7 @@ body:
     attributes:
       label: Cross-cutting requirements that apply
       options:
-        - label: EN + FA strings and RTL layout
+        - label: EN strings (en-AU)
         - label: Memorial Mode behaviour
         - label: Handles PII or health data (privacy rules apply)
         - label: Handles money (cents, GST via packages/payments)

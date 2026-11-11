@@ -20,6 +20,6 @@
 
 ## WhatsApp (Twilio)
 
-- Business-initiated messages use **approved templates** only, in both EN and FA.
+- Business-initiated messages use **approved templates** only, in English.
 - Opt-outs are honoured and recorded.
 - Click-to-send `wa.me` links (sent from the host's own phone) are outside our sending infrastructure and are always available.

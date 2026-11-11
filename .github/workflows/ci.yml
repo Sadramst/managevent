@@ -63,7 +63,7 @@ jobs:
         run: pnpm db:seed
       - name: Validate /content against content/schemas
         run: pnpm validate:content
-      - name: Check i18n EN/FA dictionary parity
+      - name: Check i18n dictionaries
         run: pnpm --filter @managevent/i18n test
       - name: Check committed OpenAPI client is up to date
         run: pnpm --filter @managevent/api-client generate:check

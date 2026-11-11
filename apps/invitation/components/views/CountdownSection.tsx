@@ -2,20 +2,17 @@
 
 import React, { useEffect, useState } from "react";
 import type { InvitationThemeTokens } from "@managevent/ui/themes";
-import { toPersianDigits } from "@/lib/i18n";
 
 interface CountdownSectionProps {
   targetDateISO: string;
   theme: InvitationThemeTokens;
   experienceMode: "CELEBRATION" | "MEMORIAL";
-  locale: "en" | "fa";
 }
 
 export const CountdownSection: React.FC<CountdownSectionProps> = ({
   targetDateISO,
   theme,
   experienceMode,
-  locale,
 }) => {
   const [mounted, setMounted] = useState(false);
   const [timeLeft, setTimeLeft] = useState<{
@@ -68,7 +65,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
           className="font-serif text-sm tracking-widest text-ink-muted"
           style={{ color: colors.inkMuted }}
         >
-          {locale === "fa" ? "گردهمایی برای گرامیداشت یاد و خاطره" : "A gathering in loving memory"}
+          {"A gathering in loving memory"}
         </p>
       </div>
     );
@@ -76,14 +73,14 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
 
   const formatDigit = (num: number) => {
     const padded = String(num).padStart(2, "0");
-    return locale === "fa" ? toPersianDigits(padded) : padded;
+    return padded;
   };
 
   const labels = {
-    days: locale === "fa" ? "روز" : "Days",
-    hours: locale === "fa" ? "ساعت" : "Hours",
-    minutes: locale === "fa" ? "دقیقه" : "Mins",
-    seconds: locale === "fa" ? "ثانیه" : "Secs",
+    days:"Days",
+    hours:"Hours",
+    minutes:"Mins",
+    seconds:"Secs",
   };
 
   return (
@@ -97,9 +94,7 @@ export const CountdownSection: React.FC<CountdownSectionProps> = ({
             color: colors.accentInk,
           }}
         >
-          {locale === "fa"
-            ? "سپاس از همراهی شما در این روز خاطره‌انگیز"
-            : "Thank you for celebrating with us!"}
+          {"Thank you for celebrating with us!"}
         </div>
       ) : (
         <div className="grid grid-cols-4 gap-2 sm:gap-3 text-center">

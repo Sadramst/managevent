@@ -2,7 +2,7 @@
 
 - **Warm, specific, unhurried.** We sound like a calm planner who has done this a hundred times.
 - Use plain words and sentence case. Buttons say exactly what happens ("Book a consultation", "Save my estimate").
-- **Bilingual, not translated:** Farsi copy is written natively, with culturally appropriate courtesy (تعارف where fitting). Never machine-translated without a human review.
+- **Australian, warm and plain:** copy is written in Australian English with natural courtesy. Avoid jargon and never publish AI-written copy without a human review.
 - **Celebration tone:** joyful but never shouty. No ALL CAPS and no exclamation chains.
 - **Memorial tone:** gentle and brief. Say "remembering", "gathering", "celebrating their life". Avoid "party", "fun", "book now" and urgency.
 - **Footer credit:** "A product by Appilico".

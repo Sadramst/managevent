@@ -13,14 +13,14 @@ import { VenueMapSection } from "@/components/views/VenueMapSection";
 import { GallerySection } from "@/components/views/GallerySection";
 import { RsvpDrawer } from "@/components/rsvp/RsvpDrawer";
 import { AudioPlayer } from "@/components/views/AudioPlayer";
-import { Languages, QrCode } from "lucide-react";
+import { QrCode } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface GuestInvitationViewProps {
   event: EventModel;
   party: GuestParty;
   theme: InvitationThemeTokens;
-  initialLocale: "en" | "fa";
+  initialLocale: "en";
 }
 
 export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
@@ -33,16 +33,14 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  // URL state for language, gate, and mute
-  const langParam = searchParams.get("lang");
-  const locale: "en" | "fa" = langParam === "fa" || langParam === "en" ? langParam : initialLocale;
+  // URL state for gate and mute
+  const locale: "en" = initialLocale;
   const isGateOpenParam = searchParams.get("opened") === "1";
 
   const [isGateOpen, setIsGateOpen] = useState(isGateOpenParam);
   const [currentMode, setCurrentMode] = useState<ViewMode>("story");
 
   const { colors } = theme;
-  const isFa = locale === "fa";
   const hasGallery = Boolean(event.content.galleryImages && event.content.galleryImages.length > 0);
 
   const handleOpenGate = () => {
@@ -53,17 +51,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
     router.replace(`${pathname}?${search}`, { scroll: false });
   };
 
-  const handleLanguageToggle = () => {
-    const nextLang = locale === "fa" ? "en" : "fa";
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
-    current.set("lang", nextLang);
-    const search = current.toString();
-    router.replace(`${pathname}?${search}`, { scroll: false });
-  };
-
   return (
     <div
-      dir={isFa ? "rtl" : "ltr"}
+      dir="ltr"
       className="relative min-h-screen overflow-x-hidden font-sans transition-colors duration-500"
       style={{
         backgroundColor: colors.bg,
@@ -78,7 +68,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         isOpenedDefault={isGateOpen}
         onOpen={handleOpenGate}
       >
-        {/* Floating Top Bar for Language Toggle & Digital Pass */}
+        {/* Floating Top Bar for Digital Pass */}
         <div className="relative z-20 flex items-center justify-between px-4 py-3 sm:px-8">
           {/* Pass Link */}
           <a
@@ -91,25 +81,9 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             }}
           >
             <QrCode className="h-3.5 w-3.5" style={{ color: colors.accent }} />
-            <span>{isFa ? "کارت ورود دیجیتال" : "Entry Pass"}</span>
+            <span>{"Entry Pass"}</span>
           </a>
 
-          {/* Language Switcher */}
-          {event.languages.length > 1 && (
-            <button
-              type="button"
-              onClick={handleLanguageToggle}
-              className="inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-semibold shadow-xs backdrop-blur-md transition-all hover:scale-105"
-              style={{
-                backgroundColor: `${colors.surface}E6`,
-                borderColor: colors.rule,
-                color: colors.accentInk,
-              }}
-            >
-              <Languages className="h-3.5 w-3.5" style={{ color: colors.accent }} />
-              <span>{isFa ? "English" : "فارسی"}</span>
-            </button>
-          )}
         </div>
 
         {/* Main Invitation Sections */}
@@ -127,7 +101,6 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             targetDateISO={event.startsAt}
             theme={theme}
             experienceMode={event.experienceMode}
-            locale={locale}
           />
 
           {/* Segmented View Mode Tab Switcher */}
@@ -135,23 +108,22 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             currentMode={currentMode}
             onChange={(mode) => setCurrentMode(mode)}
             theme={theme}
-            locale={locale}
             hasGallery={hasGallery}
           />
 
           {/* Dynamic View Section */}
-          {currentMode === "story" && <StorySection event={event} theme={theme} locale={locale} />}
+          {currentMode === "story" && <StorySection event={event} theme={theme} />}
 
           {currentMode === "timeline" && (
-            <TimelineSection event={event} theme={theme} locale={locale} />
+            <TimelineSection event={event} theme={theme} />
           )}
 
           {currentMode === "gallery" && (
-            <GallerySection event={event} theme={theme} locale={locale} />
+            <GallerySection event={event} theme={theme} />
           )}
 
           {/* Venue, Maps & Dress Code */}
-          <VenueMapSection event={event} theme={theme} locale={locale} />
+          <VenueMapSection event={event} theme={theme} />
 
           {/* RSVP Form Drawer */}
           <RsvpDrawer event={event} party={party} theme={theme} locale={locale} />
@@ -162,7 +134,6 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           audioUrl={event.content.audioUrl}
           audioTitle={event.content.audioTitle}
           theme={theme}
-          locale={locale}
         />
 
         {/* Subtle Footer */}
@@ -171,7 +142,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
           style={{ borderColor: colors.rule }}
         >
           <p>
-            {event.title} • {isFa ? "مدیریت رویداد با منیج‌ونت" : "Ceremony curated by Managevent"}
+            {event.title} • {"Ceremony curated by Managevent"}
           </p>
         </footer>
       </GateReveal>

@@ -28,7 +28,7 @@ Next.js (App Router), Tailwind v4 (preset from `packages/config`), shadcn/ui via
 
 ```text
 app/
-  [locale]/            # en (default, no prefix) and fa through middleware
+  [locale]/            # en (default, no prefix); legacy /fa redirects to en
     page.tsx           # home
     ceremonies/…  packages/…  plan/…  venues/…  services/…  invitations/
     memorials/…  gallery/  stories/  how-it-works/  pricing/  faq/  about/
@@ -55,8 +55,8 @@ NEXT_PUBLIC_*_URL, NEXT_PUBLIC_API_URL, NEXT_PUBLIC_GOOGLE_MAPS_API_KEY, NEXT_PU
 
 ## Tests required
 
-Vitest (content loader, helpers). Playwright: home → Builder → estimate → lead; FA RTL visual snapshots; Memorial Mode route assertions; axe on every template. Lighthouse CI budgets (WEBSITE.md §A13).
+Vitest (content loader, helpers). Playwright: home → Builder → estimate → lead; Memorial Mode route assertions; axe on every template. Lighthouse CI budgets (WEBSITE.md §A13).
 
 ## Status
 
-✅ Scaffolded and built (`apps/marketing`: English-first with `/fa` RTL expansion, Ceremony showcase, Instant Cost Estimator `#estimator`, Perth Venues showcase, Digital Bridge explainer, Enquiry & Booking form, and `/admin` Command Centre).
+✅ Scaffolded and built (`apps/marketing`: English-only (en-AU); legacy `/fa` URLs 301 to English, Ceremony showcase, Instant Cost Estimator `#estimator`, Perth Venues showcase, Digital Bridge explainer, Enquiry & Booking form, and `/admin` Command Centre).

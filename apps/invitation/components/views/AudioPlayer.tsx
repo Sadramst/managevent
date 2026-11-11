@@ -9,17 +9,14 @@ interface AudioPlayerProps {
   audioUrl?: string | undefined;
   audioTitle?: string | undefined;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
 }
 
 export const AudioPlayer: React.FC<AudioPlayerProps> = ({
   audioUrl,
   audioTitle,
   theme,
-  locale,
 }) => {
   const { colors } = theme;
-  const isFa = locale === "fa";
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const router = useRouter();
   const pathname = usePathname();

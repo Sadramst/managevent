@@ -7,13 +7,13 @@ The public platform for Managevent in Perth, Western Australia. It covers all ce
 ## Language Architecture
 
 - **Primary Launch Language**: English (`en`, served at `/`).
-- **Multi-Language Expansion Ready**: Built on `@managevent/i18n` with full dictionary parity testing and logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`), allowing instant activation of secondary locales (`/fa` Farsi RTL included) and future Australian community languages.
+- **Multi-Language Expansion Ready**: Built on `@managevent/i18n` with full dictionary parity testing and logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`, `inset-inline-*`), allowing other locales to be added later through a `contract-change`.
 
 ## Key Surfaces
 
 1. **Homepage (`/[locale]`)**:
    - Editorial Perth hero with trust stats and quick navigation.
-   - All-events vertical cards (Weddings, Cultural & Persian Ceremonies, Milestone Birthdays, Corporate Galas, and Memorials & Wakes with automatic Memorial Mode palette).
+   - All-events vertical cards (Weddings, Engagements, Milestone Birthdays, Corporate Galas, and Memorials & Wakes with automatic Memorial Mode palette).
    - **0-to-100 Full-Stack Services Showcase**: Concept & Run-Sheet, Venue Sourcing, Catering & Bar (Halal/Dietary/RSA), Styling & Florals, Audio/Visual & Crew, Digital Invitations & QR Check-in.
    - **Interactive Event & Ceremony Cost Estimator (`#estimator`)**: Calculates live AUD (incl. 10% GST) low/high investment bands, Ex-GST + GST splits, and logistics bridge outputs (banquet tables, catering portions with buffer, service crew, and cake serves), with one-click transfer into the Enquiry Form.
    - **Curated Perth Venues Showcase**: Validated from `/content/venues/perth.json` across Swan Valley, Perth CBD, Fremantle, South Perth, and Cottesloe.

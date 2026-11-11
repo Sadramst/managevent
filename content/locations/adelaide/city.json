@@ -1,7 +1,9 @@
 {
   "slug": "adelaide",
   "status": "hidden",
-  "name": { "en": "Adelaide", "fa": "آدلاید" },
+  "name": {
+    "en": "Adelaide"
+  },
   "state": "SA",
   "timeZone": "Australia/Adelaide",
   "areasServed": []

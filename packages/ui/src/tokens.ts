@@ -45,8 +45,6 @@ export const designTokens = {
   typography: {
     latinDisplay: "'Cormorant Garamond', Georgia, serif",
     latinBody: "'Plus Jakarta Sans', system-ui, sans-serif",
-    farsiDisplay: "'Vazirmatn', system-ui, sans-serif",
-    farsiBody: "'Vazirmatn', system-ui, sans-serif",
     scaleRatioMobile: 1.25,
     scaleRatioDesktop: 1.333,
     baseFontSizePx: 16,

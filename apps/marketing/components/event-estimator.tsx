@@ -27,10 +27,6 @@ const CATEGORY_RATES_CENTS: Record<
     baseFixedCents: 240000,
     perGuestCents: { ESSENTIAL: 13500, SIGNATURE: 21500, LUXE: 32000 },
   },
-  "sofreh-aghd": {
-    baseFixedCents: 220000,
-    perGuestCents: { ESSENTIAL: 13000, SIGNATURE: 22000, LUXE: 34000 },
-  },
   "celebration-of-life": {
     baseFixedCents: 110000,
     perGuestCents: { ESSENTIAL: 6500, SIGNATURE: 11000, LUXE: 16500 },
@@ -118,7 +114,6 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
               {t(locale, "marketing.launchEstCatBirthday")}
             </option>
             <option value="gala-dinner">{t(locale, "marketing.launchEstCatCorporate")}</option>
-            <option value="sofreh-aghd">{t(locale, "marketing.launchEstCatCultural")}</option>
             <option value="celebration-of-life">
               {t(locale, "marketing.launchEstCatMemorial")}
             </option>

@@ -20,7 +20,7 @@ const SEED_EVENTS: EventModel[] = [
   {
     id: "evt_anniversary_10",
     slug: "anniversary",
-    title: "Niloofar & Sadra — 10th Anniversary",
+    title: "Emma & Liam — 10th Anniversary",
     ceremonySlug: "wedding",
     experienceMode: "CELEBRATION",
     themeId: "royal-ivory",
@@ -30,7 +30,7 @@ const SEED_EVENTS: EventModel[] = [
     startsAt: "2026-09-18T18:30:00+08:00",
     endsAt: "2026-09-18T23:30:00+08:00",
     timeZone: "Australia/Perth",
-    languages: ["en", "fa"],
+    languages: ["en"],
     defaultLanguage: "en",
     rsvpDeadline: "2026-09-01T23:59:59+08:00",
     venue: {
@@ -62,7 +62,7 @@ const SEED_EVENTS: EventModel[] = [
     content: {
       headline: "A Decade of Love, Laughter & Shared Dreams",
       subheadline: "Celebrating 10 years of togetherness and a lifetime to come.",
-      coupleOrHostNames: "Niloofar & Sadra",
+      coupleOrHostNames: "Emma & Liam",
       invitationStory: [
         "Ten years ago, we began a beautiful journey hand in hand.",
         "Through every adventure, triumph, and sweet memory, having you in our lives has made every step brighter.",
@@ -90,39 +90,39 @@ const SEED_EVENTS: EventModel[] = [
         payId: "0412345678",
         bsb: "066-000",
         accountNumber: "12345678",
-        accountName: "Niloofar & Sadra",
+        accountName: "Emma & Liam",
         message:
           "Your warm presence is our greatest present. If you wish to honor us with a gift, a contribution toward our anniversary adventure would be gratefully received.",
       },
     },
     parties: [
       {
-        id: "pty_armita",
-        stableId: "stable_armita_1",
-        displayName: "Armita & Hesam",
-        token: "armita-party-g9qtmt",
+        id: "pty_emma",
+        stableId: "stable_emma_1",
+        displayName: "Emma & Liam",
+        token: "emma-party-g9qtmt",
         maxSeats: 4,
         allowPlusOnes: false,
         childrenAllowed: true,
         tableLabel: "Table 1 (VIP)",
         tags: ["VIP", "Family"],
         legacySlugs: [
-          "armita-party-g9qtmt",
-          "/anniversary/armita-party-g9qtmt",
-          "/e/anniversary/armita-party-g9qtmt",
+          "emma-party-g9qtmt",
+          "/anniversary/emma-party-g9qtmt",
+          "/e/anniversary/emma-party-g9qtmt",
         ],
         status: "YES",
         notes: "VIP family party",
         members: [
           {
-            id: "gst_armita",
-            name: "Armita",
+            id: "gst_emma",
+            name: "Emma",
             isPrimary: true,
             isChild: false,
             status: "YES",
             dietary: ["NONE"],
           },
-          { id: "gst_hesam", name: "Hesam", isChild: false, status: "YES", dietary: ["NONE"] },
+          { id: "gst_liam", name: "Liam", isChild: false, status: "YES", dietary: ["NONE"] },
           {
             id: "gst_negar",
             name: "Negar",
@@ -207,80 +207,80 @@ const SEED_EVENTS: EventModel[] = [
     updatedAt: "2026-10-23T12:00:00Z",
   },
   {
-    id: "evt_persian_wedding",
-    slug: "sara-reza-wedding-7kq",
-    title: "Sara & Reza — Sofreh Aghd & Reception",
-    ceremonySlug: "sofreh-aghd",
+    id: "evt_wedding_demo",
+    slug: "emily-james-wedding-7kq",
+    title: "Emily & James — Wedding & Reception",
+    ceremonySlug: "wedding",
     experienceMode: "CELEBRATION",
-    themeId: "persian-azure",
-    templateSlug: "persian-heritage",
+    themeId: "emerald-botanic",
+    templateSlug: "classic-romance",
     gateStyle: "wax-seal",
     plan: "PREMIUM",
     startsAt: "2026-11-20T16:00:00+08:00",
     endsAt: "2026-11-20T23:30:00+08:00",
     timeZone: "Australia/Perth",
-    languages: ["en", "fa"],
-    defaultLanguage: "fa",
+    languages: ["en"],
+    defaultLanguage: "en",
     rsvpDeadline: "2026-11-01T23:59:59+08:00",
     venue: {
       name: "Sandalford Wines & Estate",
       address: "3210 West Swan Rd, Caversham WA 6055, Australia",
       googleMapsUrl: "https://maps.google.com/?q=Sandalford+Wines+Caversham",
-      dressCode: "Formal Persian Ceremony Attire",
+      dressCode: "Cocktail attire",
     },
     schedule: [
       {
         time: "16:00",
-        title: "Sofreh Aghd Ceremony",
-        description: "Traditional Persian marriage blessing by the mirror and candlelight.",
+        title: "Wedding Ceremony",
+        description: "Exchange of vows in the vineyard gardens.",
       },
       {
         time: "18:00",
         title: "Cocktail Hour & Garden Sunset",
-        description: "Persian sweets, tea, and hors d'oeuvres overlooking the vineyard.",
+        description: "Canapés, sparkling wine, and sunset over the vineyard.",
       },
       {
         time: "19:30",
         title: "Dinner & Reception",
-        description: "Feast with Persian saffron rice, kebabs, and live music.",
+        description: "Shared feast, speeches, and live music.",
       },
     ],
     content: {
-      headline: "پیوند آسمانی و جشن شادمانی سارا و رضا",
-      subheadline: "با کمال افتخار شما را به آیین سنتی سفره عقد و جشن پیوندمان دعوت می‌کنیم.",
-      coupleOrHostNames: "سارا و رضا (Sara & Reza)",
+      headline: "Emily & James are getting married",
+      subheadline: "We would be honoured to have you celebrate our wedding with us.",
+      coupleOrHostNames: "Emily & James",
       invitationStory: [
-        "در سایه‌سار مهر یزدان و در کنار زیباترین یادگارهای فرهنگ کهن ایرانی، آغاز با هم بودنمان را جشن می‌گیریم.",
-        "حضور گرم شما در کنار سفره عقد، روشنی‌بخش محفل پر از امید و شادمانی ما خواهد بود.",
+        "We are celebrating the beginning of our life together surrounded by the people we love.",
+        "Your warm presence will make our day complete.",
       ],
       coverImageUrl:
         "https://images.unsplash.com/photo-1583939003579-730e3918a45a?auto=format&fit=crop&w=1200&q=80",
     },
     parties: [
       {
-        id: "pty_reza_guest",
-        stableId: "stable_reza_guest_1",
-        displayName: "خانواده اسدی (Asadi Family)",
-        token: "asadi-family-8nm24p",
+        id: "pty_taylor_guest",
+        stableId: "stable_taylor_guest_1",
+        displayName: "The Taylor Family",
+        token: "taylor-family-8nm24p",
         maxSeats: 3,
         allowPlusOnes: false,
         childrenAllowed: true,
-        tags: ["فامیل داماد"],
+        tags: ["Groom's family"],
         status: "PENDING",
         members: [
           {
-            id: "gst_asadi_1",
-            name: "محسن اسدی",
+            id: "gst_taylor_1",
+            name: "Michael Taylor",
             isPrimary: true,
             isChild: false,
             status: "PENDING",
           },
-          { id: "gst_asadi_2", name: "زهرا رحیمی", isChild: false, status: "PENDING" },
-          { id: "gst_asadi_3", name: "امیرعلی اسدی", isChild: true, status: "PENDING" },
+          { id: "gst_taylor_2", name: "Sarah Taylor", isChild: false, status: "PENDING" },
+          { id: "gst_taylor_3", name: "Oliver Taylor", isChild: true, status: "PENDING" },
         ],
       },
     ],
-    salt: "salt_persian_wedding_2026_azur",
+    salt: "salt_wedding_demo_2026_azur",
     allowForwarding: true,
     wallEnabled: true,
     isPublished: true,
@@ -290,7 +290,7 @@ const SEED_EVENTS: EventModel[] = [
   {
     id: "evt_memorial_demo",
     slug: "dariush-memorial-3kp",
-    title: "In Loving Memory of Dariush — Celebration of Life",
+    title: "In Loving Memory of Robert — Celebration of Life",
     ceremonySlug: "celebration-of-life",
     experienceMode: "MEMORIAL",
     themeId: "memorial-alabaster",
@@ -300,7 +300,7 @@ const SEED_EVENTS: EventModel[] = [
     startsAt: "2026-10-30T14:00:00+08:00",
     endsAt: "2026-10-30T17:00:00+08:00",
     timeZone: "Australia/Perth",
-    languages: ["en", "fa"],
+    languages: ["en"],
     defaultLanguage: "en",
     rsvpDeadline: "2026-10-25T23:59:59+08:00",
     venue: {
@@ -312,7 +312,7 @@ const SEED_EVENTS: EventModel[] = [
       {
         time: "14:00",
         title: "Memorial Service & Readings",
-        description: "Sharing reflections, poetry and cherished memories of Dariush.",
+        description: "Sharing reflections, poetry and cherished memories of Robert.",
       },
       {
         time: "15:30",
@@ -323,15 +323,15 @@ const SEED_EVENTS: EventModel[] = [
     content: {
       headline: "A Life Well Lived, Forever in Our Hearts",
       subheadline:
-        "Please join the family in celebrating and remembering the gentle life of Dariush.",
-      coupleOrHostNames: "The Family of Dariush",
-      honoureeName: "Dariush",
+        "Please join the family in celebrating and remembering the gentle life of Robert.",
+      coupleOrHostNames: "The Family of Robert",
+      honoureeName: "Robert",
       invitationStory: [
-        "Dariush brought immense warmth, kindness, and quiet wisdom to all whose lives he touched.",
+        "Robert brought immense warmth, kindness, and quiet wisdom to all whose lives he touched.",
         "Your presence and memories will bring great comfort to our family as we honor his legacy.",
       ],
       tributeBook: {
-        prompt: "Share a memory, a message of comfort, or a story of Dariush.",
+        prompt: "Share a memory, a message of comfort, or a story of Robert.",
       },
     },
     parties: [
@@ -414,7 +414,7 @@ class InvitationStore {
         };
       }
 
-      // Check legacy slug matches (e.g. armita-party-g9qtmt)
+      // Check legacy slug matches (e.g. emma-party-g9qtmt)
       if (
         party.legacySlugs?.some(
           (ls) =>
@@ -451,11 +451,11 @@ class InvitationStore {
       parts.pop(); // remove suffix
       const rawName = parts.join(" ").trim();
       const isParty =
-        rawName.includes("party") || rawName.includes("family") || rawName.includes("خانواده");
+        rawName.includes("party") || rawName.includes("family");
 
       const cleanName =
         rawName
-          .replace(/party|family|خانواده/gi, "")
+          .replace(/party|family/gi, "")
           .trim()
           .replace(/\b\w/g, (l) => l.toUpperCase()) || "Honored Guest";
 
@@ -544,8 +544,8 @@ class InvitationStore {
     gateStyle: EventModel["gateStyle"];
     startsAt: string;
     timeZone?: string;
-    languages: Array<"en" | "fa">;
-    defaultLanguage: "en" | "fa";
+    languages: Array<"en">;
+    defaultLanguage: "en";
     venueName: string;
     venueAddress: string;
     content: Partial<EventModel["content"]>;

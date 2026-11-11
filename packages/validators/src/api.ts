@@ -139,7 +139,6 @@ export const BuilderServiceCategoryEnum = z.enum([
   "staffing",
   "av-lighting",
   "invitations",
-  "sofreh-set",
   "tribute-display",
   "slideshow",
   "venue",

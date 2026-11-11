@@ -96,12 +96,6 @@ export const SERVICE_PRICE_RULES: Readonly<Record<BuilderServiceCategory, Catego
     tiersIncGstCents: { ESSENTIAL: 0, SIGNATURE: 6_900, LUXE: 19_900 },
     bandPercent: 0,
   },
-  "sofreh-set": {
-    category: "sofreh-set",
-    driver: "FIXED",
-    tiersIncGstCents: { ESSENTIAL: 95_000, SIGNATURE: 185_000, LUXE: 340_000 },
-    bandPercent: 12,
-  },
   "tribute-display": {
     category: "tribute-display",
     driver: "FIXED",

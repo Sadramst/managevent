@@ -25,12 +25,6 @@ const CEREMONY_OPTIONS = [
     isMemorial: false,
   },
   {
-    slug: "persian-ceremony",
-    name: "Sofreh Aghd / Persian Ceremony",
-    defaultTheme: "persian-azure" as InvitationThemeId,
-    isMemorial: false,
-  },
-  {
     slug: "anniversary",
     name: "Wedding Anniversary",
     defaultTheme: "royal-ivory" as InvitationThemeId,
@@ -73,7 +67,6 @@ export default function NewEventWizardPage() {
   const [gateStyle, setGateStyle] = useState<"wax-seal" | "ribbon" | "arch" | "plain-fade">(
     "wax-seal",
   );
-  const [isFaEnabled, setIsFaEnabled] = useState(false);
 
   const selectedCeremony =
     CEREMONY_OPTIONS.find((c) => c.slug === ceremonySlug) ?? CEREMONY_OPTIONS[0]!;
@@ -103,7 +96,7 @@ export default function NewEventWizardPage() {
       gateStyle: isMemorial ? "plain-fade" : gateStyle,
       startsAt: new Date(startsAt).toISOString(),
       timeZone: "Australia/Perth",
-      languages: isFaEnabled ? ["en", "fa"] : ["en"],
+      languages: ["en"],
       defaultLanguage: "en",
       venueName: venueName.trim() || "The Celebration Venue",
       venueAddress: venueAddress.trim() || "Perth, Western Australia",
@@ -196,7 +189,7 @@ export default function NewEventWizardPage() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Roya & Kian's Sofreh Aghd or 10th Anniversary"
+                    placeholder="e.g. Emily & James' Wedding or 10th Anniversary"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     className="w-full rounded-button border px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
@@ -210,7 +203,7 @@ export default function NewEventWizardPage() {
                   <input
                     type="text"
                     required
-                    placeholder="e.g. Niloofar & Sadra"
+                    placeholder="e.g. Emma & Liam"
                     value={coupleOrHostNames}
                     onChange={(e) => setCoupleOrHostNames(e.target.value)}
                     className="w-full rounded-button border px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
@@ -290,24 +283,6 @@ export default function NewEventWizardPage() {
                     value={venueAddress}
                     onChange={(e) => setVenueAddress(e.target.value)}
                     className="w-full rounded-button border px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-amber-500"
-                  />
-                </div>
-
-                {/* Bilingual toggle */}
-                <div className="rounded-button border bg-stone-50 p-3.5 flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-semibold text-stone-800">
-                      Enable Bilingual Farsi / Persian (فارسی)
-                    </div>
-                    <div className="text-[11px] text-stone-500">
-                      Adds native RTL layout and deterministic Persian Jalali calendar support.
-                    </div>
-                  </div>
-                  <input
-                    type="checkbox"
-                    checked={isFaEnabled}
-                    onChange={(e) => setIsFaEnabled(e.target.checked)}
-                    className="h-4 w-4 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                   />
                 </div>
               </div>

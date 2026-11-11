@@ -6,12 +6,10 @@ import { MapPin, Navigation, Car, Shirt, Gift, HeartHandshake } from "lucide-rea
 interface VenueMapSectionProps {
   event: EventModel;
   theme: InvitationThemeTokens;
-  locale: "en" | "fa";
 }
 
-export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, locale }) => {
+export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme }) => {
   const { colors } = theme;
-  const isFa = locale === "fa";
   const isMemorial = event.experienceMode === "MEMORIAL";
   const { venue, content } = event;
 
@@ -46,7 +44,7 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, 
             className="font-display text-2xl font-bold tracking-tight sm:text-3xl"
             style={{ color: colors.accentInk }}
           >
-            {isFa ? "محل برگزاری و نشانی" : "Venue & Details"}
+            {"Venue & Details"}
           </h2>
           <div className="mt-2 h-0.5 w-12" style={{ backgroundColor: colors.accent }} />
         </div>
@@ -124,12 +122,12 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, 
                 className="font-serif text-xs font-bold uppercase tracking-wider"
                 style={{ color: colors.accentInk }}
               >
-                {isFa ? "اطلاعات پارکینگ" : "Parking Details"}
+                {"Parking Details"}
               </div>
               <p className="mt-1 text-xs" style={{ color: colors.inkMuted }}>
                 {venue.parkingInfo ||
                   content.parkingInfo ||
-                  (isFa ? "پارکینگ در محل موجود است." : "On-site parking available.")}
+                  "On-site parking available."}
               </p>
             </div>
           </div>
@@ -153,12 +151,12 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, 
                 className="font-serif text-xs font-bold uppercase tracking-wider"
                 style={{ color: colors.accentInk }}
               >
-                {isFa ? "کد پوشش" : "Dress Code"}
+                {"Dress Code"}
               </div>
               <p className="mt-1 text-xs" style={{ color: colors.inkMuted }}>
                 {venue.dressCode ||
                   content.dressCode ||
-                  (isFa ? "پوشش رسمی و آراسته" : "Formal / Cocktail Attire")}
+                  "Formal / Cocktail Attire"}
               </p>
             </div>
           </div>
@@ -180,13 +178,11 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, 
               <HeartHandshake className="h-4 w-4" style={{ color: colors.accent }} />
             </div>
             <h4 className="font-serif text-base font-bold" style={{ color: colors.accentInk }}>
-              {isFa ? "کتاب یادبود و نیکوکاری" : "Memorial Tribute"}
+              {"Memorial Tribute"}
             </h4>
             <p className="mt-2 text-xs sm:text-sm font-sans" style={{ color: colors.inkMuted }}>
               {content.tributeBook.prompt ||
-                (isFa
-                  ? "به یاد عزیز درگذشته، می‌توانید پیام همدردی ثبت نمایید."
-                  : "In lieu of flowers, memorial contributions and messages are warmly appreciated.")}
+                "In lieu of flowers, memorial contributions and messages are warmly appreciated."}
             </p>
           </div>
         ) : content.wishingWell ? (
@@ -204,7 +200,7 @@ export const VenueMapSection: React.FC<VenueMapSectionProps> = ({ event, theme, 
               <Gift className="h-4 w-4" style={{ color: colors.accent }} />
             </div>
             <h4 className="font-serif text-base font-bold" style={{ color: colors.accentInk }}>
-              {isFa ? "صندوق آرزوها و هدایا" : "Wishing Well"}
+              {"Wishing Well"}
             </h4>
             <p className="mt-2 text-xs sm:text-sm font-sans" style={{ color: colors.inkMuted }}>
               {content.wishingWell.message}

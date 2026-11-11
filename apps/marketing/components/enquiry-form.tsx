@@ -87,7 +87,6 @@ export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
           >
             <option value="">{t(locale, "marketing.launchChoose")}</option>
             <option value="wedding">{t(locale, "ceremonies.wedding")}</option>
-            <option value="sofreh-aghd">{t(locale, "ceremonies.sofrehAghd")}</option>
             <option value="birthday-milestone">{t(locale, "ceremonies.birthdayMilestone")}</option>
             <option value="gala-dinner">{t(locale, "ceremonies.galaDinner")}</option>
             <option value="celebration-of-life">{t(locale, "ceremonies.celebrationOfLife")}</option>
@@ -139,13 +138,7 @@ export function EnquiryForm({ locale }: { locale: EnabledLocale }) {
           onChange={(event) => setMessage(event.target.value)}
         />
       </label>
-      <label>
-        {t(locale, "marketing.launchLanguage")}
-        <select name="preferredLanguage" defaultValue={locale}>
-          <option value="en">{t(locale, "marketing.launchEnglish")}</option>
-          <option value="fa">{t(locale, "marketing.launchPersian")}</option>
-        </select>
-      </label>
+      <input type="hidden" name="preferredLanguage" value="en" />
       <div hidden aria-hidden="true">
         <label>
           Website

@@ -5,11 +5,7 @@ export default function NotFound() {
     <main id="main" className="wrap section legal">
       <h1>{t("en", "marketing.launchNotFound")}</h1>
       <p>{t("en", "marketing.launchNotFoundBody")}</p>
-      <p lang="fa" dir="rtl">
-        {t("fa", "marketing.launchNotFoundBody")}
-      </p>
-      <a href="/">{t("en", "marketing.launchHome")}</a> ·{" "}
-      <a href="/fa">{t("fa", "marketing.launchHome")}</a>
+      <a href="/">{t("en", "marketing.launchHome")}</a>
     </main>
   );
 }

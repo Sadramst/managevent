@@ -9,7 +9,8 @@ export const contact = {
 };
 
 export function localePath(locale: EnabledLocale, path = ""): string {
-  return `${locale === "fa" ? "/fa" : ""}${path}` || "/";
+  void locale;
+  return path || "/";
 }
 
 export function pageMetadata(locale: EnabledLocale, title: string, path = ""): Metadata {
@@ -21,7 +22,6 @@ export function pageMetadata(locale: EnabledLocale, title: string, path = ""): M
       canonical: localePath(locale, path),
       languages: {
         "en-AU": localePath("en", path),
-        "fa-IR": localePath("fa", path),
         "x-default": localePath("en", path),
       },
     },
@@ -32,7 +32,7 @@ export function pageMetadata(locale: EnabledLocale, title: string, path = ""): M
     openGraph: {
       title,
       description: t(locale, "marketing.launchDescription"),
-      locale: locale === "fa" ? "fa_IR" : "en_AU",
+      locale: "en_AU",
       images: ["/opengraph-image"],
     },
   };

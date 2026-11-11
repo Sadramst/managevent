@@ -46,9 +46,8 @@ export async function generateMetadata({ params }: GuestPageProps): Promise<Meta
   };
 }
 
-export default async function GuestInvitationPage({ params, searchParams }: GuestPageProps) {
+export default async function GuestInvitationPage({ params }: GuestPageProps) {
   const { eventSlug, guestToken } = await params;
-  const query = await searchParams;
 
   const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
 
@@ -58,8 +57,7 @@ export default async function GuestInvitationPage({ params, searchParams }: Gues
 
   const { event, party } = lookup;
   const theme = INVITATION_THEMES[event.themeId] || INVITATION_THEMES["royal-ivory"];
-  const initialLocale =
-    query.lang === "fa" || query.lang === "en" ? query.lang : event.defaultLanguage;
+  const initialLocale = event.defaultLanguage;
 
   return (
     <>

@@ -4,7 +4,7 @@
 
 ## What this is
 
-**Translations, RTL and formatting**. EN and FA dictionaries by namespace, typed `t()`, `getDir()`, deterministic Gregorian and Jalali date formatters, digit helpers, Persian character normalisation (ی and ک), and **`getExperienceMode()`**.
+**Translations, RTL and formatting**. English (en-AU) dictionary by namespace, typed `t()`, `getDir()`, deterministic Gregorian date formatters, and **`getExperienceMode()`**.
 
 - **Built by:** FND-05 (see `ROADMAP.md`)
 - **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
@@ -12,7 +12,7 @@
 ## Rules
 
 - Parity test: all keys in all enabled locales. Do not use `Intl` in SSR paths.
-- FA copy must be written or reviewed by a fluent speaker. Machine translation must be marked `// TODO(fa-review)`.
+- Copy is en-AU for now. Adding another locale is a `contract-change`; machine translation must be marked `// TODO(<locale>-review)`.
 
 ## Done means
 

@@ -17,7 +17,7 @@ Check the status of the reforms at launch.
 1. **Collection minimisation (APP 3):**
    - Guests are asked only for what the host turned on.
    - Dietary and allergy data is optional, has a purpose statement next to it, and the consent text is recorded (`ConsentRecord: HEALTH_DATA_CATERING`).
-2. **Notice (APP 5):** a short collection notice appears on every form, plus a link to the privacy policy (EN and FA).
+2. **Notice (APP 5):** a short collection notice appears on every form, plus a link to the privacy policy.
 3. **Use and disclosure (APP 6):**
    - Dietary data goes to the caterer for that event only, as counts plus per-table flags for severe allergies. Never for marketing.
 4. **Cross-border (APP 8):** offshore processors are listed (ADR-0008). Never send guest PII or health data to AI providers.

@@ -1,5 +1,5 @@
 /**
- * CSV Import & Export utilities with mandatory UTF-8 BOM support for Farsi & international text (`WEBSITE.md` §B7).
+ * CSV Import & Export utilities with mandatory UTF-8 BOM support for international text (names with accents or non-Latin characters) (`WEBSITE.md` §B7).
  */
 
 export interface CsvGuestRow {
@@ -53,27 +53,25 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
     });
 
     const name =
-      rowObj.name || rowObj["guest name"] || rowObj["مهمان"] || rowObj["نام"] || values[0] || "";
+      rowObj.name || rowObj["guest name"] || values[0] || "";
     if (!name) continue;
 
     const partyName =
-      rowObj.party || rowObj["party name"] || rowObj["خانواده"] || rowObj.group || name;
+      rowObj.party || rowObj["party name"] || rowObj.group || name;
     const seats = Number.parseInt(
-      rowObj.seats || rowObj["max seats"] || rowObj["تعداد"] || "1",
+      rowObj.seats || rowObj["max seats"] || "1",
       10,
     );
-    const table = rowObj.table || rowObj["table number"] || rowObj["میز"] || undefined;
-    const email = rowObj.email || rowObj["ایمیل"] || undefined;
-    const phone = rowObj.phone || rowObj["موبایل"] || rowObj["تلفن"] || undefined;
-    const tags = rowObj.tags || rowObj["برچسب"] || undefined;
+    const table = rowObj.table || rowObj["table number"] || undefined;
+    const email = rowObj.email || undefined;
+    const phone = rowObj.phone || undefined;
+    const tags = rowObj.tags || undefined;
     const isChild =
-      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "true" ||
-      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "yes" ||
-      (rowObj.child || rowObj["is child"] || rowObj["کودک"] || "").toLowerCase() === "بله";
+      (rowObj.child || rowObj["is child"] || "").toLowerCase() === "true" ||
+      (rowObj.child || rowObj["is child"] || "").toLowerCase() === "yes";
     const plusOnes =
-      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "true" ||
-      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "yes" ||
-      (rowObj.plusone || rowObj["plus one"] || rowObj["همراه"] || "").toLowerCase() === "بله";
+      (rowObj.plusone || rowObj["plus one"] || "").toLowerCase() === "true" ||
+      (rowObj.plusone || rowObj["plus one"] || "").toLowerCase() === "yes";
 
     rows.push({
       name,
@@ -93,7 +91,7 @@ export function parseGuestsCsv(csvText: string): CsvGuestRow[] {
 
 /**
  * Builds CSV string prefixed with UTF-8 BOM (`\uFEFF`) so Microsoft Excel correctly displays
- * Persian / Arabic and unicode characters without manual encoding adjustments.
+ * accented and non-Latin unicode characters without manual encoding adjustments.
  */
 export function buildCsvWithBom(
   headers: string[],

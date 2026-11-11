@@ -7,7 +7,12 @@ export function proxy(request: NextRequest) {
     target.pathname = path.replace(/^\/en/, "") || "/";
     return NextResponse.redirect(target, 308);
   }
-  if (path === "/fa" || path.startsWith("/fa/")) return NextResponse.next();
+  if (path === "/fa" || path.startsWith("/fa/")) {
+    // Persian pages were retired; keep old links alive.
+    const target = request.nextUrl.clone();
+    target.pathname = path.replace(/^\/fa/, "") || "/";
+    return NextResponse.redirect(target, 301);
+  }
   const url = request.nextUrl.clone();
   url.pathname = `/en${path === "/" ? "" : path}`;
   return NextResponse.rewrite(url);

@@ -4,7 +4,7 @@
 
 ## What this is
 
-**Design tokens and web components**. Tokens (celebration and memorial), the 7 invitation themes, CSS variables, Tailwind theme export, shadcn/ui-based components, the `ExperienceModeProvider`, RTL-safe primitives, and the arch frame ornament.
+**Design tokens and web components**. Tokens (celebration and memorial), the 6 invitation themes, CSS variables, Tailwind theme export, shadcn/ui-based components, the `ExperienceModeProvider`, RTL-safe primitives, and the arch frame ornament.
 
 - **Built by:** FND-06 (see `ROADMAP.md`)
 - **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.

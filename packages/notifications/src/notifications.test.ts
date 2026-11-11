@@ -10,7 +10,7 @@ import {
 } from "./index.js";
 
 describe("@managevent/notifications", () => {
-  it("renders all bilingual templates in EN and FA with sender identification and unsubscribe", () => {
+  it("renders all templates in EN with sender identification and unsubscribe", () => {
     const keys: NotificationTemplateKey[] = [
       "lead.auto_reply",
       "invitation.send",
@@ -22,20 +22,12 @@ describe("@managevent/notifications", () => {
       const en = renderNotificationTemplate(key, "en", {
         guestName: "Sara",
         hostName: "Ali",
-        eventTitle: "Sofreh Aghd",
+        eventTitle: "Engagement Party",
         rsvpBy: "1 Dec 2026",
-      });
-      const fa = renderNotificationTemplate(key, "fa", {
-        guestName: "سارا",
-        hostName: "علی",
-        eventTitle: "سفره عقد",
-        rsvpBy: "۱۰ آذر ۱۴۰۵",
       });
 
       expect(en.subject).toContain("Managevent");
-      expect(fa.subject).toContain("منج‌ایونت");
       expect(en.body.length).toBeGreaterThan(20);
-      expect(fa.body.length).toBeGreaterThan(20);
     }
   });
 
@@ -105,10 +97,10 @@ describe("@managevent/notifications", () => {
 
     const emailRes = await resend.sendTemplatedEmail({
       to: "sara@example.com",
-      locale: "fa",
+      locale: "en",
       templateKey: "invitation.send",
       category: "INVITATION_REMINDER",
-      variables: { guestName: "سارا", hostName: "علی", eventTitle: "سفره عقد" },
+      variables: { guestName: "Sara", hostName: "Ali", eventTitle: "Engagement Party" },
       consentVerified: true,
       icsAttachment: "BEGIN:VCALENDAR...",
       now: perthNoon,
@@ -132,10 +124,10 @@ describe("@managevent/notifications", () => {
     const waRes = await twilio.sendTemplatedMessage({
       channel: "WHATSAPP",
       to: "+61412345678",
-      locale: "fa",
+      locale: "en",
       templateKey: "invitation.send",
       category: "INVITATION_REMINDER",
-      variables: { guestName: "سارا" },
+      variables: { guestName: "Sara" },
       consentVerified: true,
       now: perthNoon,
     });

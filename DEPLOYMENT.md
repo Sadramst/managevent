@@ -2,9 +2,11 @@
 
 How Managevent is actually deployed today, and how to repeat or repair it.
 
-**Status:** API + worker + PostgreSQL are live on a single Sydney VPS. The web apps
-(`apps/marketing`, `apps/invitation`) are **not scaffolded**, so no Vercel project exists
-and none can be deployed yet.
+**Status:** API + worker + PostgreSQL are live on a single Sydney VPS, and
+`www.managevent.com.au` and `invitation.managevent.com.au` serve branded static pages from
+the same box. Those static pages are a **holding page and invitation teaser**, not the real
+product: `apps/marketing` and `apps/invitation` are still `"status": "not-scaffolded"`, so
+no Vercel project exists and none can be deployed yet.
 
 | Item | Value |
 | --- | --- |
@@ -12,7 +14,9 @@ and none can be deployed yet.
 | Plan | `vc2-1c-2gb` — 1 vCPU, 2 GB RAM, 55 GB SSD, 5 GB swap |
 | Host | `managevent-prod` (`managevent-api`), Ubuntu 24.04 |
 | Public IP | `139.180.163.128` |
-| API hostname | `api.managevent.com.au` |
+| API hostname | `api.managevent.com.au` (live, Let's Encrypt) |
+| Marketing hostname | `www.managevent.com.au` (static page, Let's Encrypt) |
+| Invitation hostname | `invitation.managevent.com.au` (static page, ZeroSSL) |
 | Repo on server | `/opt/managevent` |
 | Stack definition | [`infra/vps/docker-compose.yml`](infra/vps/docker-compose.yml) |
 | Operator runbook | [`infra/vps/README.md`](infra/vps/README.md) |
@@ -22,9 +26,12 @@ and none can be deployed yet.
 ```text
 Internet :80/:443
       │
-   ┌──▼─────┐   automatic TLS (Let's Encrypt / ZeroSSL)
-   │ caddy  │
-   └──┬─────┘
+   ┌──▼─────┐   automatic TLS
+   │ caddy  │   (Let's Encrypt for api/www, ZeroSSL for invitation)
+   └──┬──┬──┘
+      │  │
+      │  └──▶ /srv/www, /srv/invitation  (static pages, read-only mount)
+      │
       │ http://api:4000   (never published to the host)
    ┌──▼─────┐        ┌──────────┐
    │  api   │───────▶│ postgres │  internal network only
@@ -60,9 +67,26 @@ At VentraIP VIPcontrol → Domains → `managevent.com.au` → DNS:
 | Type | Name | Value | TTL |
 | --- | --- | --- | --- |
 | `A` | `api` | `139.180.163.128` | 3600 |
+| `A` | `www` | `139.180.163.128` | 14400 |
+| `A` | `invitation` | `139.180.163.128` | 3600 |
 
-`www` and the apex still point at `103.42.108.46` (the existing site) and must not be
-changed until a marketing app actually exists.
+The apex (`managevent.com.au`) still points at `103.42.108.46`; leave it alone until a
+real marketing app replaces the holding page and a redirect decision is made.
+
+`www` previously pointed at `103.42.108.46` with a 4-hour TTL, so browsers that visited the
+old site can keep loading it for hours after the record changes. Flush the client cache
+(`ipconfig /flushdns`, or test in a private window) before concluding DNS is wrong.
+
+## Static pages
+
+`www` and `invitation` are plain HTML served by Caddy from `infra/vps/static/`, mounted
+read-only into the container at `/srv`. Edit the files there and they are live on the next
+request — no rebuild needed.
+
+`invitation` is deliberately pinned to **ZeroSSL's ACME endpoint** in the Caddyfile. Let's
+Encrypt cached a negative (NXDOMAIN) answer for that name before the DNS record existed,
+which blocks LE issuance for roughly an hour; ZeroSSL had no such cache and issued
+immediately. Do not remove that `tls` block without re-checking issuance.
 
 ## First-time provisioning
 

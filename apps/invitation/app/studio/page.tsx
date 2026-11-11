@@ -3,6 +3,7 @@ import Link from "next/link";
 import { invitationStore } from "@/lib/invitation-store";
 import { Plus, Calendar, Users, ArrowRight, ExternalLink, Settings, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const metadata: Metadata = {
   title: "Host Studio",
@@ -19,25 +20,17 @@ export default function StudioDashboardPage() {
   return (
     <div className="min-h-screen bg-stone-50 text-stone-900">
       {/* Studio Header */}
-      <header className="border-b bg-white px-6 py-4">
+      <header className="border-b bg-stone-950 px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-button bg-amber-600 text-white font-serif font-bold text-lg">
-                M
-              </div>
-              <span className="font-display text-lg font-bold text-stone-900">
-                Managevent Studio
-              </span>
+            <Link href="/" className="flex items-center transition-opacity hover:opacity-90">
+              <BrandLogo variant="compact" subtitle="Host Studio" size="sm" />
             </Link>
-            <span className="rounded-full bg-stone-100 border px-2.5 py-0.5 text-xs font-semibold text-stone-600">
-              Host Studio
-            </span>
           </div>
 
           <Link
             href="/studio/new"
-            className="inline-flex items-center gap-1.5 rounded-button bg-amber-600 px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-amber-700 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-button bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-2 text-xs font-bold text-stone-950 shadow-md hover:brightness-110 transition-all"
           >
             <Plus className="h-4 w-4" />
             <span>Create New Event</span>

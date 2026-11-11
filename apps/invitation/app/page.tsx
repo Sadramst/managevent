@@ -1,5 +1,6 @@
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Sparkles,
   Heart,
@@ -12,220 +13,342 @@ import {
   Layers,
   Utensils,
   Music,
+  Camera,
+  BookOpen,
+  Lock,
 } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export default function HomePage() {
   return (
-    <div className="relative overflow-hidden bg-stone-900 text-stone-100">
+    <div className="relative overflow-hidden bg-stone-950 text-stone-100 selection:bg-amber-500/30 selection:text-amber-200">
       {/* Background ambient lighting effects */}
-      <div className="absolute -top-40 start-1/2 -translate-x-1/2 h-96 w-[700px] rounded-full bg-amber-500/10 blur-[120px] pointer-events-none" />
-      <div className="absolute top-[40%] end-0 h-96 w-96 rounded-full bg-emerald-500/10 blur-[140px] pointer-events-none" />
+      <div className="absolute -top-40 start-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full bg-gradient-to-b from-amber-600/15 to-transparent blur-[140px] pointer-events-none" />
+      <div className="absolute top-[35%] end-[-10%] h-[450px] w-[450px] rounded-full bg-[#5C1A24]/20 blur-[160px] pointer-events-none" />
+      <div className="absolute top-[65%] start-[-10%] h-[400px] w-[400px] rounded-full bg-amber-500/10 blur-[150px] pointer-events-none" />
 
       {/* Navigation Header */}
-      <header className="relative z-20 border-b border-stone-800/80 backdrop-blur-md">
+      <header className="sticky top-0 z-50 border-b border-stone-800/80 bg-stone-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-3">
-            <div className="flex h-9 w-9 items-center justify-center rounded-button bg-gradient-to-br from-amber-400 to-amber-700 text-stone-950 font-serif font-black text-xl shadow-lg shadow-amber-900/30">
-              M
-            </div>
-            <div>
-              <span className="font-display text-lg font-bold tracking-tight text-white">
-                Managevent
-              </span>
-              <span className="ms-1.5 rounded-full bg-amber-500/20 border border-amber-500/30 px-2 py-0.5 text-[10px] font-semibold text-amber-300">
-                Invitations
-              </span>
-            </div>
-          </div>
+          <Link href="/" className="group flex items-center transition-transform hover:scale-[1.01]">
+            <BrandLogo variant="compact" subtitle="Invitations" size="md" />
+          </Link>
 
-          <div className="flex items-center gap-4">
+          <nav className="flex items-center gap-3 sm:gap-5">
             <Link
               href="/templates"
-              className="text-xs font-semibold text-stone-300 hover:text-white transition-colors"
+              className="text-xs sm:text-sm font-medium text-stone-300 hover:text-white transition-colors"
             >
-              Templates
+              Themes
             </Link>
             <Link
               href="/studio"
-              className="rounded-button bg-stone-800 border border-stone-700 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-700 transition-colors"
+              className="rounded-button border border-stone-800 bg-stone-900/80 px-3.5 py-1.5 text-xs sm:text-sm font-semibold text-stone-200 hover:border-amber-500/40 hover:bg-stone-800 transition-all"
             >
               Host Studio
             </Link>
             <Link
               href="/studio/new"
-              className="inline-flex items-center gap-1.5 rounded-button bg-gradient-to-r from-amber-500 to-amber-600 px-4 py-1.5 text-xs font-bold text-stone-950 shadow-md shadow-amber-950/40 hover:from-amber-400 hover:to-amber-500 transition-all"
+              className="inline-flex items-center gap-1.5 rounded-button bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-4 py-1.5 text-xs sm:text-sm font-bold text-stone-950 shadow-lg shadow-amber-950/50 hover:brightness-110 active:scale-[0.98] transition-all"
             >
               <span>Create Event</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
-          </div>
+          </nav>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative z-10 mx-auto max-w-5xl px-6 pt-20 pb-24 text-center">
+      <section className="relative z-10 mx-auto max-w-6xl px-6 pt-16 sm:pt-24 pb-20 text-center">
+        {/* Atelier Badge */}
         <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-300 backdrop-blur-md shadow-inner mb-8">
           <Sparkles className="h-3.5 w-3.5 text-amber-400" />
-          <span>The Next Generation of Ceremony Invitations</span>
+          <span className="tracking-wide">High-End Australian Ceremony Invitations & RSVP</span>
         </div>
 
-        <h1 className="font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
-          Digital Invitations Crafted with{" "}
-          <span className="bg-gradient-to-r from-amber-200 via-amber-400 to-amber-600 bg-clip-text text-transparent">
-            Artistry & Precision
+        {/* Headline */}
+        <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-white leading-[1.1] max-w-4xl mx-auto">
+          Invitations Crafted for{" "}
+          <span className="bg-gradient-to-r from-[#F7E7C4] via-[#D8B365] to-[#B88934] bg-clip-text text-transparent">
+            Life’s Defining Ceremonies
           </span>
         </h1>
 
-        <p className="mx-auto mt-6 max-w-2xl font-serif text-lg sm:text-xl text-stone-300 leading-relaxed">
-          From animated wax-seal reveals to zero-friction RSVP, privacy-safe dietary tracking, and
-          Perth’s finest ceremony themes.
+        {/* Subtitle */}
+        <p className="mx-auto mt-6 max-w-2xl font-serif text-lg sm:text-xl text-stone-300/90 leading-relaxed">
+          From animated wax-seal reveals and Persian bilingual calligraphy to zero-friction RSVP,
+          dietary tracking, and door check-in for Perth and Australian ceremonies.
         </p>
 
         {/* Action Buttons */}
         <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
           <Link
             href="/studio/new"
-            className="inline-flex items-center gap-2 rounded-button bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-6 py-3.5 text-sm font-bold text-stone-950 shadow-xl shadow-amber-900/40 hover:brightness-110 transition-all"
+            className="inline-flex items-center gap-2 rounded-button bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 px-7 py-3.5 text-sm font-bold text-stone-950 shadow-xl shadow-amber-950/60 hover:brightness-110 active:scale-[0.98] transition-all"
           >
             <span>Start Designing Your Invitation</span>
             <ArrowRight className="h-4 w-4" />
           </Link>
           <Link
-            href="/i/anniversary/emma-party-g9qtmt"
-            className="inline-flex items-center gap-2 rounded-button border border-stone-700 bg-stone-800/80 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-md hover:bg-stone-700 transition-all"
+            href="/i/anniversary/armita-party-g9qtmt"
+            className="inline-flex items-center gap-2 rounded-button border border-stone-700/80 bg-stone-900/70 px-6 py-3.5 text-sm font-semibold text-stone-200 backdrop-blur-md hover:border-stone-500 hover:text-white transition-all"
           >
-            <span>Explore Live Demo Experience</span>
+            <span>Experience Live Guest Reveal</span>
           </Link>
         </div>
 
-        {/* Feature Badges */}
-        <div className="mt-14 flex flex-wrap items-center justify-center gap-6 text-xs text-stone-400">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Core details load without JavaScript</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Built for Australian privacy</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Built for Australian ceremonies</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="h-4 w-4 text-emerald-400" />
-            <span>Memorial Mode Respectful Support</span>
+        {/* Visual Brand Atelier Showcase */}
+        <div className="relative mx-auto mt-16 max-w-4xl">
+          <div className="relative overflow-hidden rounded-card border border-amber-500/20 bg-gradient-to-b from-stone-900/90 to-stone-950/90 p-4 sm:p-8 shadow-2xl shadow-stone-950/80 backdrop-blur-xl">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center text-start">
+              {/* Left: Brand Emblem Preview */}
+              <div className="relative flex flex-col items-center justify-center p-8 rounded-panel bg-gradient-to-b from-[#2B0E14] via-[#1B070B] to-[#120406] border border-amber-500/30 shadow-2xl">
+                <div className="absolute inset-0 rounded-panel bg-[radial-gradient(circle_at_center,rgba(197,160,89,0.15)_0%,transparent_70%)] pointer-events-none" />
+                <BrandLogo variant="badge" size="xl" theme="gold" className="mb-4" />
+                <div className="text-center">
+                  <h3 className="font-serif text-2xl font-bold tracking-widest text-[#F3E2B8] uppercase">
+                    Managevent
+                  </h3>
+                  <p className="text-[11px] font-sans tracking-[0.25em] text-amber-300/80 uppercase mt-1">
+                    Ceremonies & Atelier
+                  </p>
+                  <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
+                  <p className="mt-3 text-xs text-stone-400 max-w-xs font-serif italic">
+                    “Honouring moments of love, heritage, milestone, and remembrance with timeless craftsmanship.”
+                  </p>
+                </div>
+              </div>
+
+              {/* Right: Key Pillars */}
+              <div className="space-y-4">
+                <div className="flex items-start gap-3.5 p-3.5 rounded-panel bg-stone-900/50 border border-stone-800">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-button bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Animated Gate Reveal</h4>
+                    <p className="text-xs text-stone-400 mt-0.5">
+                      Personalised wax seal break, silk ribbon tear, and envelope gate reveal customized to each guest.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5 p-3.5 rounded-panel bg-stone-900/50 border border-stone-800">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-button bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <Utensils className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Private Dietary & RSVP Bridge</h4>
+                    <p className="text-xs text-stone-400 mt-0.5">
+                      Dietary allergies and headcounts flow safely to your catering and table arrangements.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3.5 p-3.5 rounded-panel bg-stone-900/50 border border-stone-800">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-button bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    <ShieldCheck className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-white">Australian Privacy Compliant</h4>
+                    <p className="text-xs text-stone-400 mt-0.5">
+                      All guest records, tokens, and RSVPs encrypted at rest in Sydney (ap-southeast-2).
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Live Sample Demos Showcase */}
-      <section className="relative z-10 border-t border-stone-800/80 bg-stone-950/60 py-20 px-6 backdrop-blur-sm">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-14">
-            <span className="text-xs font-mono uppercase tracking-widest text-amber-400">
-              Curated Showcases
-            </span>
-            <h2 className="mt-2 font-display text-3xl sm:text-4xl font-bold text-white">
-              Experience the Guest Journey
+      {/* Ceremony Types Showcase Section */}
+      <section className="relative z-10 border-t border-stone-800/80 bg-stone-950/60 py-20 px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              Tailored for Every Ceremony
             </h2>
-            <p className="mt-2 text-sm text-stone-400 max-w-lg mx-auto">
-              Test each ceremony style with animated gate reveals and live RSVP.
+            <p className="mt-3 text-sm sm:text-base text-stone-400 font-serif">
+              Each ceremony category features dedicated typography, cultural layouts, color harmonies, and respectful motion.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-3">
-            {/* 1. Anniversary Demo */}
-            <div className="group rounded-card border border-stone-800 bg-stone-900/90 p-6 transition-all duration-300 hover:border-amber-500/50 hover:shadow-2xl hover:shadow-amber-950/20 flex flex-col justify-between">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* 1. Wedding Celebration */}
+            <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20">
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="rounded-full bg-amber-500/10 border border-amber-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-amber-300">
-                    Royal Ivory Theme
+                  <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-semibold text-amber-300">
+                    Weddings & Engagements
                   </span>
                   <Heart className="h-4 w-4 text-amber-400" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white group-hover:text-amber-300 transition-colors">
-                  Emma & Liam
+                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
+                  Sarah & David
                 </h3>
-                <p className="text-xs font-serif italic text-amber-400/80 mt-0.5">
-                  10th Wedding Anniversary
+                <p className="text-xs font-serif italic text-amber-200/70 mt-1">
+                  Classic Ivory & Champagne Gold Arch
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Wax-seal envelope reveal, heirloom romantic waltz audio, black-tie dress code, and
-                  wishing well PayID integration.
+                  Double arch gold framing, couple love story timeline, ceremony order of service, wishing well gifts, and photo wall.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500 font-mono">/anniversary</span>
+              <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Classic Ivory</span>
                 <Link
-                  href="/i/anniversary/emma-party-g9qtmt"
+                  href="/i/anniversary/armita-party-g9qtmt"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
                 >
-                  <span>Open Invite</span>
+                  <span>Preview Demo</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>
 
-            {/* 2. Wedding Demo */}
-            <div className="group rounded-card border border-stone-800 bg-stone-900/90 p-6 transition-all duration-300 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-950/20 flex flex-col justify-between">
+            {/* 2. Persian Ceremonies */}
+            <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20">
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="rounded-full bg-rose-500/10 border border-rose-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-rose-300">
-                    Emerald Botanic Theme
+                  <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-semibold text-amber-300">
+                    Aqd & Persian Celebrations
                   </span>
-                  <Sparkles className="h-4 w-4 text-rose-400" />
+                  <Sparkles className="h-4 w-4 text-amber-400" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white group-hover:text-rose-300 transition-colors">
-                  Emily & James
+                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
+                  Aria & Niloufar
                 </h3>
-                <p className="text-xs font-serif italic text-rose-400/80 mt-0.5">
-                  Winery Wedding & Reception
+                <p className="text-xs font-serif italic text-amber-200/70 mt-1">
+                  Persian Royal & Sofreh Aghd
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Botanical filigree borders, an animated wax-seal reveal, live music, and
-                  dietary-aware catering options.
+                  Full Persian/English bilingual toggle (RTL), Hafez poetry calligraphy, Sofreh Aghd symbol guide, and traditional music player.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500 font-mono">/wedding</span>
+              <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Persian Royal</span>
                 <Link
-                  href="/i/emily-james-wedding-7kq/taylor-family-8nm24p"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-rose-400 hover:text-rose-300"
+                  href="/templates"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
                 >
-                  <span>Open Invite</span>
+                  <span>View Details</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
             </div>
 
-            {/* 3. Memorial Service Demo */}
-            <div className="group rounded-card border border-stone-800 bg-stone-900/90 p-6 transition-all duration-300 hover:border-stone-500/50 hover:shadow-2xl hover:shadow-stone-950/20 flex flex-col justify-between">
+            {/* 3. Milestone Anniversary */}
+            <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20">
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="rounded-full bg-stone-700/50 border border-stone-600 px-2.5 py-0.5 text-[11px] font-semibold text-stone-300">
+                  <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-semibold text-amber-300">
+                    Milestone Anniversaries
+                  </span>
+                  <Calendar className="h-4 w-4 text-amber-400" />
+                </div>
+                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
+                  Armita & Reza
+                </h3>
+                <p className="text-xs font-serif italic text-amber-200/70 mt-1">
+                  Terracotta Warmth & Wax Seal
+                </p>
+                <p className="mt-3 text-xs text-stone-400 leading-relaxed">
+                  Interactive journey through the years, photo memories slideshow, dietary requirement selection, and VIP digital entry passes.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Terracotta</span>
+                <Link
+                  href="/i/anniversary/armita-party-g9qtmt"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
+                >
+                  <span>Preview Demo</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 4. Corporate Galas */}
+            <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-semibold text-amber-300">
+                    Corporate Dinners & Galas
+                  </span>
+                  <Layers className="h-4 w-4 text-amber-400" />
+                </div>
+                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
+                  Perth Annual Gala
+                </h3>
+                <p className="text-xs font-serif italic text-amber-200/70 mt-1">
+                  Minimalist Noir & Gold Accent
+                </p>
+                <p className="mt-3 text-xs text-stone-400 leading-relaxed">
+                  Executive dress code guides, key speakers roster, table numbering, QR security gate entry, and sponsor recognition.
+                </p>
+              </div>
+              <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Minimalist Noir</span>
+                <Link
+                  href="/templates"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
+                >
+                  <span>View Details</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 5. Memorial Mode */}
+            <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-stone-500/50 hover:shadow-xl hover:shadow-stone-950/20">
+              <div>
+                <div className="flex items-center justify-between mb-4">
+                  <span className="rounded-full bg-stone-700/50 border border-stone-600 px-3 py-1 text-xs font-semibold text-stone-300">
                     Memorial Mode
                   </span>
-                  <ShieldCheck className="h-4 w-4 text-stone-400" />
+                  <Heart className="h-4 w-4 text-stone-400" />
                 </div>
-                <h3 className="font-display text-xl font-bold text-white group-hover:text-stone-300 transition-colors">
-                  Robert Memorial
+                <h3 className="font-serif text-2xl font-bold text-white group-hover:text-stone-300 transition-colors">
+                  Celebration of Life
                 </h3>
-                <p className="text-xs font-serif italic text-stone-400 mt-0.5">
-                  Celebration of Life & Remembrance
+                <p className="text-xs font-serif italic text-stone-400 mt-1">
+                  Soft Alabaster & Warm Bronze
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Respectful plain-fade gate, subdued typography, tribute book condolence message,
-                  and no confetti or celebratory countdowns.
+                  Respectful plain fade reveal, quiet tone, tribute book condolences, live-stream links, and no celebratory animations or upsells.
                 </p>
               </div>
-              <div className="mt-6 pt-4 border-t border-stone-800 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500 font-mono">/memorial</span>
+              <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Memorial Bronze</span>
                 <Link
-                  href="/i/dariush-memorial-3kp/cyrus-family-9xm42k"
+                  href="/templates"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-stone-300 hover:text-white"
                 >
-                  <span>Open Invite</span>
+                  <span>View Details</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </div>
+
+            {/* 6. Host Studio CTA Card */}
+            <div className="relative flex flex-col justify-between rounded-card border border-dashed border-amber-500/40 bg-gradient-to-br from-amber-500/10 via-stone-900/80 to-stone-950/90 p-6">
+              <div>
+                <div className="inline-flex h-10 w-10 items-center justify-center rounded-button bg-amber-500 text-stone-950 font-bold mb-4">
+                  <Sparkles className="h-5 w-5" />
+                </div>
+                <h3 className="font-serif text-2xl font-bold text-white">
+                  Design Your Invitation
+                </h3>
+                <p className="mt-2 text-xs text-stone-300 leading-relaxed">
+                  Use our AI wording assistant, import your guest list from CSV, and launch your private invitation in minutes.
+                </p>
+              </div>
+              <div className="mt-6">
+                <Link
+                  href="/studio/new"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-button bg-amber-500 px-4 py-2.5 text-xs font-bold text-stone-950 shadow-md hover:bg-amber-400 transition-colors"
+                >
+                  <span>Launch Event Studio</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -234,71 +357,64 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Feature Pillar Matrix */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="mx-auto max-w-6xl">
-          <div className="text-center mb-16">
-            <h2 className="font-display text-3xl sm:text-4xl font-bold text-white">
-              Engineered for Australian Event Hosts
+      {/* Feature Architecture Grid */}
+      <section className="relative z-10 border-t border-stone-800/80 bg-stone-900/40 py-20 px-6">
+        <div className="mx-auto max-w-7xl">
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-white">
+              Built for Flawless Guest & Host Experience
             </h2>
-            <p className="mt-3 text-sm text-stone-400 max-w-xl mx-auto">
-              Everything you need to orchestrate guests, catering, and entry from one intuitive
-              platform.
+            <p className="mt-3 text-sm sm:text-base text-stone-400 font-serif">
+              Engineered to Australian standards for performance, security, and accessibility.
             </p>
           </div>
 
           <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <Share2 className="h-7 w-7 text-emerald-400 mb-4" />
-              <h3 className="text-base font-bold text-white">WhatsApp & SMS Direct Sharing</h3>
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <Share2 className="h-6 w-6 text-amber-400 mb-4" />
+              <h3 className="text-base font-bold text-white">WhatsApp & SMS Ready</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Generate 1-click personalized WhatsApp messages that open directly into in-app
-                webviews without losing session or state.
+                Smart messaging templates formatted for Australian numbers with unguessable private guest links.
               </p>
             </div>
 
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <Utensils className="h-7 w-7 text-amber-400 mb-4" />
-              <h3 className="text-base font-bold text-white">Catering & Dietary Intelligence</h3>
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <QrCode className="h-6 w-6 text-emerald-400 mb-4" />
+              <h3 className="text-base font-bold text-white">Digital Door Pass & QR</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Breakdown of Halal, Vegan, Gluten-Free, and Nut allergies instantly exported with
-                UTF-8 BOM CSV for Perth caterers.
+                Guests receive personalized Apple/Google Wallet compatible QR passes for seamless venue check-in.
               </p>
             </div>
 
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <QrCode className="h-7 w-7 text-blue-400 mb-4" />
-              <h3 className="text-base font-bold text-white">Digital Pass & Door Check-In</h3>
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <Lock className="h-6 w-6 text-rose-400 mb-4" />
+              <h3 className="text-base font-bold text-white">Zero-JS SSR Resilience</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Each guest party receives a personalized QR code pass for rapid door check-in via
-                Managevent Crew mode or kiosks.
+                Core event details (date, venue, ceremony schedule) render instantly without JavaScript on low-connectivity mobile networks.
               </p>
             </div>
 
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <ShieldCheck className="h-7 w-7 text-purple-400 mb-4" />
-              <h3 className="text-base font-bold text-white">Privacy by Architecture</h3>
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <Camera className="h-6 w-6 text-sky-400 mb-4" />
+              <h3 className="text-base font-bold text-white">Live Celebration Photo Wall</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Unguessable HMAC tokens, no guest names in Open Graph tags, real 404s for invalid
-                tokens, and zero personal data stored outside Sydney.
+                Guests can upload event photos directly from their phone with instant Host moderation and projector display mode.
               </p>
             </div>
 
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <Calendar className="h-7 w-7 text-amber-400 mb-4" />
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <Calendar className="h-6 w-6 text-purple-400 mb-4" />
               <h3 className="text-base font-bold text-white">Deterministic Calendar Sync</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                One-tap .ics file downloads and Google/Apple calendar integration pinned to local
-                Western Australia timezone.
+                One-tap .ics downloads and Google/Apple calendar synchronization pinned to Western Australia (AWST) timezone.
               </p>
             </div>
 
-            <div className="rounded-card border border-stone-800 bg-stone-900/60 p-6">
-              <Layers className="h-7 w-7 text-rose-400 mb-4" />
-              <h3 className="text-base font-bold text-white">Integrated Managevent Bridge</h3>
+            <div className="rounded-card border border-stone-800 bg-stone-900/70 p-6">
+              <Layers className="h-6 w-6 text-amber-400 mb-4" />
+              <h3 className="text-base font-bold text-white">Managevent Marketplace Bridge</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Headcounts and guest dietary preferences flow directly into Managevent marketplace
-                vendor bookings and seating charts.
+                Guest headcounts, adult/child ratios, and dietary allocations directly drive catering and table seating plans.
               </p>
             </div>
           </div>
@@ -306,17 +422,25 @@ export default function HomePage() {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-stone-800/80 bg-stone-950 py-10 px-6 text-xs text-stone-500 text-center">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div>
-            © {new Date().getFullYear()} Managevent Australia. Hosted in Sydney (ap-southeast-2).
+      <footer className="border-t border-stone-800/80 bg-stone-950 py-12 px-6 text-xs text-stone-500">
+        <div className="mx-auto max-w-7xl flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-start">
+            <BrandLogo variant="compact" subtitle="Atelier" size="sm" />
+            <span className="hidden sm:inline text-stone-700">|</span>
+            <span>
+              © {new Date().getFullYear()} Managevent Australia. Personal data secured in Sydney (ap-southeast-2).
+            </span>
           </div>
+
           <div className="flex items-center gap-6">
             <Link href="/templates" className="hover:text-stone-300 transition-colors">
-              Templates
+              Themes
             </Link>
             <Link href="/studio" className="hover:text-stone-300 transition-colors">
               Host Studio
+            </Link>
+            <Link href="/studio/new" className="hover:text-stone-300 transition-colors">
+              Create Event
             </Link>
             <span className="font-mono text-[11px] text-stone-600">
               invitation.managevent.com.au

@@ -40,3 +40,5 @@ export {
   type PanelProps,
   useExperienceMode,
 } from "./components.js";
+
+export { BrandLogo, type BrandLogoProps } from "./BrandLogo.js";

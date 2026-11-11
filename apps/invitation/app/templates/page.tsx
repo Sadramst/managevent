@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import { INVITATION_THEMES } from "@managevent/ui/themes";
 import { Sparkles, ArrowRight, ShieldCheck, Heart } from "lucide-react";
+import { BrandLogo } from "@/components/BrandLogo";
 
 export const metadata = {
   title: "Invitation Templates & Themes",
@@ -13,26 +14,26 @@ export default function TemplatesPage() {
   const themes = Object.values(INVITATION_THEMES);
 
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100">
+    <div className="min-h-screen bg-stone-950 text-stone-100">
       {/* Top Header */}
-      <header className="border-b border-stone-800 bg-stone-950/70 backdrop-blur-md px-6 py-4">
+      <header className="border-b border-stone-800 bg-stone-950/80 backdrop-blur-md px-6 py-4">
         <div className="mx-auto flex max-w-7xl items-center justify-between">
           <Link
             href="/"
-            className="flex items-center gap-2 text-stone-200 hover:text-white font-serif font-bold text-lg"
+            className="flex items-center gap-2 text-stone-200 hover:text-white transition-opacity hover:opacity-90"
           >
-            <span>Managevent Invitations</span>
+            <BrandLogo variant="compact" subtitle="Themes" size="sm" />
           </Link>
           <div className="flex items-center gap-3">
             <Link
               href="/studio"
-              className="rounded-button border border-stone-700 px-3 py-1.5 text-xs font-semibold text-stone-300 hover:text-white"
+              className="rounded-button border border-stone-800 bg-stone-900/80 px-3.5 py-1.5 text-xs font-semibold text-stone-300 hover:border-amber-500/40 hover:text-white transition-all"
             >
               Host Studio
             </Link>
             <Link
               href="/studio/new"
-              className="rounded-button bg-amber-500 px-3.5 py-1.5 text-xs font-bold text-stone-950 hover:bg-amber-400"
+              className="rounded-button bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-1.5 text-xs font-bold text-stone-950 hover:brightness-110 shadow-md shadow-amber-950/40 transition-all"
             >
               Create Invitation
             </Link>

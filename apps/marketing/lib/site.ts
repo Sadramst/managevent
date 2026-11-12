@@ -15,8 +15,8 @@ export const invitationLinks = {
   create: `${invitationUrl}/studio/new`,
 } as const;
 export const contact = {
-  email: process.env.CONTACT_EMAIL || "sadra.tabarestani@gmail.com",
-  phone: process.env.CONTACT_PHONE ?? "0452657916",
+  email: process.env.CONTACT_EMAIL || "appilico.au@gmail.com",
+  phone: process.env.CONTACT_PHONE ?? "",
 };
 
 /** Every public route on www, in one place for the nav, footer, sitemap and internal links. */

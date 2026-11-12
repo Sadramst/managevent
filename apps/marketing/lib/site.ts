@@ -3,6 +3,10 @@ import type { EnabledLocale } from "@managevent/types";
 import type { Metadata } from "next";
 
 export const siteUrl = "https://www.managevent.com.au";
+/** The sibling invitations site. Falls back to production when the env var is unset. */
+export const invitationUrl = (
+  process.env.NEXT_PUBLIC_INVITATION_URL || "https://invitation.managevent.com.au"
+).replace(/\/+$/, "");
 export const contact = {
   email: process.env.CONTACT_EMAIL || "sadra.tabarestani@gmail.com",
   phone: process.env.CONTACT_PHONE ?? "0452657916",

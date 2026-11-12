@@ -9,6 +9,10 @@
   --me-primary: #5c1a24;
   --me-on-primary: #faf7f2;
   --me-accent: #c5a059;
+  --me-accent-strong: #7a5a1e;
+  --me-danger: #b3261e;
+  --me-success: #1e6b45;
+  --me-warning: #8a5300;
 }
 
 [data-experience-mode="memorial"] {
@@ -19,6 +23,10 @@
   --me-primary: #1e293b;
   --me-on-primary: #f8f9fa;
   --me-accent: #8c7a6b;
+  --me-accent-strong: #665648;
+  --me-danger: #9f2a22;
+  --me-success: #2f5d4a;
+  --me-warning: #7a5200;
 }
 
 @theme {
@@ -29,13 +37,20 @@
   --color-primary: var(--me-primary);
   --color-on-primary: var(--me-on-primary);
   --color-accent: var(--me-accent);
+  --color-accent-strong: var(--me-accent-strong);
+  --color-danger: var(--me-danger);
+  --color-success: var(--me-success);
+  --color-warning: var(--me-warning);
 
   --radius-sheet: 24px;
   --radius-panel: 12px;
   --radius-control: 8px;
   --radius-chip: 999px;
+  --radius-button: 8px;
+  --radius-card: 12px;
 
   --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-serif: "Cormorant Garamond", Georgia, serif;
   --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
 
   --ease-brand: cubic-bezier(0.2, 0.8, 0.2, 1);

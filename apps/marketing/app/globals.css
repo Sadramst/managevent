@@ -2,125 +2,14 @@
 @import "@fontsource/cormorant-garamond/latin-600.css";
 @import "@fontsource/plus-jakarta-sans/latin-400.css";
 @import "@fontsource/plus-jakarta-sans/latin-600.css";
+@import "@managevent/ui/brand.css";
 
-* {
-  box-sizing: border-box;
-}
-html {
-  scroll-padding-block-start: 4.5rem;
-  scroll-behavior: smooth;
-}
-body {
-  margin: 0;
-  color: var(--me-ink);
-  background: var(--me-surface);
-  font-family: "Plus Jakarta Sans", sans-serif;
-  line-height: 1.7;
-  overflow-x: clip;
-}
-h1,
-h2,
-h3,
-h4 {
-  font-family: "Cormorant Garamond", serif;
-  line-height: 1.15;
-  font-weight: 600;
-  text-wrap: balance;
-}
-h1 {
-  font-size: clamp(2.5rem, 5vw, 4rem);
-  max-inline-size: 16ch;
-  margin-block: 0.2em 0.4em;
-}
-h2 {
-  font-size: clamp(2rem, 3.6vw, 2.85rem);
-  max-inline-size: 26ch;
-  margin-block: 0.2rem 1rem;
-  color: var(--me-primary);
-}
-h3 {
-  font-size: 1.55rem;
-  margin-block: 0 0.65rem;
-}
-h4 {
-  font-size: 1.25rem;
-  margin-block: 0 0.5rem;
-}
-p {
-  max-inline-size: 68ch;
-  margin-block: 0 1rem;
-}
-a {
-  color: inherit;
-  text-underline-offset: 0.25em;
-}
-:focus-visible {
-  outline: 3px solid var(--me-primary);
-  outline-offset: 4px;
-}
-.wrap {
-  max-inline-size: 1240px;
-  margin-inline: auto;
-  padding-inline: 2rem;
-}
-
-/* Header & Navigation */
-.site-header-bar {
-  position: sticky;
-  inset-block-start: 0;
-  z-index: 30;
-  background: color-mix(in srgb, var(--me-surface) 92%, transparent);
-  backdrop-filter: blur(10px);
-  border-block-end: 1px solid color-mix(in srgb, var(--me-accent) 45%, transparent);
-}
-.site-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  padding-block: 1rem;
-}
-.wordmark {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 2.1rem;
-  font-weight: 600;
-  line-height: 1;
-  text-decoration: none;
-  color: var(--me-primary);
-}
-.wordmark span {
-  display: block;
-  margin-block-start: 0.35rem;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  font-size: 0.68rem;
-  color: var(--me-ink-muted);
-}
-nav {
-  display: flex;
-  align-items: center;
-  gap: 1.15rem;
-  flex-wrap: wrap;
-}
-nav a {
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-nav a:hover {
-  text-decoration: underline;
-}
-.nav-pill {
-  padding: 0.35rem 0.85rem;
-  border-radius: 999px;
-  border: 1px solid var(--me-primary);
-  color: var(--me-primary);
-}
-.nav-cta {
-  padding: 0.45rem 1rem;
-  border-radius: 8px;
-  background: var(--me-primary);
-  color: var(--me-on-primary);
-}
+/* ==========================================================================
+   www.managevent.com.au — page-specific styles only.
+   The shared shell (base type, .wrap, .section, .button, forms, header, footer,
+   logo, tables, tabs, dialogs ...) lives in @managevent/ui/brand.css.
+   These rules are unlayered, so they win over the shell where they overlap.
+   ========================================================================== */
 
 /* Hero Section with Arch Motif */
 .hero {
@@ -165,7 +54,7 @@ nav a:hover {
   margin-block-end: 0.85rem;
 }
 .hero-brand {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 1.65rem;
   color: var(--me-accent);
   margin-block: 0;
@@ -193,7 +82,7 @@ nav a:hover {
 }
 .hero-arch-kicker {
   text-align: center;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 1.35rem;
   color: var(--me-accent);
   margin-block: 0 1.25rem;
@@ -211,7 +100,7 @@ nav a:hover {
 }
 .hero-stats-grid strong {
   display: block;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 1.6rem;
   color: var(--me-accent);
   line-height: 1.15;
@@ -224,38 +113,7 @@ nav a:hover {
   line-height: 1.4;
 }
 
-/* Buttons */
-.button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.85rem 1.55rem;
-  background: var(--me-primary);
-  color: var(--me-on-primary);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-  text-decoration: none;
-  transition: opacity 0.15s ease;
-}
-.button:hover {
-  text-decoration: underline;
-}
-.button:disabled {
-  cursor: wait;
-  opacity: 0.7;
-}
-.button-secondary {
-  background: var(--me-surface-raised);
-  color: var(--me-primary);
-  border-color: var(--me-primary);
-}
-.button-small {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.85rem;
-}
+/* Hero buttons */
 .hero-button {
   background: var(--me-surface);
   color: var(--me-primary);
@@ -267,24 +125,6 @@ nav a:hover {
 }
 .hero a:focus-visible {
   outline-color: var(--me-on-primary);
-}
-
-/* Sections & Cards */
-.section {
-  padding-block: 4.5rem;
-}
-.section-head {
-  margin-block-end: 2.5rem;
-}
-.section-lead {
-  color: var(--me-ink-muted);
-  font-size: 1.05rem;
-}
-.kicker {
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--me-primary);
-  margin-block-end: 0.35rem;
 }
 
 /* Event Families Grid */
@@ -309,7 +149,7 @@ nav a:hover {
   border-block-start-color: var(--me-ink);
 }
 .family-index {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 1.5rem;
   color: var(--me-primary);
   margin-block-end: 0.5rem;
@@ -345,7 +185,7 @@ nav a:hover {
 }
 .service-num {
   display: inline-block;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 1.75rem;
   font-weight: 600;
   color: var(--me-primary);
@@ -384,6 +224,8 @@ nav a:hover {
   font-size: 0.85rem;
 }
 .estimator-slider {
+  display: block;
+  inline-size: 100%;
   min-block-size: 32px;
   padding: 0;
   margin-block: 0.5rem 0.25rem;
@@ -417,7 +259,7 @@ nav a:hover {
   margin-block-end: 0.2rem;
 }
 .estimator-price {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: clamp(2rem, 3.2vw, 2.7rem);
   font-weight: 600;
   color: var(--me-primary);
@@ -567,7 +409,7 @@ nav a:hover {
   gap: 2.5rem;
 }
 .process li > span {
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   color: var(--me-primary);
   font-size: 2.8rem;
 }
@@ -595,112 +437,21 @@ nav a:hover {
   font-size: 0.92rem;
   margin-block-end: 0.45rem;
 }
-.enquiry-card-note {
-  margin-block-start: 0.85rem;
-  padding-block-start: 0.85rem;
-  border-block-start: 1px solid color-mix(in srgb, var(--me-accent) 40%, transparent);
-  font-weight: 600;
-}
 .enquiry-form-card {
   padding: 2.25rem;
   border-radius: 24px;
   background: var(--me-surface-raised);
   border: 1px solid color-mix(in srgb, var(--me-accent) 55%, transparent);
 }
+
+/* Forms */
 form {
   padding: 0;
   color: var(--me-ink);
 }
-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-input,
-select,
-textarea {
-  display: block;
-  inline-size: 100%;
-  min-block-size: 48px;
+/* This app wraps each control in its label, so the control carries the field rhythm. */
+label:not(.check) > :is(input, select, textarea) {
   margin-block: 0.4rem 1.15rem;
-  border: 1px solid var(--me-ink-muted);
-  border-radius: 8px;
-  padding: 0.65rem 0.8rem;
-  background: var(--me-surface-raised);
-  color: var(--me-ink);
-  font: inherit;
-  font-weight: 400;
-}
-input:is(:user-invalid, [aria-invalid="true"]) {
-  outline: 2px solid var(--me-primary);
-  border-color: var(--me-primary);
-}
-.fields {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0 1.25rem;
-}
-.check {
-  display: flex;
-  gap: 0.8rem;
-  align-items: flex-start;
-  margin-block: 1rem;
-  font-weight: 400;
-}
-.check input {
-  inline-size: 22px;
-  min-block-size: 22px;
-  flex: 0 0 22px;
-  margin-block: 0.15rem 0;
-  accent-color: var(--me-primary);
-}
-.notice {
-  font-size: 0.8rem;
-  color: var(--me-ink-muted);
-}
-.success {
-  padding: 1.5rem;
-  border-radius: 12px;
-  background: var(--me-surface);
-  border: 1.5px solid var(--me-primary);
-  font-weight: 600;
-}
-
-/* Footer */
-.footer-shell {
-  border-block-start: 1px solid var(--me-accent);
-  background: var(--me-surface-raised);
-}
-.footer {
-  padding-block: 3rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 2.5rem;
-}
-.footer-wordmark {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.75rem;
-  color: var(--me-primary);
-}
-.footer p {
-  font-size: 0.85rem;
-  margin-block: 0.35rem;
-}
-.footer-ack {
-  color: var(--me-ink-muted);
-  max-inline-size: 52ch;
-}
-.footer-contacts {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem;
-  margin-block-start: 0.75rem;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-.footer-nav {
-  gap: 1.25rem;
 }
 
 /* Legal Pages */
@@ -717,18 +468,6 @@ input:is(:user-invalid, [aria-invalid="true"]) {
 .draft {
   color: var(--me-primary);
   font-weight: 600;
-}
-.skip {
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline-start: 1rem;
-  transform: translateY(-150%);
-  z-index: 50;
-  background: var(--me-surface);
-  padding: 1rem;
-}
-.skip:focus {
-  transform: none;
 }
 
 /* ==========================================================================
@@ -787,7 +526,7 @@ input:is(:user-invalid, [aria-invalid="true"]) {
 }
 .admin-kpi-card strong {
   display: block;
-  font-family: "Cormorant Garamond", serif;
+  font-family: var(--me-font-display);
   font-size: 2rem;
   color: var(--me-primary);
   line-height: 1.2;
@@ -1102,7 +841,7 @@ input:is(:user-invalid, [aria-invalid="true"]) {
   padding: 2rem;
 }
 .admin-dialog::backdrop {
-  background-color: rgba(24, 24, 27, 0.55);
+  background-color: var(--me-scrim);
   backdrop-filter: blur(3px);
 }
 .admin-dialog-header {
@@ -1149,18 +888,11 @@ input:is(:user-invalid, [aria-invalid="true"]) {
 }
 
 @media (max-width: 680px) {
-  .wrap {
-    padding-inline: 1.25rem;
-  }
-  .section {
-    padding-block: 3rem;
-  }
   .families,
   .services-grid,
   .venues-grid,
   .bridge-steps,
   .process ol,
-  .fields,
   .admin-kpis,
   .admin-toolbar,
   .intake-grid,
@@ -1174,23 +906,5 @@ input:is(:user-invalid, [aria-invalid="true"]) {
   .admin-banner,
   .admin-panel-inner {
     padding: 1.25rem;
-  }
-  .footer {
-    flex-direction: column;
-  }
-  .site-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.75rem;
-  }
-  .site-header nav {
-    gap: 0.65rem;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    scroll-behavior: auto !important;
-    transition: none !important;
   }
 }

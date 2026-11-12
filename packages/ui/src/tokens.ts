@@ -15,6 +15,14 @@ export interface PaletteTokens {
   primary: string;
   onPrimary: string;
   accent: string;
+  /** Text-safe variant of `accent` (>= 4.5:1 on `surface`). Use for small accent-coloured text. */
+  accentStrong: string;
+  /** Error and destructive states (>= 4.5:1 on `surface`). */
+  danger: string;
+  /** Confirmed and positive states (>= 4.5:1 on `surface`). */
+  success: string;
+  /** Pending and caution states (>= 4.5:1 on `surface`). */
+  warning: string;
 }
 
 export const celebrationTokens: Readonly<PaletteTokens> = {
@@ -25,6 +33,10 @@ export const celebrationTokens: Readonly<PaletteTokens> = {
   primary: "#5C1A24",
   onPrimary: "#FAF7F2",
   accent: "#C5A059",
+  accentStrong: "#7A5A1E",
+  danger: "#B3261E",
+  success: "#1E6B45",
+  warning: "#8A5300",
 };
 
 export const memorialTokens: Readonly<PaletteTokens> = {
@@ -35,6 +47,10 @@ export const memorialTokens: Readonly<PaletteTokens> = {
   primary: "#1E293B",
   onPrimary: "#F8F9FA",
   accent: "#8C7A6B",
+  accentStrong: "#665648",
+  danger: "#9F2A22",
+  success: "#2F5D4A",
+  warning: "#7A5200",
 };
 
 export const designTokens = {
@@ -54,6 +70,10 @@ export const designTokens = {
     panel: "12px",
     control: "8px",
     chip: "999px",
+    /** Alias of `control`, kept for the `rounded-button` utility. */
+    button: "8px",
+    /** Alias of `panel`, kept for the `rounded-card` utility. */
+    card: "12px",
   },
   motion: {
     microMs: 120,
@@ -84,6 +104,10 @@ export function getCssVariablesForMode(mode: ExperienceMode): Record<string, str
     "--me-primary": palette.primary,
     "--me-on-primary": palette.onPrimary,
     "--me-accent": palette.accent,
+    "--me-accent-strong": palette.accentStrong,
+    "--me-danger": palette.danger,
+    "--me-success": palette.success,
+    "--me-warning": palette.warning,
   };
 }
 

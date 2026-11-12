@@ -12,6 +12,10 @@ export interface BrandColorTokens {
   primary: string;
   onPrimary: string;
   accent: string;
+  accentStrong: string;
+  danger: string;
+  success: string;
+  warning: string;
 }
 
 /**
@@ -25,6 +29,8 @@ export const tailwindBrandTokens: Readonly<{
     panel: string;
     control: string;
     chip: string;
+    button: string;
+    card: string;
   }>;
   fonts: Readonly<{
     displayLatin: string;
@@ -46,6 +52,10 @@ export const tailwindBrandTokens: Readonly<{
     primary: "#5C1A24",
     onPrimary: "#FAF7F2",
     accent: "#C5A059",
+    accentStrong: "#7A5A1E",
+    danger: "#B3261E",
+    success: "#1E6B45",
+    warning: "#8A5300",
   },
   memorial: {
     surface: "#F8F9FA",
@@ -55,12 +65,18 @@ export const tailwindBrandTokens: Readonly<{
     primary: "#1E293B",
     onPrimary: "#F8F9FA",
     accent: "#8C7A6B",
+    accentStrong: "#665648",
+    danger: "#9F2A22",
+    success: "#2F5D4A",
+    warning: "#7A5200",
   },
   radius: {
     sheet: "24px",
     panel: "12px",
     control: "8px",
     chip: "999px",
+    button: "8px",
+    card: "12px",
   },
   fonts: {
     displayLatin: "'Cormorant Garamond', Georgia, serif",
@@ -93,6 +109,10 @@ export function generateTailwindV4ThemeCss(): string {
   --me-primary: ${celebration.primary};
   --me-on-primary: ${celebration.onPrimary};
   --me-accent: ${celebration.accent};
+  --me-accent-strong: ${celebration.accentStrong};
+  --me-danger: ${celebration.danger};
+  --me-success: ${celebration.success};
+  --me-warning: ${celebration.warning};
 }
 
 [data-experience-mode="memorial"] {
@@ -103,6 +123,10 @@ export function generateTailwindV4ThemeCss(): string {
   --me-primary: ${memorial.primary};
   --me-on-primary: ${memorial.onPrimary};
   --me-accent: ${memorial.accent};
+  --me-accent-strong: ${memorial.accentStrong};
+  --me-danger: ${memorial.danger};
+  --me-success: ${memorial.success};
+  --me-warning: ${memorial.warning};
 }
 
 @theme {
@@ -113,13 +137,20 @@ export function generateTailwindV4ThemeCss(): string {
   --color-primary: var(--me-primary);
   --color-on-primary: var(--me-on-primary);
   --color-accent: var(--me-accent);
+  --color-accent-strong: var(--me-accent-strong);
+  --color-danger: var(--me-danger);
+  --color-success: var(--me-success);
+  --color-warning: var(--me-warning);
 
   --radius-sheet: ${radius.sheet};
   --radius-panel: ${radius.panel};
   --radius-control: ${radius.control};
   --radius-chip: ${radius.chip};
+  --radius-button: ${radius.button};
+  --radius-card: ${radius.card};
 
   --font-display: ${fonts.displayLatin};
+  --font-serif: ${fonts.displayLatin};
   --font-sans: ${fonts.bodyLatin};
 
   --ease-brand: ${motion.easing};

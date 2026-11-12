@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Managevent mark. A standalone asset cannot read CSS tokens, so it carries the
+       celebration palette values: surface #FAF7F2, primary #5C1A24, accent #C5A059. -->
+  <rect width="64" height="64" rx="14" fill="#FAF7F2" />
+  <g transform="translate(8 4)">
+    <path d="M3 53.5V24a21 21 0 0 1 42 0v29.5Z" fill="#5C1A24" />
+    <path d="M8.5 49V24a15.5 15.5 0 0 1 31 0v25" fill="none" stroke="#C5A059" stroke-width="1.2" />
+    <path d="M16 43.5V27l8 10.5L32 27v16.5" fill="none" stroke="#C5A059" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
+  </g>
+</svg>

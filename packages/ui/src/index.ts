@@ -41,4 +41,10 @@ export {
   useExperienceMode,
 } from "./components.js";
 
-export { BrandLogo, type BrandLogoProps } from "./BrandLogo.js";
+export {
+  type BrandLink,
+  BrandLogo,
+  type BrandLogoProps,
+  type BrandProduct,
+  type BrandTone,
+} from "./brand/index.js";

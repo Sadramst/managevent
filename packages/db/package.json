@@ -11,7 +11,7 @@
   },
   "scripts": {
     "postinstall": "prisma generate",
-    "build": "prisma generate && tsc --noEmit",
+    "build": "tsc --noEmit",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

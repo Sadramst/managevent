@@ -43,3 +43,6 @@ Thumbs.db
 
 # owner-provided prototype exports (reference only)
 docs/legacy/ai-studio-export/
+
+# local no-Docker PostgreSQL cluster and logs (scripts/dev-db.mjs)
+.local/

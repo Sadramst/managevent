@@ -9,7 +9,10 @@
   "exports": {
     ".": "./src/index.ts",
     "./tokens": "./src/tokens.ts",
-    "./themes": "./src/themes.ts"
+    "./themes": "./src/themes.ts",
+    "./brand": "./src/brand/index.ts",
+    "./brand.css": "./src/brand/brand.css",
+    "./icon.svg": "./src/brand/icon.svg"
   },
   "scripts": {
     "build": "tsc --noEmit",

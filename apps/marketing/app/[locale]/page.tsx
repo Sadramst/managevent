@@ -70,7 +70,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
           <div className="hero-arch-card">
             <div className="hero-arch-inner">
-              <p className="hero-arch-kicker">Perth Full-Service Event Production</p>
+              <p className="hero-arch-kicker">{t(locale, "marketing.launchHeroKicker")}</p>
               <div className="hero-stats-grid">
                 <div>
                   <strong dir="ltr">{t(locale, "marketing.launchStat1Value")}</strong>
@@ -249,25 +249,21 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <h2>{t(locale, "marketing.launchFormTitle")}</h2>
           <p>{t(locale, "marketing.launchFormIntro")}</p>
           <div className="enquiry-contact-card">
-            <strong>Direct Perth Coordination Desk</strong>
+            <strong>{t(locale, "marketing.launchContactDeskTitle")}</strong>
             <p>
-              Email:{" "}
+              {t(locale, "marketing.launchContactEmailLabel")}:{" "}
               <a href={`mailto:${contact.email}`}>
                 <bdi>{contact.email}</bdi>
               </a>
             </p>
             {contact.phone && (
               <p>
-                Phone:{" "}
+                {t(locale, "marketing.launchContactPhoneLabel")}:{" "}
                 <a href={`tel:${contact.phone}`}>
                   <bdi>{contact.phone}</bdi>
                 </a>
               </p>
             )}
-            <p className="enquiry-card-note">
-              Staff & Coordinators:{" "}
-              <a href={localePath(locale, "/admin")}>Open Planner Command Centre →</a>
-            </p>
           </div>
         </div>
         <div className="enquiry-form-card">

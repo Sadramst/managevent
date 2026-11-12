@@ -4,15 +4,17 @@
 
 ## What this is
 
-**Money, GST, plans and Stripe**. Cents helpers, GST maths (`docs/compliance/PAYMENTS_AND_GST.md`), the tax invoice model and number sequence, invitation plans and entitlements, Stripe and Stripe Connect wrappers, and webhook verification helpers.
+**Money, GST, plans and Stripe Checkout.** Integer-cent helpers, GST maths (`docs/compliance/PAYMENTS_AND_GST.md`), the tax invoice and payment schedule builders, the invitation plans and entitlements, and the real Stripe Checkout client with webhook verification (`src/checkout.ts`).
 
-- **Built by:** FND-08 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** `apps/api` (plans, entitlements, Premium Event Pass checkout and webhook), `apps/invitation` (plan display), `packages/pricing`.
+- **Planned:** Stripe Connect for vendor payouts (VEN-03), deposits and milestone payments (PRT-06), and issuing tax invoices (DEC-03, PRT-06). No Connect code exists today.
 
 ## Rules
 
-- **The only place GST is calculated.** Integer cents only.
+- **The only place GST is calculated.** Integer AUD cents only; consumer prices are GST-inclusive.
 - Exhaustive tests for rounding (per line, then summed).
+- Stripe is used only with real credentials. Without `STRIPE_SECRET_KEY` (and `STRIPE_WEBHOOK_SECRET` for webhooks) the client throws `PaymentsNotConfiguredError`; never add a mock or test-mode fallback to a production path.
+- Plan prices and limits live in `INVITATION_PLANS`. Change them only with a founder decision and update `docs/business/PRICING_MODEL.md` with them.
 
 ## Done means
 

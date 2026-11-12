@@ -9,8 +9,8 @@
  * 1. `x-forwarded-for`, but ONLY on a request that carries our own web servers' shared secret
  *    (`API_PROXY_SECRET`, sent as `x-managevent-proxy-secret`). The Next apps call the API
  *    server-to-server and pass the visitor's address this way.
- * 2. The header the platform's edge proxy sets (`TRUSTED_CLIENT_IP_HEADER`, on Fly
- *    `fly-client-ip`). When the header holds a list, the last entry is the one the proxy added.
+ * 2. The header the edge proxy sets (`TRUSTED_CLIENT_IP_HEADER`; `x-real-ip` behind Caddy in
+ *    production). When the header holds a list, the last entry is the one the proxy added.
  * 3. The address of the TCP connection.
  *
  * When none of them yields an address the request is `"unknown"`, and every limiter puts it in

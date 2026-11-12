@@ -1,5 +1,7 @@
 # ADR-0006: IDs, money and time
 
+- **Status:** Accepted.
+
 - **IDs:** prefixed string IDs (for example `evt_01J…`) using UUIDv7 for sortability. The prefix list lives in `packages/db/DATA_MODEL.md`.
 - **Money:** integer cents, always paired with `currency` (currently always `AUD`).
   - Store `amountExGstCents`, `gstCents` and `amountIncGstCents` on every invoiceable line.

@@ -169,6 +169,20 @@ export function evaluateSendCompliance(input: SendComplianceGuardInput): SendCom
   };
 }
 
+/**
+ * Thrown by a client that was built without a transport. Nothing is faked: until a real Resend or
+ * Twilio transport is passed in, every send that passes the compliance checks fails loudly.
+ */
+export class NotificationTransportNotConfiguredError extends Error {
+  readonly channel: "EMAIL" | "SMS" | "WHATSAPP";
+
+  constructor(channel: "EMAIL" | "SMS" | "WHATSAPP") {
+    super(`No ${channel} transport is configured; nothing was sent`);
+    this.name = "NotificationTransportNotConfiguredError";
+    this.channel = channel;
+  }
+}
+
 export interface EmailTransport {
   send(params: {
     from: string;
@@ -191,7 +205,8 @@ export interface MessagingTransport {
 }
 
 /**
- * Default mock-safe Resend email transport (never makes live network calls in test/local mode).
+ * Email client: compliance checks, then the injected transport (Resend). Without a transport it
+ * fails closed with `NotificationTransportNotConfiguredError`.
  */
 export class ResendNotificationClient {
   private readonly transport: EmailTransport;
@@ -214,9 +229,8 @@ export class ResendNotificationClient {
     this.transport =
       options?.transport ??
       ({
-        async send(p) {
-          const digest = hashRecipientAddress(`${p.to}:${p.subject}`).slice(0, 16);
-          return { providerId: `re_mock_${digest}` };
+        send() {
+          return Promise.reject(new NotificationTransportNotConfiguredError("EMAIL"));
         },
       } satisfies EmailTransport);
   }
@@ -285,8 +299,9 @@ export class ResendNotificationClient {
 }
 
 /**
- * Default mock-safe Twilio SMS and WhatsApp client enforcing sender ID (`Managevent`),
- * consent attestation, suppression, and quiet hours.
+ * SMS and WhatsApp client enforcing sender ID (`Managevent`), consent attestation, suppression
+ * and quiet hours, then the injected transport (Twilio). Without a transport it fails closed with
+ * `NotificationTransportNotConfiguredError`.
  */
 export class TwilioNotificationClient {
   private readonly transport: MessagingTransport;
@@ -304,13 +319,11 @@ export class TwilioNotificationClient {
     this.transport =
       options?.transport ??
       ({
-        async sendSms(p) {
-          const digest = hashRecipientAddress(`${p.to}:${p.body}`).slice(0, 16);
-          return { providerId: `SM_mock_${digest}` };
+        sendSms() {
+          return Promise.reject(new NotificationTransportNotConfiguredError("SMS"));
         },
-        async sendWhatsAppTemplate(p) {
-          const digest = hashRecipientAddress(`${p.to}:${p.templateKey}`).slice(0, 16);
-          return { providerId: `WA_mock_${digest}` };
+        sendWhatsAppTemplate() {
+          return Promise.reject(new NotificationTransportNotConfiguredError("WHATSAPP"));
         },
       } satisfies MessagingTransport);
   }

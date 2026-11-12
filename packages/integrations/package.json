@@ -3,9 +3,5 @@
   "version": "0.0.0",
   "private": true,
   "description": "Third-party integrations",
-  "scripts": {},
-  "managevent": {
-    "status": "not-scaffolded",
-    "backlog": "FND-13 / VEN-01 / ADM-06"
-  }
+  "scripts": {}
 }

@@ -19,9 +19,9 @@ describe("lib/client-ip", () => {
     expect(
       clientIpConfigFromEnv({
         API_PROXY_SECRET: ` ${SECRET} `,
-        TRUSTED_CLIENT_IP_HEADER: "Fly-Client-IP",
+        TRUSTED_CLIENT_IP_HEADER: "X-Real-IP",
       }),
-    ).toEqual({ proxySecret: SECRET, trustedHeader: "fly-client-ip" });
+    ).toEqual({ proxySecret: SECRET, trustedHeader: "x-real-ip" });
     expect(clientIpConfigFromEnv({ API_PROXY_SECRET: "", TRUSTED_CLIENT_IP_HEADER: " " })).toEqual({
       proxySecret: null,
       trustedHeader: null,
@@ -53,7 +53,7 @@ describe("lib/client-ip", () => {
     const spoofed = headers({
       "x-forwarded-for": "203.0.113.7",
       "x-real-ip": "203.0.113.8",
-      "fly-client-ip": "203.0.113.9",
+      "true-client-ip": "203.0.113.9",
       [PROXY_SECRET_HEADER]: SECRET,
     });
     expect(resolveClientIp(spoofed, "::ffff:192.0.2.44", direct)).toBe("192.0.2.44");
@@ -63,11 +63,11 @@ describe("lib/client-ip", () => {
   });
 
   it("believes x-forwarded-for only together with the shared secret", () => {
-    const config: ClientIpConfig = { proxySecret: SECRET, trustedHeader: "fly-client-ip" };
+    const config: ClientIpConfig = { proxySecret: SECRET, trustedHeader: "x-real-ip" };
     const fromOurServer = headers({
       "x-forwarded-for": "203.0.113.7, 10.0.0.1",
       [PROXY_SECRET_HEADER]: SECRET,
-      "fly-client-ip": "198.51.100.5",
+      "x-real-ip": "198.51.100.5",
     });
     expect(isTrustedProxyRequest(fromOurServer, config)).toBe(true);
     expect(resolveClientIp(fromOurServer, "192.0.2.1", config)).toBe("203.0.113.7");
@@ -76,7 +76,7 @@ describe("lib/client-ip", () => {
       const forged = headers({
         "x-forwarded-for": "203.0.113.7",
         [PROXY_SECRET_HEADER]: secret,
-        "fly-client-ip": "198.51.100.5",
+        "x-real-ip": "198.51.100.5",
       });
       expect(isTrustedProxyRequest(forged, config)).toBe(false);
       expect(resolveClientIp(forged, "192.0.2.1", config)).toBe("198.51.100.5");

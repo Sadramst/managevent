@@ -1,5 +1,7 @@
 # Contract changelog
 
+Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`, `i18n` keys (renames or removals only) and `ui` tokens here, newest first (root `AGENTS.md` §6). Entries are a historical record: do not rewrite an old entry, add a new one. Package names and locales in older entries (for example `fa`) describe the code as it was then.
+
 ## Invitation platform: backend integration (2026-11-12)
 
 `contract-change`. Follows the foundation entry below; read that one first. This entry records what changed while the modules were integrated, and states where nothing changed so consumers need not look.
@@ -7,7 +9,7 @@
 **Breaking**
 
 - **Queue payload `lead.created`** (`apps/api` producer, `apps/worker` consumer): the payload is now `{ leadId }` only. The worker loads the lead from the database. Name, email and the other enquiry fields are no longer on the queue. Deploy the API and the worker together; a job enqueued in the old shape still carries `leadId` and is handled.
-- **Worker environment:** `RESEND_DOMAIN_VERIFIED` is no longer read and `MockSafeResendAdapter` is gone. The worker sends real email as soon as `RESEND_API_KEY` is set. Anyone who relied on the flag to hold sends back must now leave the key unset. `DEPLOYMENT.md`, `infra/DEPLOY_RUNBOOK.md` and `infra/vps/.env.example` are updated.
+- **Worker environment:** `RESEND_DOMAIN_VERIFIED` is no longer read and `MockSafeResendAdapter` is gone. The worker sends real email as soon as `RESEND_API_KEY` is set. Anyone who relied on the flag to hold sends back must now leave the key unset. `DEPLOYMENT.md` and `infra/vps/.env.example` are updated.
 - **RSVP storage rule** (`POST /v1/i/{eventSlug}/{guestToken}/rsvp`; request schema `GuestRsvpSubmitSchema` unchanged): the API now stores only what the invitation's `rsvpConfig` asks for. Dietary and allergy fields need `askDietary`, accessibility notes need `askAccessibility`, song requests need a visible `songPrompt`, `messageToHost` needs `askMessage`, and `contact` needs `askContact` (default `false`). Anything else in the request is accepted and dropped, not rejected. A guest who answers `NO` has all four health columns set to null, including values from an earlier reply. A client that shows a field the settings turn off will see it come back empty.
 
 **Additive**
@@ -71,17 +73,15 @@ Breaking contract change (`contract-change`). The platform is now English (en-AU
 - `@managevent/db`: no schema change. Data migration `remove_persian` sets `locale='en'` on existing `fa` rows and remaps removed themes and ceremony slugs.
 - Consumers: remove `fa` usage; old `/fa/...` URLs redirect to `/en/...`.
 
-Step 2 launch (2026-10-23): additive EN/FA marketing and draft legal dictionary
-keys; auth re-exports the Prisma adapter for the API's database-backed sessions.
-API lead authorization no longer trusts client role headers. Production email
-requires explicit domain verification and uses provider idempotency keys.
+## Step 2: launch keys and auth adapter (2026-10-23)
 
-Step 2 plans (2026-10-23): additive `getInvitationPlan(plan, mode)` and optional
-mode arguments on entitlement helpers grant memorial Premium access for zero cents.
-Agency-only logistics fulfilment remains agency-only. Premium celebration price
-confirmed at 6900 AUD cents inclusive of GST.
+Additive EN/FA marketing and draft legal dictionary keys; auth re-exports the Prisma adapter for the API's database-backed sessions. API lead authorisation no longer trusts client role headers. Production email requires explicit domain verification and uses provider idempotency keys. (The domain-verification flag was later removed; see the 2026-11-12 entry.)
 
-## Step 2: Encrypted Health Storage (2026-10-23)
+## Step 2: plans (2026-10-23)
+
+Additive `getInvitationPlan(plan, mode)` and optional mode arguments on entitlement helpers grant memorial Premium access for zero cents. Agency-only logistics fulfilment remains agency-only. Premium celebration price confirmed at 6900 AUD cents inclusive of GST.
+
+## Step 2: encrypted health storage (2026-10-23)
 
 Breaking database contract: remove `Rsvp.dietary` and `Rsvp.allergySeverity`.
 API health inputs remain typed; callers must use `encryptRsvpWriteData()` before
@@ -91,7 +91,7 @@ ciphertext mirror. Backfill with the application key before migration; never
 edit the initial migration. Worker snapshots accept validated counts only and
 reject cross-event snapshot references.
 
-Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`, `i18n` keys (renames or removals only) and `ui` tokens here, newest first.
+## Foundation packages (2026-10-23)
 
 | Date       | PR     | Package                     | Change                                                                                               | Breaking? | Migration notes |
 | ---------- | ------ | --------------------------- | ---------------------------------------------------------------------------------------------------- | --------- | --------------- |

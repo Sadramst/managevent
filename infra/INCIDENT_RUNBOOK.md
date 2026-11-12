@@ -1,6 +1,6 @@
 # Incident and Notifiable Data Breach runbook
 
-> References: Australian Privacy Act 1988, Notifiable Data Breaches (NDB) scheme; `docs/compliance/PRIVACY.md`. How production is built and operated: [`../DEPLOYMENT.md`](../DEPLOYMENT.md).
+> References: Australian Privacy Act 1988, Notifiable Data Breaches (NDB) scheme; [`docs/compliance/PRIVACY.md`](../docs/compliance/PRIVACY.md). How production is built and operated: [`../DEPLOYMENT.md`](../DEPLOYMENT.md). There is no uptime or error monitoring yet (OPS-06), so an outage is noticed by a person.
 
 Production is one server (`/opt/managevent` on the Sydney VPS). Secrets live in `infra/vps/.env` on that server and in the owner's password manager; deployment credentials live in the GitHub Environment `production`. There is no other secret store.
 
@@ -48,7 +48,7 @@ Production is one server (`/opt/managevent` on the Sydney VPS). Secrets live in 
 
 ### 2. Assess (target 72 hours, 30 days at most)
 
-1. Identify which records were accessed: `User`, `Guest`, `Rsvp` (encrypted dietary and allergy fields), `Lead`, `Payment`. `AuditLog` records staff reads of health data and exports.
+1. Identify which records were accessed: `User`, `Guest`, `Rsvp` (encrypted dietary and allergy fields), `Lead`, `Payment`. `AuditLog` records reads of health data at the door (`health.read`), guest-list exports (`guest.export`), and host and staff changes to events, invitations, guests, wishes, campaigns and enquiries.
 2. Check whether field-level AES-256-GCM encryption (`enc:v1:...`) protected the health fields: it did only if `PII_ENCRYPTION_KEY` was not exposed together with the data. The key and the database are on the same server; an off-server backup alone does not contain the key.
 3. Decide whether the breach is likely to result in serious harm to any individual.
 
@@ -56,7 +56,7 @@ Production is one server (`/opt/managevent` on the Sydney VPS). Secrets live in 
 
 1. Prepare the statement for the **Office of the Australian Information Commissioner (OAIC)**.
 2. Notify the affected individuals in plain English, with what happened, what information was involved and what they should do.
-3. Record the incident in the Admin Breach Register (`AuditLog`), with the evidence folder's location.
+3. Record the incident (date, what was affected, who was notified and when, the evidence folder's location) in the owner's incident log. There is no breach register screen in the staff console yet, and `AuditLog` is written only by the application, so do not insert rows into it by hand.
 
 ## C. Afterwards
 

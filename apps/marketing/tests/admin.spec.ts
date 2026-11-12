@@ -90,9 +90,8 @@ test("signed out, every console address leads to sign-in and nothing is indexabl
     expect(response.headers()["cache-control"], target).toContain("no-store");
   }
 
-  // The data routes behind the console refuse a caller with no session.
-  const session = await request.get("/api/auth/get-session");
-  expect(await session.json()).toBeNull();
+  // The sign-in proxy serves only the console's own sign-in calls: no session lookup through it.
+  expect((await request.get("/api/auth/get-session")).status()).toBe(404);
 
   const errors = trackErrors(page);
   const response = await page.goto("/admin");
@@ -141,8 +140,7 @@ test("an ordinary host account is refused and signed out again", async ({ page }
   await expectNoAxeViolations(page);
   await snap(page, "sign-in-staff-only");
 
-  // No session is left behind, and the console is still closed.
-  expect(await (await page.request.get("/api/auth/get-session")).json()).toBeNull();
+  // No session is left behind (a live one would add `reason=staff`), and the console is closed.
   await page.goto("/admin");
   await expect(page).toHaveURL(/\/admin\/sign-in$/);
   await expect(page.locator("h1")).toHaveText("Sign in");
@@ -152,19 +150,26 @@ test("a live host session, however it was obtained, never reaches the console", 
   page,
   baseURL,
 }) => {
-  // A host who signed in elsewhere (the session cookie is shared across our sites) or who
-  // registered straight through the proxy holds a real session. It must open nothing here.
+  // A host who signed in elsewhere (the session cookie is shared across our sites) or straight
+  // through the proxy holds a real session. It must open nothing here. Registering through the
+  // proxy is not possible: it forwards only the console's own sign-in calls.
   const email = `walkin-${randomBytes(4).toString("hex")}@${E2E_EMAIL_DOMAIN}`;
   const origin = new URL(baseURL ?? "http://localhost").origin;
   const signUp = await page.request.post("/api/auth/sign-up/email", {
     headers: { origin },
     data: { name: "E2E Walk-in", email, password: `Walkin-${randomBytes(9).toString("hex")}` },
   });
-  expect(signUp.status()).toBe(200);
-  const session = (await (await page.request.get("/api/auth/get-session")).json()) as {
-    user?: { email?: string };
-  } | null;
-  expect(session?.user?.email).toBe(email);
+  expect(signUp.status()).toBe(404);
+  const { host } = e2eAccounts();
+  const signIn = await page.request.post("/api/auth/sign-in/email", {
+    headers: { origin },
+    data: { email: host.email, password: host.password },
+  });
+  expect(signIn.status()).toBe(200);
+  // The proxy relays neither the API's CORS headers nor the session token.
+  expect(signIn.headers()["access-control-allow-origin"]).toBeUndefined();
+  expect(signIn.headers()["cache-control"]).toContain("no-store");
+  expect(await signIn.text()).not.toContain('"token"');
 
   const leadPath = "/admin/leads/lead_0192b400-0000-7000-8000-000000000001";
   for (const [target, location] of [
@@ -186,19 +191,20 @@ test("a live host session, however it was obtained, never reaches the console", 
   );
   await expect(page.getByTestId("signed-in-user")).toHaveCount(0);
 
-  // The sign-in proxy forwards to the API's auth mount and nowhere else, and does not relay
-  // the API's CORS headers.
+  // The sign-in proxy forwards the console's own calls to the API's auth mount and nothing else.
   for (const outside of ["/api/auth/..%2f..%2fv1%2fleads", "/api/auth/x%5c..%5c..%5cv1/leads"]) {
     const response = await page.request.get(outside, { maxRedirects: 0 });
     expect(response.status(), outside).toBe(404);
     expect(await response.text(), outside).not.toContain("items");
   }
-  const proxied = await page.request.get("/api/auth/get-session", { headers: { origin } });
-  expect(proxied.headers()["access-control-allow-origin"]).toBeUndefined();
-  expect(proxied.headers()["cache-control"]).toContain("no-store");
+  const lookup = await page.request.get("/api/auth/get-session", { headers: { origin } });
+  expect(lookup.status()).toBe(404);
 
-  await page.request.post("/api/auth/sign-out", { headers: { origin }, data: {} });
-  expect(await (await page.request.get("/api/auth/get-session")).json()).toBeNull();
+  const signOut = await page.request.post("/api/auth/sign-out", { headers: { origin }, data: {} });
+  expect(signOut.status()).toBe(200);
+  // Signed out: the console sends the visitor to sign-in without the staff-only notice.
+  const closed = await page.request.get("/admin", { maxRedirects: 0 });
+  expect(closed.headers().location).toBe("/admin/sign-in");
 });
 
 test("staff sign in with two-factor, find a real enquiry, move it on and add a note", async ({
@@ -367,7 +373,6 @@ test("staff sign in with two-factor, find a real enquiry, move it on and add a n
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/admin\/sign-in\?reason=signed-out$/);
   await expect(page.getByRole("status")).toContainText("You have signed out");
-  expect(await (await page.request.get("/api/auth/get-session")).json()).toBeNull();
   await page.goto(leadUrl);
   await expect(page).toHaveURL(/\/admin\/sign-in\?next=/);
 });

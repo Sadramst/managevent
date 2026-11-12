@@ -4,7 +4,7 @@ Invitations: `invitation.managevent.com.au` (local port `3001`).
 
 The **Host Studio** (create an invitation, design, details, guests, share, responses, settings), the **guest micro-site** (`/i/{eventSlug}/{guestToken}`: gate, details, RSVP with dietary needs, pass, calendar) and **door check-in**. It is the same product as `www.managevent.com.au`: both use the brand shell in `packages/ui` (`@managevent/ui/brand` and `brand.css`).
 
-English only (en-AU).
+English only (en-AU). Rules for working here are in [`AGENTS.md`](AGENTS.md); what is still to build is in [`ROADMAP.md`](../../ROADMAP.md) (INV-04, INV-07, INV-08, INV-11, INV-14, INV-17, INV-18).
 
 ## How it works
 
@@ -18,13 +18,14 @@ English only (en-AU).
 From the repo root:
 
 ```bash
-pnpm db:local:detach                                              # PostgreSQL (pnpm db:local:status to check)
-node scripts/with-env.mjs pnpm --filter @managevent/api dev       # API on http://localhost:4000
-node scripts/with-env.mjs pnpm --filter @managevent/api seed:demo # the six sample invitations (once)
-node scripts/with-env.mjs pnpm --filter @managevent/invitation dev   # this app on http://localhost:3001
+pnpm db:local:detach                                    # PostgreSQL on 5432 (pnpm db:local:status to check)
+pnpm db:migrate                                         # once, and after each new migration
+pnpm with-env pnpm --filter @managevent/api dev         # API on http://localhost:4000
+pnpm with-env pnpm --filter @managevent/api seed:demo   # the six sample invitations (safe to repeat)
+pnpm with-env pnpm --filter @managevent/invitation dev  # this app on http://localhost:3001
 ```
 
-For a production build: `node scripts/with-env.mjs pnpm --filter @managevent/invitation build`, then `... start`.
+The environment comes from the root `.env` (copied from `.env.example`); only `pnpm with-env` and the root scripts load it. For a production build: `pnpm with-env pnpm --filter @managevent/invitation build`, then `... start`.
 
 Checks: `pnpm --filter @managevent/invitation typecheck lint test build`.
 
@@ -37,12 +38,14 @@ Checks: `pnpm --filter @managevent/invitation typecheck lint test build`.
 export API_PROXY_SECRET=$(node -e "console.log(require('crypto').randomBytes(24).toString('hex'))")
 
 pnpm db:local:detach
-node scripts/with-env.mjs pnpm --filter @managevent/api start          # or reuse one that is running
-node scripts/with-env.mjs pnpm --filter @managevent/api seed:demo      # once
-node scripts/with-env.mjs pnpm --filter @managevent/invitation build
-node scripts/with-env.mjs pnpm --filter @managevent/invitation start
-PW_CHANNEL=chrome pnpm --filter @managevent/invitation test:e2e        # PW_CHANNEL: use an installed browser
+pnpm with-env pnpm --filter @managevent/api start          # or reuse one that is running
+pnpm with-env pnpm --filter @managevent/api seed:demo      # once
+pnpm with-env pnpm --filter @managevent/invitation build
+pnpm with-env pnpm --filter @managevent/invitation start
+PW_CHANNEL=chrome pnpm --filter @managevent/invitation test:e2e   # PW_CHANNEL: use an installed browser
 ```
+
+This suite does not run in CI yet, and there is no WebKit project (INV-18).
 
 - **`API_PROXY_SECRET` matters.** The API limits sign-ups (20 an hour), guest pages and "not found" answers per visitor address. Each test presents its own address (`tests/e2e/support/stack.ts`), and the API believes it only with the shared secret. Without the secret every test shares one address and a full run is refused part-way with "Too many attempts".
 - **Other ports.** `E2E_BASE_URL` is this app (default `http://localhost:3001`); `E2E_API_URL` (or `API_URL`) is the API the specs call for set-up (default `http://localhost:4000`). This app's own `API_URL` must point at the same API. The API trusts `http://localhost:3001` and `NEXT_PUBLIC_INVITATION_URL` as origins, so keep the app on one of them.
@@ -50,7 +53,7 @@ PW_CHANNEL=chrome pnpm --filter @managevent/invitation test:e2e        # PW_CHAN
 
 What each spec covers:
 
-- `journey.spec.ts`: the whole product in order, all through the pages. Sign up, empty studio, wizard, publish refused then fixed, details, guests by hand and by CSV, design and the Premium lock, draft preview, publish, share (copy, WhatsApp, QR), a guest's reply with dietary needs and consent, responses and CSV, wishing well moderation, awaiting replies, check-in on the free plan, a link turned off (410), sign out and in, another host's 404, and a celebration of life in Memorial Mode.
+- `journey.spec.ts`: the whole product in order, all through the pages. Sign up, empty studio, wizard, publish refused then fixed, details, guests by hand and by CSV, design and the Premium lock, draft preview, publish, share (copy, WhatsApp, QR), a guest's reply with dietary needs and consent, responses and CSV, wishing well moderation, awaiting replies, door check-in on the free plan explaining Premium, a link turned off (410), sign out and in, another host's 404, and a celebration of life in Memorial Mode.
 - `pages.spec.ts`: every public page and each of the six sample invitations answers 200 with one `h1`, no axe violations, no console errors and no sideways scroll at 390px; a guest page without JavaScript; unknown links are real 404s; the WhatsApp, Instagram and Facebook in-app browsers with storage refused.
 - `public.spec.ts`: home, templates, pricing, email preferences, old links, sitemap and robots.
 - `studio-host.spec.ts`: wizard validation, Design, Details (stale write), Settings, publish and unpublish, deleting an event.
@@ -147,7 +150,7 @@ lib/guest/ # theme.ts (theme → brand tokens), load.ts, actions.ts, paths.ts, g
 - **States.** `OPEN` (form, or the stored reply with "Change my reply"), `CLOSED` (what the hosts have, no form), `READ_ONLY` for samples and host previews (the form can be tried; sending is disabled and says why).
 - **Memorial Mode** comes from the view's `experienceMode`: memorial themes, no arch or ornament, no countdown, "Open" with a plain fade, gentler wording, tribute book instead of wishing well.
 - **Status codes.** Unknown link → 404 (`notFound()`), link turned off → 410 and API rate limit → 429 (`Retry-After: 60`), both from `proxy.ts` with a self-contained page (`lib/guest/gone-page.ts`).
-- **Old links** (`/legacy/...`, `/anniversary/...`, `/e/...`) are resolved by the API and redirected here (`lib/public/legacy.ts`). `GuestInvitationPage`, `guestInvitationMetadata(link)` and `guestInvitationViewport(link)` take a `{ eventSlug, guestToken }` link, so a route can also render the invitation in place.
+- **Old links** (`/legacy/...`, `/anniversary/...`, `/e/...`) are resolved by the API and redirected here (`lib/public/legacy.ts`). No old links have been imported yet, so today they all answer 404 ([`MIGRATION.md`](MIGRATION.md)). `GuestInvitationPage`, `guestInvitationMetadata(link)` and `guestInvitationViewport(link)` take a `{ eventSlug, guestToken }` link, so a route can also render the invitation in place.
 
 ## Guests, share, responses and door check-in
 

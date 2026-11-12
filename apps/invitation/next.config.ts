@@ -32,7 +32,6 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self' https://checkout.stripe.com",
   "manifest-src 'self'",
-  ...(process.env.VERCEL ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
 
 const securityHeaders = [
@@ -110,12 +109,7 @@ const config: NextConfig = {
     return [
       {
         source: "/:path*",
-        headers: [
-          ...securityHeaders,
-          ...(process.env.VERCEL_ENV === "preview"
-            ? [{ key: "X-Robots-Tag", value: "noindex, nofollow" }]
-            : []),
-        ],
+        headers: securityHeaders,
       },
       ...noindexSources.map((source) => ({ source, headers: [noindexHeader] })),
     ];

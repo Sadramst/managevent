@@ -4,15 +4,16 @@
 
 ## What this is
 
-**Shared tooling config**. tsconfig presets (`base`, `nextjs`, `react-library`, `node`, `expo`), ESLint flat config, Prettier, the Tailwind v4 preset (imports tokens from `ui`), Vitest preset, and the log redaction helper list.
+**Shared tooling config.** tsconfig presets (`base`, `node`, `nextjs`, `react-library`, `expo`), the ESLint flat config with the `managevent/no-physical-direction-classes` rule, Prettier, the Vitest preset, the Tailwind v4 palette tokens (`tailwind.ts` and `tailwind.css`), and the log redaction helpers.
 
-- **Built by:** FND-01 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** every workspace that has code.
 
 ## Rules
 
-- Keep presets minimal and documented. Changes affect every workspace, so label them `contract-change`.
-- Includes an ESLint rule that blocks physical CSS direction classes (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`, `text-right`).
+- Keep presets minimal and documented. A change affects every workspace, so label it `contract-change`.
+- The ESLint rule blocks physical direction classes (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`, `text-right`). Do not weaken it.
+- The palette in `src/tailwind.ts` and `tailwind.css` must equal `packages/ui/src/tokens.ts`. Change all three together; the `packages/ui` tests fail on drift.
+- Log through `redactForLog` / `redactUrl`. Add a field name to `REDACTED_FIELD_NAMES` when a new kind of PII appears.
 
 ## Done means
 

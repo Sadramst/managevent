@@ -4,14 +4,16 @@
 
 ## What this is
 
-**Typed API client**. A client generated from `apps/api` OpenAPI (or Hono RPC types) for web, mobile and desktop, with auth handling (cookie or bearer) and the error model.
+**Typed API client** for `apps/api`: one resource object per API module, inputs and outputs validated with the `packages/validators` schemas, cookie or bearer auth, and one error type (`ManageventApiClientError`, checked with `isApiError`). `src/generated.ts` is generated from the API's OpenAPI document.
 
-- **Built by:** FND-14 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** `apps/marketing` and `apps/invitation`, server-side only (server components, server actions and route handlers). The browser never calls the API directly; it reaches only each web app's same-origin `/api/auth` proxy.
 
 ## Rules
 
-- Generated code is committed with a `generate` script. CI checks it is up to date.
+- `src/generated.ts` is committed. Regenerate it with `pnpm --filter @managevent/api-client generate` whenever an API route changes; CI runs `generate:check` and fails when it is stale.
+- Never redefine a request or response shape here: import it from `packages/validators`.
+- Forward the visitor's IP only through `forwardedFor`. The client sends it with the shared `API_PROXY_SECRET` (`x-managevent-proxy-secret`), and the API believes the address only when the secret matches. Never create a client with the secret in the browser.
+- The `*.db.test.ts` suites run against the real API and PostgreSQL and may import `packages/db` as a dev dependency for setup. Runtime code must not.
 
 ## Done means
 

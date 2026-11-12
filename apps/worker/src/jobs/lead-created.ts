@@ -47,7 +47,7 @@ export interface LeadCreatedJobResult {
 
 const AUTO_REPLY_TEMPLATE = "emails.leadAutoReply";
 const PLANNER_ALERT_TEMPLATE = "emails.leadPlannerAlert";
-const LOCAL_ADMIN_URL = "http://localhost:3004";
+const LOCAL_ADMIN_URL = "http://localhost:3100/admin";
 
 function adminLeadUrl(leadId: string): string {
   const base = (process.env.NEXT_PUBLIC_ADMIN_URL?.trim() || LOCAL_ADMIN_URL).replace(/\/+$/, "");

@@ -1,7 +1,6 @@
 # Music licensing
 
-- **Invitation background music:**
-  - Use only tracks from our licensed royalty-free library, where the licence must allow web and app use, or host uploads with a rights attestation.
-  - No commercial recordings, and no embedding of streaming services.
-- **At events:** licensed venues usually hold public performance licences. For events at private or unlicensed spaces, check whether a OneMusic Australia event licence is needed. DJs and musicians confirm their licensing in their vendor terms.
-- **Slideshows and tribute reels** (Windows Display Controller): same rules. Families supplying commercial songs for a private memorial: confirm with OneMusic guidance and record the host's attestation.
+- **Invitation background music (today):** a host may add one track as an HTTPS link, and must tick a rights attestation before music can be enabled (`InvitationMusicSchema`, `packages/validators/src/invitation-host.ts`). Music is off unless the host enables it and never plays on page load: for a celebration it starts with the guest's tap that opens the gate; in Memorial Mode it waits for the guest to press play (`apps/invitation/components/views/MusicControl.tsx`, [`../design/MEMORIAL_MODE.md`](../design/MEMORIAL_MODE.md)).
+- **Planned:** a licensed royalty-free library whose licence allows web and app use, and host uploads with the same attestation (INV-11, BIZ-08). No commercial recordings and no embedded streaming services.
+- **At events:** licensed venues usually hold public performance licences. For private or unlicensed spaces, check whether a OneMusic Australia event licence is needed. DJs and musicians confirm their licensing in their vendor terms (VEN-01).
+- **Slideshows and tribute reels** (the Windows display controller, WIN-06): the same rules. When a family supplies commercial songs for a private memorial, follow OneMusic guidance and record the host's attestation.

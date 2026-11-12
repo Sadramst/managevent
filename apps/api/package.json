@@ -28,9 +28,7 @@
     "@managevent/config": "workspace:*",
     "@managevent/db": "workspace:*",
     "@managevent/i18n": "workspace:*",
-    "@managevent/logistics": "workspace:*",
     "@managevent/payments": "workspace:*",
-    "@managevent/pricing": "workspace:*",
     "@managevent/types": "workspace:*",
     "@managevent/validators": "workspace:*",
     "hono": "4.13.13",
@@ -43,11 +41,5 @@
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "3.0.9"
-  },
-  "managevent": {
-    "status": "scaffolded",
-    "phase": "Phase 0 onward",
-    "backlog": "FND-11, then every feature's API tasks",
-    "spec": "ARCHITECTURE §§3, 5–12, `packages/db/DATA_MODEL.md`, ADR-0003 to 0009."
   }
 }

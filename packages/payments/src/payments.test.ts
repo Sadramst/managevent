@@ -2,12 +2,9 @@ import { describe, expect, it } from "vitest";
 import {
   assertIntegerCents,
   assertNonNegativeCents,
-  assertStripeTestModeKey,
   buildDefaultPaymentSchedule,
   buildTaxInvoice,
   canAddGuestsUnderPlan,
-  createStripeTestConnectTransfer,
-  createStripeTestPaymentIntent,
   divRoundHalfUp,
   formatAudCents,
   formatTaxInvoiceNumber,
@@ -16,12 +13,10 @@ import {
   INVITATION_PLANS,
   priceLineFromUnitExGst,
   priceLineFromUnitIncGst,
-  signStripeWebhookPayload,
   splitExGstCents,
   splitIncGstCents,
   splitSignedIncGstCents,
   sumPricedLines,
-  verifyStripeWebhookSignature,
 } from "./index.js";
 
 const SAMPLE_UUID_V7 = "0192b400-0000-7000-8000-000000000001";
@@ -239,99 +234,6 @@ describe("@managevent/payments", () => {
       expect(hasInvitationEntitlement("AGENCY", "rsvpReminders")).toBe(true);
       // Memorial invitations are complimentary Premium, so reminders are included.
       expect(hasInvitationEntitlement("FREE", "rsvpReminders", "MEMORIAL")).toBe(true);
-    });
-  });
-
-  describe("Stripe test-mode wrappers and webhook verification", () => {
-    it("enforces sk_test_ keys and creates PaymentIntents and Connect transfers", () => {
-      expect(() => assertStripeTestModeKey("sk_live_forbidden")).toThrow();
-      expect(assertStripeTestModeKey("sk_test_123")).toBe("sk_test_123");
-
-      expect(() =>
-        createStripeTestPaymentIntent({
-          amountIncGstCents: 0,
-          kind: "DEPOSIT",
-          method: "CARD",
-          idempotencyKey: "idem_0",
-        }),
-      ).toThrow(RangeError);
-
-      const pi = createStripeTestPaymentIntent({
-        amountIncGstCents: 110_000,
-        kind: "DEPOSIT",
-        method: "AFTERPAY",
-        idempotencyKey: "idem_1",
-        orderId: `ord_${SAMPLE_UUID_V7}`,
-      });
-      expect(pi.paymentIntentId.startsWith("pi_test_")).toBe(true);
-      expect(pi.gstCents).toBe(10_000);
-      expect(pi.paymentMethodTypes).toEqual(["afterpay_clearpay"]);
-      expect(pi.transferGroup).toBe(`order_ord_${SAMPLE_UUID_V7}`);
-
-      expect(() =>
-        createStripeTestConnectTransfer({
-          paymentIntentId: pi.paymentIntentId,
-          destinationStripeAccountId: "acct_test_1",
-          amountCents: 0,
-          transferGroup: "grp_1",
-          idempotencyKey: "tr_idem_0",
-        }),
-      ).toThrow(RangeError);
-
-      const tr = createStripeTestConnectTransfer({
-        paymentIntentId: pi.paymentIntentId,
-        destinationStripeAccountId: "acct_test_1",
-        amountCents: 80_000,
-        transferGroup: "grp_1",
-        idempotencyKey: "tr_idem_1",
-      });
-      expect(tr.transferId.startsWith("tr_test_")).toBe(true);
-      expect(tr.livemode).toBe(false);
-    });
-
-    it("signs and verifies Stripe webhook signatures and rejects tampered/expired payloads", () => {
-      const rawBody = JSON.stringify({ id: "evt_test_1", type: "payment_intent.succeeded" });
-      const secret = "whsec_unit_test_secret";
-      const nowSec = 1792713600;
-      const header = signStripeWebhookPayload(rawBody, secret, nowSec);
-
-      const verified = verifyStripeWebhookSignature({
-        rawBody,
-        signatureHeader: header,
-        webhookSecret: secret,
-        nowSec,
-      });
-      expect(verified).toEqual({ verified: true, timestampSec: nowSec });
-
-      // Tampered body
-      expect(() =>
-        verifyStripeWebhookSignature({
-          rawBody: `${rawBody} `,
-          signatureHeader: header,
-          webhookSecret: secret,
-          nowSec,
-        }),
-      ).toThrow("Invalid Stripe webhook signature");
-
-      // Expired timestamp
-      expect(() =>
-        verifyStripeWebhookSignature({
-          rawBody,
-          signatureHeader: header,
-          webhookSecret: secret,
-          nowSec: nowSec + 1000,
-        }),
-      ).toThrow("Stripe webhook timestamp outside tolerance window");
-
-      // Malformed header
-      expect(() =>
-        verifyStripeWebhookSignature({
-          rawBody,
-          signatureHeader: "bad_header",
-          webhookSecret: secret,
-          nowSec,
-        }),
-      ).toThrow("Malformed Stripe-Signature header");
     });
   });
 });

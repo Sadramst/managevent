@@ -2,6 +2,7 @@
 description: Memorial Mode rules (funeral, memorial, celebration of life, wake)
 alwaysApply: true
 ---
-- Derive the mode from `getExperienceMode()`. Never hand-roll the check.
-- Memorial: alabaster, slate, bronze and ink palette; gentle fades only; no confetti, countdown, upsells or urgency; tribute book instead of wishing well; no photo-wall auto-approve; memorial AI prompt only.
+- Derive the mode from `getExperienceMode()` in `packages/i18n`. Never hand-roll the check.
+- Memorial: alabaster, slate, bronze and ink palette; gentle fades only; no confetti, countdown, upsells or urgency; tribute book instead of wishing well; never auto-approve photo-wall media; memorial AI tone only.
+- Memorial events get Premium entitlements free (`getInvitationPlan` in `packages/payments`).
 - See `docs/design/MEMORIAL_MODE.md`. Add a Playwright memorial fixture test for any UI that can show memorial events.

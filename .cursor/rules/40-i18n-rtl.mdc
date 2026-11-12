@@ -2,5 +2,6 @@
 description: Internationalisation and RTL rules
 alwaysApply: true
 ---
-- Locale: en (en-AU) only for now; others are added via the `Locale` type. No hard-coded user-facing strings.
+- Locale: `en` (en-AU) only. Enabling another locale is a `contract-change` in `packages/validators` and `packages/i18n`, with the language in the URL. No hard-coded user-facing strings.
 - Deterministic date formatting from `packages/i18n` (no `Intl` in SSR or hydration paths).
+- Logical CSS properties only, so RTL can be added without rework.

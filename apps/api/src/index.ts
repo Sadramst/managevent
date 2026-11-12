@@ -67,7 +67,7 @@ if (isMainModule) {
           level: "info",
           msg: "Managevent API listening",
           port: info.port,
-          region: process.env.FLY_REGION ?? "syd",
+          region: "syd",
         }),
       );
     },

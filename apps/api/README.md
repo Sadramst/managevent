@@ -6,26 +6,28 @@ The **only** writer to the database and the single authorisation layer for web, 
 
 ## Running locally
 
-A local PostgreSQL 16 is started from the repo root with `pnpm db:local:detach` (`pnpm db:local:status` shows whether it is running). Commands that need the environment go through the wrapper:
+A local PostgreSQL 16 on port 5432 is started from the repo root with `pnpm db:local:detach` (`pnpm db:local:status` shows whether it is running); apply the migrations with `pnpm db:migrate`. The environment is the root `.env` (copied from `.env.example`), which only `pnpm with-env <cmd>` and the root scripts load:
 
 ```bash
-node scripts/with-env.mjs pnpm --filter @managevent/api dev     # http://localhost:4000
-node scripts/with-env.mjs pnpm --filter @managevent/api test
-node scripts/with-env.mjs pnpm --filter @managevent/worker start  # consumes the jobs the API enqueues
+pnpm with-env pnpm --filter @managevent/api dev       # http://localhost:4000
+pnpm with-env pnpm --filter @managevent/api test
+pnpm with-env pnpm --filter @managevent/worker start  # consumes the jobs the API enqueues
 ```
+
+Rules for changing this app are in [`AGENTS.md`](AGENTS.md).
 
 `GET /health` answers without a database. `GET /openapi.json` serves the OpenAPI 3.1 document, which lists every JSON route below (the CSV export is the one plain route).
 
 ## How a request is handled
 
 - **Order:** Zod-validated input → `requirePermission` (through `requireEventAccess` for event routes) → service → repository. No Prisma in handlers.
-- **Sessions:** Better Auth cookie (`managevent.session_token`) or bearer token, resolved against the database on every request. Identity and role headers are never trusted. Staff (`PLANNER_STAFF`, `SUPER_ADMIN`) without two-factor enabled are treated as signed out.
+- **Sessions:** Better Auth cookie (`managevent.session_token`) or bearer token, resolved against the database on every request. Sessions last 30 days for everyone; an 8-hour limit for staff is OPS-10. Identity and role headers are never trusted. Staff (`PLANNER_STAFF`, `SUPER_ADMIN`) without two-factor enabled are treated as signed out.
 - **Not yours means not found:** an event the caller may not read answers `404 NOT_FOUND`, never `403`. `403 FORBIDDEN` is for an event the caller can read but may not change (for example a `VIEWER` co-host).
 - **Guests have no account.** `/v1/i/{eventSlug}/{guestToken}/...` is authenticated by the link alone, matched exactly against the stored token. Unknown link → `404`; revoked, superseded or removed → `410 LINK_REVOKED`; unpublished → `404`, except for a signed-in host of that event, who gets a read-only preview.
 - **Errors:** `{ error: { code, message, details?, requestId } }`. Clients localise from `code`.
 - **Origin guard and CORS:** non-GET `/v1/*` requests that carry a cookie and an `Origin` outside the trusted list are refused. The list is `AUTH_TRUSTED_ORIGINS`, or the `NEXT_PUBLIC_*_URL` values plus `http://localhost:3100` and `http://localhost:3001` outside production.
-- **Rate limits** (in memory, per process): `guestRead` 120/min per IP and 60/min per link, `guestWrite` 20/min per IP and 10/min per link, `enumGuard` (30 misses per IP in 10 minutes, then 429; on every route that resolves a guest link), `hostRead` 600/min, `hostWrite` 120/min, `bulk` 10/hour per event, `checkout` 10/hour, `scan` 600/min, `publicMisc` 60/min per IP. IPv6 callers are counted per /64.
-- **Client address:** never taken from a header the caller can set. In order: `x-forwarded-for` on a request that carries our web servers' shared secret (`API_PROXY_SECRET`, header `x-managevent-proxy-secret`); the edge proxy's header named in `TRUSTED_CLIENT_IP_HEADER` (`fly-client-ip` on Fly); the connection address. A caller with no known address shares one bucket. The same address goes on consent and audit rows (`lib/client-ip.ts`).
+- **Rate limits** (in memory, per process; moving them to a shared store is OPS-11): `guestRead` 120/min per IP and 60/min per link, `guestWrite` 20/min per IP and 10/min per link, `enumGuard` (30 misses per IP in 10 minutes, then 429; on every route that resolves a guest link), `hostRead` 600/min, `hostWrite` 120/min, `bulk` 10/hour per event, `checkout` 10/hour, `scan` 600/min, `publicMisc` 60/min per IP. IPv6 callers are counted per /64.
+- **Client address:** never taken from a header the caller can set. In order: `x-forwarded-for` on a request that carries our web servers' shared secret (`API_PROXY_SECRET`, header `x-managevent-proxy-secret`); the edge proxy's header named in `TRUSTED_CLIENT_IP_HEADER` (`x-real-ip` in production, which Caddy overwrites on every request); the connection address. A caller with no known address shares one bucket. The same address goes on consent and audit rows (`lib/client-ip.ts`).
 - **Auth limits** (`lib/auth-guard.ts`, in front of `/api/auth/*`): per IP on sign-in, sign-up, two-factor, magic link and password reset; 10 wrong passwords per email address in 15 minutes; 5 emailed links per address an hour; 5 wrong two-factor codes per account in 15 minutes. Better Auth is handed the address the API resolved, never a request header. These endpoints accept `application/json` only (`415` otherwise).
 - **Magic links:** never sent to, and never accepted for, an account with two-factor enabled or a staff role. The first link used for an address that was never verified removes the account's password and its other sessions before signing the owner in (the password may have been set by whoever registered the address first); the owner sets a new one through the reset flow.
 - **Auth logs:** Better Auth's messages are logged without their arguments, so no email address reaches the logs.
@@ -50,20 +52,20 @@ Error codes: `VALIDATION_ERROR` 400, `INVALID_SIGNATURE` 400 (Stripe webhook onl
 
 ### Events, invitation and plan (`modules/events`, `modules/billing`)
 
-| Route                                             | Permission                 | Notes                                                                                                                                                           |
-| ------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /v1/events`                                  | session                    | events the caller owns or co-hosts                                                                                                                              |
-| `POST /v1/events`                                 | session                    | one transaction: event (`DRAFT`), FREE invitation with fresh salt and slug, `OWNER` co-host. The experience mode comes from the occasion and cannot be supplied |
-| `GET /v1/events/{eventId}`                        | `event:read`               |                                                                                                                                                                 |
-| `PATCH /v1/events/{eventId}`                      | `event:update`             | title, start, end, time zone                                                                                                                                    |
-| `DELETE /v1/events/{eventId}`                     | `event:update`, owner only | soft delete                                                                                                                                                     |
-| `PATCH /v1/events/{eventId}/invitation`           | `event:update`             | design, content, RSVP settings, well, link words. `expectedUpdatedAt` → `409 STALE_WRITE`. Plan and Memorial Mode rules → `403 FEATURE_NOT_IN_PLAN` / `400`     |
-| `POST /v1/events/{eventId}/invitation/publish`    | `event:update`             | needs headline, hosts, venue name and a future start (`422 PUBLISH_REQUIREMENTS_NOT_MET`, `details.missing`)                                                    |
-| `POST /v1/events/{eventId}/invitation/unpublish`  | `event:update`             |                                                                                                                                                                 |
-| `GET /v1/events/{eventId}/plan`                   | `event:read`               | plan, effective plan (memorial events get Premium free), entitlements, usage, upgrade price                                                                     |
-| `POST /v1/events/{eventId}/plan/checkout`         | `payment:create`           | real Stripe Checkout; `Idempotency-Key` required                                                                                                                |
-| `POST /v1/events/{eventId}/plan/checkout/confirm` | `payment:create`           | applies the upgrade once the session is paid                                                                                                                    |
-| `POST /v1/webhooks/stripe`                        | Stripe signature           | raw body verified; each event stored once in `WebhookEvent` and applied once                                                                                    |
+| Route                                             | Permission                 | Notes                                                                                                                                                                                              |
+| ------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /v1/events`                                  | session                    | events the caller owns or co-hosts                                                                                                                                                                 |
+| `POST /v1/events`                                 | session                    | no `Idempotency-Key` yet (OPS-09); one transaction: event (`DRAFT`), FREE invitation with fresh salt and slug, `OWNER` co-host. The experience mode comes from the occasion and cannot be supplied |
+| `GET /v1/events/{eventId}`                        | `event:read`               |                                                                                                                                                                                                    |
+| `PATCH /v1/events/{eventId}`                      | `event:update`             | title, start, end, time zone                                                                                                                                                                       |
+| `DELETE /v1/events/{eventId}`                     | `event:update`, owner only | soft delete                                                                                                                                                                                        |
+| `PATCH /v1/events/{eventId}/invitation`           | `event:update`             | design, content, RSVP settings, well, link words. `expectedUpdatedAt` → `409 STALE_WRITE`. Plan and Memorial Mode rules → `403 FEATURE_NOT_IN_PLAN` / `400`                                        |
+| `POST /v1/events/{eventId}/invitation/publish`    | `event:update`             | needs headline, hosts, venue name and a future start (`422 PUBLISH_REQUIREMENTS_NOT_MET`, `details.missing`)                                                                                       |
+| `POST /v1/events/{eventId}/invitation/unpublish`  | `event:update`             |                                                                                                                                                                                                    |
+| `GET /v1/events/{eventId}/plan`                   | `event:read`               | plan, effective plan (memorial events get Premium free), entitlements, usage, upgrade price                                                                                                        |
+| `POST /v1/events/{eventId}/plan/checkout`         | `payment:create`           | real Stripe Checkout; `Idempotency-Key` required                                                                                                                                                   |
+| `POST /v1/events/{eventId}/plan/checkout/confirm` | `payment:create`           | applies the upgrade once the session is paid                                                                                                                                                       |
+| `POST /v1/webhooks/stripe`                        | Stripe signature           | raw body verified; each event stored once in `WebhookEvent` and applied once                                                                                                                       |
 
 There is no mock payment path. Without a real `STRIPE_SECRET_KEY` (and `STRIPE_WEBHOOK_SECRET` for the webhook) these routes answer `503 PAYMENTS_NOT_CONFIGURED` and `GET /v1/me` reports `stripeCheckout: false`. The upgrade (one `Payment`, `Invitation.plan = PREMIUM`, one `AuditLog` entry, in one transaction) is applied by whichever of confirm and the webhook arrives first; the other finds it done.
 
@@ -142,10 +144,10 @@ Run them from the repo root with the environment loaded:
 
 ```bash
 # Six sample invitations, one per template. Safe to run again: it updates in place.
-node scripts/with-env.mjs pnpm --filter @managevent/api seed:demo
+pnpm with-env pnpm --filter @managevent/api seed:demo
 
 # A staff account with two-factor already enrolled (the API rejects staff without it).
-node scripts/with-env.mjs pnpm --filter @managevent/api staff:create -- \
+pnpm with-env pnpm --filter @managevent/api staff:create -- \
   --email planner@example.org --name "Planner Name" --role PLANNER_STAFF
 ```
 

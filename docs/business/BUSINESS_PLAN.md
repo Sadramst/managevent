@@ -1,63 +1,66 @@
 # Business plan (living document)
 
-> See also [PERTH_STRATEGY.md](PERTH_STRATEGY.md) for the detailed Perth market strategy, 5 event verticals, UI/UX architecture, and stage-by-stage growth plan.
+Company-level strategy. The Perth market detail is in [PERTH_STRATEGY.md](PERTH_STRATEGY.md), the launch plan in [GO_TO_MARKET_PERTH.md](GO_TO_MARKET_PERTH.md), prices in [PRICING_MODEL.md](PRICING_MODEL.md). What the software does today is in the root [`README.md`](../../README.md); what is left to build or decide is in [`ROADMAP.md`](../../ROADMAP.md).
 
 ## One line
 
-Managevent runs every kind of event and ceremony from 0 to 100 in Perth, Western Australia: weddings, milestone birthdays, corporate galas, cultural celebrations, and dignified memorials — covering planning, styling, venue sourcing, hire, catering coordination, digital invitations, and on-the-day delivery. It is powered by its own invitation, logistics bridge, and event management software, then grows into a national marketplace. _A product by Appilico._
+Managevent runs every kind of event and ceremony from 0 to 100 in Perth, Western Australia: weddings, milestone birthdays, corporate galas, cultural celebrations and dignified memorials. It covers planning, styling, venue sourcing, hire, catering coordination, digital invitations and on-the-day delivery, powered by its own invitation and logistics software, and later grows into a national marketplace. _A product by Appilico._
 
-## Language & market positioning
+## Market positioning
 
-- **English-first UX (`en-AU`):** Built for the broad Perth event market (couples, families, corporate hosts, community organisations, and funeral/memorial coordinators) with clear Australian English copy and GST-inclusive AUD pricing.
-- **Multi-language ready (`@managevent/i18n`):** Architected with logical CSS properties (`ms-*`, `me-*`, `ps-*`, `pe-*`), deterministic date formatters, and typed dictionaries (`en` active today, with `ar`, `zh`, and `hi` pre-configured) so additional languages can be enabled at any time without layout changes.
+- **English first (en-AU)** for the broad Perth market: couples, families, corporate hosts, community organisations and families arranging memorials. Prices in AUD, GST-inclusive.
+- **Ready for more languages later.** The product uses typed dictionaries in `packages/i18n` and logical CSS properties, so Arabic, Mandarin or Hindi can be enabled without layout rework ([`../design/I18N_RTL.md`](../design/I18N_RTL.md)). Only English is enabled.
 
 ## The problem
 
 - Hosts juggle 6 to 12 suppliers, spreadsheets and messaging groups. Headcounts change constantly, and catering, cakes and seating are sized by guesswork.
-- Cultural and traditional ceremonies are under-served by mainstream planners (including Arabic, South Asian and Chinese traditions).
-- Corporate teams and community groups need reliable, turnkey event delivery across Perth CBD, Swan Valley, Fremantle and local council halls without agency mark-up opacity.
-- Families arranging memorials and wakes need calm, competent help with the gathering itself (venue, wake catering, tribute displays, digital RSVP) at a difficult time.
-- Digital invitations today are disconnected pages, detached from real-world catering and seating fulfilment.
+- Cultural and traditional ceremonies (Arabic, South Asian and Chinese traditions among them) are under-served by mainstream planners.
+- Corporate teams and community groups need reliable, turnkey delivery across Perth CBD, the Swan Valley, Fremantle and council halls, without opaque agency mark-ups.
+- Families arranging memorials and wakes need calm, competent help with the gathering itself at a difficult time.
+- Digital invitations are usually disconnected pages, detached from catering and seating.
 
-## Our answer
+## Our answer: three business lines on one platform
 
-1. **Agency (Phase 1 — Live in Perth):** Fixed-price and custom-quoted 0-to-100 packages across all event types, delivered by our Perth planners and vetted local partners.
-2. **Tools (`invitation.`):** Digital invitations with animated gate reveals, RSVP, encrypted dietary/allergy tracking, QR check-in passes, and wishing well or tribute book. Free tier plus a `$69 AUD incl. GST` Premium Event Pass (free for Memorial Mode events).
-3. **Admin & Planner Command Centre (`admin.`):** Staff CRM pipeline, instant proposal builder, live event run-sheets, Perth supplier compliance tracking, and ATO GST ledger.
-4. **The Bridge (`@managevent/logistics`):** Live RSVP numbers automatically calculate catering portions, dietary/allergy splits, cake serves, table counts, chair/linen hire, and WA RSA staffing ratios.
-5. **Marketplace (Phase 2):** Vetted Perth vendors take bookings through the platform with commission via Stripe Connect Express.
+| Line                      | What it is                                                                                                                    | State of the product today                                                                                                                                                                                                                                                                                  |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Agency** (phase 1)      | Fixed-price and quoted packages for every event type, delivered by our planners and vetted Perth partners.                    | The www site takes enquiries; staff work them in the console at `www.managevent.com.au/admin` (enquiry inbox and detail, password plus TOTP). Proposals, event command centre, vendor checks and finance are planned (ADM-02 to ADM-08). No partner agreements are signed yet (BIZ-06, BIZ-07).             |
+| **Tools** (`invitation.`) | Digital invitations with RSVP, encrypted dietary and allergy answers, QR passes, door check-in, wishing well or tribute book. | Built: sign-up, studio, guest site, RSVP, email invitations and reminders (when Resend is configured), signed QR passes, check-in, wishes. Free plan plus the $69 Premium Event Pass through Stripe Checkout (when configured). SMS, WhatsApp, media uploads and a photo wall are planned (INV-08, INV-11). |
+| **Marketplace** (phase 2) | Vetted vendors take bookings through the platform; we take commission through Stripe Connect Express.                         | Not built (VEN-01 to VEN-06, MKP-01, MKP-02).                                                                                                                                                                                                                                                               |
+
+**The bridge** joins them: when a guest replies, the worker recomputes the headcount and writes catering, dietary, cake, seating, hire and RSA staffing recommendations (`packages/logistics`). Showing and applying them is the customer portal's job (PRT-03, PRT-04), which is not built.
 
 ## Customers (Perth first)
 
-| Segment                                                       | Why us                                                                                                                    |
-| :------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------ |
-| **Couples (weddings & engagements)**                          | One accountable Perth team, transparent instant cost estimates, and seamless digital invitations                          |
-| **Families (birthdays, anniversaries, showers, graduations)** | Turnkey 0-to-100 packages with clear GST-inclusive prices, styling, cakes, catering, and furniture hire                   |
-| **Corporates & community groups**                             | End-of-year galas, product launches, award nights, and council hall know-how across Perth Metro                           |
-| **Cultural & multicultural communities**                      | Specialist styling and cultural know-how (traditional ceremony sets, Halal catering coordination)                         |
-| **Families arranging memorials & wakes**                      | Dignified coordination and calm Memorial Mode tools (complimentary Premium features), working alongside funeral directors |
+| Segment                                          | Why us                                                                                                                  |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
+| **Couples** (weddings, engagements)              | One accountable Perth team, clear prices and invitations that feed the catering numbers                                 |
+| **Families** (birthdays, anniversaries, showers) | Turnkey packages with GST-inclusive prices, styling, cakes, catering and hire                                           |
+| **Corporates and community groups**              | End-of-year galas, launches and award nights; council hall know-how across metro Perth                                  |
+| **Cultural and multicultural communities**       | Specialist styling and cultural know-how (traditional ceremony sets, Halal catering coordination)                       |
+| **Families arranging memorials and wakes**       | Dignified coordination and calm Memorial Mode tools, with Premium invitation features free, alongside funeral directors |
 
 ## Revenue streams
 
-1. **Event & ceremony packages:** Margin on styling, catering coordination, and equipment hire, plus a tiered planning fee (_Essential_, _Signature_, _Luxe_).
-2. **Invitation Premium Event Pass:** `$69 AUD incl. GST` one-off per celebration event (complimentary for Memorial Mode).
-3. **Marketplace commission:** 10–15% commission on partner vendor bookings via Stripe Connect.
-4. **Corporate & B2B retainers:** Recurring annual event management for Perth businesses and community organisations.
+1. **Event and ceremony packages:** margin on styling, catering coordination and hire, plus a planning fee in three tiers (Essential, Signature, Luxe). Rates are not approved yet (DEC-01).
+2. **Premium Event Pass:** $69 AUD incl. GST, one-off per event; free for memorial events. Live in code; never exercised against live Stripe (OPS-03).
+3. **Marketplace commission** (phase 2): 10 to 15% on vendor bookings through Stripe Connect.
+4. **Corporate retainers:** recurring event management for Perth businesses and community organisations (MKP-02).
 
 ## Competitive edge
 
-Full-spectrum 0-to-100 delivery in Perth, transparent instant online estimates, owned software connecting invitations directly to catering and seating fulfilment, and dedicated Memorial Mode support.
+Full 0-to-100 delivery in Perth, owned software that connects invitations to catering and seating, and dedicated Memorial Mode support.
 
-## Key risks & mitigations
+## Key risks and mitigations
 
-| Risk                                 | Mitigation                                                                                                             |
-| :----------------------------------- | :--------------------------------------------------------------------------------------------------------------------- |
-| **Supplier reliability**             | Verification queue in Admin, backup partners per category in Perth, standardized run-sheets                            |
-| **Seasonality**                      | Balanced across spring/autumn weddings, Nov–Dec corporate galas, cultural peaks, and year-round milestones & memorials |
-| **Holding customer money & refunds** | Clear milestone schedules (deposit, pre-event balance), Australian Consumer Law compliance                             |
-| **Data & privacy**                   | Sydney (`ap-southeast-2`) hosting, AES-256-GCM field encryption for dietary/health data, strict redaction              |
-| **Founder bandwidth**                | AI-assisted software automation + modular Admin Command Centre for rapid lead-to-proposal turnaround                   |
+| Risk                       | Mitigation                                                                                                                                                               |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Supplier reliability**   | Verification of documents (ADM-04, planned), backup partners per category, standard run-sheets                                                                           |
+| **Seasonality**            | A mix of spring and autumn weddings, Nov–Dec corporate galas, cultural peaks, and year-round milestones and memorials                                                    |
+| **Holding customer money** | Milestone schedules (deposit, pre-event balance) and Australian Consumer Law compliance; legal advice before escrow (D-07)                                               |
+| **Data and privacy**       | Everything stored on one server in Sydney; AES-256-GCM field encryption for dietary and allergy data; log redaction ([compliance](../compliance/COMPLIANCE_REGISTER.md)) |
+| **Founder bandwidth**      | Software that turns enquiries and RSVPs into work items, and a staff console that grows with the business                                                                |
+| **Single server**          | Accepted for launch, with nightly encrypted backups (ADR-0011); revisit when the first paying customer's event is on the platform                                        |
 
 ## Key metrics
 
-Leads per week, lead-to-booking conversion rate, average event value (AUD incl. GST), gross margin per event, invitation sign-ups and Premium pass conversion, post-event NPS, and verified Perth partner count.
+Enquiries per week, enquiry-to-booking conversion, average event value (AUD incl. GST), gross margin per event, invitation sign-ups and Premium conversion, post-event NPS, and verified Perth partners. Measuring the web funnel needs analytics with consent (MKT-14).

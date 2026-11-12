@@ -97,10 +97,7 @@ export function pageMetadata(
         "x-default": localePath("en", path),
       },
     },
-    robots:
-      process.env.VERCEL_ENV === "preview"
-        ? { index: false, follow: false }
-        : { index: true, follow: true },
+    robots: { index: true, follow: true },
     openGraph: {
       title,
       description,

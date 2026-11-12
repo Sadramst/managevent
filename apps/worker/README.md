@@ -1,6 +1,6 @@
 # @managevent/worker
 
-Background worker on Node 22 using `pg-boss`.
+Background worker on Node 22 using `pg-boss`. Rules for changing it are in [`AGENTS.md`](AGENTS.md).
 
 ## Registered jobs
 
@@ -34,19 +34,19 @@ Tests inject a recording adapter or a fake `fetch`; no live service is contacted
 
 ## Not implemented yet
 
-`startWorker` starts every schedule in `src/schedules.ts` whose job is registered (today: `invitation.email_campaign_sweep`). `retention.cleanup` (remove dietary and allergy data 90 days after the event) and `vendor.compliance_expiry_check` are declared there but have no job yet, so nothing schedules or runs them. Real RSVPs now store encrypted health information, so the retention job is needed before launch.
+`startWorker` starts every schedule in `src/schedules.ts` whose job is registered (today: `invitation.email_campaign_sweep`). `retention.cleanup` (remove dietary and allergy data 90 days after the event, PRV-01) and `vendor.compliance_expiry_check` (ADM-04) are declared there but have no job yet, so nothing schedules or runs them. Real RSVPs store encrypted health information, so the retention job is needed before launch. SMS and WhatsApp sends (INV-08) are not built either.
 
 ## Environment
 
-`DATABASE_URL`, `PII_ENCRYPTION_KEY`, `GUEST_TOKEN_PEPPER` (same value as the API), `RESEND_API_KEY`, `EMAIL_FROM_TRANSACTIONAL`, `EMAIL_FROM_INVITATIONS`, `LEAD_NOTIFICATION_EMAIL`, `NEXT_PUBLIC_INVITATION_URL`, `NEXT_PUBLIC_ADMIN_URL`. `RESEND_DOMAIN_VERIFIED` is no longer read: setting `RESEND_API_KEY` is what turns sending on.
+`DATABASE_URL`, `PII_ENCRYPTION_KEY`, `GUEST_TOKEN_PEPPER` (same value as the API), `RESEND_API_KEY`, `EMAIL_FROM_TRANSACTIONAL`, `EMAIL_FROM_INVITATIONS`, `LEAD_NOTIFICATION_EMAIL`, `NEXT_PUBLIC_INVITATION_URL`, `NEXT_PUBLIC_ADMIN_URL`. `NEXT_PUBLIC_ADMIN_URL` is the base of the "open this enquiry" link in the planner alert (`<base>/leads/<leadId>`); the staff console lives at `/admin` on www, which is also the local default. Production sets `https://www.managevent.com.au/admin`. `RESEND_DOMAIN_VERIFIED` is no longer read: setting `RESEND_API_KEY` is what turns sending on.
 
 ## Running locally
 
 From the repo root, with the local database running (`pnpm db:local:detach`):
 
 ```bash
-node scripts/with-env.mjs pnpm --filter @managevent/worker start   # or `dev` to restart on changes
-node scripts/with-env.mjs pnpm --filter @managevent/worker test
+pnpm with-env pnpm --filter @managevent/worker start   # or `dev` to restart on changes
+pnpm with-env pnpm --filter @managevent/worker test
 ```
 
 On start it logs one line with the registered jobs and `emailConfigured`. To see the RSVP bridge end to end, run the API and the worker together and submit an RSVP through a guest link: the API stores an `EventHeadcount` snapshot and enqueues `headcount.changed`, and within a few seconds the worker writes a `RecommendationSet` with `basedOnHeadcountId` set to that snapshot.

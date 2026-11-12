@@ -3,6 +3,7 @@ description: Database and Prisma rules
 globs: packages/db/**,apps/api/**,apps/worker/**
 alwaysApply: false
 ---
-- `packages/db/DATA_MODEL.md` must stay in sync with `schema.prisma`. Migrations are append-only.
-- 🔒 fields (dietary, allergy, accessibility) are encrypted at field level and nulled by the retention job 90 days after the event.
-- Every money or role change writes an `AuditLog` row in the same transaction.
+- `packages/db/prisma/schema.prisma` is the source of truth; keep `packages/db/DATA_MODEL.md` in sync in the same PR. Migrations are append-only; run `pnpm db:drift-check`.
+- 🔒 fields (dietary, allergy, accessibility) are encrypted at field level (`encryptRsvpWriteData`) and never logged. They must be nulled 90 days after the event; the `retention.cleanup` job that does it is not built yet (ROADMAP PRV-01).
+- Every money or role change writes an `AuditLog` row in the same transaction (`apps/api/src/lib/audit.ts`).
+- Only `apps/api` and `apps/worker` import `@managevent/db`.

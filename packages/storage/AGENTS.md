@@ -4,14 +4,16 @@
 
 ## What this is
 
-**Cloudflare R2 media**. Signed upload and download URLs, bucket selection (public or private), key conventions, and image or video variant descriptors.
+**Cloudflare R2 media helpers.** Public or private bucket selection, object key conventions, short-lived SigV4 signed upload and download URLs, and image (AVIF, WebP) and video (H.264 1080p) variant descriptors.
 
-- **Built by:** FND-13 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Status:** built and unit-tested, but **no app uses it yet**. Hosts paste media links today; uploads and the photo wall are INV-11, which also needs D-03 and D-04 (media residency) decided.
+- **Planned users:** `apps/api` (signed URLs), `apps/worker` (EXIF stripping and variants), INV-11, VEN-02.
 
 ## Rules
 
-- Private bucket objects are served only through short-lived signed URLs. Strip EXIF location data before anything is public (in the worker).
+- Private bucket objects are served only through short-lived signed URLs (15 minutes by default, 1 hour at most).
+- Guest wall and tribute media stays private until it is approved **and** EXIF-stripped; documents are always private. The worker strips EXIF location data before anything becomes public.
+- The signer falls back to placeholder credentials when the `R2_*` variables are missing. Before an app uses it, make it fail closed instead, like Stripe and Resend in `apps/api`.
 
 ## Done means
 

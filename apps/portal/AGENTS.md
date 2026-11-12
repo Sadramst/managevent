@@ -8,17 +8,23 @@
 
 - **Domain:** app.managevent.com.au
 - **Local port:** 3002
-- **Phase:** Phase 3. **Backlog:** PRT-01 … PRT-11 (see `ROADMAP.md`)
+- **Status:** Planned. Nothing is built; this folder holds only this spec, `CLAUDE.md` and a placeholder `package.json`.
+- **Backlog:** PRT-01 to PRT-11 (see [`ROADMAP.md`](../../ROADMAP.md))
 
 Where the host runs their event: the dashboard, live RSVP and headcount, **one-click recommendations** (the logistics bridge), order customisation, payments and invoices, the interactive seating chart, budget, planner chat, co-hosts and documents.
 
 ## Specification
 
-ROADMAP Phase 3, ARCHITECTURE §6 (bridge), WEBSITE.md Part C.
+The PRT rows in `ROADMAP.md`, `ARCHITECTURE.md` §6 (the RSVP → logistics bridge), `WEBSITE.md` Part C.
 
 ## Stack
 
-Next.js (App Router), Tailwind v4, `packages/ui`, realtime client (D-03).
+Next.js (App Router), Tailwind v4, the brand shell in `packages/ui` (as `apps/marketing` and `apps/invitation` use it), and a realtime client once D-03 is decided (its old Supabase default no longer fits: production runs its own PostgreSQL on the Sydney VPS, ADR-0011).
+
+## What already exists to build on
+
+- Sign-in: Better Auth email and password with 30-day sessions, reached from the browser only through a same-origin `/api/auth` proxy, as in the two web apps. Everything else goes to the API server-side.
+- The bridge: the API records headcount snapshots on every RSVP and enqueues `headcount.changed`; the worker writes a `RecommendationSet` per snapshot. No route reads recommendations yet (PRT-04).
 
 ## Depends on (contracts; do not modify from this app)
 
@@ -35,14 +41,14 @@ app/
 
 ## Rules specific to this app
 
-- Every mutation goes through `apps/api`. Applying a recommendation calls `POST /v1/orders/:id/apply-recommendation` and is re-priced on the server.
+- Every mutation goes through `apps/api`. Applying a recommendation is re-priced on the server; the API has no orders module or route for it yet (PRT-04, PRT-05).
 - Payment UI uses Stripe Elements or Checkout. Never handle raw card data. Prices are shown including GST, with tax invoices downloadable.
 - The seating chart consumes `logistics` table rules and saves `FloorPlan` versions. Keyboard-accessible alternatives are required for drag and drop.
 - Co-host permissions are enforced on the server. The UI hides actions the user isn't allowed to take, but that is never the security boundary.
 
 ## Environment variables
 
-NEXT_PUBLIC_PORTAL_URL, NEXT_PUBLIC_API_URL, NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY, realtime keys. The names are listed in the root `.env.example`.
+`NEXT_PUBLIC_PORTAL_URL` (local `http://localhost:3002`), `API_URL` and `API_PROXY_SECRET` (server-side, as in the other web apps), `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, and realtime keys once D-03 is decided. The names are listed in the root `.env.example`.
 
 ## Tests required
 
@@ -50,4 +56,4 @@ Vitest, plus Playwright: onboarding from an estimate, RSVP change → recommenda
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+Planned, not scaffolded. PRT-01 scaffolds it using the current stable framework version (pin exact versions) and adds it to `infra/vps` when it is ready to deploy.

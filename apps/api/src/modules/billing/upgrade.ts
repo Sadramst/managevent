@@ -131,7 +131,7 @@ export async function applyCheckoutUpgrade(
       });
       // An agency-managed invitation already has everything; never move it down to PREMIUM.
       const nextPlan = invitation.plan === "FREE" ? "PREMIUM" : invitation.plan;
-      if (nextPlan !== invitation.plan) await setInvitationPlan(tx, invitationId, nextPlan);
+      await setInvitationPlan(tx, invitationId, nextPlan);
 
       await writeAudit(tx, {
         actor: input.actor,

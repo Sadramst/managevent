@@ -113,7 +113,7 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
       {
         status: "ok" as const,
         service: "managevent-api" as const,
-        region: process.env.FLY_REGION ?? "syd",
+        region: "syd",
         timestamp: new Date().toISOString(),
       },
       200,

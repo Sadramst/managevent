@@ -8,17 +8,18 @@
 
 - **Domain:** vendors.managevent.com.au
 - **Local port:** 3003
-- **Phase:** Phase 4. **Backlog:** VEN-01 … VEN-06 (see `ROADMAP.md`)
+- **Status:** Planned. Nothing is built; this folder holds only this spec, `CLAUDE.md` and a placeholder `package.json`.
+- **Backlog:** VEN-01 to VEN-06, MKP-01, MKP-02 (see [`ROADMAP.md`](../../ROADMAP.md)); staff-side verification is ADM-04
 
 Vendor signup with **ABN Lookup**, compliance documents (public liability, food safety, RSA, liquor licence, WWCC), Stripe Connect Express onboarding, service catalogue, availability calendar, quotes and bookings, run-sheets, payouts and reviews.
 
 ## Specification
 
-ROADMAP Phase 4, `docs/compliance/VENDOR_VERIFICATION.md`, `docs/compliance/PAYMENTS_AND_GST.md`.
+The VEN and MKP rows in `ROADMAP.md`, `docs/compliance/VENDOR_VERIFICATION.md`, `docs/compliance/PAYMENTS_AND_GST.md`.
 
 ## Stack
 
-Next.js (App Router), Tailwind v4, `packages/ui`.
+Next.js (App Router), Tailwind v4, the brand shell in `packages/ui`. ABN Lookup goes through `packages/integrations` (a placeholder today) and uploads through `packages/storage` (R2 helpers that no app uses yet).
 
 ## Depends on (contracts; do not modify from this app)
 
@@ -41,7 +42,7 @@ app/
 
 ## Environment variables
 
-NEXT_PUBLIC_VENDORS_URL, NEXT_PUBLIC_API_URL, STRIPE publishable key. The names are listed in the root `.env.example`.
+`NEXT_PUBLIC_VENDORS_URL` (local `http://localhost:3003`), `API_URL` and `API_PROXY_SECRET` (server-side, as in the other web apps), `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`. The names are listed in the root `.env.example`.
 
 ## Tests required
 
@@ -49,4 +50,4 @@ Playwright: signup → ABN check (mocked) → document upload → Stripe onboard
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+Planned, not scaffolded. VEN-01 scaffolds it using the current stable framework version (pin exact versions). Needs BIZ-04 and D-07 before Stripe Connect work (VEN-03).

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Design tokens (Celebration & Memorial), 7 invitation themes, ExperienceModeProvider, RTL-safe components and ArchFrame",
+  "description": "Design tokens (Celebration & Memorial), 6 invitation themes, the web brand shell, ExperienceModeProvider, RTL-safe components and ArchFrame",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {
@@ -35,9 +35,5 @@
     "eslint": "9.39.5",
     "typescript": "5.9.3",
     "vitest": "3.0.9"
-  },
-  "managevent": {
-    "status": "scaffolded",
-    "backlog": "FND-06"
   }
 }

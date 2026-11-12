@@ -6,7 +6,7 @@ Contents: [What is live](#what-is-live) · [Architecture](#architecture) · [Go-
 
 ## What is live
 
-Everything runs on **one virtual server in Sydney**. There is no Vercel, Fly.io or Supabase project, no staging environment and no CDN.
+Everything runs on **one virtual server in Sydney**. There is no Vercel, Fly.io or Supabase project, no staging environment and no CDN. The server and its DNS exist, but this release has not been deployed to it yet (ROADMAP OPS-01): the [go-live checklist](#go-live-checklist-for-this-release) is how it gets there.
 
 | Item              | Value                                                                                        |
 | ----------------- | -------------------------------------------------------------------------------------------- |
@@ -69,7 +69,7 @@ All containers restart unless stopped, and every log is capped at 5 × 10 MB (`j
 Rate limits, sign-in lockouts and the address written on consent and audit rows all depend on knowing the real visitor address. A request header can be typed by anyone, so the rule is: **an address is only believed when the sender could not have chosen it.**
 
 1. **Caddy is the only entry point** and `trusted_proxies` is not configured, so Caddy discards any `X-Forwarded-For` a caller sends and writes its own from the TCP connection.
-2. **Caddy also removes or overwrites the other headers our code would accept** (`infra/vps/Caddyfile`, snippet `edge`): it deletes `Fly-Client-IP` and `X-Vercel-Forwarded-For` (the invitation app still reads those first; the marketing app reads only the two headers Caddy writes), sets `X-Real-IP` to the connection's address, and deletes `X-Managevent-Proxy-Secret` from every incoming request.
+2. **Caddy also removes or overwrites the other headers our code would accept** (`infra/vps/Caddyfile`, snippet `edge`): it deletes `Fly-Client-IP` and `X-Vercel-Forwarded-For` (nothing reads them; both web apps read only `X-Real-IP`, then `X-Forwarded-For`, the two headers Caddy writes), sets `X-Real-IP` to the connection's address, and deletes `X-Managevent-Proxy-Secret` from every incoming request.
 3. **Browser → Caddy → Next app → API.** The Next app reads the visitor address from the headers Caddy set and forwards it to the API as `x-forwarded-for` together with `API_PROXY_SECRET`. The API believes a forwarded address only with that secret (`apps/api/src/lib/client-ip.ts`). The secret never leaves the Docker network, and a copy sent from the internet is dropped at step 2.
 4. **Caller → Caddy → API** (anything that uses `api.managevent.com.au` directly: the Stripe webhook, later the mobile apps). There is no secret, so the API falls back to `TRUSTED_CLIENT_IP_HEADER=x-real-ip`, which Caddy overwrote. This is the one place we set that variable, and it is safe only because port 4000 is not published: the only senders that can reach the API are Caddy and our own containers.
 
@@ -185,11 +185,13 @@ curl -fsS https://api.managevent.com.au/v1/public/demos | head -c 300 # the six 
 # www: the site, the staff console, and the sign-in proxy to the API
 curl -sS -o /dev/null -w '%{http_code}\n' https://www.managevent.com.au/                      # 200
 curl -sS -o /dev/null -w '%{http_code}\n' https://www.managevent.com.au/admin                 # 200, or a redirect to sign in
-curl -sS -o /dev/null -w '%{http_code}\n' https://www.managevent.com.au/api/auth/get-session  # 200
+curl -sS -o /dev/null -w '%{http_code}\n' -X POST -H 'content-type: application/json' --data '{}' https://www.managevent.com.au/api/auth/sign-in/email  # 400: the proxy reached the API
+curl -sS -o /dev/null -w '%{http_code}\n' https://www.managevent.com.au/api/auth/get-session  # 404: only the sign-in calls are forwarded
 
 # invitation: the site, the sign-in proxy, and a real 404 for an unknown guest link
 curl -sS -o /dev/null -w '%{http_code}\n' https://invitation.managevent.com.au/                     # 200
-curl -sS -o /dev/null -w '%{http_code}\n' https://invitation.managevent.com.au/api/auth/get-session # 200
+curl -sS -o /dev/null -w '%{http_code}\n' -X POST -H 'content-type: application/json' --data '{}' https://invitation.managevent.com.au/api/auth/sign-in/email  # 400: the proxy reached the API
+curl -sS -o /dev/null -w '%{http_code}\n' https://invitation.managevent.com.au/api/auth/get-session # 404: only the sign-in calls are forwarded
 curl -sS -o /dev/null -w '%{http_code}\n' https://invitation.managevent.com.au/i/unknown/unknown    # 404
 
 # edge: security headers, body limit

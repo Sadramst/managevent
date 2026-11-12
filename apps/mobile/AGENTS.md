@@ -8,13 +8,20 @@
 
 - **Domain:** App Store / Google Play
 - **Local port:** 8081
-- **Phase:** Phase 5. **Backlog:** MOB-01 … MOB-07 (see `ROADMAP.md`)
+- **Status:** Planned. Nothing is built; this folder holds only this spec, `CLAUDE.md` and a placeholder `package.json`. `packages/ui-native` is a placeholder too.
+- **Backlog:** MOB-01 to MOB-07 (see [`ROADMAP.md`](../../ROADMAP.md))
 
 One app with role-based modes. **Customer mode:** event home, live RSVP push notifications, guest list, planner chat, quick photo sharing. **Crew mode:** roster, offline event pack, fast QR check-in scanner, guest, table and dietary lookup, setup and delivery checklists with photo evidence.
 
 ## Specification
 
-ROADMAP Phase 5, ARCHITECTURE §11 (offline), WEBSITE.md §B8 (passes).
+The MOB rows in `ROADMAP.md`, `ARCHITECTURE.md` §11 (offline), `WEBSITE.md` §B8 (passes).
+
+## What already exists to build on
+
+- Signed QR passes (`MV1.{passId}.{sig}`) issued by the API, and the check-in routes `GET /v1/events/{eventId}/check-in` and `POST .../check-in/scans` (replay-safe by `clientUuid`), already used by the web door check-in in `apps/invitation` (see `apps/api/README.md`).
+- Better Auth sessions (30 days; the API also accepts a bearer token). Door crew (`CHECKIN_CREW`) can use the check-in routes only.
+- No offline event pack or push endpoint exists yet (MOB-03, MOB-06).
 
 ## Stack
 
@@ -42,7 +49,7 @@ lib/offline/  (event pack store, scan queue, sync)
 
 ## Environment variables
 
-EXPO_PUBLIC_API_URL, EAS project id. The names are listed in the root `.env.example`.
+`EXPO_PUBLIC_API_URL` and the EAS project id. Neither is in the root `.env.example` yet; MOB-01 adds them.
 
 ## Tests required
 
@@ -50,4 +57,4 @@ Jest or Vitest for logic. Maestro flows: login → scan offline → sync. Test o
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+Planned, not scaffolded. MOB-01 scaffolds it using the current stable Expo SDK (pin exact versions).

@@ -1,96 +1,118 @@
 # Managevent
 
-**Every ceremony, from 0 to 100.** Managevent plans, styles, supplies and runs ceremonies and events of every kind in Perth, Western Australia (Swan Valley, Perth CBD, Fremantle, Cottesloe, South Perth & metropolitan WA), then nationally: Weddings, Milestone Birthdays, Corporate Galas & Brand Launches, Cultural & Community Ceremonies, and Funerals, Memorials & Wakes (served in respectful **Memorial Mode**).
+**Every ceremony, from 0 to 100.** Managevent plans, styles, supplies and runs events of every kind in Perth, Western Australia: weddings and engagements, milestone birthdays, corporate galas, cultural ceremonies, and funerals, memorials and wakes (shown in a calm **Memorial Mode**). Its own digital invitations, RSVP with dietary and allergy needs, and door check-in feed the headcount into catering and hire planning.
 
-Our full-service planning and vendor marketplace are powered by our own digital invitation, RSVP, dietary & allergy bridge, and check-in tools.
+_A product by **Appilico**._ English only (en-AU).
 
-_A product by **Appilico**._
+## Surfaces
 
-| Surface                                                           | Domain                         | App folder         | Status                                                                                  |
-| ----------------------------------------------------------------- | ------------------------------ | ------------------ | --------------------------------------------------------------------------------------- |
-| Marketing site, Instant Cost Estimator, Venues & `/admin` Console | `www.managevent.com.au`        | `apps/marketing`   | ✅ Built & verified locally (English (en-AU), multi-language ready)                     |
-| Digital invitations, Host Studio, guest micro-sites & QR passes   | `invitation.managevent.com.au` | `apps/invitation`  | ✅ Built & verified locally (`INV-01` … `INV-15`)                                       |
-| Admin and planner command centre (CRM, Run-sheets, GST, Audit)    | `admin.managevent.com.au`      | `apps/admin`       | ✅ Domain engine (`@managevent/admin`) + integrated UI at `/admin` in `apps/marketing`  |
-| Backend API and webhooks (Hono on Node 22 + OpenAPI 3.1)          | `api.managevent.com.au`        | `apps/api`         | ✅ Built & verified locally (`Dockerfile`; runs on the Sydney VPS, see `DEPLOYMENT.md`) |
-| Background jobs (`pg-boss`: email notifications & RSVP bridge)    | (internal)                     | `apps/worker`      | ✅ Built & verified locally (`Dockerfile`; runs on the Sydney VPS, see `DEPLOYMENT.md`) |
-| Customer portal                                                   | `app.managevent.com.au`        | `apps/portal`      | ⬜ Planned (Phase 3: `PRT-01` … `PRT-11`)                                               |
-| Vendor portal                                                     | `vendors.managevent.com.au`    | `apps/vendors`     | ⬜ Planned (Phase 4: `VEN-01` … `VEN-06`)                                               |
-| iOS and Android (customers and on-the-day crew)                   | App Store / Google Play        | `apps/mobile`      | ⬜ Planned (Phase 5: `MOB-01` … `MOB-07`)                                               |
-| Windows back-office and venue kiosk                               | Microsoft Store / MSI          | `apps/desktop-win` | ⬜ Planned (Phase 6: `WIN-01` … `WIN-06`)                                               |
+| Surface                                                 | Domain                         | Folder             | Status                                                                                                                       |
+| ------------------------------------------------------- | ------------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| Marketing site, enquiry form, staff console at `/admin` | `www.managevent.com.au`        | `apps/marketing`   | Built. Multi-page site, ten ceremony pages, enquiry form to the API, staff console (password + TOTP) with the enquiry inbox  |
+| Invitations: host studio, guest site, door check-in     | `invitation.managevent.com.au` | `apps/invitation`  | Built. Sign-up, template-first studio, guests and CSV, email invitations, RSVP, wishes, signed QR passes, calendar, check-in |
+| API (Hono, Better Auth, OpenAPI)                        | `api.managevent.com.au`        | `apps/api`         | Built. 48 operations, Stripe Checkout and Resend used only when configured                                                   |
+| Background jobs (pg-boss)                               | internal                       | `apps/worker`      | Built. `lead.created`, `headcount.changed`, email campaigns and their sweep                                                  |
+| Staff role helpers                                      | (served by `/admin` on www)    | `apps/admin`       | Small package; the console UI lives in `apps/marketing`                                                                      |
+| Customer portal                                         | `app.managevent.com.au`        | `apps/portal`      | Planned (placeholder only)                                                                                                   |
+| Vendor portal and marketplace                           | `vendors.managevent.com.au`    | `apps/vendors`     | Planned (placeholder only)                                                                                                   |
+| iOS and Android                                         | App Store / Google Play        | `apps/mobile`      | Planned (placeholder only)                                                                                                   |
+| Windows back office and kiosk                           | MSI / MSIX                     | `apps/desktop-win` | Planned (placeholder only)                                                                                                   |
 
-## Repository status
+"Built" means it runs end to end against PostgreSQL locally and in CI. Production is one VPS in Sydney ([ADR-0011](docs/architecture/adr/0011-production-on-single-sydney-vps.md)); this release has not been deployed yet, and live Stripe and Resend have never been exercised. Everything still to do is in **[ROADMAP.md](ROADMAP.md)**, the one backlog.
 
-- **Phase 0 (Foundations `FND-01` … `FND-16`)**: ✅ **Complete**. All 17 shared packages (`config`, `db`, `validators`, `types`, `i18n`, `ui`, `auth`, `payments`, `pricing`, `logistics`, `notifications`, `storage`, `api-client`, `ai`), `apps/api`, and `apps/worker` are implemented and covered by unit & integration tests.
-- **Phase 1 (Marketing Platform & Admin Command Centre `apps/marketing` + `apps/admin`)**: ✅ **Core Launch & Admin Complete**. Built with an English-first UI/UX (`en` default at `/`) and architectural support for adding languages later, featuring the all-events showcase, 0-to-100 services matrix, interactive Instant Cost Estimator (`#estimator`), curated Perth venues showcase (each card links to a prefilled enquiry), digital RSVP-to-catering bridge explainer, enquiry & consultation booking form, and the **Planner & Admin Command Centre** (`/admin`).
-- **Phase 2 (Digital Invitations `apps/invitation`)**: ✅ **Complete (`INV-01` … `INV-15`)**. Host Studio, AI wording assistant, 6 themes + Memorial Mode, server-rendered Guest Micro-site, encrypted RSVP dietary bridge, QR passes, Photo Wall, Wishing Well / Tribute Book, and Legacy Slug migration are implemented and verified. Host Studio also has an **Awaiting replies** page (`/studio/[eventId]/awaiting`) with copy-ready reminder text (calm wording in Memorial Mode), and the guest micro-site has a no-JavaScript fallback for core details and a hardened `.ics` calendar download.
-- **See [`PROGRESS.md`](PROGRESS.md) and [`ROADMAP.md`](ROADMAP.md)** for the full Done (`✅`) vs Undone (`⬜`) breakdown across all product and business tracks.
+## Quick start
+
+Needs Node.js 22.12 or later (`engines`; CI uses Node 22 from `.nvmrc`) and pnpm 10 (`corepack enable`). No Docker needed.
+
+```bash
+pnpm install
+cp .env.example .env                       # then fill in the local secrets (infra/LOCAL_DEV.md §2)
+pnpm db:local:detach                       # PostgreSQL 16 on localhost:5432, no Docker
+pnpm db:migrate
+pnpm db:seed                               # Perth placeholder content
+pnpm with-env pnpm --filter @managevent/api seed:demo   # the six sample invitations
+```
+
+Nothing reads `.env` by itself: the root scripts and `pnpm with-env <command>` load it (`scripts/with-env.mjs`).
+
+Run the apps, each in its own terminal:
+
+```bash
+pnpm with-env pnpm --filter @managevent/api dev          # API        http://localhost:4000
+pnpm with-env pnpm --filter @managevent/worker dev       # worker     (no port)
+pnpm with-env pnpm --filter @managevent/marketing dev    # www+/admin http://localhost:3100
+pnpm with-env pnpm --filter @managevent/invitation dev   # invitation http://localhost:3001
+```
+
+`pnpm dev` starts all of them through Turbo. To use `/admin`, create a staff account with `staff:create` (see [apps/api/README.md](apps/api/README.md)). Stop the PostgreSQL server with `pnpm db:local:stop`.
+
+## Quality gate
+
+Run from the repo root with PostgreSQL running (the API, worker and database tests need it):
+
+```bash
+pnpm lint && pnpm typecheck && pnpm test && pnpm build
+pnpm format:check
+pnpm validate:content
+pnpm db:drift-check
+pnpm test:e2e                              # Playwright; see each web app's README for its set-up
+```
+
+CI (`.github/workflows/ci.yml`) runs these (Playwright for the marketing site only; the invitation suite is INV-18) plus the OpenAPI client freshness check, Docker image builds, Compose and Caddyfile checks and a secret scan.
 
 ## Start here
 
-| If you want to…                              | Read                                                                             |
-| -------------------------------------------- | -------------------------------------------------------------------------------- |
-| Read the Perth All-Events Business Strategy  | [docs/business/PERTH_STRATEGY.md](docs/business/PERTH_STRATEGY.md)               |
-| Understand the business model & unit metrics | [docs/business/BUSINESS_PLAN.md](docs/business/BUSINESS_PLAN.md)                 |
-| See all Done (`✅`) and Undone (`⬜`) tasks  | [PROGRESS.md](PROGRESS.md) and [ROADMAP.md](ROADMAP.md)                          |
-| Understand the system design                 | [ARCHITECTURE.md](ARCHITECTURE.md)                                               |
-| Build or extend the websites                 | [WEBSITE.md](WEBSITE.md)                                                         |
-| See the data model                           | [packages/db/DATA_MODEL.md](packages/db/DATA_MODEL.md)                           |
-| Check legal and compliance obligations       | [docs/compliance/COMPLIANCE_REGISTER.md](docs/compliance/COMPLIANCE_REGISTER.md) |
-| Check open decisions                         | [docs/architecture/OPEN_DECISIONS.md](docs/architecture/OPEN_DECISIONS.md)       |
-| Deploy to Sydney (`syd` / `syd1`)            | [infra/DEPLOY_RUNBOOK.md](infra/DEPLOY_RUNBOOK.md)                               |
+| If you want to…                           | Read                                                                                                                                 |
+| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| See what is left to build                 | [ROADMAP.md](ROADMAP.md)                                                                                                             |
+| Follow the rules for any change           | [AGENTS.md](AGENTS.md)                                                                                                               |
+| Set up a local machine                    | [infra/LOCAL_DEV.md](infra/LOCAL_DEV.md)                                                                                             |
+| Deploy or operate production              | [DEPLOYMENT.md](DEPLOYMENT.md)                                                                                                       |
+| Understand the system design              | [ARCHITECTURE.md](ARCHITECTURE.md)                                                                                                   |
+| Build or extend the websites              | [WEBSITE.md](WEBSITE.md)                                                                                                             |
+| See the data model                        | [packages/db/DATA_MODEL.md](packages/db/DATA_MODEL.md)                                                                               |
+| Check open decisions                      | [docs/architecture/OPEN_DECISIONS.md](docs/architecture/OPEN_DECISIONS.md)                                                           |
+| Check legal and compliance obligations    | [docs/compliance/COMPLIANCE_REGISTER.md](docs/compliance/COMPLIANCE_REGISTER.md)                                                     |
+| Read the business plan and Perth strategy | [docs/business/BUSINESS_PLAN.md](docs/business/BUSINESS_PLAN.md), [docs/business/PERTH_STRATEGY.md](docs/business/PERTH_STRATEGY.md) |
+| Report a security problem                 | [SECURITY.md](SECURITY.md)                                                                                                           |
 
 ## Repository layout
 
 ```text
 managevent/
 ├── apps/
-│   ├── marketing/       www.managevent.com.au: Next.js (Marketing, Estimator, Venues & /admin Command Centre)
-│   ├── invitation/      invitation.managevent.com.au: Next.js (Host Studio + Guest Micro-sites + QR Passes)
-│   ├── admin/           admin.managevent.com.au: CRM pipeline, ATO GST & APP 3 health data audit engine
-│   ├── api/             api.managevent.com.au: Hono (Node 22) REST + OpenAPI 3.1 + webhooks
-│   ├── worker/          background jobs (pg-boss queue): reminders, payouts, AI, RSVP headcount bridge
-│   ├── portal/          app.managevent.com.au: Next.js (Planned — Phase 3)
-│   ├── vendors/         vendors.managevent.com.au: Next.js (Planned — Phase 4)
-│   ├── mobile/          Expo React Native: iOS + Android (Planned — Phase 5)
-│   └── desktop-win/     Tauri v2: Windows back-office + offline venue kiosk (Planned — Phase 6)
+│   ├── api/            Hono API on Node: Better Auth, 48 operations, Stripe webhook, CLIs (seed:demo, staff:create)
+│   ├── worker/         pg-boss jobs: lead.created, headcount.changed, invitation email campaigns
+│   ├── marketing/      Next.js: www pages and the staff console at /admin
+│   ├── invitation/     Next.js: host studio, guest site, door check-in
+│   ├── admin/          staff role helpers used by the console
+│   ├── portal/         placeholder (customer portal, planned)
+│   ├── vendors/        placeholder (vendor portal, planned)
+│   ├── mobile/         placeholder (Expo app, planned)
+│   └── desktop-win/    placeholder (Tauri app, planned)
 ├── packages/
-│   ├── config/          shared tsconfig, ESLint, Tailwind preset, Vitest config, PII log redaction
-│   ├── db/              Prisma schema, migrations, AES-256-GCM field encryption, Perth seed
-│   ├── types/           shared TypeScript domain types and branded UUIDv7 ID helpers
-│   ├── validators/      Zod schemas: the contract between every app and the API
-│   ├── ui/              design tokens (Celebration & Memorial Mode) + web components
-│   ├── ui-native/       React Native components on the same tokens (Planned — Phase 5)
-│   ├── i18n/            English (en-AU) dictionaries, locale and RTL plumbing, Gregorian dates
-│   ├── ai/              Gemini client, prompts, output schemas, PII scrubber, memorial tone guard
-│   ├── auth/            Better Auth config, RBAC roles and 22-permission matrix
-│   ├── payments/        Stripe + Stripe Connect, GST maths (integer AUD cents), tax invoices
-│   ├── pricing/         Ceremony Builder estimator engine, package rules
-│   ├── logistics/       RSVP → headcount → catering/cake/seating/hire recommendation engine
-│   ├── notifications/   Resend email, Twilio SMS/WhatsApp, consent & quiet hours, templates
-│   ├── storage/         Cloudflare R2 uploads, image/video variants, signed URLs
-│   ├── integrations/    ABN Lookup, Xero, Google/Apple Maps, calendar (.ics)
-│   └── api-client/      typed client generated from apps/api OpenAPI 3.1 spec
-├── content/             structured Perth content (venues, ceremonies, packages, testimonials, schemas)
-├── docs/                business strategy, compliance, architecture (ADRs), design, agent workflow
-├── infra/               domains, DNS, environments, Sydney deployment runbook
-├── .github/             CI, deploy workflow, issue templates for agents, PR template
-└── .cursor/rules/       Cursor rules mirroring AGENTS.md
-```
-
-## Toolchain
-
-- Node.js 22 LTS (see `.nvmrc`) and pnpm 10 (`corepack enable`)
-- Turborepo for task orchestration
-- Rust stable plus the Windows MSVC toolchain, for `apps/desktop-win` only
-- Expo EAS for mobile builds
-
-```bash
-corepack enable
-pnpm install
-pnpm build                              # builds all scaffolded workspaces
-pnpm lint && pnpm typecheck && pnpm test
-pnpm --filter @managevent/marketing dev # run marketing + /admin on http://localhost:3100
-pnpm --filter @managevent/invitation dev # run invitation app on http://localhost:3001
+│   ├── config/         tsconfig, ESLint, Tailwind and Vitest presets, log redaction
+│   ├── db/             Prisma schema and migrations, UUIDv7 ids, field encryption, seed
+│   ├── validators/     Zod schemas: the contract between apps and the API
+│   ├── types/          domain types and branded ids
+│   ├── i18n/           en-AU copy for every surface, dates, getExperienceMode()
+│   ├── ui/             brand shell shared by both web apps, tokens, invitation themes
+│   ├── auth/           Better Auth configuration, roles and permission matrix
+│   ├── payments/       AUD cents, GST maths, invitation plans, Stripe Checkout and webhook verification
+│   ├── pricing/        estimator engine
+│   ├── logistics/      headcount → catering, cake, seating and hire recommendations
+│   ├── notifications/  Resend and Twilio wrappers, consent and quiet hours (not used by an app yet; the API and worker call Resend directly)
+│   ├── storage/        R2 signed URLs (not used by an app yet)
+│   ├── ai/             Gemini client and guards (not wired to an app yet)
+│   ├── api-client/     typed client generated from the API's OpenAPI spec
+│   ├── integrations/   placeholder (ABN Lookup, Xero, maps)
+│   └── ui-native/      placeholder (React Native components)
+├── content/            ceremonies, packages, locations and venues, testimonials, JSON schemas
+├── docs/               business, compliance, architecture (ADRs), design, agent workflow
+├── infra/              local dev, environments, DNS, incident runbook; vps/ is the production stack
+├── scripts/            local PostgreSQL, .env loader, content validation, deployment secrets
+├── .github/            CI, deploy workflow, issue and PR templates
+└── .cursor/rules/      Cursor rules mirroring AGENTS.md
 ```
 
 ## Licence

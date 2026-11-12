@@ -16,15 +16,12 @@ function clean(value: string | null | undefined): string | undefined {
 }
 
 /**
- * Reads the client address from request headers. Headers the hosting edge sets itself come
- * first (Vercel, Fly); `x-real-ip` and the first `x-forwarded-for` hop are the fallback for
- * other proxies. Returns undefined when nothing usable is present (`next start` on localhost).
+ * Reads the client address from the two headers our own edge (Caddy, `infra/vps/Caddyfile`)
+ * writes on every request: `x-real-ip`, then the first hop of `x-forwarded-for`. Headers of
+ * hosting platforms we do not run on are deliberately not read: nothing in front of this server
+ * sets them, so a visitor could choose the address. Returns undefined when nothing usable is
+ * present (`next start` on localhost).
  */
 export function clientIpFromHeaders(headers: Pick<Headers, "get">): string | undefined {
-  return (
-    clean(headers.get("x-vercel-forwarded-for")) ??
-    clean(headers.get("fly-client-ip")) ??
-    clean(headers.get("x-real-ip")) ??
-    clean(headers.get("x-forwarded-for"))
-  );
+  return clean(headers.get("x-real-ip")) ?? clean(headers.get("x-forwarded-for"));
 }

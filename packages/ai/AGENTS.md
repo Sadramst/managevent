@@ -4,16 +4,19 @@
 
 ## What this is
 
-**Gemini AI layer (server-side only)**. The `@google/genai` client, a versioned prompt registry, Zod output schemas, token budgets, per-user quotas, the memorial tone guard, PII scrubbing before prompts, and eval fixtures.
+**Gemini AI layer (server-side only, ADR-0009).** The `@google/genai` client behind a transport interface, a versioned prompt registry, Zod output schemas, daily quotas, the Memorial Mode tone guard, a PII and health-data scrubber for prompts, and eval fixtures.
 
-- **Built by:** FND-16 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Status:** built and unit-tested, but **no app uses it yet**. Wiring it into the studio through a new `apps/api` operation is INV-04.
+- **Used by:** nothing today. Planned: `apps/api` (INV-04).
 
 ## Rules
 
-- Server-side only. Never import this package from client bundles.
-- Never include guest names, contacts or health data in prompts.
-- Model ids come from the environment.
+- Server-side only (`apps/api`, `apps/worker`). Never import this package from a client bundle.
+- Never include guest names, contacts or health data in a prompt. Pass free text through `scrubPromptPii()`; the client does this for `details`.
+- Memorial ceremonies use the memorial system instruction and `enforceMemorialToneGuard()` only.
+- Model ids come from the environment (`GEMINI_MODEL_FAST`, `GEMINI_MODEL_REASONING`).
+- `new ManageventAiClient()` without a `transport` answers with the canned `AI_EVAL_FIXTURES`. That default is for tests only: a production caller must pass `new GoogleGenAiSdkTransport(apiKey)` (key from `GEMINI_API_KEY`) and fail closed when the key is missing, like Stripe and Resend in `apps/api`.
+- The quota store is in process memory. Before an app depends on it, move it to a shared store (same reason as OPS-11).
 
 ## Done means
 

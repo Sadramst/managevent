@@ -18,8 +18,7 @@
   },
   "dependencies": {
     "@managevent/i18n": "workspace:*",
-    "@managevent/types": "workspace:*",
-    "@managevent/validators": "workspace:*"
+    "@managevent/types": "workspace:*"
   },
   "devDependencies": {
     "@managevent/config": "workspace:*",
@@ -27,9 +26,5 @@
     "eslint": "9.39.5",
     "typescript": "5.9.3",
     "vitest": "3.0.9"
-  },
-  "managevent": {
-    "status": "scaffolded",
-    "backlog": "FND-13"
   }
 }

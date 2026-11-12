@@ -1,12 +1,15 @@
 import { describe, expect, it } from "vitest";
 import {
+  ceremonyPagesEn,
   enDictionary,
   formatCeremonyDate,
   formatGregorianDate,
   getDir,
   getExperienceMode,
   I18N_NAMESPACES,
+  invitationPublicEn,
   MEMORIAL_CEREMONY_SLUGS,
+  sitePagesEn,
   t,
 } from "./index.js";
 
@@ -60,6 +63,25 @@ describe("@managevent/i18n", () => {
         "Friday, 23 October 2026 at 4:30 PM",
       );
       expect(formatCeremonyDate(iso, "en")).toBe("23 October 2026");
+    });
+  });
+
+  describe("public www copy describes only what exists", () => {
+    // Not built yet: inviting a co-host, and handing door check-in to anyone other than the
+    // signed-in host. Until they are, the public pages must not promise either.
+    const text = JSON.stringify([
+      sitePagesEn,
+      ceremonyPagesEn,
+      invitationPublicEn,
+      enDictionary.marketing,
+    ]);
+
+    it("does not promise co-hosts", () => {
+      expect(text).not.toMatch(/co-?hosts?/i);
+    });
+
+    it("does not promise a door team", () => {
+      expect(text).not.toMatch(/door (team|crew|staff)/i);
     });
   });
 

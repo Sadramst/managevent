@@ -1,5 +1,7 @@
 # ADR-0007: Expo for iOS/Android, Tauri v2 for Windows
 
+- **Status:** Accepted. Neither app is built yet: `apps/mobile` and `apps/desktop-win` hold only an `AGENTS.md` and a placeholder `package.json` (ROADMAP MOB-01, WIN-01).
+
 - **Mobile:** a single Expo app (the SDK at scaffold time; 58 as of October 2026) with Expo Router and NativeWind.
   - Roles switch the navigation tree: customer mode or crew mode.
   - It uses EAS Build and Submit. OTA updates (EAS Update) only change JavaScript and assets; any native change needs a store release.

@@ -1,16 +1,17 @@
 # @managevent/ui
 
-Design tokens (Celebration and Memorial palettes), the 6 invitation themes (`WEBSITE.md` §B4), CSS variables, `ExperienceModeProvider`, logical-property (direction-safe) base components (`Button`, `Panel`, `Input`, `Badge`), the `ArchFrame` motif, and the **brand shell** shared by every web surface.
+Design tokens (Celebration and Memorial palettes), the 6 invitation themes (`WEBSITE.md` §B4), CSS variables, `ExperienceModeProvider`, logical-property (direction-safe) base components (`Button`, `Panel`, `Input`, `Badge`), the `ArchFrame` motif, and the **brand shell** shared by `apps/marketing` and `apps/invitation`. Rules: [`AGENTS.md`](AGENTS.md).
 
 ## Brand shell
 
 One stylesheet and one set of server-compatible components make `www` and `invitation` look like the same product.
 
-| Import                     | What it is                                                                                                                                         |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@managevent/ui/brand.css` | The semantic stylesheet: base type, layout, buttons, cards, forms, badges, tables, tabs, stats, alerts, dialogs, header, footer, logo, arch motif. |
-| `@managevent/ui/brand`     | `BrandLogo`, `SiteHeader`, `SiteFooter`, `SiteMenu`, `Container`, `Section`, `SectionHead`, `Eyebrow`, `Card`, `ButtonLink`, `PageHero`.           |
-| `@managevent/ui/icon.svg`  | The brand mark as a standalone icon. Copy it to `app/icon.svg` in each Next.js app.                                                                |
+| Import                                           | What it is                                                                                                                                         |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@managevent/ui/brand.css`                       | The semantic stylesheet: base type, layout, buttons, cards, forms, badges, tables, tabs, stats, alerts, dialogs, header, footer, logo, arch motif. |
+| `@managevent/ui/brand`                           | `BrandLogo`, `SiteHeader`, `SiteFooter`, `SiteMenu`, `Container`, `Section`, `SectionHead`, `Eyebrow`, `Card`, `ButtonLink`, `PageHero`.           |
+| `@managevent/ui/icon.svg`                        | The brand mark as a standalone icon. Copy it to `app/icon.svg` in each Next.js app.                                                                |
+| `@managevent/ui/tokens`, `@managevent/ui/themes` | The palette tokens and the 6 invitation themes on their own.                                                                                       |
 
 ### Wiring an app
 
@@ -34,7 +35,7 @@ webpack(config) {
 ```
 
 ```tsx
-// app/layout.tsx
+// a server layout or chrome component (apps/invitation: components/site/SiteChrome.tsx)
 import { SiteFooter, SiteHeader } from "@managevent/ui/brand";
 
 <SiteHeader

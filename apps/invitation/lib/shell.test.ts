@@ -41,12 +41,21 @@ describe("dates", () => {
 });
 
 describe("clientIpFromHeaders", () => {
-  it("prefers the header the hosting edge sets", () => {
+  it("prefers x-real-ip, which the edge proxy sets", () => {
     const headers = new Headers({
       "x-forwarded-for": "198.51.100.9, 10.0.0.1",
-      "x-vercel-forwarded-for": "203.0.113.7",
+      "x-real-ip": "203.0.113.7",
     });
     expect(clientIpFromHeaders(headers)).toBe("203.0.113.7");
+  });
+
+  it("ignores headers of hosting platforms nothing in front of the app sets", () => {
+    const headers = new Headers({
+      "fly-client-ip": "192.0.2.66",
+      "x-vercel-forwarded-for": "192.0.2.67",
+      "x-forwarded-for": "198.51.100.9",
+    });
+    expect(clientIpFromHeaders(headers)).toBe("198.51.100.9");
   });
 
   it("falls back to the first x-forwarded-for hop", () => {

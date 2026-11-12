@@ -50,13 +50,12 @@
 
 	encode zstd gzip
 
-	# Headers a caller must never be able to choose. The marketing app reads the visitor address
-	# from `x-real-ip` and `x-forwarded-for`; the invitation app also reads `fly-client-ip` and
-	# `x-vercel-forwarded-for`, before those two (apps/invitation/lib/client-ip.ts), so the two
-	# deletions below are what keeps a visitor from choosing an address there. The API reads
-	# `x-real-ip` (TRUSTED_CLIENT_IP_HEADER). Caddy rewrites X-Forwarded-For
-	# itself; the other three are removed or overwritten here. The proxy secret is what makes
-	# the API believe a forwarded address, so a copy arriving from the internet is dropped.
+	# Headers a caller must never be able to choose. Both web apps read the visitor address from
+	# `x-real-ip`, then `x-forwarded-for` (apps/*/lib/client-ip.ts); the API reads `x-real-ip`
+	# (TRUSTED_CLIENT_IP_HEADER). Caddy rewrites X-Forwarded-For itself and X-Real-Ip is
+	# overwritten here. Hosting-platform address headers are read by nothing, and are dropped
+	# anyway as defence in depth. The proxy secret is what makes the API believe a forwarded
+	# address, so a copy arriving from the internet is dropped.
 	request_header -Fly-Client-Ip
 	request_header -X-Vercel-Forwarded-For
 	request_header -X-Managevent-Proxy-Secret

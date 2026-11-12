@@ -22,7 +22,6 @@
     "@managevent/types": "workspace:*",
     "@managevent/ui": "workspace:*",
     "@managevent/validators": "workspace:*",
-    "framer-motion": "12.38.0",
     "jsqr": "1.4.0",
     "lucide-react": "1.61.0",
     "next": "16.4.2",
@@ -44,11 +43,5 @@
     "tailwindcss": "4.3.3",
     "typescript": "5.9.3",
     "vitest": "3.0.9"
-  },
-  "managevent": {
-    "status": "scaffolded",
-    "phase": "Phase 2",
-    "backlog": "INV-01 … INV-15",
-    "spec": "`WEBSITE.md` Part B (all sections). Part C for cross-domain rules."
   }
 }

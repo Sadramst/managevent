@@ -8,13 +8,14 @@
 
 - **Domain:** MSI / MSIX
 - **Local port:** 1420
-- **Phase:** Phase 6. **Backlog:** WIN-01 … WIN-06 (see `ROADMAP.md`)
+- **Status:** Planned. Nothing is built; this folder holds only this spec, `CLAUDE.md` and a placeholder `package.json`.
+- **Backlog:** WIN-01 to WIN-06 (see [`ROADMAP.md`](../../ROADMAP.md)). WIN-02 needs ADM-05, WIN-03 needs PRT-07, WIN-06 needs INV-11.
 
 (1) **Back-office:** warehouse and hire inventory with barcodes, the 2D floorplan and seating editor, batch printing of QR place cards and welcome boards. (2) **Venue kiosk and Live Display Controller:** offline door check-in, plus second-screen or projector control for slideshows, tribute reels and the moderated photo wall.
 
 ## Specification
 
-ROADMAP Phase 6, ARCHITECTURE §11, WEBSITE.md §§B8, B10.
+The WIN rows in `ROADMAP.md`, `ARCHITECTURE.md` §11, `WEBSITE.md` §§B8, B10. The kiosk uses the same signed passes and check-in routes as the web door check-in in `apps/invitation` (see `apps/api/README.md`).
 
 ## Stack
 
@@ -42,7 +43,7 @@ src-tauri/
 
 ## Environment variables
 
-VITE_API_URL, updater public key. The names are listed in the root `.env.example`.
+`VITE_API_URL` and the updater public key. Neither is in the root `.env.example` yet; WIN-01 adds them.
 
 ## Tests required
 
@@ -50,4 +51,4 @@ Vitest (UI logic), Rust unit tests (`cargo test`), a manual kiosk test script in
 
 ## Status
 
-⬜ Not scaffolded. The first issue scaffolds it using the current stable framework version (pin exact versions).
+Planned, not scaffolded. WIN-01 scaffolds it using the current stable Tauri v2 release (pin exact versions).

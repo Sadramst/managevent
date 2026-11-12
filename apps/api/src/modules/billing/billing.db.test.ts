@@ -19,6 +19,7 @@ import {
 } from "@managevent/validators";
 import { createDefaultDeps } from "../../lib/deps.js";
 import { InMemoryJobQueue } from "../../lib/queue.js";
+import { setInvitationPlan } from "./repo.js";
 import { dbAvailable, uniqueTestSuffix } from "../../test/db.js";
 import {
   createHostTestApp,
@@ -599,6 +600,34 @@ describe.skipIf(!dbAvailable)("billing (database)", () => {
           where: { entityId: birthday.invitation.id, action: "plan.duplicate_payment" },
         }),
       ).toBe(1);
+    });
+  });
+
+  describe("setInvitationPlan", () => {
+    it("changes the plan once and leaves the row untouched when it is unchanged", async () => {
+      const event = await createEvent({
+        title: "Billing plan no-op",
+        ceremonySlug: "birthday",
+        templateSlug: "modern-minimal",
+      });
+      const invitationId = event.invitation.id;
+      const read = () =>
+        db.invitation.findUniqueOrThrow({
+          where: { id: invitationId },
+          select: { plan: true, updatedAt: true },
+        });
+
+      const before = await read();
+      expect(before.plan).toBe("FREE");
+      expect(await setInvitationPlan(db, invitationId, "FREE")).toBe(false);
+      expect(await read()).toEqual(before);
+
+      expect(await setInvitationPlan(db, invitationId, "PREMIUM")).toBe(true);
+      const upgraded = await read();
+      expect(upgraded.plan).toBe("PREMIUM");
+
+      expect(await setInvitationPlan(db, invitationId, "PREMIUM")).toBe(false);
+      expect(await read()).toEqual(upgraded);
     });
   });
 });

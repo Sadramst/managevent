@@ -4,15 +4,15 @@
 
 ## What this is
 
-**RSVP → logistics recommendation engine**. Headcount basis, catering portions per dietary category, cake serves, table and chair counts, linen and tableware, and staffing ratios (RSA when alcohol is served), returning `RecommendationItem[]`.
+**RSVP to logistics recommendation engine** (the core bridge, `ARCHITECTURE.md` §6). From a headcount snapshot it computes the headcount basis, catering portions per dietary category, cake serves, tables and chairs, linen and tableware, and staffing (RSA staff when alcohol is served), and returns recommendation items against the event's current order lines.
 
-- **Built by:** FND-10 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** `apps/worker` (`headcount.changed`, which writes a `RecommendationSet`). **Planned:** applying a recommendation from the customer portal (PRT-04) and showing it in the staff command centre (ADM-03).
 
 ## Rules
 
-- Pure, deterministic, versioned rules (`rulesVersion`). 100% branch coverage target.
-- Never merge allergen counts into 'other'.
+- Pure and deterministic: no I/O, no clock reads (pass `now`). Every output carries `rulesVersion` (`LOGISTICS_RULES_VERSION`); bump it whenever a rule changes.
+- Target 100% branch coverage.
+- Never merge allergen counts into "other".
 
 ## Done means
 

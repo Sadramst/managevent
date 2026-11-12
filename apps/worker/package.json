@@ -23,7 +23,6 @@
     "@managevent/db": "workspace:*",
     "@managevent/i18n": "workspace:*",
     "@managevent/logistics": "workspace:*",
-    "@managevent/payments": "workspace:*",
     "@managevent/validators": "workspace:*",
     "pg-boss": "10.4.2",
     "zod": "3.24.4"
@@ -34,11 +33,5 @@
     "tsx": "4.23.15",
     "typescript": "5.9.3",
     "vitest": "3.0.9"
-  },
-  "managevent": {
-    "status": "scaffolded",
-    "phase": "Phase 0 onward",
-    "backlog": "FND-12, then per-feature jobs",
-    "spec": "ARCHITECTURE §§6, 9–11, `packages/db/DATA_MODEL.md` retention schedule."
   }
 }

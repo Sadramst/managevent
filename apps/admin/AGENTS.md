@@ -4,49 +4,34 @@
 
 ## What this is
 
-**Admin and planner command centre: admin.managevent.com.au**
+**Staff-console domain helpers (`@managevent/admin`)**
 
-- **Domain:** admin.managevent.com.au
-- **Local port:** 3004
-- **Phase:** Phase 1 (Admin Lite, MKT-16) → Phase 4. **Backlog:** MKT-16, ADM-01 … ADM-08 (see `ROADMAP.md`)
+Today this is a small TypeScript package, not a web app: it exports who counts as staff (see [`README.md`](README.md)). The staff console itself is served at `/admin` by `apps/marketing` (sign-in with password and TOTP, enquiry inbox and enquiry detail).
 
-Internal staff tool: CRM pipeline, proposals, event command centre (run-sheets, tasks, vendor assignment, crew rosters), vendor verification queue, inventory, finance (margin, GST and BAS, Xero sync, payout release), content admin, audit and user management.
+- **Open backlog:** ADM-02 to ADM-08 (see [`ROADMAP.md`](../../ROADMAP.md))
+- **Planned:** proposals (ADM-02), the event command centre with run-sheets, tasks, crew and vendor assignments (ADM-03), the vendor verification queue (ADM-04), hire inventory (ADM-05), finance with margin, GST, BAS, Xero sync and payout release (ADM-06), content editing (ADM-07), and the audit log viewer with staff management (ADM-08).
+
+Whether the console later moves to its own host (`admin.managevent.com.au`, `NEXT_PUBLIC_ADMIN_URL`) is not decided; production currently sets `NEXT_PUBLIC_ADMIN_URL` to `https://www.managevent.com.au/admin`. Build new console screens in `apps/marketing/app/admin` unless an issue says otherwise.
 
 ## Specification
 
-ROADMAP Phases 1 and 4, ARCHITECTURE §7.
+The ADM rows in `ROADMAP.md`; `ARCHITECTURE.md` §7 (domain modules inside `apps/api`).
 
-## Stack
+## Depends on (contracts; do not modify from this package)
 
-Next.js (App Router), Tailwind v4, `packages/ui` (data tables, forms).
+`types` (roles). The package also lists `i18n`, `logistics`, `payments` and `validators` but does not use them yet.
 
-## Depends on (contracts; do not modify from this app)
+## Rules for staff features (wherever they are built)
 
-`ui`, `i18n`, `validators`, `types`, `payments`, `pricing`, `logistics`, `auth` (role display), `api-client`, `config`
-
-## Proposed layout
-
-```text
-app/
-  leads/  proposals/  events/[eventId]/(run-sheet|tasks|vendors|crew|orders|guests)
-  vendors/verification/  inventory/  finance/(margin|gst|payouts|xero)  content/  users/  audit/
-```
-
-## Rules specific to this app
-
-- Staff only (`PLANNER_STAFF`, `SUPER_ADMIN`). MFA is required. Sessions are short (8h).
+- Staff only (`PLANNER_STAFF`, `SUPER_ADMIN`), and two-factor is mandatory: the API treats staff without it as signed out. Staff sessions should last 8 hours; today they last 30 days like everyone else's (OPS-10).
 - Every write to money, roles, verification or personal data creates an `AuditLog` entry on the server.
-- Show health data (dietary and allergy) only where it is needed for catering operations. Masked by default, with click-to-reveal that is logged.
-- Admin Lite (MKT-16) is a lead list and detail page only. Don't build other modules early.
-
-## Environment variables
-
-NEXT_PUBLIC_ADMIN_URL, NEXT_PUBLIC_API_URL. The names are listed in the root `.env.example`.
+- Health data (dietary and allergy) is shown only where catering operations need it: masked by default, with a click-to-reveal that is audited.
+- No module without real data behind it. Lead stages, the audit trail, permissions and money live in the API (`apps/api`, `packages/auth`, `packages/payments`), not here.
 
 ## Tests required
 
-Playwright: lead lifecycle, proposal → deposit link, vendor approval with audit entry, payout release guarded by role.
+Vitest for this package. For console features, Playwright in `apps/marketing` against the real API (`test:e2e:real`): lead lifecycle today; proposal to deposit link, vendor approval with an audit entry and payout release guarded by role as those items land.
 
 ## Status
 
-🟨 Staff-role helpers only (`@managevent/admin`). Admin Lite (enquiries inbox and detail, staff sign-in with two-factor) is live at `/admin` in `apps/marketing`, on the real API. No other module is built; the mock Command Centre and its helpers were removed.
+Built: the staff-role helpers in `src/index.ts`, unit tested. Everything under "Planned" is not built.

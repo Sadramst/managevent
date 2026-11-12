@@ -4,14 +4,21 @@
 
 ## What this is
 
-**Third-party integrations**. ABN Lookup client, Xero client, Maps helpers (static map URL, directions deep links), `.ics` generator (deterministic, TZID-aware).
+**Planned: third-party integrations.** Today the folder holds only this file, `README.md`, `CLAUDE.md` and a placeholder `package.json`; there is no code.
 
-- **Built by:** FND-13 / VEN-01 / ADM-06 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+Planned contents and the `ROADMAP.md` items that need them:
+
+- ABN Lookup client (VEN-01).
+- Xero client (ADM-06, BIZ-11).
+- Maps helpers: static map URL and directions deep links.
+
+The guest calendar file is not planned here: it is built today by `apps/api/src/modules/guest-site/ics.ts`.
 
 ## Rules
 
-- Every client is wrapped behind an interface with a mock for tests. Never call real third parties in CI.
+- Every client sits behind an interface with a test double. Never call a real third party in CI.
+- Without credentials a client fails closed (a clear "not configured" error); it never returns invented data in a production path.
+- A provider that stores personal information outside Australia needs an ADR first (root `AGENTS.md` §3).
 
 ## Done means
 

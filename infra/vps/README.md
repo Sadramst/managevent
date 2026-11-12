@@ -1,6 +1,6 @@
 # `infra/vps`: the production stack
 
-Everything that runs on the Sydney VPS is defined in this folder. **How to use it is in the root [`DEPLOYMENT.md`](../../DEPLOYMENT.md)**; this page only says what each file is.
+Everything that runs on the Sydney VPS is defined in this folder. **How to use it is in the root [`DEPLOYMENT.md`](../../DEPLOYMENT.md)**; this page only says what each file is. The Dockerfiles, Compose files and scripts were rewritten for this release and have not run on the server yet; CI's image job is the first build (OPS-01).
 
 | File                                          | What it is                                                                                                                                                             |
 | --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |

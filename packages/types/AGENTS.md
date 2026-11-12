@@ -4,14 +4,14 @@
 
 ## What this is
 
-**Shared domain types**. TypeScript types inferred from `validators` (`z.infer`), ID branded types, and enums re-exported for clients.
+**Shared domain types.** TypeScript types inferred from `packages/validators` (`z.infer`), branded entity ID types (`EventId`, `UserId`, …) and `AudCents`, the domain enums as types, and a few tiny type guards (`isBrandedId`, `asBrandedId`, `isAudCents`).
 
-- **Built by:** FND-04 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** `apps/api`, `apps/marketing`, `apps/invitation` and most packages.
 
 ## Rules
 
 - Prefer inference from Zod over hand-written interfaces. No runtime code except tiny type guards.
+- Branded ID prefixes must match `ID_PREFIXES` in `packages/db/src/ids.ts`.
 
 ## Done means
 

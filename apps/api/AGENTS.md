@@ -8,9 +8,9 @@
 
 - **Domain:** api.managevent.com.au
 - **Local port:** 4000
-- **Phase:** Phase 0 onward. **Backlog:** FND-11, then every feature's API tasks (see `ROADMAP.md`)
+- **Backlog:** the API side of every [`ROADMAP.md`](../../ROADMAP.md) item; API-only items are OPS-09 (idempotent event create), OPS-10 (8-hour staff sessions) and OPS-11 (shared rate limits).
 
-The **only** writer to the database and the single authorisation layer for web, mobile and desktop. It also hosts webhooks (Stripe, Twilio, Resend) and AI endpoints (proxying `packages/ai`).
+The **only** writer to the database and the single authorisation layer for every client. It hosts the Stripe webhook. **Planned:** Twilio and Resend webhooks (INV-08), AI endpoints proxying `packages/ai` (INV-04).
 
 ## Specification
 
@@ -22,7 +22,7 @@ Hono on Node 22, Zod (`packages/validators`), OpenAPI generated from Zod, Prisma
 
 ## Depends on (contracts; do not modify from this app)
 
-`db`, `validators`, `types`, `auth`, `payments`, `pricing`, `logistics`, `notifications`, `storage`, `integrations`, `ai`, `config`
+Today: `db`, `validators`, `types`, `auth`, `payments`, `i18n`, `config`. Planned modules will add `pricing`, `logistics`, `notifications`, `storage`, `integrations` and `ai`.
 
 ## Layout
 
@@ -43,7 +43,7 @@ src/
   test/                         # test-only helpers (db, hosts, stripe transport)
   contract.routes.test.ts       # the route table below, checked against OpenAPI and authorisation
   e2e.flow.test.ts              # sign-up to check-in through HTTP on the real database
-Dockerfile  fly.toml (D-01)
+Dockerfile                      # production image (infra/vps, ADR-0011)
 ```
 
 Not built yet: catalog, builder, orders, marketplace, inventory, ai, reporting, and the Twilio and Resend webhooks.
@@ -52,7 +52,7 @@ Not built yet: catalog, builder, orders, marketplace, inventory, ai, reporting, 
 
 - Route = Zod-validated input → `requirePermission()` from `packages/auth` → service → repository (Prisma). No Prisma calls in route handlers.
 - Errors use one error model: `{ error: { code, message, details?, requestId } }`. The message is localised by the client using the code.
-- Idempotency: `Idempotency-Key` is supported on POSTs that create money or RSVP records.
+- Idempotency: `Idempotency-Key` is supported on POSTs that create money, RSVP, party, import, campaign or lead records. `POST /v1/events` does not honour it yet (OPS-09).
 - Public guest endpoints are authenticated by invitation token and rate-limited per IP and per token.
 - Webhooks: verify signatures, store the raw event, dedupe by provider event id.
 - Never log request bodies on guest, RSVP, auth or payment routes.
@@ -72,7 +72,7 @@ Not built yet: catalog, builder, orders, marketplace, inventory, ai, reporting, 
 
 ## Environment variables
 
-`DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `AUTH_COOKIE_DOMAIN`, `AUTH_TRUSTED_ORIGINS`, `GUEST_TOKEN_PEPPER`, `PII_ENCRYPTION_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `EMAIL_FROM_TRANSACTIONAL`, `API_PROXY_SECRET` (shared with the web apps), `TRUSTED_CLIENT_IP_HEADER` (`fly-client-ip` on Fly), and the `NEXT_PUBLIC_..._URL` origins of the web apps. Reserved for modules not built yet: the `TWILIO_`, `R2_`, `GEMINI_` and `XERO_` groups and `ABN_LOOKUP_GUID`. The names are listed in the root `.env.example`. A variable a turbo task needs must also be in `globalEnv` in `turbo.json`.
+`DATABASE_URL`, `DIRECT_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, `AUTH_COOKIE_DOMAIN`, `AUTH_TRUSTED_ORIGINS`, `GUEST_TOKEN_PEPPER`, `PII_ENCRYPTION_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `RESEND_API_KEY`, `EMAIL_FROM_TRANSACTIONAL`, `API_PROXY_SECRET` (shared with the web apps), `TRUSTED_CLIENT_IP_HEADER` (`x-real-ip` in production, written by Caddy; empty locally), and the `NEXT_PUBLIC_..._URL` origins of the web apps. Reserved for modules not built yet: the `TWILIO_`, `R2_`, `GEMINI_` and `XERO_` groups and `ABN_LOOKUP_GUID`. The names are listed in the root `.env.example`. A variable a turbo task needs must also be in `globalEnv` in `turbo.json`.
 
 ## Tests required
 
@@ -102,4 +102,4 @@ There is no `/v1/invitations` or `/v1/rsvp`: the invitation hangs off its event,
 
 ## Status
 
-✅ Invitation platform backend built: 48 OpenAPI operations plus the CSV export, Better Auth sessions, pg-boss producer, demo seed and staff bootstrap tools, Dockerfile and `fly.toml` targeting `syd`. Not yet exercised against live Stripe or Resend (no keys locally).
+Built and running locally on PostgreSQL: 48 OpenAPI operations plus the CSV export, Better Auth sessions, the pg-boss producer, the demo seed and staff bootstrap tools, and the production `Dockerfile` (never built locally; CI's image job is the first build). Not deployed from this branch yet (OPS-01) and never exercised against live Stripe or Resend (OPS-02, OPS-03). Rate limits are per process, in memory (OPS-11).

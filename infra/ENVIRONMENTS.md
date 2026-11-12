@@ -12,7 +12,9 @@ This is the authoritative list of what each running service reads. How the syste
 
 There is no staging environment and there are no per-pull-request previews (ADR-0011, OPEN_DECISIONS D-19).
 
-Local ports: marketing 3100 · invitation 3001 · API 4000. Reserved for apps that are not built yet: portal 3002 · vendors 3003 · admin 3004 · desktop dev 1420 · Expo 8081.
+Local ports: API 4000 · marketing (www and `/admin`) 3100 · invitation 3001 · PostgreSQL 5432. Reserved for apps that are not built yet: portal 3002 · vendors 3003 · desktop dev 1420 · Expo 8081.
+
+Locally the staff console is `http://localhost:3100/admin`, which is also the default for `NEXT_PUBLIC_ADMIN_URL` in `.env.example`, the API and the worker.
 
 ## Where values live
 
@@ -57,7 +59,7 @@ Compose refuses to start anything while one of the `.env` values in this table i
 | `AUTH_TRUSTED_ORIGINS`       |  ✓  |   ·    |     ·     |     ·      | empty                                  | Comma-separated browser origins allowed to sign in and to send state-changing requests with a cookie. Empty means "the origins of the `NEXT_PUBLIC_*_URL` values the API has", which is right for production. A wrong list makes sign-in answer 403. |
 | `NEXT_PUBLIC_MARKETING_URL`  |  ✓  |   ·    |     ✓     |     ✓      | `https://www.managevent.com.au`        | API: a trusted origin. Web apps: links between the two sites.                                                                                                                                                                                        |
 | `NEXT_PUBLIC_INVITATION_URL` |  ✓  |   ✓    |     ✓     |     ✓      | `https://invitation.managevent.com.au` | API: a trusted origin, and the base of Stripe return URLs and emailed sign-in links. Worker: the base of invitation and unsubscribe links in emails; without it those links point at `localhost:3001`.                                               |
-| `NEXT_PUBLIC_ADMIN_URL`      |  ✓  |   ✓    |     ✓     |     ·      | `https://www.managevent.com.au/admin`  | The staff console lives under `/admin` on www. API: a trusted origin. Worker: the "open this enquiry" link in the planner email; without it the link points at `localhost:3004`.                                                                     |
+| `NEXT_PUBLIC_ADMIN_URL`      |  ✓  |   ✓    |     ✓     |     ·      | `https://www.managevent.com.au/admin`  | The staff console lives under `/admin` on www. API: a trusted origin. Worker: the "open this enquiry" link in the planner email; without it the link points at the local console.                                                                    |
 | `NEXT_PUBLIC_API_URL`        |  ·  |   ·    |     ✓     |     ✓      | `https://api.managevent.com.au`        | Fallback base URL of the typed API client. The apps pass `API_URL` explicitly and the browser never calls the API directly, so this is a safety net only.                                                                                            |
 
 `CONTACT_EMAIL` and `CONTACT_PHONE` are **build arguments** of the marketing image, with no default: `next build` prerenders the public pages with them, and the build stops when either is missing. On the server `docker-compose.build.yml` passes the two `.env` lines; the Deploy workflow passes the repository variables of the same names. Keep the two places equal, and rebuild the image to change them.
@@ -93,14 +95,9 @@ Leaving a provider unconfigured never fakes anything: the feature answers `503`,
 | `STAFF_BOOTSTRAP_PASSWORD`                                                 | `staff:create`            | Optional password for a new staff account (12+ characters). Not set in production: the tool generates one and prints it once.                                                             |
 | `MANAGEVENT_API_HOST`, `MANAGEVENT_WWW_HOST`, `MANAGEVENT_INVITATION_HOST` | `deploy.sh`               | Hostnames the health verification checks. Default: the three production names.                                                                                                            |
 
-## Read by the code but not set in production
+## Listed but not read
 
-| Variable               | Where                  | Effect when unset                                                                                     |
-| ---------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
-| `FLY_REGION`           | `apps/api` (`/health`) | The health body reports `"region": "syd"`. Cosmetic.                                                  |
-| `VERCEL`, `VERCEL_ENV` | `apps/marketing`       | Only change headers and `robots` on a Vercel preview. Never set on the VPS, so the site is indexable. |
-
-The root `.env.example` also lists groups for modules that are not built yet (`TWILIO_*`, `R2_*`, `GEMINI_*`, `XERO_*`, `ABN_LOOKUP_GUID`, OAuth client ids, `SUPABASE_*`, `SENTRY_DSN`, `EXPO_ACCESS_TOKEN`). No running service reads them, and the production Compose file does not pass them. Add a variable there, here and in `turbo.json` (`globalEnv`) in the same pull request as the code that first reads it.
+The root `.env.example` also lists variables that no running service reads: groups for modules that are not built yet (`TWILIO_*`, `SMS_SENDER_ID`, `R2_*`, `NEXT_PUBLIC_MEDIA_CDN_URL`, `GEMINI_*`, `XERO_*`, `ABN_LOOKUP_GUID`, `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`, `STRIPE_CONNECT_CLIENT_ID`, `STRIPE_PLATFORM_ACCOUNT_COUNTRY`, `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`, `SENTRY_DSN`, `LOG_LEVEL`, `EXPO_ACCESS_TOKEN`), the Google and Apple OAuth client ids (OAuth is not configured, ADR-0005), and leftovers of the abandoned hosting plan (`SUPABASE_*`, `REALTIME_PROVIDER`). The production Compose file does not pass any of them. The API's `/health` reports a fixed `"region": "syd"`. Add a variable there, here and in `turbo.json` (`globalEnv`) in the same pull request as the code that first reads it.
 
 ## Checking a server
 

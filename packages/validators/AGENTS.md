@@ -4,14 +4,15 @@
 
 ## What this is
 
-**Zod schemas: the API contract**. Input and output schemas for every API endpoint, content schemas (mirroring `content/schemas`), shared primitives (money cents, AU phone, ABN format, IANA time zone, locale, slug and token formats).
+**Zod schemas: the API contract.** Request and response schemas for every API operation (`api.ts`, `invitation-host.ts`, `guest-site.ts`, `guest-list.ts`), content schemas that mirror `content/schemas` (`content.ts`), and shared primitives (AUD cents, AU phone, ABN checksum, IANA time zone, locale, slug, guest token and prefixed ID formats).
 
-- **Built by:** FND-03 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+- **Used by:** `apps/api` (input validation and the OpenAPI document), `apps/worker`, `apps/marketing` (content loading), `apps/invitation`, `packages/api-client` and most packages.
 
 ## Rules
 
-- These schemas are the contract. Changes are additive by default. Breaking changes need `contract-change`, a migration note and a `CHANGELOG_CONTRACTS.md` entry.
+- These schemas are the contract. Changes are additive by default. Breaking changes need `contract-change`, a migration note and a `docs/architecture/CHANGELOG_CONTRACTS.md` entry.
+- A changed API schema also means regenerating `packages/api-client/src/generated.ts` (`pnpm --filter @managevent/api-client generate`).
+- A changed content schema is changed in `content/schemas` in the same PR.
 - Every schema has at least one valid and one invalid fixture test.
 
 ## Done means

@@ -8,9 +8,6 @@ import { absoluteUrl } from "@/lib/urls";
  * transactional and also carries `noindex` as a header and a meta tag.
  */
 export default function robots(): MetadataRoute.Robots {
-  if (process.env.VERCEL_ENV === "preview") {
-    return { rules: { userAgent: "*", disallow: "/" } };
-  }
   return {
     rules: {
       userAgent: "*",

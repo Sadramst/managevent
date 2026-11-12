@@ -472,7 +472,7 @@ export const sitePagesEn = {
       },
       {
         title: "QR passes and door check-in",
-        body: "Each guest gets a QR pass and your door team checks people in. Part of Premium.",
+        body: "Each guest gets a QR pass and you check people in at the door from your phone. Part of Premium.",
       },
       {
         title: "Wishing well or tribute book",

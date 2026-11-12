@@ -8,9 +8,11 @@
 
 - **Domain:** invitation.managevent.com.au
 - **Local port:** 3001
-- **Phase:** Phase 2. **Backlog:** INV-01 … INV-15 (see `ROADMAP.md`)
+- **Open backlog:** INV-04, INV-07, INV-08, INV-11, INV-14, INV-17, INV-18 (see [`ROADMAP.md`](../../ROADMAP.md))
 
-The **Host Studio** (create, design, AI wording, guests, share, responses, photo wall, wishing well or tribute book, settings) and the **guest micro-site** (gate reveal, Story, Timeline and Gallery views, RSVP, QR pass, photo wall, calendar and maps). It merges `appilico-invitations` and `anniversary-invitation`. See `MIGRATION.md`.
+The **Host Studio** (create, design, details, guests, share, responses, awaiting replies, wishing well or tribute book moderation, settings), the **guest micro-site** (gate reveal, details, RSVP, QR pass, calendar and maps links, wishes) and **door check-in**. It replaces the `appilico-invitations` and `anniversary-invitation` prototypes; importing the old anniversary links is still to do ([`MIGRATION.md`](MIGRATION.md), INV-14).
+
+**Planned, not built:** AI wording (INV-04), media uploads, the photo wall and `/display` (INV-11), SMS and WhatsApp sending (INV-08), XLSX export (INV-07), co-host invitations (INV-17).
 
 ## Specification
 
@@ -18,7 +20,7 @@ The **Host Studio** (create, design, AI wording, guests, share, responses, photo
 
 ## Stack
 
-English only (en-AU). Next.js (App Router), Tailwind v4, `packages/ui` themes. Server-rendered guest pages. The gate reveal is a CSS animation, which keeps the guest bundle small (`framer-motion` is installed but not used).
+English only (en-AU). Next.js (App Router), Tailwind v4, `packages/ui` themes. Server-rendered guest pages. The gate reveal is a CSS animation, which keeps the guest bundle small (Framer Motion is not a dependency).
 
 ## Depends on (contracts; do not modify from this app)
 
@@ -50,14 +52,14 @@ See `README.md` for what each file is for.
 - Client components take their copy as props from a server component; do not import `@managevent/i18n` values into the browser bundle.
 - Import plan data from `@managevent/payments/plans` (the package root pulls in the Stripe SDK).
 
-- `noindex, nofollow, noarchive` goes on every route except `/` and `/templates`, as both an HTTP header **and** a meta tag. `robots.txt` disallows `/i/`, `/studio/`, `/display/` and `/legacy/`.
-- Guest pages: the core details render without JavaScript. Do not use `localStorage` or `sessionStorage`. Language and mute state live in the URL. Date formatting is deterministic.
-- Music plays only after the guest taps, with a persistent mute control. Use the licensed library or rights-attested uploads only.
+- `noindex, nofollow, noarchive` goes on every route except `/` and `/templates`, as both an HTTP header (`next.config.ts`) **and** a meta tag (`privateMetadata()`). `app/robots.ts` allows only `/` and `/templates` and disallows the guest, studio, check-in, sign-in, old-link and API paths. A new private route is added to both lists.
+- Guest pages: the core details render without JavaScript. Do not use `localStorage` or `sessionStorage`. State such as mute (`?muted=1`) and an opened gate (`?opened=1`) lives in the URL. Date formatting is deterministic.
+- Music plays only after the guest taps, with a persistent mute control. Today the host supplies an https link and confirms they hold the rights; a licensed library and uploads are planned (INV-11).
 - The guest's name never appears in Open Graph tags or images.
 - Unknown token → 404. Revoked token → 410. An event that is not the host's → 404. These are real status codes: never put a `loading.tsx` above a layout or page that calls `notFound()` (the response would already have started with 200).
 - The RSVP form is idempotent (`Idempotency-Key`) and never loses entered data on a network error.
-- Memorial events: memorial themes only, gentle motion, tribute book, no auto-approve on the photo wall, no upsells.
-- Port tests from both legacy repos (i18n parity, slug and token tests, in-app browser e2e).
+- Memorial events: memorial themes only, gentle motion, tribute book, no upsells. When the photo wall is built (INV-11), memorial photos are never auto-approved.
+- Keep the in-app browser coverage (WhatsApp, Instagram and Facebook user agents with storage refused) in `tests/e2e`.
 
 ## Environment variables
 
@@ -65,11 +67,11 @@ See `README.md` for what each file is for.
 
 ## Tests required
 
-Vitest (`lib/**`, `components/**`, `app/**`, next to the code). Playwright in `tests/e2e` against the real stack: projects `desktop` (1440px) and `mobile` (Pixel 7); the WhatsApp, Instagram and Facebook in-app user agents, no-JavaScript, reduced-motion and the memorial fixture are `test.describe` blocks inside those projects. Axe scan (WCAG 2.2 AA) on every page. Still to add: a WebKit (iPhone Safari) project, which needs `playwright install webkit`.
+Vitest (`lib/**`, `components/**`, `app/**`, next to the code). Playwright in `tests/e2e` against the real stack: projects `desktop` (1440px) and `mobile` (Pixel 7); the WhatsApp, Instagram and Facebook in-app user agents, no-JavaScript, reduced-motion and the memorial fixture are `test.describe` blocks inside those projects. Axe scan (WCAG 2.2 AA) on every page. Planned (INV-18): a WebKit (iPhone Safari) project, and running this suite in CI (today CI runs only the marketing browser suite).
 
 ## Status
 
-Built on the real API, end to end: public pages (home, templates, pricing, email preferences), sign-in and sign-up, the Host Studio (wizard, overview, design, details, guests, share, responses, awaiting replies, settings), the guest micro-site (gate, details, RSVP with dietary needs, wishing well or tribute book, passes, calendar), door check-in and the old-link routes. No stand-in pages and no in-memory data remain. `tests/e2e` runs the whole journey in a browser against PostgreSQL and the API (README "Browser tests"). Not yet exercised against live services: email sending (invitations, reminders, magic links, password reset) and Stripe Checkout, which the pages offer only when `GET /v1/me` reports the capability. Not built: uploads (images and music are host-supplied https links), photo wall, co-host invitations.
+Built on the real API, end to end: public pages (home, templates, pricing, email preferences), sign-in and sign-up, the Host Studio (wizard, overview, design, details, guests, share, responses, awaiting replies, settings), the guest micro-site (gate, details, RSVP with dietary needs and consent, wishing well or tribute book, passes, calendar), door check-in and the old-link routes. `tests/e2e` runs the whole journey locally against PostgreSQL and the API (README "Browser tests"). Not deployed from this branch yet (OPS-01). Never exercised against live services: email sending (invitations, reminders, magic links, password reset) and Stripe Checkout, which the pages offer only when `GET /v1/me` reports the capability (OPS-02, OPS-03). Not built: see "Planned" above.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

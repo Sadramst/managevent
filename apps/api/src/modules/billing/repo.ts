@@ -101,12 +101,20 @@ export async function listRecentCheckoutSessionIds(
   return [...ids];
 }
 
+/**
+ * Moves the invitation to `plan`. A no-op when it is already on that plan: the row, including
+ * `updatedAt`, is left untouched. Returns whether the plan changed.
+ */
 export async function setInvitationPlan(
   tx: DbTx,
   invitationId: string,
   plan: InvitationPlan,
-): Promise<void> {
-  await tx.invitation.update({ where: { id: invitationId }, data: { plan } });
+): Promise<boolean> {
+  const { count } = await tx.invitation.updateMany({
+    where: { id: invitationId, plan: { not: plan } },
+    data: { plan },
+  });
+  return count > 0;
 }
 
 export async function findUserRoles(db: DbTx, userId: string) {

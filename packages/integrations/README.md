@@ -1,5 +1,3 @@
 # @managevent/integrations
 
-Third-party integrations. ABN Lookup client, Xero client, Maps helpers (static map URL, directions deep links), `.ics` generator (deterministic, TZID-aware).
-
-**Status:** not yet scaffolded (FND-13 / VEN-01 / ADM-06). See [`AGENTS.md`](AGENTS.md).
+**Planned.** No code exists yet: the package has a placeholder `package.json` only. It will hold the ABN Lookup client (VEN-01), the Xero client (ADM-06) and maps helpers. See [`AGENTS.md`](AGENTS.md) and [`ROADMAP.md`](../../ROADMAP.md).

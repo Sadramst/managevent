@@ -1,11 +1,12 @@
 ---
 description: Rules for Next.js web apps
-globs: apps/marketing/**,apps/invitation/**,apps/portal/**,apps/vendors/**,apps/admin/**
+globs: apps/marketing/**,apps/invitation/**,apps/portal/**,apps/vendors/**
 alwaysApply: false
 ---
 - App Router, server components by default. Client components only where interactivity requires them.
-- Tailwind v4 with the preset from `packages/config`. Tokens from `packages/ui`. No hard-coded hex values.
+- Tailwind v4 with the preset from `packages/config`; tokens and the brand shell from `packages/ui`. No hard-coded hex values. No shadcn/ui or Framer Motion; motion is CSS.
 - Use logical properties only (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`, `text-start`). Never `ml-`, `mr-`, `left-`, `right-`.
 - All copy goes through `packages/i18n`. Add the `en` keys.
-- `invitation.` guest pages: no localStorage or sessionStorage, the core renders without JavaScript, URL-based language, `noindex` header and meta tag.
-- Metadata API for SEO on `www.` only. Every other app is `noindex`.
+- Never import `@managevent/db`. Data calls go server-side through `packages/api-client`; the browser reaches the API only through the app's same-origin `/api/auth` proxy.
+- `invitation.` guest pages: no localStorage or sessionStorage, the core renders without JavaScript, `noindex` header and meta tag.
+- Indexable pages: `www.` (except `/admin`), and only `/` and `/templates` on `invitation.`. Everything else is `noindex`.

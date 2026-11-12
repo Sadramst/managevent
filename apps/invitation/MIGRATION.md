@@ -1,37 +1,23 @@
-# Migration plan: appilico-invitations + anniversary-invitation → apps/invitation
+# Importing the Appilico anniversary links (INV-14)
 
-## Sources
+**Status: not done.** The database holds no `LegacySlug` rows and there is no import script yet, so every old Appilico link answers 404 today. This page describes the remaining task; the backlog row is INV-14 in [`ROADMAP.md`](../../ROADMAP.md).
 
-- `Sadramst/appilico-invitations`: Next.js 15, Tailwind v3, in-memory store, multi-tenant prototype.
-- `Sadramst/anniversary-invitation`: Next.js 16, Tailwind v4, static per-guest pages, 299 tests.
+## What already exists
 
-## Port map
+- **Table.** `LegacySlug` in `packages/db/prisma/schema.prisma`: `legacyPath` (unique), `partyId` (cascade on delete) and `source` (`APPILICO_ANNIVERSARY` or `APPILICO_E`). Ids use the `lgs_` prefix.
+- **API.** `POST /v1/public/legacy/resolve` with `{ path }` returns `{ eventSlug, guestToken }` or `404` (`resolveLegacy` in `apps/api/src/modules/guest-site/service.ts`). The path is trimmed, cut at `?` or `#`, has repeated and trailing slashes removed, and is matched exactly and in lower case; a leading `/legacy` is also tried without the prefix. A row resolves only when its party is not deleted and its link is not revoked, on a published invitation of an event that is not deleted.
+- **Invitation routes.** `/legacy/[...path]`, `/anniversary/[slug]` and `/e/[eventSlug]/[guestSlug]` call that operation (`lib/public/legacy.ts`) and redirect to `/i/{eventSlug}/{guestToken}`. Anything unknown is a real 404. These paths are `noindex` and disallowed in `robots.txt`.
 
-| From                                                                                                  | To                                                                                                            | Action                                                                                 |
-| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| appilico `src/lib/themes.ts` (5 themes)                                                               | `packages/ui/themes/*`                                                                                        | Re-express as tokens. Add 2 memorial themes.                                           |
-| appilico `components/invitation/ArchDecoration`, `VectorFlorals`                                      | `packages/ui/ornaments`                                                                                       | Port, make RTL-safe, add `experienceMode`                                              |
-| appilico `InvitationHero`, `InvitationStory`, `VenueScheduleSection`, `CountdownTimer`, `AudioPlayer` | `apps/invitation/components/views/*`                                                                          | Port, then make server-render-first (anniversary approach)                             |
-| appilico `RsvpDrawer`                                                                                 | `apps/invitation/components/rsvp/*`                                                                           | Rebuild against `validators` (`RsvpSubmit`), with per-person dietary fields            |
-| appilico `dashboard/*` (GuestTable, StatsOverview, QrCodeModal, AddPartyModal, WhatsAppStudioModal)   | `apps/invitation/components/studio/*`                                                                         | Port the UI. Data comes from the API.                                                  |
-| appilico `ThemeStudio`                                                                                | `studio/[eventId]/design`                                                                                     | Port                                                                                   |
-| appilico `lib/pricing-plans.ts`                                                                       | `packages/payments/plans`                                                                                     | Re-model as entitlements (WEBSITE.md §B14)                                             |
-| appilico `lib/csv-helper.ts`                                                                          | `packages/integrations/csv` (or `apps/api`)                                                                   | Keep the UTF-8 BOM behaviour                                                           |
-| appilico `lib/slug-generator.ts` and anniversary `scripts/lib/slugs.mjs`                              | `apps/api` invitations module                                                                                 | **Change:** HMAC(pepper, event.salt + party.stableId). Keep the 31-character alphabet. |
-| anniversary `lib/event.ts` (deterministic formatters), `AddToCalendar`, `.ics` embedding              | `packages/i18n` formatters, `packages/integrations/ics`                                                       | Port with the tests                                                                    |
-| anniversary `LanguageProvider` (URL-based language)                                                   | `apps/invitation`                                                                                             | Port the approach                                                                      |
-| anniversary `tests/e2e/*` (privacy, mobile-webview, i18n, actions)                                    | `apps/invitation/tests/e2e`                                                                                   | Port and extend                                                                        |
-| anniversary `data/*.json` (guests, content)                                                           | **Not ported as files.** Imported into the DB by a one-off script (INV-14). Real guest data stays out of git. |                                                                                        |
-| anniversary `links-export.csv`                                                                        | Used by the import script to create `LegacySlug` rows, then discarded                                         |                                                                                        |
+## What is left
 
-## Legacy link continuity (INV-14)
+1. **Write the import script** (for example `apps/api/src/cli/import-legacy.ts`, run with `pnpm with-env pnpm --filter @managevent/api <script>`). Input: the anniversary repo's guest and content data and its `links-export.csv`, read from a path outside git; real guest data is never committed.
+2. **Create the event through the normal path.** The owner's account owns the event; parties and guests get new `stableId`s and tokens from `apps/api/src/lib/guest-tokens.ts`. Old tokens are not recomputed and the old salt is not used (it was committed in the legacy repo, see root `AGENTS.md` §3).
+3. **Create one `LegacySlug` per old link:** `legacyPath` is the original path (`/anniversary/<slug>` with source `APPILICO_ANNIVERSARY`, `/e/<event>/<guest>` with source `APPILICO_E`), pointing at the new party.
+4. **Turn forwarding off** on the imported invitation (`allowForwarding: false`, editable in Studio Settings): the old slugs are known-public, so the owner may also reissue links.
+5. **Point the old domain here.** On the Appilico website, rewrite or redirect `/anniversary/:path*` and `/e/:path*` to `https://invitation.managevent.com.au/legacy/...`.
+6. **Run it once against production**, after OPS-01, and check that every row of `links-export.csv` answers 200 and an unknown slug answers 404.
+7. **Archive the two old repositories** (read-only) after a 30-day overlap.
 
-1. Create the anniversary event in the DB (the owner as host). Import parties and guests with new `stableId`s.
-2. For each row in `links-export.csv`, create `LegacySlug(legacyPath="/anniversary/<slug>", partyId)`.
-3. Add the rewrite in the **appilico-website** project: `/anniversary/:path*` → `https://invitation.managevent.com.au/legacy/anniversary/:path*`.
-4. Test that every legacy URL renders the right greeting and that the WhatsApp OG preview still works.
-5. Archive both old repos (read-only) after a 30-day overlap.
+## Open point
 
-## Security note
-
-The legacy repo committed its slug salt. After migration, treat those slugs as **known-public tokens**. The imported event should keep `allowForwarding=false`, and the owner may choose to reissue links.
+D-12 in `docs/architecture/OPEN_DECISIONS.md` (token format for imported events) is still open; settle it before writing the script. The behaviour of old links is specified in `WEBSITE.md` §B6.4.

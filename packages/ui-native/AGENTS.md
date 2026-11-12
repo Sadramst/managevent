@@ -4,14 +4,14 @@
 
 ## What this is
 
-**React Native components**. Native equivalents of key `ui` components on the same tokens, for `apps/mobile`.
-
-- **Built by:** MOB-01 (see `ROADMAP.md`)
-- **Consumers:** see the "Depends on" section in each app's `AGENTS.md`.
+**Planned: React Native components** for `apps/mobile`: native equivalents of the key `packages/ui` components on the same tokens. Today the folder holds only this file, `README.md`, `CLAUDE.md` and a placeholder `package.json`; there is no code. It is built with the Expo app (MOB-01 in `ROADMAP.md`).
 
 ## Rules
 
-- Keep names and props aligned with `packages/ui` where possible. RTL via `I18nManager`-aware styles.
+- Take colours and type from `packages/ui` tokens; never copy hex values.
+- Keep names and props aligned with `packages/ui` where possible.
+- Use logical layout props (`start`/`end`) and `I18nManager`-aware styles so RTL can be added later.
+- Memorial Mode comes from `getExperienceMode()` (`packages/i18n`), as on the web.
 
 ## Done means
 

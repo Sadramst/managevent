@@ -1,45 +1,30 @@
 # Privacy (engineering and policy notes)
 
-> Not legal advice. The public privacy policy must be drafted and reviewed by a lawyer. This file tells engineers what the product must do.
+> Not legal advice. The public privacy policy at `/privacy` on www is a draft until a lawyer reviews it (PRV-02). This file tells engineers what the product must do, and records what it does today.
 
 ## Position
 
-We comply with the Australian Privacy Principles (APPs) **regardless of whether the small-business exemption might apply**:
-
-- We handle health-related information (dietary requirements and allergies).
-- Customers expect it.
-- Privacy law reform in Australia is ongoing.
-
-Check the status of the reforms at launch.
+We comply with the Australian Privacy Principles (APPs) **whether or not the small-business exemption applies**: we handle health information (dietary and allergy needs), customers expect it, and privacy law reform is ongoing. Check the state of the reforms at launch.
 
 ## Principles in the product
 
-1. **Collection minimisation (APP 3):**
-   - Guests are asked only for what the host turned on.
-   - Dietary and allergy data is optional, has a purpose statement next to it, and the consent text is recorded (`ConsentRecord: HEALTH_DATA_CATERING`).
-2. **Notice (APP 5):** a short collection notice appears on every form, plus a link to the privacy policy.
-3. **Use and disclosure (APP 6):**
-   - Dietary data goes to the caterer for that event only, as counts plus per-table flags for severe allergies. Never for marketing.
-4. **Cross-border (APP 8):** offshore processors are listed (ADR-0008). Never send guest PII or health data to AI providers.
-5. **Security (APP 11):**
-   - Field-level encryption for 🔒 fields, TLS everywhere, least-privilege RBAC, MFA for staff, and an audit log.
-   - Retention and deletion follow the `DATA_MODEL.md` schedule, enforced by scheduled worker jobs.
-6. **Access and correction (APP 12/13):**
-   - Users can export and correct their data in `app.`.
-   - Guests can correct their RSVP through their link, or ask the host or us.
-7. **Children:** guests may be children, but children never hold accounts. Hosts enter children's details. Keep children's data to the minimum (name and dietary needs).
+| APP                               | Rule                                                                                                                                                   | Implemented today                                                                                                                                                                                                                                                                                                                    | Open                                                                                                                                                                       |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **3. Collection minimisation**    | Guests are asked only for what the host turned on. Dietary and allergy data is optional, has a purpose statement, and the consent wording is recorded. | The API stores only fields the invitation's `rsvpConfig` asks for and drops the rest (`apps/api/src/modules/guest-site/minimise.ts`); a guest who declines has the health fields cleared. Each guest with health data gets a `ConsentRecord` with purpose `HEALTH_DATA_CATERING` and the exact text shown (`guest-site/service.ts`). | —                                                                                                                                                                          |
+| **5. Notice**                     | A short collection notice on every form, with a link to the privacy policy.                                                                            | RSVP form privacy note and link (`packages/i18n/src/invitation-guest.ts`); enquiry form on www.                                                                                                                                                                                                                                      | Final policy text (PRV-02)                                                                                                                                                 |
+| **6. Use and disclosure**         | Dietary data goes to the caterer for that event only, as counts plus per-table flags for severe allergies. Never used for marketing.                   | Health data is returned on the door list only to callers with `health:read`, and each read is audited (`health.read`, `apps/api/src/modules/checkin/service.ts`). Recommendations carry counts only (`packages/logistics`).                                                                                                          | Per-table caterer briefs (ADM-03, PRT-07)                                                                                                                                  |
+| **7. Direct marketing**           | Marketing only with express consent; every message has an opt-out.                                                                                     | Enquiry form records `MARKETING_EMAIL` consent in the same transaction as the lead (`apps/api/src/modules/crm/repo.ts`). See [MESSAGING_SPAM_ACT.md](MESSAGING_SPAM_ACT.md).                                                                                                                                                         | Analytics consent (MKT-14, PRV-03)                                                                                                                                         |
+| **8. Cross-border**               | Offshore processors are listed (ADR-0008, as amended by ADR-0011). Never send guest PII or health data to AI providers.                                | All stored data is on the Sydney VPS. Offshore processors in use: Stripe and Resend, only when configured.                                                                                                                                                                                                                           | Name every processor in the policy (PRV-03)                                                                                                                                |
+| **11. Security**                  | Field encryption for 🔒 fields, TLS, least-privilege RBAC, MFA for staff, audit log, retention.                                                        | AES-256-GCM `enc:v1` field encryption (`packages/db/src/encryption.ts`); TLS by Caddy; RBAC matrix in `packages/auth` (`PERMISSIONS.md`); TOTP required for `PLANNER_STAFF` and `SUPER_ADMIN`; `AuditLog` writes with redacted diffs (`apps/api/src/lib/audit.ts`); log redaction (`packages/config`).                               | **Retention job** (PRV-01): `retention.cleanup` is declared but has no handler, so health data is not yet deleted 90 days after the event. 8-hour staff sessions (OPS-10). |
+| **12 and 13. Access, correction** | People can see and correct their data.                                                                                                                 | Guests correct their RSVP through their own link. Hosts export their guest list and responses as CSV (audited as `guest.export`).                                                                                                                                                                                                    | Account data export and deletion for hosts: no ROADMAP item yet                                                                                                            |
+| **Children**                      | Children never hold accounts. Hosts enter children's details; keep them to name and dietary needs.                                                     | Guests are not accounts; only hosts and staff sign in.                                                                                                                                                                                                                                                                               | —                                                                                                                                                                          |
+
+The retention schedule itself is in [`packages/db/DATA_MODEL.md`](../../packages/db/DATA_MODEL.md).
 
 ## Breach response (Notifiable Data Breaches)
 
-1. Contain the breach.
-2. Assess within 30 days whether serious harm is likely.
-3. If it is, notify the OAIC and affected individuals.
-4. Keep a breach register in the admin.
+Contain, assess within 30 days whether serious harm is likely, and if so notify the OAIC and the affected people. The step-by-step procedure, including evidence capture and secret rotation on the production server, is [`infra/INCIDENT_RUNBOOK.md`](../../infra/INCIDENT_RUNBOOK.md). Owner: `SUPER_ADMIN` on call. There is no breach register screen; record incidents as the runbook describes.
 
-Owner: SUPER_ADMIN on call. The runbook is in `infra/INCIDENT_RUNBOOK.md` (to be written in FND-15).
+## Photos (planned, INV-11)
 
-## Photos
-
-- Photo wall uploads are visible only after host approval.
-- EXIF location data is stripped.
-- Gallery and marketing use of any photo requires a `PHOTO_PUBLICATION` consent record.
+No uploads exist yet. When they do: photo-wall uploads are visible only after host approval (never auto-approved for memorials), EXIF location data is stripped (`packages/storage` already refuses public promotion without `exifStripped`), and any gallery or marketing use needs a `PHOTO_PUBLICATION` consent record.

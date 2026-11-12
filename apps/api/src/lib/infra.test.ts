@@ -199,18 +199,17 @@ describe("lib/rate-limit", () => {
     const direct = readIp(buildApp({ clientIp: DIRECT }));
     expect(await direct({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" })).toBe("unknown");
     expect(await direct({ "x-real-ip": "203.0.113.8" })).toBe("unknown");
-    expect(await direct({ "fly-client-ip": "203.0.113.9" })).toBe("unknown");
     expect(await direct({})).toBe("unknown");
 
     // Our own web servers prove themselves with the shared secret; then their first hop counts.
     const proxied = readIp(
-      buildApp({ clientIp: { proxySecret: TEST_PROXY_SECRET, trustedHeader: "fly-client-ip" } }),
+      buildApp({ clientIp: { proxySecret: TEST_PROXY_SECRET, trustedHeader: "x-real-ip" } }),
     );
     expect(
       await proxied({
         "x-forwarded-for": "203.0.113.7, 10.0.0.1",
         [PROXY_SECRET_HEADER]: TEST_PROXY_SECRET,
-        "fly-client-ip": "198.51.100.200",
+        "x-real-ip": "198.51.100.200",
       }),
     ).toBe("203.0.113.7");
     // A wrong or missing secret: the forwarded address is ignored and the edge header decides.
@@ -218,18 +217,16 @@ describe("lib/rate-limit", () => {
       await proxied({
         "x-forwarded-for": "203.0.113.7",
         [PROXY_SECRET_HEADER]: "not-the-secret",
-        "fly-client-ip": "198.51.100.200",
+        "x-real-ip": "198.51.100.200",
       }),
     ).toBe("198.51.100.200");
-    expect(
-      await proxied({ "x-forwarded-for": "203.0.113.7", "fly-client-ip": "198.51.100.200" }),
-    ).toBe("198.51.100.200");
-    // A caller can prepend to a list header but the edge proxy's own entry is last.
-    expect(await proxied({ "fly-client-ip": "203.0.113.1, 198.51.100.201" })).toBe(
-      "198.51.100.201",
+    expect(await proxied({ "x-forwarded-for": "203.0.113.7", "x-real-ip": "198.51.100.200" })).toBe(
+      "198.51.100.200",
     );
+    // A caller can prepend to a list header but the edge proxy's own entry is last.
+    expect(await proxied({ "x-real-ip": "203.0.113.1, 198.51.100.201" })).toBe("198.51.100.201");
     // Not an address at all.
-    expect(await proxied({ "fly-client-ip": "x" })).toBe("unknown");
+    expect(await proxied({ "x-real-ip": "x" })).toBe("unknown");
   });
 
   it("does not hand out a fresh bucket for a made-up x-forwarded-for hop", async () => {

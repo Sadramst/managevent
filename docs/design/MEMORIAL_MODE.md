@@ -1,20 +1,21 @@
 # Memorial Mode
 
-**What triggers it:** the `experienceMode = MEMORIAL` field. It comes from the ceremony type (`funeral-coordination`, `memorial-service`, `celebration-of-life`, `wake`) via `getExperienceMode()` in `packages/i18n`. Always use that helper. Never hand-roll the check.
+**What triggers it:** `getExperienceMode()` in `packages/i18n` (`src/experience-mode.ts`). It returns `MEMORIAL` for an event or invitation whose `experienceMode` is `MEMORIAL` or whose ceremony family is `SOLEMN`, for the ceremony slugs `funeral-coordination`, `memorial-service`, `celebration-of-life`, `wake` and `wake-catering`, and for any route path containing one of those slugs or `memorials`. Always use the helper; never hand-roll the check.
 
-| Aspect                      | Celebration              | Memorial                                          |
-| --------------------------- | ------------------------ | ------------------------------------------------- |
-| Palette                     | Ivory, gold and burgundy | Alabaster, slate, bronze and ink                  |
-| Motion                      | Full (gate, dial)        | Gentle fades only                                 |
-| Invitation gate             | Seal, ribbon or arch     | Plain fade, "Open"                                |
-| Music                       | Theme default, on tap    | Off by default. Optional soft track, on tap.      |
-| Countdown                   | "12 days to go"          | Date and time only                                |
-| RSVP extras                 | Song requests            | Optional "A song that reminds you of them"        |
-| Wishing well                | Gift message plus PayID  | **Tribute book** (messages and photos, moderated) |
-| Photo wall auto-approve     | Host option              | Not available                                     |
-| Copy tone                   | Joyful                   | Gentle, brief                                     |
-| Upsells, discounts, urgency | Allowed (honest ones)    | **None**                                          |
-| AI wording                  | Tone options             | Memorial prompt only, and never invents facts     |
-| Confetti, sparkles, emoji   | Allowed sparingly        | Never                                             |
+| Aspect                      | Celebration                                    | Memorial                                                                   | Enforced today by                                                         |
+| --------------------------- | ---------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Palette                     | Ivory, gold and burgundy                       | Alabaster, slate, bronze and ink                                           | `memorialTokens` and the two memorial themes in `packages/ui`             |
+| Motion                      | Full gate animation                            | Gentle fades only                                                          | Invitation gate                                                           |
+| Invitation gate             | Seal, ribbon or arch                           | Plain fade, "Open"                                                         | Invitation gate                                                           |
+| Music                       | Starts with the tap that opens the gate        | Waits for the guest to press play                                          | `apps/invitation/components/views/MusicControl.tsx`                       |
+| Countdown                   | "12 days to go"                                | Date and time only                                                         | Guest page (Playwright test in `apps/invitation/tests/e2e/guest.spec.ts`) |
+| RSVP song prompt            | Standard prompt                                | "A song that reminds you of them", or hidden                               | `assertRsvpConfigAllowed` (`apps/api/src/modules/events/rules.ts`)        |
+| Wishing well                | Messages plus the host's PayID or bank details | **Tribute book** (moderated messages); no bank or registry details         | `apps/api/src/modules/events/rules.ts`                                    |
+| Plan                        | Free or Premium                                | Premium entitlements free, no upgrade offer                                | `getInvitationPlan(plan, "MEMORIAL")` in `packages/payments`              |
+| Photo wall auto-approve     | Host option                                    | Never                                                                      | Planned with the photo wall (INV-11)                                      |
+| Copy tone                   | Joyful                                         | Gentle, brief ([`../business/BRAND_VOICE.md`](../business/BRAND_VOICE.md)) | Memorial email and page copy in `packages/i18n`                           |
+| Upsells, discounts, urgency | Allowed (honest ones)                          | **None**                                                                   | Review                                                                    |
+| AI wording                  | Tone options                                   | Memorial prompt only; never invents facts                                  | Planned (INV-04); the guard exists in `packages/ai`                       |
+| Confetti, sparkles, emoji   | Allowed sparingly                              | Never                                                                      | Review; the Playwright test checks for celebration ornaments              |
 
-**Tests:** every app has a Playwright test that renders a memorial fixture and asserts that no celebration tokens, no confetti component, no countdown and no upsell are present.
+**Tests:** every web app that can show a memorial event has a Playwright test that renders one and asserts memorial mode. The invitation test checks the plain gate, no countdown, no celebration ornament or wording, and the tribute book instead of the wishing well. Today: `apps/invitation/tests/e2e/guest.spec.ts` and `apps/marketing/tests/site-pages.spec.ts`. Add one for any new UI that can show a memorial event.

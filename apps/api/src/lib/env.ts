@@ -33,7 +33,7 @@ const LOCAL_APP_URLS: Readonly<Record<PublicApp, string>> = {
   INVITATION: "http://localhost:3001",
   PORTAL: "http://localhost:3002",
   VENDORS: "http://localhost:3003",
-  ADMIN: "http://localhost:3004",
+  ADMIN: "http://localhost:3100/admin",
 };
 
 /** Normalises a URL to its origin (`scheme://host[:port]`), or null when it is not an http(s) URL. */

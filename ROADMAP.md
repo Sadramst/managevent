@@ -1,190 +1,157 @@
-# Managevent roadmap
+# Managevent backlog
 
-**Build order (locked):** Shared packages & DB schema → 1. Marketing (`www`) → 2. Invitation (`invitation`) → 3. Customer portal (`app`) → 4. Vendor portal (`vendors`) and Admin (`admin`) → 5. Mobile (iOS and Android) → 6. Windows.
+This is the one list of work that is **not done yet**. Finished work is not tracked here: the code, its README and `git log` are the record. When an item is done, delete its row in the same PR. When you find new undone work, add a row.
 
-There are two tracks that run in parallel:
+**How to use it**
 
-- **Product track:** the phases below.
-- **Business track:** entity, insurance, suppliers, launch marketing (§B). See [docs/business/PERTH_STRATEGY.md](docs/business/PERTH_STRATEGY.md) for the Perth Go-To-Market strategy.
+- Each row becomes one GitHub issue. Create it with `.github/ISSUE_TEMPLATE/agent-task.yml` and put the id in the title, for example `[MKT-14] apps/marketing: analytics with consent`.
+- An item is done only when its acceptance criterion is met and the Definition of done in `AGENTS.md` §5 passes.
+- Items that touch money, privacy, auth or an open decision (`docs/architecture/OPEN_DECISIONS.md`) need the decision first. Do not settle it inside the issue.
 
-Durations are estimates assuming one founder plus AI agents with human review. Every backlog item below is written to become **one GitHub issue**. Create it with `.github/ISSUE_TEMPLATE/agent-task.yml` and copy the ID into the issue title, for example `[FND-03] packages/validators: core schemas`.
+**Status key:** ⬜ not started · 🟨 partly built (the row says what is missing) · ⛔ blocked on a founder decision or an outside party.
 
-Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
-
----
-
-## A. Product track
-
-### Phase 0: Foundations (≈ 2–3 weeks) ✅
-
-**Exit criteria:**
-
-- `pnpm build` is green with all shared packages scaffolded.
-- The database schema is ready for the Sydney database (`ap-southeast-2`).
-- `apps/api` has health, auth and leads endpoints ready for staging/production.
-- CI and preview deploy configs work.
-
-| ID     | Task                                                                                                                                                                                        | Paths                 | Depends on             | Status |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- | ---------------------- | ------ |
-| FND-01 | Scaffold `packages/config` (tsconfig presets, ESLint flat config, Prettier, Tailwind v4 preset with brand tokens, Vitest preset)                                                            | `packages/config`     | —                      | ✅     |
-| FND-02 | `packages/db`: Prisma schema from `DATA_MODEL.md` (core: identity, events, guests, RSVP, leads, catalogue, orders, payments, audit), migrations, seed (Perth placeholder content)           | `packages/db`         | FND-01                 | ✅     |
-| FND-03 | `packages/validators`: Zod schemas for every API input and output in the MVP, plus content schemas (mirrors `content/schemas`)                                                              | `packages/validators` | FND-02                 | ✅     |
-| FND-04 | `packages/types`: domain types inferred from validators, plus ID prefix helpers                                                                                                             | `packages/types`      | FND-03                 | ✅     |
-| FND-05 | `packages/i18n`: English dictionaries (`common`, `marketing`, `invitation`, `ceremonies`, `legal`), parity test, RTL helpers, deterministic Gregorian date formatter, `getExperienceMode()` | `packages/i18n`       | FND-01                 | ✅     |
-| FND-06 | `packages/ui`: design tokens (celebration and memorial), 6 invitation themes, shadcn/ui base components, logical-property utilities, Memorial Mode provider                                 | `packages/ui`         | FND-01, FND-05         | ✅     |
-| FND-07 | `packages/auth`: Better Auth config, roles, permission matrix, resource scoping helpers, tests                                                                                              | `packages/auth`       | FND-02                 | ✅     |
-| FND-08 | `packages/payments`: GST maths, money helpers, plan and entitlement config, tax invoice model, Stripe client wrappers (test mode)                                                           | `packages/payments`   | FND-03                 | ✅     |
-| FND-09 | `packages/pricing`: Builder estimator engine with fixtures                                                                                                                                  | `packages/pricing`    | FND-08                 | ✅     |
-| FND-10 | `packages/logistics`: headcount → recommendations engine, as pure functions with fixtures                                                                                                   | `packages/logistics`  | FND-03                 | ✅     |
-| FND-11 | `apps/api` skeleton: Hono, `/health`, Better Auth mount, `/v1/leads`, OpenAPI generation, error model, rate limiting, request logging with redaction                                        | `apps/api`            | FND-02, FND-03, FND-07 | ✅     |
-| FND-12 | `apps/worker` skeleton: pg-boss, job registry, `lead.created` → email (Resend test)                                                                                                         | `apps/worker`         | FND-11                 | ✅     |
-| FND-13 | `packages/notifications` (Resend and Twilio wrappers plus English templates) and `packages/storage` (R2 signed URLs)                                                                        | `packages/*`          | FND-03                 | ✅     |
-| FND-14 | `packages/api-client`: typed client generated from OpenAPI                                                                                                                                  | `packages/api-client` | FND-11                 | ✅     |
-| FND-15 | CI: lint, typecheck, test, build, i18n parity, migration check. Vercel preview per PR. Staging environment.                                                                                 | `.github`, `infra`    | FND-01                 | ✅     |
-| FND-16 | `packages/ai`: Gemini client, prompt registry, Zod output schemas, quotas, memorial tone guard, eval fixtures                                                                               | `packages/ai`         | FND-03                 | ✅     |
-
-### Phase 1: Marketing site `www` (≈ 4–5 weeks) ✅ (Core Launch & Admin Ready)
-
-**Exit criteria:** the core Perth launch site, Instant Cost Estimator, Venues showcase, Enquiry capture, and Admin Command Centre are built and verified; multi-page programmatic SEO (`MKT-04`, `MKT-05`, `MKT-10`) expands as real photography and rates are finalised.
-
-| ID     | Task                                                                                                                                               | Depends on     | Status |
-| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| MKT-01 | Scaffold `apps/marketing` (Next.js, English (en-AU) with i18n routing, metadata, fonts, layout, header, footer, language switch, mode provider)    | FND-05, FND-06 | ✅     |
-| MKT-02 | Content loader for `content/` with validation against `content/schemas` at build (`loadLaunchCeremonies`, `loadPerthCity`, `loadPerthVenues`)      | FND-03         | ✅     |
-| MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, all-events showcase, and digital RSVP-to-catering bridge explainer                  | MKT-01, MKT-02 | ✅     |
-| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (English; 5 verticals live on home, standalone detail pages expanding)         | MKT-02         | 🟨     |
-| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator; standalone `/packages` catalogue pending final rate card) | MKT-02         | 🟨     |
-| MKT-06 | **Instant Cost Estimator (`#estimator`)** (interactive event type, guest slider, tier & bar mode, AUD incl. GST & logistics calculation → enquiry) | FND-09, FND-11 | ✅     |
-| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated and rendered on home; standalone map detail pages next)        | MKT-02         | ✅     |
-| MKT-08 | `/invitations` product showcase & Digital RSVP Bridge explainer (plus full `apps/invitation` app built in Phase 2)                                 | MKT-01         | ✅     |
-| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life` in Estimator, Ceremony cards, and Admin CRM)                       | MKT-04         | ✅     |
-| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, the thin-content guard in CI, gated cities                                         | MKT-04, MKT-07 | ⬜     |
-| MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, plus one-click pre-fill from Instant Cost Estimator                        | FND-11, FND-12 | ✅     |
-| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement (`/accessibility`)                                    | MKT-02         | ✅     |
-| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images                                                                                     | MKT-04         | ✅     |
-| MKT-14 | Analytics with the consent banner and conversion events                                                                                            | MKT-01         | ⬜     |
-| MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, axe accessibility scans), Lighthouse CI budgets                                  | MKT-06         | ✅     |
-| MKT-16 | **Admin Lite & Planner Command Centre:** `/admin` lead inbox, detail inspector, status transitions, active event run-sheets, and `apps/admin`      | FND-11         | ✅     |
-
-> MKT-16 is delivered both as the `@managevent/admin` domain engine (`apps/admin`) and the interactive Planner & Admin Command Centre at `/admin` in `apps/marketing`.
-
-### Phase 2: Invitation app `invitation` (≈ 5–6 weeks) ✅
-
-**Exit criteria:** the WEBSITE.md §B18 checklist is complete, and the Appilico anniversary event migration path is implemented.
-
-| ID     | Task                                                                                                                                                            | Depends on     | Status |
-| ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------ |
-| INV-01 | Scaffold `apps/invitation`, port themes and components from `appilico-invitations` and `anniversary-invitation` per `MIGRATION.md`                              | FND-06         | ✅     |
-| INV-02 | Data and API: events, sub-events, parties, guests, tokens (HMAC with `stableId`), invitation design and content endpoints                                       | FND-11         | ✅     |
-| INV-03 | Studio create flow (basics → template → wording → personalise → guests → RSVP settings → preview → publish)                                                     | INV-02         | ✅     |
-| INV-04 | AI wording assistant (English, tones including memorial) via `packages/ai`                                                                                      | FND-16         | ✅     |
-| INV-05 | Guest micro-site: server-rendered core, gate reveal, Story, Timeline and Gallery views, music, calendar, maps                                                   | INV-02         | ✅     |
-| INV-06 | RSVP flow (party members, dietary per person, idempotent, editable until deadline) and `headcount.changed`                                                      | INV-05, FND-10 | ✅     |
-| INV-07 | Host responses dashboard, CSV and XLSX export (UTF-8 BOM)                                                                                                       | INV-06         | ✅     |
-| INV-08 | Share Studio: links, QR codes, `wa.me`, email invitations; bulk SMS and WhatsApp (Premium)                                                                      | FND-13         | ✅     |
-| INV-09 | Plans and entitlements, Premium Event Pass checkout (Stripe), entitlement guards                                                                                | FND-08         | ✅     |
-| INV-10 | QR passes (signed tokens)                                                                                                                                       | INV-06         | ✅     |
-| INV-11 | Photo wall (upload, moderation, realtime, `/display`)                                                                                                           | FND-13         | ✅     |
-| INV-12 | Wishing well (D-05 option a) and tribute book with moderation                                                                                                   | INV-05         | ✅     |
-| INV-13 | Memorial Mode end to end, plus the memorial demo event                                                                                                          | INV-05         | ✅     |
-| INV-14 | Legacy slug import (`LegacySlug`), the `appilico.com.au` rewrite note, migration of the anniversary event                                                       | INV-02         | ✅     |
-| INV-15 | Hardening: in-app browser Playwright projects, no-JavaScript render test, rate limits, privacy headers                                                          | INV-05         | ✅     |
-| INV-16 | Host "Awaiting replies" page with copy-ready reminder text (`/studio/[eventId]/awaiting`); next: link from Studio home, auth gate, move copy to `packages/i18n` | INV-06         | 🟨     |
-
-### Phase 3: Customer portal `app` (≈ 5 weeks) ⬜
-
-| ID     | Task                                                                                                           | Status |
-| ------ | -------------------------------------------------------------------------------------------------------------- | ------ |
-| PRT-01 | Scaffold `apps/portal`, SSO, onboarding from a Builder estimate (`?estimate=`)                                 | ⬜     |
-| PRT-02 | Event dashboard: timeline, checklist, key dates, planner contact                                               | ⬜     |
-| PRT-03 | Live RSVP and headcount panel (realtime), dietary breakdown                                                    | ⬜     |
-| PRT-04 | **Recommendations: one-click apply** (catering, cake, seating, hire) with re-pricing                           | ⬜     |
-| PRT-05 | Order customisation (add-ons, tiers), change requests to the planner                                           | ⬜     |
-| PRT-06 | Payment schedule: deposits and milestones (Stripe: cards, Apple Pay, Google Pay, Afterpay), tax invoices (PDF) | ⬜     |
-| PRT-07 | Interactive seating chart (drag and drop, tables from `logistics`, guest assignment, print)                    | ⬜     |
-| PRT-08 | Budget tracker                                                                                                 | ⬜     |
-| PRT-09 | Planner chat (realtime, attachments)                                                                           | ⬜     |
-| PRT-10 | Co-hosts and family collaborators (roles)                                                                      | ⬜     |
-| PRT-11 | Documents (contracts, run-sheet PDF), e-signature acceptance of terms                                          | ⬜     |
-
-### Phase 4: Vendor portal `vendors` and Admin `admin` (≈ 6–8 weeks) 🟨 (Admin Core Built)
-
-| ID     | Task                                                                                                                                      | Status |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| VEN-01 | Scaffold `apps/vendors`, vendor signup, organisation, **ABN Lookup validation**                                                           | ⬜     |
-| VEN-02 | Compliance uploads (public liability certificate of currency, food safety, RSA, liquor licence, WWCC where relevant) with expiry tracking | ⬜     |
-| VEN-03 | Stripe Connect Express onboarding (AU) and payout dashboard                                                                               | ⬜     |
-| VEN-04 | Service catalogue (services, tiers, prices incl. GST, photos), availability calendar                                                      | ⬜     |
-| VEN-05 | Quotes and bookings inbox (accept, decline, counter), run-sheets per booking                                                              | ⬜     |
-| VEN-06 | Reviews (verified, post-event only)                                                                                                       | ⬜     |
-| ADM-01 | Expand Admin Lite into the full CRM pipeline (leads → proposals → booked, built in `apps/admin` & `/admin`)                               | ✅     |
-| ADM-02 | Proposal builder (from estimates and packages), send, accept, deposit link                                                                | ⬜     |
-| ADM-03 | Event command centre: run-sheets, RSVP bridge recommendations, APP 3 masked dietary reveal (`apps/marketing/app/[locale]/admin`)          | ✅     |
-| ADM-04 | Vendor verification queue (ABN & $20M PLI compliance matrix built in `/admin`; full approval queue workflow next)                         | 🟨     |
-| ADM-05 | Inventory (hire stock, barcodes, reservations, dispatch and return, damage)                                                               | ⬜     |
-| ADM-06 | Finance: margin per event, ATO GST report (`splitIncGstCents`), 12% commission view in `/admin` (Xero sync & payout release next)         | 🟨     |
-| ADM-07 | Content admin (until a CMS exists): packages, venues, prices                                                                              | ⬜     |
-| ADM-08 | Audit log viewer (live in `/admin`), user and role management, MFA enforcement                                                            | 🟨     |
-
-### Phase 5: Mobile, iOS and Android (≈ 6 weeks) ⬜
-
-| ID     | Task                                                                                                                     | Status |
-| ------ | ------------------------------------------------------------------------------------------------------------------------ | ------ |
-| MOB-01 | Scaffold Expo (Router, NativeWind, i18n RTL, secure token storage), role-based navigation                                | ⬜     |
-| MOB-02 | Customer mode: event home, RSVP live counts with push, guest list, planner chat, quick photo sharing to the wall         | ⬜     |
-| MOB-03 | Crew mode: roster, **offline event pack**, camera QR scanner, duplicate detection, guest and table lookup, dietary flags | ⬜     |
-| MOB-04 | Crew setup and delivery checklists with photo evidence                                                                   | ⬜     |
-| MOB-05 | Offline sync engine, conflict rules, background sync                                                                     | ⬜     |
-| MOB-06 | Push notifications (Expo), deep links into `invitation.` and `app.`                                                      | ⬜     |
-| MOB-07 | EAS build, store listings, privacy nutrition labels, TestFlight and internal testing                                     | ⬜     |
-
-### Phase 6: Windows, Tauri (≈ 6 weeks) ⬜
-
-| ID     | Task                                                                                                                    | Status |
-| ------ | ----------------------------------------------------------------------------------------------------------------------- | ------ |
-| WIN-01 | Scaffold Tauri v2 (React UI on shared packages), auth, auto-updater, MSI or MSIX signing                                | ⬜     |
-| WIN-02 | Inventory and warehouse: barcode HID scanning, stock moves, dispatch and returns                                        | ⬜     |
-| WIN-03 | 2D floorplan and seating editor (venue templates, tables, dance floor, ceremony setup placement), sync with `app.`      | ⬜     |
-| WIN-04 | Batch printing: QR place cards, table numbers, welcome boards (print templates, printer selection)                      | ⬜     |
-| WIN-05 | Offline check-in kiosk (event pack, scanner or camera, kiosk lockdown mode)                                             | ⬜     |
-| WIN-06 | Live Display Controller: second screen or projector, slideshow, tribute reel, moderated photo wall, offline media cache | ⬜     |
-
-### Phase 7: Marketplace growth and expansion (ongoing) ⬜
-
-- Self-serve marketplace booking (customers book vendors directly, with commission)
-- Sydney and Melbourne launch (turn on `city.json` status, local venues and vendors, local SEO pages)
-- B2B subscriptions for corporate hosts, and premium vendor placement
-- Apple and Google Wallet passes, live-stream coordination, multi-kiosk LAN sync
-- Additional languages: Arabic (RTL), Chinese, Hindi (built on `@managevent/i18n` parity architecture)
+**What exists today** (for orientation only): `apps/api` (Hono, 48 operations), `apps/worker`, `apps/marketing` (www and the staff console at `/admin`) and `apps/invitation` (host studio, guest site, door check-in) run end to end on PostgreSQL locally. None of it has been deployed from this branch yet. See `README.md`.
 
 ---
 
-## B. Business track (parallel)
+## 1. Product: web (`apps/marketing`, `apps/invitation`, staff console)
 
-| ID     | Task                                                                                                                                              | When                    | Status |
-| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------ |
-| BIZ-01 | Confirm the entity structure (Appilico as operator; is Managevent a business name or a separate company?), ABN and ACN, GST registration          | Before any paid booking | ⬜     |
-| BIZ-02 | $20M public liability plus professional indemnity insurance. Check whether event cancellation cover is offered to customers.                      | Before launch           | ⬜     |
-| BIZ-03 | Draft terms, refund and cancellation policy, privacy policy, vendor terms. Get legal review (ACL, unfair contract terms).                         | Phase 1                 | 🟨     |
-| BIZ-04 | Stripe AU account, Connect platform profile, Afterpay enablement, confirm D-07 and D-08                                                           | Phase 0–1               | ⬜     |
-| BIZ-05 | Twilio AU: register the alphanumeric sender id, approve WhatsApp Business templates                                                               | Phase 2                 | ⬜     |
-| BIZ-06 | Perth supplier network: 3 caterers (including Halal), 2 cake makers, 2 florists, 2 DJs or MCs, 2 photographers, a hire partner, a marquee partner | Phase 1–2               | ⬜     |
-| BIZ-07 | Venue relationships: Swan Valley, Fremantle, council halls (Joondalup, Canning, Melville), riverside function centre                              | Phase 1–2               | ⬜     |
-| BIZ-08 | Content: real photography, a cultural content reviewer, a licensed music library                                                                  | Phase 1–2               | ⬜     |
-| BIZ-09 | Google Business Profile (Perth), Instagram and community channels, launch offer (see `docs/business/PERTH_STRATEGY.md`)                           | Phase 1                 | 🟨     |
-| BIZ-10 | Crew hiring and training: RSA, food handling, WWCC for kids' events, uniforms, run-sheet training                                                 | Phase 3–5               | ⬜     |
-| BIZ-11 | Accounting: Xero setup, chart of accounts for events (deposits as liabilities until delivery), BAS cadence                                        | Phase 1                 | ⬜     |
+| ID     | Status | Outcome                                                                      | Acceptance criterion                                                                                                                                                                                                                                                 |
+| ------ | ------ | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| MKT-05 | ⬜     | A packages catalogue with a detail page per package.                         | `/packages` and `/packages/[slug]` render every file in `content/packages` (two today), validated at build, listed in the sitemap, linked from `/pricing`. Prices shown only once the rates are approved (DEC-01).                                                   |
+| MKT-10 | ⬜     | Programmatic local SEO for Perth, with other cities gated.                   | `/perth` and `/perth/[ceremony]` render from `content/locations/perth` and `content/ceremonies`; cities whose `city.json` status is `hidden` return 404; a CI step fails any indexable city page below the agreed word count.                                        |
+| MKT-14 | ⬜     | Privacy-respecting analytics and conversion events, behind a consent banner. | A consent banner on www and the public invitation pages; no analytics request before consent; enquiry submit and sign-up fire conversion events; the provider stores data in Australia or an ADR allows otherwise (`AGENTS.md` §3).                                  |
+| INV-04 | ⬜     | AI wording suggestions in the studio, including a memorial tone.             | The studio wording step offers "Suggest wording" that calls `packages/ai` through `apps/api` (a new operation with quota and PII scrubber); memorial events use the memorial tone guard; a test proves no guest names reach the prompt.                              |
+| INV-07 | 🟨     | Responses export as XLSX as well as CSV.                                     | CSV export (UTF-8 BOM) exists. Missing: an `.xlsx` download from the Responses tab with the same columns, health data only with the existing consent rules, and a test that opens the file.                                                                          |
+| INV-08 | 🟨     | Bulk SMS and WhatsApp invitations and reminders on Premium.                  | Email campaigns and `wa.me` share links exist. Missing: Twilio sending (`packages/notifications` has wrappers no app uses yet) with consent, quiet hours and suppression, a signed delivery webhook, and an entitlement check on `bulkSmsAndWhatsapp`. Needs BIZ-05. |
+| INV-11 | ⬜     | Media uploads and a moderated live photo wall with a `/display` screen.      | Hosts upload images and music to R2 through signed URLs (`packages/storage`) instead of pasting links; guests post photos; hosts approve them (never auto-approved for memorials); `/display` shows approved photos. Needs D-03 and D-04.                            |
+| INV-14 | 🟨     | The Appilico anniversary event and its old links are imported.               | The API already resolves `LegacySlug` rows (`/legacy/...`, `/anniversary/...`). Missing: an import script that creates the event and its `LegacySlug` rows, run once against production, with every old link answering 200 or a real 404.                            |
+| INV-17 | ⬜     | Hosts can invite co-hosts to manage an event.                                | A host invites a co-host by email; the co-host signs in and can edit guests and read responses but cannot delete the event or change the plan (`canCoHostPerform` in `packages/auth`); revoking access takes effect on the next request.                             |
+| INV-18 | ⬜     | Invitation browser tests run in CI, on Safari too.                           | CI runs `apps/invitation` `test:e2e` against PostgreSQL and the API (today only the marketing suite runs), and a WebKit (iPhone Safari) project passes the guest journey.                                                                                            |
+| ADM-02 | ⬜     | Staff build proposals from an enquiry and send them.                         | From an enquiry in `/admin`, staff create a proposal from packages or an estimate, email it, and the customer accepts it through a link; acceptance moves the enquiry to `BOOKED` and creates a deposit link (needs PRT-06).                                         |
+| ADM-03 | ⬜     | An event command centre for staff.                                           | `/admin/events/[id]` shows the run-sheet, tasks, crew and vendor assignments, and the latest headcount recommendations from the worker; dietary health detail is masked until staff reveal it, and every reveal is audited.                                          |
+| ADM-04 | ⬜     | Vendor verification queue.                                                   | Staff approve or reject vendor documents with a reason; expiring certificates raise an alert (the worker's `vendor.compliance_expiry_check` schedule gets a handler). Needs VEN-02.                                                                                  |
+| ADM-05 | ⬜     | Hire inventory.                                                              | Stock items with barcodes, reservations against events, dispatch, return and damage records, with no double booking of an item.                                                                                                                                      |
+| ADM-06 | ⬜     | Finance view.                                                                | Margin per event, a GST report from `packages/payments`, a BAS export, Xero sync and payout release; every figure is integer AUD cents and matches the tax invoices.                                                                                                 |
+| ADM-07 | ⬜     | Staff edit packages, venues and prices without a code change.                | A content admin (or the CMS chosen in D-06) edits what `content/` holds today, validated against `content/schemas`, with an audit entry per change.                                                                                                                  |
+| ADM-08 | ⬜     | Audit log viewer and staff user management.                                  | `/admin` lists audit entries with filters, and a `SUPER_ADMIN` can invite, change the role of, and disable staff without the `staff:create` CLI. Two-factor stays mandatory for staff.                                                                               |
 
----
+## 2. Product: portal, vendors, mobile, desktop
 
-## C. Milestones
+None of these apps exist yet: `apps/portal`, `apps/vendors`, `apps/mobile` and `apps/desktop-win` hold only an `AGENTS.md` and a placeholder `package.json`. `packages/ui-native` and `packages/integrations` are placeholders too.
 
-| Milestone                                | Definition                                                                               | Status |
-| ---------------------------------------- | ---------------------------------------------------------------------------------------- | ------ |
-| **M0: Foundations live**                 | Phase 0 exit criteria are met (`packages/*`, `apps/api`, `apps/worker` built & tested)   | ✅     |
-| **M1: Public launch (Perth)**            | `www` is live, leads flow into `/admin`, and the business track BIZ-01 to BIZ-03 is done | 🟨     |
-| **M2: Invitations live**                 | `invitation.` is built (`INV-01`…`INV-15`); awaiting cloud deployment & first live pass  | 🟨     |
-| **M3: First fully digital agency event** | A booked event uses the RSVP bridge, the portal, payments and the seating chart          | ⬜     |
-| **M4: Marketplace beta**                 | 10 verified vendors take bookings through the platform                                   | ⬜     |
-| **M5: On-site tech**                     | The crew app and Windows kiosk are used at a live event                                  | ⬜     |
-| **M6: Second city**                      | Sydney or Melbourne is `live`                                                            | ⬜     |
+### Customer portal (`app.managevent.com.au`, `apps/portal`)
+
+| ID     | Status | Outcome                                                            | Acceptance criterion                                                                                                                                                        |
+| ------ | ------ | ------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PRT-01 | ⬜     | The portal app exists with single sign-on and estimate onboarding. | `apps/portal` signs in with the same Better Auth session as `invitation.`; `?estimate=` turns a www estimate into a draft event.                                            |
+| PRT-02 | ⬜     | Event dashboard.                                                   | Timeline, checklist, key dates and planner contact for each of the customer's events.                                                                                       |
+| PRT-03 | ⬜     | Live RSVP and headcount panel.                                     | Headcount and per-diet counts update when a guest replies on `invitation.`, without reloading (realtime provider per D-03).                                                 |
+| PRT-04 | ⬜     | Apply logistics recommendations in one click.                      | The recommendation sets the worker already writes on `headcount.changed` are shown, and applying one re-prices the order with GST from `packages/payments`.                 |
+| PRT-05 | ⬜     | Order customisation and change requests.                           | Customers add add-ons or change tiers; changes go to the planner as requests, not silent edits.                                                                             |
+| PRT-06 | ⬜     | Payment schedule and tax invoices.                                 | Deposits and milestones through Stripe (cards, Apple Pay, Google Pay, Afterpay); each payment produces an ATO tax invoice PDF with ABN and GST. Needs BIZ-01, BIZ-04, D-07. |
+| PRT-07 | ⬜     | Interactive seating chart.                                         | Drag-and-drop tables sized by `packages/logistics`, guest assignment from the guest list, printable.                                                                        |
+| PRT-08 | ⬜     | Budget tracker.                                                    | Planned versus committed spend per category in AUD cents.                                                                                                                   |
+| PRT-09 | ⬜     | Planner chat.                                                      | Realtime messages with attachments between customer and planner, stored in Australia.                                                                                       |
+| PRT-10 | ⬜     | Family collaborators on the portal.                                | Roles for co-hosts and family on portal events, consistent with INV-17.                                                                                                     |
+| PRT-11 | ⬜     | Documents and terms acceptance.                                    | Contracts and run-sheet PDFs per event, with recorded acceptance of the terms.                                                                                              |
+
+### Vendor portal and marketplace (`vendors.managevent.com.au`, `apps/vendors`)
+
+| ID     | Status | Outcome                                               | Acceptance criterion                                                                                                        |
+| ------ | ------ | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| VEN-01 | ⬜     | Vendor sign-up with ABN validation.                   | A vendor creates an organisation; the ABN is checked against ABN Lookup (`packages/integrations`, not built yet).           |
+| VEN-02 | ⬜     | Compliance documents with expiry tracking.            | Public liability, food safety, RSA, liquor licence and WWCC uploads with expiry dates, stored privately in R2.              |
+| VEN-03 | ⬜     | Stripe Connect Express onboarding and payouts.        | A vendor completes AU Connect onboarding and sees payouts; marketplace commission is taken per booking. Needs BIZ-04, D-07. |
+| VEN-04 | ⬜     | Service catalogue and availability.                   | Services and tiers with GST-inclusive prices and photos, plus an availability calendar.                                     |
+| VEN-05 | ⬜     | Quotes and bookings inbox.                            | Accept, decline or counter a request; a run-sheet per booking.                                                              |
+| VEN-06 | ⬜     | Verified reviews.                                     | Only customers of a delivered booking can review, after the event.                                                          |
+| MKP-01 | ⬜     | Self-serve marketplace booking.                       | A customer books a verified vendor directly and pays through Connect, with commission recorded. After M4.                   |
+| MKP-02 | ⬜     | Corporate subscriptions and premium vendor placement. | Plans defined in `docs/business/PRICING_MODEL.md` and billed through Stripe.                                                |
+
+### Mobile (`apps/mobile`, Expo)
+
+| ID     | Status | Outcome                                         | Acceptance criterion                                                                                                              |
+| ------ | ------ | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| MOB-01 | ⬜     | The Expo app exists with role-based navigation. | Expo Router, NativeWind, secure token storage; customer and crew modes by role.                                                   |
+| MOB-02 | ⬜     | Customer mode.                                  | Event home, live RSVP counts with push, guest list, planner chat, photo sharing to the wall (INV-11).                             |
+| MOB-03 | ⬜     | Crew mode with an offline event pack.           | Roster, camera QR scanning against the signed passes the API already issues, duplicate detection, guest and table lookup offline. |
+| MOB-04 | ⬜     | Crew checklists with photo evidence.            | Setup and delivery checklists that sync when back online.                                                                         |
+| MOB-05 | ⬜     | Offline sync engine.                            | Documented conflict rules and background sync, tested with a check-in made offline on two devices.                                |
+| MOB-06 | ⬜     | Push notifications and deep links.              | Expo push; links open the right screen for `invitation.` and `app.` URLs.                                                         |
+| MOB-07 | ⬜     | Store release.                                  | EAS builds, store listings, privacy labels, TestFlight and internal testing tracks.                                               |
+
+### Windows (`apps/desktop-win`, Tauri v2)
+
+| ID     | Status | Outcome                                    | Acceptance criterion                                                                        |
+| ------ | ------ | ------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| WIN-01 | ⬜     | The Tauri app exists, signed and updating. | Auth, auto-updater, signed MSI or MSIX.                                                     |
+| WIN-02 | ⬜     | Warehouse with barcode scanning.           | HID scanner stock moves, dispatch and returns against ADM-05.                               |
+| WIN-03 | ⬜     | Floorplan and seating editor.              | 2D venue layouts that sync with PRT-07.                                                     |
+| WIN-04 | ⬜     | Batch printing.                            | QR place cards, table numbers and welcome boards with printer selection.                    |
+| WIN-05 | ⬜     | Offline check-in kiosk.                    | Event pack, scanner or camera, kiosk lockdown; results sync to the API afterwards.          |
+| WIN-06 | ⬜     | Live display controller.                   | Second-screen slideshow, tribute reel and moderated photo wall with an offline media cache. |
+
+## 3. Platform and ops
+
+| ID     | Status | Outcome                                              | Acceptance criterion                                                                                                                                                                                                                                                                |
+| ------ | ------ | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| OPS-01 | ⬜     | This release is live on the Sydney VPS.              | The four Docker images are built (CI's image job is the first build; none was built locally), the approval-gated `Deploy` workflow rolls them out, migration `20261112000000_invitation_platform` is applied, and every step of the go-live checklist in `DEPLOYMENT.md` is ticked. |
+| OPS-02 | ⬜     | Email works against the real provider.               | Resend domain verified; a real enquiry, an invitation, a reminder, a magic link and a password reset each arrive, and `GET /v1/me` reports the email capabilities as on.                                                                                                            |
+| OPS-03 | ⬜     | Payments work against the real provider.             | One live Stripe Checkout for the Premium Event Pass upgrades the event through the signed webhook, and a refund is rehearsed. Needs BIZ-04.                                                                                                                                         |
+| OPS-04 | ⬜     | Demo invitations are seeded in production.           | `seed:demo` has run on the server and the six sample invitations open from the invitation home page.                                                                                                                                                                                |
+| OPS-05 | ⬜     | Backups leave the server.                            | `infra/vps/backup.sh` copies to an off-server bucket (D-18) and a restore drill from that copy succeeds.                                                                                                                                                                            |
+| OPS-06 | ⬜     | Outages are noticed by a machine.                    | An external uptime check on `www.`, `invitation.` and `api.` alerts a person; server errors reach an error tracker hosted in Australia or allowed by an ADR.                                                                                                                        |
+| OPS-07 | ⬜     | The apex domain works.                               | `managevent.com.au` redirects to `www` over HTTPS; the ACME contact mailbox in the Caddyfile exists.                                                                                                                                                                                |
+| OPS-08 | ⛔     | A staging environment and the right server size.     | D-19 (staging) and D-17 (2 GB or 4 GB plan) are decided and carried out.                                                                                                                                                                                                            |
+| OPS-09 | ⬜     | Creating an event is idempotent.                     | `POST /v1/events` honours `Idempotency-Key`, so a retried or double-tapped create returns the first event instead of a second one; a DB test proves it.                                                                                                                             |
+| OPS-10 | ⬜     | Staff sessions expire after 8 hours.                 | Sessions of `PLANNER_STAFF` and `SUPER_ADMIN` users end 8 hours after sign-in (hosts keep 30 days); a test covers both.                                                                                                                                                             |
+| OPS-11 | ⬜     | Rate limits survive a restart and a second instance. | Limits move from API process memory to PostgreSQL (or another shared store) before more than one API instance runs.                                                                                                                                                                 |
+
+## 4. Compliance and privacy
+
+| ID     | Status | Outcome                                          | Acceptance criterion                                                                                                                                                                                                 |
+| ------ | ------ | ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PRV-01 | 🟨     | Dietary and allergy data is deleted on schedule. | `retention.cleanup` is declared in `apps/worker/src/schedules.ts` but has no job handler, so it never runs. Missing: the handler that clears encrypted health fields 90 days after the event, registered and tested. |
+| PRV-02 | ⬜     | Legal pages are reviewed and final.              | `/privacy`, `/terms` and `/accessibility` are reviewed by a lawyer (ACL, unfair contract terms, APPs); a refund and cancellation policy and vendor terms are published. Tracks BIZ-03.                               |
+| PRV-03 | ⬜     | Consent for analytics and marketing is recorded. | Covered by MKT-14; the privacy policy names every processor and where it stores data.                                                                                                                                |
+
+## 5. Business and founder decisions
+
+### Founder decisions
+
+| ID     | Status | Decision                                    | Acceptance criterion                                                                                                                                                                             |
+| ------ | ------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| DEC-01 | ⛔     | Estimator and package rates.                | The rates in `apps/marketing/components/event-estimator.tsx` (`DECISION-NEEDED(pricing)`) and `packages/pricing` are replaced by founder-approved figures, or the estimator is withdrawn (D-16). |
+| DEC-02 | ⛔     | Plus-ones on the Free plan.                 | Decide whether guest-added plus-ones count toward the 30-guest Free limit (`DECISION-NEEDED` in `apps/api/src/modules/guest-site/service.ts`), and update the contract.                          |
+| DEC-03 | ⛔     | Tax invoice for the $69 Premium Event Pass. | Decide whether a pass purchase issues an ATO tax invoice (none is issued today); if yes, implement it with `buildTaxInvoice` once the ABN exists (BIZ-01).                                       |
+| DEC-04 | ⛔     | Open decisions in `OPEN_DECISIONS.md`.      | D-03 to D-12 and D-17 to D-19 are each closed or deliberately deferred, with an ADR where they change the stack.                                                                                 |
+
+### Business track
+
+| ID     | Status | Outcome                                                                          | Acceptance criterion                                                                                                          |
+| ------ | ------ | -------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| BIZ-01 | ⛔     | Entity, ABN and ACN, GST registration.                                           | Real ABN on tax invoices and the site footer (D-10). Before any paid booking.                                                 |
+| BIZ-02 | ⬜     | $20M public liability and professional indemnity insurance.                      | Certificates of currency held before the first booked event.                                                                  |
+| BIZ-03 | 🟨     | Legal review of the draft terms, privacy policy, refund policy and vendor terms. | Drafts exist on the site; a lawyer's sign-off is recorded (see PRV-02).                                                       |
+| BIZ-04 | ⬜     | Stripe AU account, Connect platform profile, Afterpay.                           | Live keys available for OPS-03; D-07 and D-08 confirmed.                                                                      |
+| BIZ-05 | ⬜     | Twilio AU sender id and WhatsApp templates.                                      | Alphanumeric sender registered and templates approved, unblocking INV-08.                                                     |
+| BIZ-06 | ⬜     | Perth supplier network.                                                          | Signed terms with caterers (including Halal), cake makers, florists, DJs or MCs, photographers, a hire and a marquee partner. |
+| BIZ-07 | ⬜     | Venue relationships.                                                             | Written agreements with the venues the `/venues` page names, or the page says they are not partners.                          |
+| BIZ-08 | ⬜     | Real photography, a cultural content reviewer, a licensed music library.         | Stock or placeholder imagery replaced; ceremony copy reviewed; music licences on file.                                        |
+| BIZ-09 | 🟨     | Google Business Profile, Instagram and community channels, launch offer.         | Profiles live and linked from the site.                                                                                       |
+| BIZ-10 | ⬜     | Crew hiring and training.                                                        | RSA, food handling, WWCC for kids' events, uniforms and run-sheet training recorded.                                          |
+| BIZ-11 | ⬜     | Accounting.                                                                      | Xero set up with deposits held as liabilities until delivery; BAS cadence agreed.                                             |
+| BIZ-12 | ⬜     | Brand logo and wordmark.                                                         | Final artwork replaces the current `BrandLogo` in `packages/ui/src/brand` (D-11).                                             |
+| BIZ-13 | ⬜     | Second city.                                                                     | A second city's `city.json` is set to `live` with local venues, vendors and SEO pages (needs MKT-10).                         |
+
+## Milestones
+
+| Milestone                            | Reached when                                                                     |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| M1: Public launch (Perth)            | OPS-01, OPS-02 and OPS-07 are done, and BIZ-01 to BIZ-03 are done.               |
+| M2: Invitations paid and live        | M1, plus OPS-03 and OPS-04.                                                      |
+| M3: First fully digital agency event | A booked event uses the RSVP bridge, the portal, payments and the seating chart. |
+| M4: Marketplace beta                 | Ten verified vendors take bookings through the platform.                         |
+| M5: On-site tech                     | The crew app and the Windows kiosk are used at a live event.                     |
+| M6: Second city                      | BIZ-13 is done.                                                                  |

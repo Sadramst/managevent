@@ -6,6 +6,5 @@ import { absoluteUrl, routes } from "@/lib/urls";
 // never listed.
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  if (process.env.VERCEL_ENV === "preview") return [];
   return [routes.home, routes.templates].map((path) => ({ url: absoluteUrl(path) }));
 }

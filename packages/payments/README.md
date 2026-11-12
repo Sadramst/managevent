@@ -15,3 +15,27 @@ const line = priceLineFromUnitIncGst({ qty: 80, unitPriceIncGstCents: 12500 });
 const totals = sumPricedLines([line]);
 console.log(formatAudCents(totals.totalIncGstCents, { suffixIncGst: true }));
 ```
+
+## Stripe Checkout (Premium Event Pass)
+
+`createStripeCheckoutClient()` wraps the real `stripe` SDK: create a Checkout Session, retrieve it,
+and verify a webhook. It needs a real `STRIPE_SECRET_KEY` (and `STRIPE_WEBHOOK_SECRET` for webhooks).
+There is no mock fallback: without credentials it throws `PaymentsNotConfiguredError`, which the API
+reports as `503 PAYMENTS_NOT_CONFIGURED`. The older helpers in `stripe.ts` are test-mode descriptors
+only and must not be used for real payments.
+
+```ts
+import { createStripeCheckoutClient, isStripeCheckoutConfigured } from "@managevent/payments";
+
+if (isStripeCheckoutConfigured()) {
+  const stripe = createStripeCheckoutClient();
+  const { checkoutUrl } = await stripe.createInvitationUpgradeSession({
+    invitationId,
+    eventId,
+    userId,
+    successUrl,
+    cancelUrl,
+    idempotencyKey,
+  });
+}
+```

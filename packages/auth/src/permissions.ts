@@ -181,7 +181,8 @@ export const PERMISSION_MATRIX: Readonly<
     SUPER_ADMIN: { scope: "all" },
   },
   "checkin:scan": {
-    CUSTOMER_HOST: { scope: "none" },
+    // A self-serve host (owner or editor) runs their own door; VIEWER co-hosts cannot scan.
+    CUSTOMER_HOST: { scope: "own", coHostRoles: ["OWNER", "EDITOR"] },
     GUEST: { scope: "none" },
     VENDOR: { scope: "none" },
     PLANNER_STAFF: { scope: "all" },

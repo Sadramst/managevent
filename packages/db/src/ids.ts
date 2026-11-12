@@ -50,6 +50,7 @@ export const ID_PREFIXES = {
   auditLog: "aud_",
   consentRecord: "cns_",
   unsubscribe: "uns_",
+  webhookEvent: "whk_",
 } as const;
 
 export type EntityKey = keyof typeof ID_PREFIXES;

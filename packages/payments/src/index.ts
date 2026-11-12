@@ -2,7 +2,8 @@
  * @managevent/payments
  *
  * Money (AUD integer cents), Australian GST (10%) per-line rounding and summation,
- * ATO Tax Invoice builder, invitation plans and entitlements, and Stripe test-mode wrappers.
+ * ATO Tax Invoice builder, invitation plans and entitlements, real Stripe Checkout (`./checkout`),
+ * and the legacy Stripe test-mode wrappers.
  */
 
 export {
@@ -27,6 +28,21 @@ export {
   formatTaxInvoiceNumber,
   type PaymentScheduleMilestone,
 } from "./invoice.js";
+
+export {
+  type CheckoutSessionSnapshot,
+  type CreateInvitationUpgradeSessionParams,
+  createStripeCheckoutClient,
+  type InvitationUpgradeSession,
+  isStripeCheckoutConfigured,
+  isStripeWebhookConfigured,
+  type PaymentsConfigGap,
+  PaymentsNotConfiguredError,
+  type StripeCheckoutClient,
+  type StripeCheckoutClientOptions,
+  StripeWebhookSignatureError,
+  type VerifiedStripeWebhookEvent,
+} from "./checkout.js";
 
 export {
   type BooleanEntitlementKey,

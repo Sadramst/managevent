@@ -7,6 +7,9 @@ import { resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { serve } from "@hono/node-server";
 import { createApiApp, type CreateApiAppOptions } from "./app.js";
+import { clientIpConfigFromEnv } from "./lib/client-ip.js";
+import { type ApiDeps, createDefaultDeps } from "./lib/deps.js";
+import { InMemoryJobQueue, type JobName, type JobQueue, PgBossJobQueue } from "./lib/queue.js";
 import { LeadRepository } from "./modules/crm/repo.js";
 import {
   type JobQueueProducer,
@@ -17,8 +20,14 @@ import {
 import { generateOpenApiSpec, OPENAPI_DOCUMENT_CONFIG } from "./openapi.js";
 
 export {
+  type ApiDeps,
   createApiApp,
   type CreateApiAppOptions,
+  createDefaultDeps,
+  InMemoryJobQueue,
+  type JobName,
+  type JobQueue,
+  PgBossJobQueue,
   generateOpenApiSpec,
   type JobQueueProducer,
   type LeadCreatedJobPayload,
@@ -35,6 +44,18 @@ const isMainModule =
 if (isMainModule) {
   const port = Number.parseInt(process.env.PORT ?? "4000", 10);
   const app = createApiApp();
+  const clientIpConfig = clientIpConfigFromEnv();
+  if (process.env.NODE_ENV === "production" && !clientIpConfig.proxySecret) {
+    // Not fatal, but worth saying loudly: without the shared secret the API cannot tell the
+    // web apps' visitors apart, so they all share one rate-limit bucket per web server.
+    console.warn(
+      JSON.stringify({
+        level: "warn",
+        msg: "API_PROXY_SECRET is not set: forwarded client addresses are ignored",
+        trustedClientIpHeader: clientIpConfig.trustedHeader,
+      }),
+    );
+  }
   serve(
     {
       fetch: app.fetch,

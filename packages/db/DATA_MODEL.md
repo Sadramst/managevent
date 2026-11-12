@@ -40,6 +40,7 @@ These follow ADR-0006.
 | `irs_`  | InventoryReservation | `tsk_` | Task              |
 | `rsh_`  | RunSheet             | `flp_` | FloorPlan         |
 | `wel_`  | WellEntry            | `uns_` | Unsubscribe       |
+| `whk_`  | WebhookEvent         |        |                   |
 
 ## Enums
 
@@ -74,7 +75,7 @@ MessageChannel       EMAIL | SMS | WHATSAPP | PUSH | IN_APP
 
 ### Marketing and CRM
 
-- **Lead:** `id`, `stage`, `source`, `name`, `email`, `phone?`, `preferredLanguage`, `preferredChannel`, `ceremonySlug?`, `eventDate?`, `dateFlexible`, `guestEstimate?`, `area?`, `message?`, `estimateId?`, `utm Json?`, `assignedToUserId?`, `marketingConsentId?`, `eventId?` (set once converted).
+- **Lead:** `id`, `stage`, `source`, `name`, `email`, `phone?`, `preferredLanguage`, `preferredChannel`, `ceremonySlug?`, `eventDate?`, `dateFlexible`, `guestEstimate?`, `area?`, `message?`, `estimateId?`, `utm Json?`, `assignedToUserId?`, `marketingConsentId?`, `eventId?` (set once converted), `notes?` (internal planner notes, never shown to the enquirer).
 - **BuilderSession:** `id`, `anonymousKey`, `userId?`, `stateJson`, `locale`, `ceremonySlug`, `updatedAt`.
 - **Estimate:** `id`, `builderSessionId`, `priceListVersion`, `lowIncGstCents`, `highIncGstCents`, `breakdownJson`, `assumptionsJson`, `shareToken`.
 
@@ -93,12 +94,12 @@ These entities mirror `content/`, and the API becomes the source once the CMS or
 - **Event:** `id`, `ownerUserId`, `title Json`, `ceremonySlug`, `experienceMode` (derived and stored), `status`, `startsAt`, `endsAt?`, `timeZone` (default `Australia/Perth`), `venueId?`, `venueFreeText?`, `lat?`, `lng?`, `guestCountTarget?`, `plannerUserId?`, `leadId?`, `isAgencyManaged`.
 - **SubEvent:** `id`, `eventId`, `title Json`, `startsAt`, `endsAt?`, `venueId?`, `venueFreeText?`, `order`.
 - **CoHost:** `eventId`, `userId`, `role CoHostRole`.
-- **Invitation:** `id`, `eventId` (1:1), `eventSlug` (unique), `templateSlug`, `themeId`, `contentJson` (bilingual wording, story, FAQ, dress code), `languages String[]`, `defaultLanguage`, `gateStyle`, `musicMediaId?`, `coverMediaId?`, `plan InvitationPlan`, `pinHash?`, `rsvpDeadline?`, `rsvpConfigJson`, `publishedAt?`, `salt` (per event, random 32 bytes; never exported), `allowForwarding`, `wallEnabled`, `wallAutoApprove` (always false when memorial), `wellMode` (`NONE` | `WISHING_WELL` | `TRIBUTE_BOOK`), `wellConfigJson`.
-- **Party:** `id`, `invitationId`, `stableId` (immutable, used for token derivation), `displayName Json`, `token` (unique per invitation), `tokenRevokedAt?`, `maxSeats`, `allowPlusOnes`, `childrenAllowed`, `tags String[]`, `tableLabel?`.
+- **Invitation:** `id`, `eventId` (1:1), `eventSlug` (unique), `templateSlug`, `themeId`, `contentJson` (bilingual wording, story, FAQ, dress code), `languages String[]`, `defaultLanguage`, `gateStyle`, `musicMediaId?`, `coverMediaId?`, `plan InvitationPlan`, `pinHash?`, `rsvpDeadline?`, `rsvpConfigJson`, `publishedAt?`, `salt` (per event, random 32 bytes; never exported), `allowForwarding`, `wallEnabled`, `wallAutoApprove` (always false when memorial), `wellMode` (`NONE` | `WISHING_WELL` | `TRIBUTE_BOOK`), `wellConfigJson`, `isDemo` (default false; sample invitations shown on the public gallery, every guest write is refused).
+- **Party:** `id`, `invitationId`, `stableId` (immutable, used for token derivation), `displayName Json`, `token` (unique per invitation; stored at creation and never recomputed on rename), `tokenRevokedAt?`, `tokenVersion` (default 0; bumped on reissue or collision), `revokedTokens String[]` (earlier tokens of a reissued link; they resolve to 410), `maxSeats`, `allowPlusOnes`, `childrenAllowed`, `tags String[]`, `tableLabel?`.
 - **Guest:** `id`, `partyId`, `stableId`, `name Json`, `email?`, `phone?`, `isChild`, `isPlusOne`, `individualToken?`, `contactConsentId?`.
 - **Rsvp:** `id`, `guestId` (unique), `status RsvpStatus`, `respondedAt`, `dietaryEncrypted String?` 🔒 (encrypted JSON `DietaryTag[]`), `allergyNotes?` 🔒, `allergySeverityEncrypted String?` 🔒 (encrypted severity), `accessibilityNotes?` 🔒, `songRequests String[]`, `messageToHost?`, `source` (`WEB` | `HOST_ENTRY` | `IMPORT`), `idempotencyKey`. No plaintext dietary or severity columns exist. API inputs remain typed health data, encrypted before persistence. `encryptRsvpWriteData()` removes plaintext keys; `decryptRsvpRecord()` restores them only in memory. Migration `20261023010000_encrypted_health_only` refuses to drop legacy values without ciphertext; backfill through the application encryption key first. `EventHeadcount.dietaryCountsJson` contains validated integer counts only, never names or individual notes.
 - **EventHeadcount:** `id`, `eventId`, `takenAt`, `adultsYes`, `childrenYes`, `maybe`, `pending`, `no`, `dietaryCountsJson` (counts only, no names), `trigger` (`RSVP` | `HOST_EDIT` | `SCHEDULED`).
-- **Pass:** `id`, `guestId?`, `partyId`, `qrPayloadSig`, `checkedInAt?`, `checkedInBy?`, `deviceId?`.
+- **Pass:** `id`, `guestId?`, `partyId`, `qrPayloadSig`, `checkedInAt?`, `checkedInBy?`, `deviceId?`, `revokedAt?` (set when the guest stops attending or is removed).
 - **LegacySlug:** `id`, `legacyPath` (unique), `partyId`, `source` (`APPILICO_ANNIVERSARY` | `APPILICO_E`).
 
 ### Orders and logistics
@@ -132,12 +133,19 @@ These entities mirror `content/`, and the API becomes the source once the CMS or
 ### Media, messaging and compliance
 
 - **MediaAsset:** `id`, `bucket` (`public` | `private`), `key`, `mime`, `bytes`, `width?`, `height?`, `durationSec?`, `blurhash?`, `uploadedByUserId?`, `uploadedByPartyId?`, `moderation`, `eventId?`, `purpose` (`WALL` | `COVER` | `GALLERY` | `MUSIC` | `DOCUMENT` | `TRIBUTE`), `exifStripped`, `retentionUntil?`.
-- **WellEntry:** `id`, `invitationId`, `partyId?`, `authorName`, `message`, `mediaId?`, `visibility` (`HOSTS_ONLY` | `WALL`), `moderation`.
+- **WellEntry:** `id`, `invitationId`, `partyId?`, `authorName`, `message`, `mediaId?`, `visibility` (`HOSTS_ONLY` | `WALL`), `moderation`, `idempotencyKey?` (unique; `${partyId}:${key}`).
 - **Message:** `id`, `channel`, `to` (hashed for analytics, plain only in the provider payload), `templateKey`, `locale`, `eventId?`, `campaignId?`, `status`, `providerId`, `sentAt`.
-- **Campaign:** `id`, `invitationId`, `channel`, `audienceFilterJson`, `scheduledAt?`, `status`, `consentAttestationUserId` (for SMS and WhatsApp bulk sends).
+  - `status` is a string: `SENT`, `FAILED`, or `NOT_CONFIGURED` (written by `lead.created` when no email provider is set; nothing was sent).
+  - `templateKey` values in use: `invitation.send`, `rsvp.reminder`, and the enquiry auto-reply and planner alert of `lead.created`.
+  - `providerId` is the provider's message id, or a stable marker when there is none (`failed:{campaignId}:{guestId}`, `lead-planner-alert:{leadId}`).
+- **Campaign:** `id`, `invitationId`, `channel`, `audienceFilterJson`, `scheduledAt?`, `status`, `consentAttestationUserId` (for bulk sends), `idempotencyKey?` (unique).
+  - `status` is a string: `QUEUED` → `SENDING` → `SENT` | `PARTIAL` | `FAILED`.
+  - `audienceFilterJson` is `{ kind: "INVITE" | "REMINDER", recipients: [{ partyId, guestId }], skipped: [{ partyId, reason }] }`. It holds ids only, never an address. The worker reads `kind` and `recipients`; `skipped` lets a replayed request return the same answer.
+  - `idempotencyKey` is stored as `{invitationId}:{kind}:{Idempotency-Key header}`, so one client key cannot resolve to another event's campaign.
 - **ConsentRecord:** `id`, `subjectType` (`USER` | `GUEST` | `LEAD`), `subjectId`, `purpose` (`MARKETING_EMAIL` | `MARKETING_SMS` | `EVENT_UPDATES` | `HEALTH_DATA_CATERING` | `PHOTO_PUBLICATION` | `TESTIMONIAL`), `granted`, `textShown`, `locale`, `at`, `ip?`, `withdrawnAt?`.
 - **Unsubscribe:** `id`, `channel`, `address` (hashed), `at`.
 - **AuditLog:** `id`, `actorUserId?`, `actorRole`, `action`, `entity`, `entityId`, `diffJson` (PII redacted), `at`, `ip?`. Append-only.
+- **WebhookEvent:** `id`, `provider` (for example `stripe`), `providerEventId`, `type`, `payloadJson` (raw provider event), `receivedAt`, `processedAt?`. Unique on (`provider`, `providerEventId`), which makes webhook handling idempotent. The API also keeps its guest RSVP submission ledger here: `provider = "guest-rsvp"`, `providerEventId = "{partyId}:{Idempotency-Key}"`, `type = "rsvp.submit"`, and a payload of `{ bodyHash, headcountId }` only (a keyed hash of the request, never the answers). A repeated RSVP request is recognised from this row, because the key on the `Rsvp` rows is overwritten by every later submission.
 
 ## Retention schedule
 
@@ -158,8 +166,20 @@ These defaults are confirmed in `docs/compliance/PRIVACY.md`.
 - `Invitation.eventSlug` is unique, and `Party(invitationId, token)` is unique.
 - `Rsvp.guestId` is unique, and `Rsvp.idempotencyKey` is unique.
 - `ScanEvent.clientUuid` is unique.
+- `WellEntry.idempotencyKey` and `Campaign.idempotencyKey` are unique when set.
+- `WebhookEvent(provider, providerEventId)` is unique.
 - `TaxInvoice.number` is unique and gapless. It is generated in a transaction from a sequence table.
 - Indexes:
   - `Event(ownerUserId)`, `Event(status, startsAt)`
   - `Lead(stage, createdAt)`
   - `MediaAsset(eventId, purpose, moderation)`
+  - `Invitation(isDemo, publishedAt)`
+  - `Party(invitationId, deletedAt)`, `Guest(partyId)`
+  - `Pass(partyId)`, `Pass(guestId)`
+  - `ScanEvent(eventId, scannedAt)`, `ScanEvent(passId)`
+  - `EventHeadcount(eventId, takenAt)`
+  - `WellEntry(invitationId, moderation, createdAt)`
+  - `Campaign(invitationId, createdAt)`
+  - `Message(eventId, templateKey, to)`, `Message(campaignId)`, `Message(providerId)`
+  - `ConsentRecord(subjectType, subjectId, purpose)`
+  - `AuditLog(entity, entityId)`, `AuditLog(at)`

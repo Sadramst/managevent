@@ -11,6 +11,13 @@ export interface WorkerCronSchedule {
 
 export const WORKER_SCHEDULES: readonly WorkerCronSchedule[] = [
   {
+    name: "invitation.email_campaign_sweep",
+    cron: "*/5 * * * *",
+    timeZone: "Australia/Perth",
+    description:
+      "Every five minutes: re-queues email campaigns whose job was lost and settles ones that never finished",
+  },
+  {
     name: "retention.cleanup",
     cron: "0 2 * * *",
     timeZone: "Australia/Perth",

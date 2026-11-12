@@ -1,107 +1,67 @@
 /**
- * `lead.created` job: sends a localised auto-reply email to the lead and a notification
- * to Managevent planners via the Resend wrapper, recording an idempotent `Message` row in Postgres.
+ * `lead.created` job: sends the auto-reply to the person who enquired and an alert with the
+ * enquiry details to the planner inbox (`LEAD_NOTIFICATION_EMAIL`), and records each send as a
+ * `Message` row.
+ *
+ * - The payload is the lead id only. The lead is loaded here, so no personal information sits in
+ *   the queue tables.
+ * - Idempotent: each email has a fixed tag stored in `Message.providerId` and sent to Resend as
+ *   the `Idempotency-Key`, so a retry never sends twice.
+ * - When email is not configured nothing is sent and a `Message` row with status
+ *   `NOT_CONFIGURED` records that. Nothing is ever reported as sent that was not.
+ * - There is no default planner address: without `LEAD_NOTIFICATION_EMAIL` only the auto-reply
+ *   goes out.
  */
-import { createHash } from "node:crypto";
 import { db, type ExtendedDbClient, generateId } from "@managevent/db";
 import { t } from "@managevent/i18n";
-import { EnabledLocaleSchema, LeadIdSchema, LeadSourceEnum } from "@managevent/validators";
+import { EnabledLocaleSchema, LeadIdSchema } from "@managevent/validators";
 import { z } from "zod";
+import { formatDayMonthYear } from "../lib/format.js";
+import {
+  createResendAdapterFromEnv,
+  type ResendEmailAdapter,
+  transactionalFromAddress,
+} from "../lib/resend.js";
+import { hashEmailAddress } from "../lib/unsubscribe-token.js";
 import type { JobDefinition } from "../registry.js";
 
+/** Extra keys from older producers (name, email, ...) are ignored. */
 export const LeadCreatedJobSchema = z.object({
   leadId: LeadIdSchema,
-  name: z.string().min(1),
-  email: z.string().email(),
-  preferredLanguage: EnabledLocaleSchema.default("en"),
-  source: LeadSourceEnum,
-  ceremonySlug: z.string().nullable().default(null),
 });
 
 export type LeadCreatedJobData = z.infer<typeof LeadCreatedJobSchema>;
 
-export interface ResendEmailPayload {
-  from: string;
-  to: string;
-  subject: string;
-  text: string;
-}
-
-export interface ResendEmailAdapter {
-  sendEmail(payload: ResendEmailPayload, idempotencyKey?: string): Promise<{ id: string }>;
-}
-
-export class ProductionResendAdapter implements ResendEmailAdapter {
-  constructor(private readonly fetchImpl: typeof fetch = fetch) {}
-
-  async sendEmail(payload: ResendEmailPayload, idempotencyKey?: string): Promise<{ id: string }> {
-    if (process.env.RESEND_DOMAIN_VERIFIED !== "true") {
-      throw new Error("Resend domain verification must be confirmed before sending email");
-    }
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) throw new Error("RESEND_API_KEY is required");
-    const response = await this.fetchImpl("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        "Content-Type": "application/json",
-        ...(idempotencyKey ? { "Idempotency-Key": idempotencyKey } : {}),
-      },
-      body: JSON.stringify(payload),
-      signal: AbortSignal.timeout(15000),
-    });
-    if (!response.ok) throw new Error(`Resend delivery failed (${response.status})`);
-    const result: unknown = await response.json();
-    if (
-      !result ||
-      typeof result !== "object" ||
-      !("id" in result) ||
-      typeof result.id !== "string"
-    ) {
-      throw new Error("Invalid Resend delivery response");
-    }
-    return { id: result.id };
-  }
-}
-
-/**
- * Default test-safe Resend email adapter (never calls live external API in local/test mode).
- */
-export class MockSafeResendAdapter implements ResendEmailAdapter {
-  async sendEmail(payload: ResendEmailPayload): Promise<{ id: string }> {
-    const hash = createHash("sha256")
-      .update(`${payload.to}:${payload.subject}`)
-      .digest("hex")
-      .slice(0, 16);
-    return { id: `re_msg_${hash}` };
-  }
-}
-
+/** `sha256(lowercased address)`: what `Message.to` stores instead of the address. */
 export function hashAddressForAnalytics(address: string): string {
-  return createHash("sha256").update(address.trim().toLowerCase()).digest("hex");
+  return hashEmailAddress(address);
 }
 
 export interface LeadCreatedJobResult {
+  status: "SENT" | "ALREADY_SENT" | "NOT_CONFIGURED" | "LEAD_NOT_FOUND";
+  /** True when this run sent nothing because an earlier run already had. */
   alreadySent: boolean;
-  autoReplyProviderId: string;
-  plannerAlertProviderId?: string;
+  autoReplySent: boolean;
+  plannerAlertSent: boolean;
+}
+
+const AUTO_REPLY_TEMPLATE = "emails.leadAutoReply";
+const PLANNER_ALERT_TEMPLATE = "emails.leadPlannerAlert";
+const LOCAL_ADMIN_URL = "http://localhost:3004";
+
+function adminLeadUrl(leadId: string): string {
+  const base = (process.env.NEXT_PUBLIC_ADMIN_URL?.trim() || LOCAL_ADMIN_URL).replace(/\/+$/, "");
+  return `${base}/leads/${leadId}`;
 }
 
 export function createLeadCreatedJob(options?: {
   dbClient?: ExtendedDbClient;
+  /** Overrides the Resend adapter (tests). Without it, `RESEND_API_KEY` decides. */
   emailAdapter?: ResendEmailAdapter;
+  /** Overrides `LEAD_NOTIFICATION_EMAIL` (tests). */
   plannerInboxEmail?: string;
 }): JobDefinition<typeof LeadCreatedJobSchema, LeadCreatedJobResult> {
   const client = options?.dbClient ?? db;
-  const emailAdapter =
-    options?.emailAdapter ??
-    (process.env.NODE_ENV === "production"
-      ? new ProductionResendAdapter()
-      : new MockSafeResendAdapter());
-  const plannerEmail =
-    options?.plannerInboxEmail ?? process.env.LEAD_NOTIFICATION_EMAIL ?? "m.sadra.mst@gmail.com";
-  const fromAddress =
-    process.env.EMAIL_FROM_TRANSACTIONAL ?? "Managevent <hello@managevent.com.au>";
 
   return {
     name: "lead.created",
@@ -114,63 +74,156 @@ export function createLeadCreatedJob(options?: {
       deadLetterQueue: "dlq.lead.created",
     },
     handler: async (payload): Promise<LeadCreatedJobResult> => {
-      const idempotentProviderTag = `lead-auto-reply:${payload.leadId}`;
-      const existingMsg = await client.message.findFirst({
-        where: { providerId: idempotentProviderTag },
+      const lead = await client.lead.findFirst({
+        where: { id: payload.leadId, deletedAt: null },
       });
-
-      if (existingMsg) {
+      if (!lead) {
         return {
-          alreadySent: true,
-          autoReplyProviderId: existingMsg.providerId,
+          status: "LEAD_NOT_FOUND",
+          alreadySent: false,
+          autoReplySent: false,
+          plannerAlertSent: false,
         };
       }
 
-      const locale = payload.preferredLanguage;
-      const autoReplySubject = t(locale, "emails.leadAutoReplySubject");
-      const autoReplyBody = t(locale, "emails.leadAutoReplyBody", { name: payload.name });
-
-      await emailAdapter.sendEmail(
-        {
-          from: fromAddress,
-          to: payload.email,
-          subject: autoReplySubject,
-          text: autoReplyBody,
-        },
-        `lead-auto-reply:${payload.leadId}`,
+      const replyTag = `lead-auto-reply:${lead.id}`;
+      const alertTag = `lead-planner-alert:${lead.id}`;
+      const recorded = await client.message.findMany({
+        where: { providerId: { in: [replyTag, alertTag] } },
+        select: { id: true, providerId: true, status: true },
+      });
+      const replyRow = recorded.find((row) => row.providerId === replyTag);
+      const replyDone = replyRow?.status === "SENT";
+      const alertDone = recorded.some(
+        (row) => row.providerId === alertTag && row.status === "SENT",
       );
 
-      const plannerSubject = t("en", "emails.leadPlannerAlertSubject", {
-        name: payload.name,
-        source: payload.source,
-      });
-      const plannerResult = await emailAdapter.sendEmail(
-        {
-          from: fromAddress,
-          to: plannerEmail,
-          subject: plannerSubject,
-          text: `Lead ID: ${payload.leadId}\nName: ${payload.name}\nEmail: ${payload.email}\nSource: ${payload.source}`,
-        },
-        `lead-planner-alert:${payload.leadId}`,
-      );
+      const parsedLocale = EnabledLocaleSchema.safeParse(lead.preferredLanguage);
+      const locale = parsedLocale.success ? parsedLocale.data : "en";
 
-      await client.message.create({
-        data: {
-          id: generateId("msg_"),
-          channel: "EMAIL",
-          to: hashAddressForAnalytics(payload.email),
-          templateKey: "emails.leadAutoReply",
-          locale,
-          status: "SENT",
-          providerId: idempotentProviderTag,
-          sentAt: new Date(),
-        },
-      });
+      const emailAdapter = options?.emailAdapter ?? createResendAdapterFromEnv();
+      if (!emailAdapter) {
+        if (!replyRow) {
+          await client.message.create({
+            data: {
+              id: generateId("msg_"),
+              channel: "EMAIL",
+              to: hashEmailAddress(lead.email),
+              templateKey: AUTO_REPLY_TEMPLATE,
+              locale,
+              status: "NOT_CONFIGURED",
+              providerId: replyTag,
+              sentAt: null,
+            },
+          });
+        }
+        return {
+          status: "NOT_CONFIGURED",
+          alreadySent: false,
+          autoReplySent: false,
+          plannerAlertSent: false,
+        };
+      }
+
+      const plannerEmail = (
+        options?.plannerInboxEmail ??
+        process.env.LEAD_NOTIFICATION_EMAIL ??
+        ""
+      ).trim();
+      const alertWanted = plannerEmail.length > 0 && !alertDone;
+      if (replyDone && !alertWanted) {
+        return {
+          status: "ALREADY_SENT",
+          alreadySent: true,
+          autoReplySent: false,
+          plannerAlertSent: false,
+        };
+      }
+
+      const from = transactionalFromAddress();
+
+      if (!replyDone) {
+        await emailAdapter.sendEmail(
+          {
+            from,
+            to: lead.email,
+            subject: t(locale, "emails.leadAutoReplySubject"),
+            text: t(locale, "emails.leadAutoReplyBody", { name: lead.name }),
+          },
+          replyTag,
+        );
+        const sentAt = new Date();
+        if (replyRow) {
+          // An earlier run recorded NOT_CONFIGURED; email has been set up since.
+          await client.message.update({
+            where: { id: replyRow.id },
+            data: { status: "SENT", sentAt },
+          });
+        } else {
+          await client.message.create({
+            data: {
+              id: generateId("msg_"),
+              channel: "EMAIL",
+              to: hashEmailAddress(lead.email),
+              templateKey: AUTO_REPLY_TEMPLATE,
+              locale,
+              status: "SENT",
+              providerId: replyTag,
+              sentAt,
+            },
+          });
+        }
+      }
+
+      if (alertWanted) {
+        const notProvided = t("en", "emails.leadValueNotProvided");
+        await emailAdapter.sendEmail(
+          {
+            from,
+            to: plannerEmail,
+            subject: t("en", "emails.leadPlannerAlertSubject", {
+              name: lead.name,
+              source: lead.source,
+            }),
+            text: t("en", "emails.leadPlannerAlertBody", {
+              name: lead.name,
+              email: lead.email,
+              phone: lead.phone ?? notProvided,
+              preferredChannel: lead.preferredChannel,
+              ceremony: lead.ceremonySlug ?? notProvided,
+              eventDate: lead.eventDate ? formatDayMonthYear(lead.eventDate) : notProvided,
+              dateFlexible: t(
+                "en",
+                lead.dateFlexible ? "emails.leadValueYes" : "emails.leadValueNo",
+              ),
+              guestEstimate: lead.guestEstimate ?? notProvided,
+              area: lead.area ?? notProvided,
+              source: lead.source,
+              message: lead.message?.trim() || notProvided,
+              leadUrl: adminLeadUrl(lead.id),
+            }),
+          },
+          alertTag,
+        );
+        await client.message.create({
+          data: {
+            id: generateId("msg_"),
+            channel: "EMAIL",
+            to: hashEmailAddress(plannerEmail),
+            templateKey: PLANNER_ALERT_TEMPLATE,
+            locale: "en",
+            status: "SENT",
+            providerId: alertTag,
+            sentAt: new Date(),
+          },
+        });
+      }
 
       return {
+        status: "SENT",
         alreadySent: false,
-        autoReplyProviderId: idempotentProviderTag,
-        plannerAlertProviderId: plannerResult.id,
+        autoReplySent: !replyDone,
+        plannerAlertSent: alertWanted,
       };
     },
   };

@@ -1,19 +1,18 @@
 /**
- * CRM service layer (`POST /v1/leads` and `GET /v1/leads`).
+ * CRM service layer (`/v1/leads`).
  *
- * Persists the lead via `LeadRepository` and enqueues the `lead.created` background job (`pg-boss`).
+ * Persists the lead via `LeadRepository` and enqueues the `lead.created` background job. The job
+ * payload carries the lead id only: the worker loads the lead itself, so no personal information
+ * sits in the queue tables.
  */
-import PgBoss from "pg-boss";
+import type { AuthActor } from "@managevent/auth";
 import type { LeadCreate, LeadResponse } from "@managevent/types";
-import { LeadRepository } from "./repo.js";
+import type { LeadDetail, LeadList, LeadListQuery, LeadUpdate } from "@managevent/validators";
+import { PgBossJobQueue } from "../../lib/queue.js";
+import { InvalidLeadAssigneeError, LeadRepository } from "./repo.js";
 
 export interface LeadCreatedJobPayload {
   leadId: string;
-  name: string;
-  email: string;
-  preferredLanguage: "en";
-  source: LeadCreate["source"];
-  ceremonySlug: string | null;
 }
 
 export interface JobQueueProducer {
@@ -21,39 +20,29 @@ export interface JobQueueProducer {
 }
 
 /**
- * Default pg-boss producer that writes directly to the `pgboss` tables in Postgres
- * so `apps/worker` can consume `lead.created` jobs asynchronously.
+ * Default producer: one long-lived pg-boss instance per process (shared `PgBossJobQueue`), so
+ * `apps/worker` can consume `lead.created` jobs. A failed enqueue is logged there and returns
+ * null; the lead is already stored and the job can be re-driven.
  */
 export class PgBossLeadQueueProducer implements JobQueueProducer {
-  private readonly connectionString: string;
+  private static sharedQueue: PgBossJobQueue | null = null;
+  private readonly queue: PgBossJobQueue;
 
-  constructor(
-    connectionString: string = process.env.DATABASE_URL ??
-      "postgresql://postgres:postgres@localhost:5432/managevent",
-  ) {
-    this.connectionString = connectionString;
-  }
-
-  async enqueueLeadCreated(
-    payload: LeadCreatedJobPayload,
-    singletonKey: string,
-  ): Promise<string | null> {
-    const boss = new PgBoss(this.connectionString);
-    await boss.start();
-    try {
-      await boss.createQueue("lead.created");
-      const jobId = await boss.send("lead.created", payload, {
-        singletonKey,
-        retryLimit: 3,
-        retryDelay: 5,
-        retryBackoff: true,
-      });
-      return jobId;
-    } finally {
-      await boss.stop({ graceful: false });
+  constructor(connectionString?: string) {
+    if (connectionString) {
+      this.queue = new PgBossJobQueue(connectionString);
+    } else {
+      PgBossLeadQueueProducer.sharedQueue ??= new PgBossJobQueue();
+      this.queue = PgBossLeadQueueProducer.sharedQueue;
     }
   }
+
+  enqueueLeadCreated(payload: LeadCreatedJobPayload, singletonKey: string): Promise<string | null> {
+    return this.queue.enqueue("lead.created", { leadId: payload.leadId }, { singletonKey });
+  }
 }
+
+export { InvalidLeadAssigneeError };
 
 export class LeadService {
   private readonly repo: LeadRepository;
@@ -76,17 +65,7 @@ export class LeadService {
 
     let jobId: string | null = null;
     if (createdNew) {
-      jobId = await this.queue.enqueueLeadCreated(
-        {
-          leadId: lead.id,
-          name: lead.name,
-          email: lead.email,
-          preferredLanguage: "en",
-          source: lead.source,
-          ceremonySlug: lead.ceremonySlug,
-        },
-        `lead.created:${lead.id}`,
-      );
+      jobId = await this.queue.enqueueLeadCreated({ leadId: lead.id }, `lead.created:${lead.id}`);
     }
 
     return { lead, createdNew, jobId };
@@ -94,5 +73,24 @@ export class LeadService {
 
   async listLeads(limit?: number): Promise<LeadResponse[]> {
     return this.repo.listLeads(limit);
+  }
+
+  /** The inbox with stage filter, search and cursor paging. */
+  async listLeadsPage(query: LeadListQuery): Promise<LeadList> {
+    return this.repo.listLeadsPage(query);
+  }
+
+  async getLead(leadId: string): Promise<LeadDetail | null> {
+    return this.repo.getLead(leadId);
+  }
+
+  /** Updates stage, notes or assignee and audits the change. Null when the lead does not exist. */
+  async updateLead(params: {
+    leadId: string;
+    input: LeadUpdate;
+    actor: AuthActor | null;
+    ipAddress?: string;
+  }): Promise<LeadDetail | null> {
+    return this.repo.updateLead(params);
   }
 }

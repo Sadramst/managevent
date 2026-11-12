@@ -189,14 +189,20 @@ The API runs through `tsx`, which compiles TypeScript on boot; on 1 vCPU this ta
 `health: starting` is normal.
 
 **Worker running but no email arrives.**
-By design: the worker uses `MockSafeResendAdapter`. `lead.created` persists a `Message`
-row and does not call Resend. A real adapter must be wired before launch.
+The worker has one real Resend adapter and no mock. It sends as soon as `RESEND_API_KEY` is
+set in its environment; there is no second switch (`RESEND_DOMAIN_VERIFIED` is no longer
+read). Without the key nothing is sent and nothing is reported as sent: `lead.created`
+records a `Message` row with status `NOT_CONFIGURED`, the API answers
+`503 EMAIL_NOT_CONFIGURED` to invitation and reminder emails, and `GET /v1/me` reports
+`emailInvitations: false`. Check that the key is present, that the sender domain is verified
+in Resend, and that `GUEST_TOKEN_PEPPER` is the same value for the API and the worker
+(unsubscribe links are signed by one and verified by the other).
 
 ## Known gaps
 
 | Gap                                                | Impact                                                                           |
 | -------------------------------------------------- | -------------------------------------------------------------------------------- |
 | `apps/marketing`, `apps/invitation` not scaffolded | No Vercel deployment possible; checklist URLs (`/i/...`, `/studio`) do not exist |
-| Worker email adapter is mocked                     | No transactional email is sent                                                   |
+| Email never sent against live Resend               | The real adapter is tested with a fake `fetch` only; verify one send per kind    |
 | No off-server database backups                     | Single point of failure; volume `managevent_db-data` is on one disk              |
 | ACME contact is a placeholder                      | `admin@managevent.com.au` in the Caddyfile — confirm the mailbox exists          |

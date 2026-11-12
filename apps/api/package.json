@@ -17,6 +17,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "seed:demo": "tsx src/cli/seed-demo.ts",
+    "staff:create": "tsx src/cli/create-staff.ts",
     "clean": "node -e \"fs.rmSync('coverage', { recursive: true, force: true })\""
   },
   "dependencies": {

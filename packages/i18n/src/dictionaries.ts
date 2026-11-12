@@ -128,8 +128,32 @@ export const enDictionary = {
     leadAutoReplyBody:
       "Dear {name}, thank you for getting in touch with Managevent. A Perth coordinator will respond within 1 business hour.",
     leadPlannerAlertSubject: "New Managevent lead: {name} ({source})",
+    leadPlannerAlertBody:
+      "A new enquiry has arrived.\n\nName: {name}\nEmail: {email}\nPhone: {phone}\nPreferred contact: {preferredChannel}\nCeremony: {ceremony}\nEvent date: {eventDate}\nDate flexible: {dateFlexible}\nGuest estimate: {guestEstimate}\nArea: {area}\nSource: {source}\n\nMessage:\n{message}\n\nOpen the lead: {leadUrl}",
+    leadValueYes: "Yes",
+    leadValueNo: "No",
+    leadValueNotProvided: "Not provided",
     invitationSubject: "You are invited to {eventTitle}",
+    invitationBody:
+      "Hello {partyName},\n\n{hosts} would love you to join them for {eventTitle} on {eventDate}.\n\nOpen your invitation and reply here:\n{inviteUrl}\n\nThis link is personal to you, so please do not forward this email.",
+    invitationHostsFallback: "Your hosts",
+    invitationMemorialSubject: "An invitation to {eventTitle}",
+    invitationMemorialBody:
+      "Hello {partyName},\n\nYou are invited by {hosts} to {eventTitle} on {eventDate}.\n\nThe details, and a place to let the family know whether you can attend, are here:\n{inviteUrl}\n\nThis link is personal to you, so please do not forward this email.",
+    rsvpReminderSubject: "A reminder to reply: {eventTitle}",
+    rsvpReminderBody:
+      "Hello {partyName},\n\nThis is a friendly reminder to reply to your invitation to {eventTitle} on {eventDate}.\n\nReply here:\n{inviteUrl}",
+    rsvpReminderMemorialSubject: "A gentle reminder: {eventTitle}",
+    rsvpReminderMemorialBody:
+      "Hello {partyName},\n\nA gentle note about {eventTitle} on {eventDate}. If you are able to, please let the family know whether you can attend.\n\n{inviteUrl}",
+    rsvpReminderDeadline: "Please reply by {deadline}.",
     unsubscribeFooter: "Managevent (Appilico) · Perth WA · Unsubscribe: {unsubscribeUrl}",
+    authMagicLinkSubject: "Your Managevent sign-in link",
+    authMagicLinkBody:
+      "Use this link to sign in to Managevent. It works once and expires in 10 minutes.\n\n{url}\n\nIf you did not ask for this link, you can ignore this email.",
+    authResetPasswordSubject: "Reset your Managevent password",
+    authResetPasswordBody:
+      "Use this link to choose a new Managevent password. It expires in 1 hour.\n\n{url}\n\nIf you did not ask to reset your password, you can ignore this email and nothing will change.",
   },
 } as const;
 

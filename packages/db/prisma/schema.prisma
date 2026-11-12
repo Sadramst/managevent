@@ -421,6 +421,7 @@ model Lead {
   guestEstimate      Int?
   area               String?
   message            String?
+  notes              String?
   estimateId         String?
   utm                Json?
   assignedToUserId   String?
@@ -631,6 +632,7 @@ model Invitation {
   wallAutoApprove Boolean        @default(false)
   wellMode        WellMode       @default(NONE)
   wellConfigJson  Json
+  isDemo          Boolean        @default(false)
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
   deletedAt       DateTime?
@@ -639,6 +641,8 @@ model Invitation {
   payments        Payment[]
   wellEntries     WellEntry[]
   campaigns       Campaign[]
+
+  @@index([isDemo, publishedAt])
 }
 
 model Party {
@@ -648,6 +652,8 @@ model Party {
   displayName     Json
   token           String
   tokenRevokedAt  DateTime?
+  tokenVersion    Int          @default(0)
+  revokedTokens   String[]     @default([])
   maxSeats        Int          @default(1)
   allowPlusOnes   Boolean      @default(false)
   childrenAllowed Boolean      @default(false)
@@ -664,6 +670,7 @@ model Party {
 
   @@unique([invitationId, token])
   @@unique([invitationId, stableId])
+  @@index([invitationId, deletedAt])
 }
 
 model Guest {
@@ -683,12 +690,14 @@ model Guest {
   party            Party     @relation(fields: [partyId], references: [id], onDelete: Cascade)
   rsvp             Rsvp?
   passes           Pass[]
+
+  @@index([partyId])
 }
 
 model Rsvp {
-  id                       String           @id
-  guestId                  String           @unique
-  status                   RsvpStatus       @default(PENDING)
+  id                       String     @id
+  guestId                  String     @unique
+  status                   RsvpStatus @default(PENDING)
   respondedAt              DateTime
   dietaryEncrypted         String?
   allergyNotes             String?
@@ -696,11 +705,11 @@ model Rsvp {
   accessibilityNotes       String?
   songRequests             String[]
   messageToHost            String?
-  source                   RsvpSource       @default(WEB)
-  idempotencyKey           String           @unique
-  createdAt                DateTime         @default(now())
-  updatedAt                DateTime         @updatedAt
-  guest                    Guest            @relation(fields: [guestId], references: [id], onDelete: Cascade)
+  source                   RsvpSource @default(WEB)
+  idempotencyKey           String     @unique
+  createdAt                DateTime   @default(now())
+  updatedAt                DateTime   @updatedAt
+  guest                    Guest      @relation(fields: [guestId], references: [id], onDelete: Cascade)
 }
 
 model EventHeadcount {
@@ -718,6 +727,8 @@ model EventHeadcount {
   updatedAt          DateTime            @updatedAt
   event              Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
   recommendationSets RecommendationSet[]
+
+  @@index([eventId, takenAt])
 }
 
 model Pass {
@@ -728,11 +739,15 @@ model Pass {
   checkedInAt  DateTime?
   checkedInBy  String?
   deviceId     String?
+  revokedAt    DateTime?
   createdAt    DateTime    @default(now())
   updatedAt    DateTime    @updatedAt
   guest        Guest?      @relation(fields: [guestId], references: [id])
   party        Party       @relation(fields: [partyId], references: [id], onDelete: Cascade)
   scanEvents   ScanEvent[]
+
+  @@index([partyId])
+  @@index([guestId])
 }
 
 model LegacySlug {
@@ -767,14 +782,14 @@ model Order {
 }
 
 model OrderLine {
-  id                   String         @id
+  id                   String        @id
   orderId              String
   kind                 OrderLineKind
   refId                String
   description          Json
   qty                  Int
   unit                 OrderLineUnit
-  currency             String         @default("AUD")
+  currency             String        @default("AUD")
   unitPriceExGstCents  Int
   amountExGstCents     Int
   gstCents             Int
@@ -782,10 +797,10 @@ model OrderLine {
   vendorOrganisationId String?
   finalNumbersDueAt    DateTime?
   logisticsKey         String?
-  createdAt            DateTime       @default(now())
-  updatedAt            DateTime       @updatedAt
-  order                Order          @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  vendorOrganisation   Organisation?  @relation(fields: [vendorOrganisationId], references: [id])
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  order                Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vendorOrganisation   Organisation? @relation(fields: [vendorOrganisationId], references: [id])
   bookings             Booking[]
 }
 
@@ -1031,6 +1046,9 @@ model ScanEvent {
   updatedAt  DateTime   @updatedAt
   pass       Pass       @relation(fields: [passId], references: [id], onDelete: Cascade)
   event      Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, scannedAt])
+  @@index([passId])
 }
 
 model FloorPlan {
@@ -1073,19 +1091,22 @@ model MediaAsset {
 }
 
 model WellEntry {
-  id           String          @id
-  invitationId String
-  partyId      String?
-  authorName   String
-  message      String
-  mediaId      String?
-  visibility   WellVisibility  @default(HOSTS_ONLY)
-  moderation   MediaModeration @default(PENDING)
-  createdAt    DateTime        @default(now())
-  updatedAt    DateTime        @updatedAt
-  deletedAt    DateTime?
-  invitation   Invitation      @relation(fields: [invitationId], references: [id], onDelete: Cascade)
-  party        Party?          @relation(fields: [partyId], references: [id])
+  id             String          @id
+  invitationId   String
+  partyId        String?
+  authorName     String
+  message        String
+  mediaId        String?
+  visibility     WellVisibility  @default(HOSTS_ONLY)
+  moderation     MediaModeration @default(PENDING)
+  idempotencyKey String?         @unique
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
+  invitation     Invitation      @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+  party          Party?          @relation(fields: [partyId], references: [id])
+
+  @@index([invitationId, moderation, createdAt])
 }
 
 model Message {
@@ -1102,6 +1123,10 @@ model Message {
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
   campaign    Campaign?      @relation(fields: [campaignId], references: [id])
+
+  @@index([eventId, templateKey, to])
+  @@index([campaignId])
+  @@index([providerId])
 }
 
 model Campaign {
@@ -1112,10 +1137,13 @@ model Campaign {
   scheduledAt              DateTime?
   status                   String
   consentAttestationUserId String
+  idempotencyKey           String?        @unique
   createdAt                DateTime       @default(now())
   updatedAt                DateTime       @updatedAt
   invitation               Invitation     @relation(fields: [invitationId], references: [id], onDelete: Cascade)
   messages                 Message[]
+
+  @@index([invitationId, createdAt])
 }
 
 model ConsentRecord {
@@ -1131,6 +1159,8 @@ model ConsentRecord {
   withdrawnAt DateTime?
   createdAt   DateTime           @default(now())
   updatedAt   DateTime           @updatedAt
+
+  @@index([subjectType, subjectId, purpose])
 }
 
 model Unsubscribe {
@@ -1156,4 +1186,22 @@ model AuditLog {
   ip          String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([entity, entityId])
+  @@index([at])
+}
+
+// Inbound provider webhooks (Stripe, Resend, Twilio): raw payload stored, deduplicated by provider event id.
+model WebhookEvent {
+  id              String    @id
+  provider        String
+  providerEventId String
+  type            String
+  payloadJson     Json
+  receivedAt      DateTime  @default(now())
+  processedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@unique([provider, providerEventId])
 }

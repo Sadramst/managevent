@@ -14,6 +14,8 @@ export interface JobRetryPolicy {
   retryDelaySec: number;
   retryBackoff: boolean;
   deadLetterQueue: string;
+  /** How long one run may take before pg-boss treats it as lost (pg-boss default: 15 minutes). */
+  expireInSeconds?: number;
 }
 
 export interface JobDefinition<TSchema extends z.ZodTypeAny, TResult = unknown> {
@@ -84,13 +86,20 @@ export class WorkerJobRegistry {
   async bindToPgBoss(boss: PgBoss): Promise<void> {
     for (const def of this.definitions.values()) {
       await boss.createQueue(def.retryPolicy.deadLetterQueue);
-      await boss.createQueue(def.name, {
+      const queueOptions = {
         name: def.name,
         deadLetter: def.retryPolicy.deadLetterQueue,
         retryLimit: def.retryPolicy.retryLimit,
         retryDelay: def.retryPolicy.retryDelaySec,
         retryBackoff: def.retryPolicy.retryBackoff,
-      });
+        ...(def.retryPolicy.expireInSeconds
+          ? { expireInSeconds: def.retryPolicy.expireInSeconds }
+          : {}),
+      };
+      await boss.createQueue(def.name, queueOptions);
+      // The API may have created the queue first (without a policy); creating it again changes
+      // nothing, so apply the retry policy and dead-letter queue explicitly.
+      await boss.updateQueue(def.name, queueOptions);
 
       await boss.work(def.name, async (jobs) => {
         for (const job of jobs) {

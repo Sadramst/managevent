@@ -13,6 +13,7 @@ import { db } from "@managevent/db";
 import {
   buildGeneratedClientSource,
   createApiClient,
+  extractOpenApiOperations,
   GENERATED_OPERATIONS,
   ManageventApiClientError,
 } from "./index.js";
@@ -29,11 +30,12 @@ describe("@managevent/api-client", () => {
     );
 
     expect(committed).toBe(expected);
-    expect(GENERATED_OPERATIONS.map((o) => `${o.method} ${o.path}`)).toEqual([
-      "GET /health",
-      "GET /v1/leads",
-      "POST /v1/leads",
-    ]);
+    // The committed operation list is whatever the API really serves, not a hand-kept list.
+    const served = extractOpenApiOperations(spec).map((o) => `${o.method} ${o.path}`);
+    expect(GENERATED_OPERATIONS.map((o) => `${o.method} ${o.path}`)).toEqual(served);
+    expect(served).toEqual(
+      expect.arrayContaining(["GET /health", "GET /v1/leads", "POST /v1/leads"]),
+    );
   });
 
   it("calls GET /health, POST /v1/leads, and handles 401/403 API errors through ManageventApiClient", async () => {

@@ -233,6 +233,12 @@ describe("@managevent/payments", () => {
       expect(hasInvitationEntitlement("PREMIUM", "qrPassesAndCheckin")).toBe(true);
       expect(hasInvitationEntitlement("PREMIUM", "automaticLogisticsBridge")).toBe(false);
       expect(hasInvitationEntitlement("AGENCY", "automaticLogisticsBridge")).toBe(true);
+
+      expect(hasInvitationEntitlement("FREE", "rsvpReminders")).toBe(false);
+      expect(hasInvitationEntitlement("PREMIUM", "rsvpReminders")).toBe(true);
+      expect(hasInvitationEntitlement("AGENCY", "rsvpReminders")).toBe(true);
+      // Memorial invitations are complimentary Premium, so reminders are included.
+      expect(hasInvitationEntitlement("FREE", "rsvpReminders", "MEMORIAL")).toBe(true);
     });
   });
 

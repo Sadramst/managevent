@@ -3,8 +3,9 @@
  */
 import { createRoute, OpenAPIHono } from "@hono/zod-openapi";
 import { HealthResponseSchema } from "@managevent/validators";
+import { createDefaultDeps } from "./lib/deps.js";
 import type { ApiEnv } from "./middleware/context.js";
-import { getLeadsRoute, postLeadRoute } from "./modules/crm/routes.js";
+import { mountApiRouters } from "./routers.js";
 
 export const healthRoute = createRoute({
   method: "get",
@@ -72,8 +73,9 @@ export function generateOpenApiSpec(): OpenApiSpecDocument {
       200,
     ),
   );
-  specApp.openapi(postLeadRoute, (c) => c.json({} as never, 201));
-  specApp.openapi(getLeadsRoute, (c) => c.json({ items: [] }, 200));
+  // The same routers the HTTP app mounts. Handlers are never invoked here, so nothing touches
+  // the database or the queue while the document is built.
+  mountApiRouters(specApp, createDefaultDeps());
 
   return specApp.getOpenAPIDocument(OPENAPI_DOCUMENT_CONFIG) as unknown as OpenApiSpecDocument;
 }

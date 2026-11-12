@@ -1,16 +1,13 @@
 /**
  * @managevent/api-client
  *
- * Typed API client generated from `@managevent/api` OpenAPI 3.1 specification,
- * with cookie/bearer authentication and unified `{ error: { code, message, details?, requestId } }` error handling.
+ * Typed client for `@managevent/api`: one resource object per API module, cookie or bearer
+ * authentication, and the unified `{ error: { code, message, details?, requestId } }` error model.
+ * Requests are validated with the request schema before they are sent, and responses with the
+ * response schema, both from `@managevent/validators`.
  */
-import type { ApiError, HealthResponse, LeadCreateInput, LeadResponse } from "@managevent/types";
-import {
-  ApiErrorSchema,
-  HealthResponseSchema,
-  LeadCreateSchema,
-  LeadResponseSchema,
-} from "@managevent/validators";
+import type { HealthResponse, LeadCreateInput, LeadResponse } from "@managevent/types";
+import { HealthResponseSchema, LeadCreateSchema, LeadResponseSchema } from "@managevent/validators";
 import { z } from "zod";
 import {
   GENERATED_API_VERSION,
@@ -22,142 +19,105 @@ import {
   type ExtractedOperation,
   extractOpenApiOperations,
 } from "./generator.js";
+import {
+  type ApiClientOptions,
+  apiPath,
+  createHttpClient,
+  type HttpClient,
+  type HttpMethod,
+  isApiError,
+  ManageventApiClientError,
+  type QueryParams,
+  type RequestOptions,
+  type ResponseSchema,
+} from "./http.js";
+import { createBillingResource } from "./resources/billing.js";
+import { createCheckInResource } from "./resources/check-in.js";
+import { createEventsResource } from "./resources/events.js";
+import { createGuestListResource } from "./resources/guest-list.js";
+import { createGuestSiteResource } from "./resources/guest-site.js";
+import { createLeadsResource } from "./resources/leads.js";
+import { createMeResource } from "./resources/me.js";
+import { createMessagingResource } from "./resources/messaging.js";
+import { createResponsesResource } from "./resources/responses.js";
+import { createWellResource } from "./resources/well.js";
 
 export {
+  type ApiClientOptions,
+  apiPath,
   buildGeneratedClientSource,
+  createBillingResource,
+  createCheckInResource,
+  createEventsResource,
+  createGuestListResource,
+  createGuestSiteResource,
+  createHttpClient,
+  createLeadsResource,
+  createMeResource,
+  createMessagingResource,
+  createResponsesResource,
+  createWellResource,
   type ExtractedOperation,
   extractOpenApiOperations,
   GENERATED_API_VERSION,
   GENERATED_OPERATIONS,
   type GeneratedOperation,
+  type HttpClient,
+  type HttpMethod,
+  isApiError,
+  ManageventApiClientError,
+  type QueryParams,
+  type RequestOptions,
+  type ResponseSchema,
 };
-
-/**
- * Error thrown by `ManageventApiClient` when the API returns a non-2xx response.
- */
-export class ManageventApiClientError extends Error {
-  public readonly status: number;
-  public readonly code: string;
-  public readonly requestId: string;
-  public readonly details?: unknown;
-
-  constructor(status: number, apiError: ApiError["error"]) {
-    super(apiError.message);
-    this.name = "ManageventApiClientError";
-    this.status = status;
-    this.code = apiError.code;
-    this.requestId = apiError.requestId;
-    this.details = apiError.details;
-  }
-}
-
-export interface ApiClientOptions {
-  /** Base URL of `apps/api` (defaults to `process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"`). */
-  baseUrl?: string;
-  /** Optional bearer token for mobile, desktop or server-to-server requests. */
-  bearerToken?: string;
-  /** Whether to include cross-subdomain SSO cookies (default: `true`). */
-  includeCredentials?: boolean;
-  /** Custom `fetch` implementation (useful for Hono `app.request` in tests). */
-  fetchImpl?: typeof fetch;
-  /** Default headers attached to every request. */
-  defaultHeaders?: Record<string, string>;
-}
 
 const LeadListResponseSchema = z.object({
   items: z.array(LeadResponseSchema),
 });
 
 export class ManageventApiClient {
-  private readonly baseUrl: string;
-  private readonly bearerToken?: string;
-  private readonly includeCredentials: boolean;
-  private readonly fetchImpl: typeof fetch;
-  private readonly defaultHeaders: Record<string, string>;
+  private readonly http: HttpClient;
+
+  /** `GET /v1/me` */
+  readonly me: ReturnType<typeof createMeResource>;
+  /** Host events and invitation editing. */
+  readonly events: ReturnType<typeof createEventsResource>;
+  /** Plan view and Premium Event Pass checkout. */
+  readonly billing: ReturnType<typeof createBillingResource>;
+  /** Guest micro-site (authenticated by the guest link). */
+  readonly guestSite: ReturnType<typeof createGuestSiteResource>;
+  /** Door list and scanning. */
+  readonly checkIn: ReturnType<typeof createCheckInResource>;
+  /** Wishing-well and tribute moderation. */
+  readonly well: ReturnType<typeof createWellResource>;
+  /** Parties, guests, CSV import and export. */
+  readonly guestList: ReturnType<typeof createGuestListResource>;
+  /** RSVP totals and the dietary matrix. */
+  readonly responses: ReturnType<typeof createResponsesResource>;
+  /** Email invitations, reminders and unsubscribe. */
+  readonly messaging: ReturnType<typeof createMessagingResource>;
+  /** Staff CRM inbox. */
+  readonly leads: ReturnType<typeof createLeadsResource>;
 
   constructor(options: ApiClientOptions = {}) {
-    this.baseUrl = (
-      options.baseUrl ??
-      (typeof process !== "undefined" ? process.env?.NEXT_PUBLIC_API_URL : undefined) ??
-      "http://localhost:4000"
-    ).replace(/\/$/, "");
-    if (options.bearerToken) {
-      this.bearerToken = options.bearerToken;
-    }
-    this.includeCredentials = options.includeCredentials ?? true;
-    this.fetchImpl = options.fetchImpl ?? fetch;
-    this.defaultHeaders = options.defaultHeaders ?? {};
-  }
-
-  private async requestJson<T>(params: {
-    method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE";
-    path: string;
-    body?: unknown;
-    headers?: Record<string, string>;
-    schema: z.ZodType<T>;
-  }): Promise<T> {
-    const headers: Record<string, string> = {
-      accept: "application/json",
-      ...this.defaultHeaders,
-      ...(params.headers ?? {}),
-    };
-
-    if (this.bearerToken) {
-      headers.authorization = `Bearer ${this.bearerToken}`;
-    }
-
-    if (params.body !== undefined) {
-      headers["content-type"] = "application/json";
-    }
-
-    const res = await this.fetchImpl(`${this.baseUrl}${params.path}`, {
-      method: params.method,
-      headers,
-      ...(this.includeCredentials ? { credentials: "include" as const } : {}),
-      ...(params.body !== undefined ? { body: JSON.stringify(params.body) } : {}),
-    });
-
-    const text = await res.text();
-    let json: unknown;
-    let parsedOk = true;
-    try {
-      json = text.length > 0 ? JSON.parse(text) : undefined;
-    } catch {
-      parsedOk = false;
-    }
-
-    if (!res.ok) {
-      const parsedErr = ApiErrorSchema.safeParse(json);
-      if (parsedOk && parsedErr.success) {
-        throw new ManageventApiClientError(res.status, parsedErr.data.error);
-      }
-      throw new ManageventApiClientError(res.status, {
-        code: `HTTP_${res.status}`,
-        message: `API request failed with status ${res.status}`,
-        requestId: res.headers.get("x-request-id") ?? "req_unknown",
-      });
-    }
-
-    if (!parsedOk) {
-      throw new ManageventApiClientError(res.status, {
-        code: `HTTP_${res.status}`,
-        message: "API returned a non-JSON response",
-        requestId: res.headers.get("x-request-id") ?? "req_unknown",
-      });
-    }
-
-    return params.schema.parse(json);
+    this.http = createHttpClient(options);
+    this.me = createMeResource(this.http);
+    this.events = createEventsResource(this.http);
+    this.billing = createBillingResource(this.http);
+    this.guestSite = createGuestSiteResource(this.http);
+    this.checkIn = createCheckInResource(this.http);
+    this.well = createWellResource(this.http);
+    this.guestList = createGuestListResource(this.http);
+    this.responses = createResponsesResource(this.http);
+    this.messaging = createMessagingResource(this.http);
+    this.leads = createLeadsResource(this.http);
   }
 
   /**
    * `GET /health`
    */
   async getHealth(): Promise<HealthResponse> {
-    return this.requestJson({
-      method: "GET",
-      path: "/health",
-      schema: HealthResponseSchema,
-    });
+    return this.http.json({ method: "GET", path: "/health", schema: HealthResponseSchema });
   }
 
   /**
@@ -167,15 +127,12 @@ export class ManageventApiClient {
     input: LeadCreateInput,
     options?: { idempotencyKey?: string },
   ): Promise<LeadResponse> {
-    const validatedInput = LeadCreateSchema.parse(input);
-    return this.requestJson({
+    return this.http.json({
       method: "POST",
       path: "/v1/leads",
-      body: validatedInput,
-      ...(options?.idempotencyKey
-        ? { headers: { "idempotency-key": options.idempotencyKey } }
-        : {}),
+      body: LeadCreateSchema.parse(input),
       schema: LeadResponseSchema,
+      ...(options?.idempotencyKey ? { options: { idempotencyKey: options.idempotencyKey } } : {}),
     });
   }
 
@@ -183,11 +140,7 @@ export class ManageventApiClient {
    * `GET /v1/leads`
    */
   async listLeads(): Promise<{ items: LeadResponse[] }> {
-    return this.requestJson({
-      method: "GET",
-      path: "/v1/leads",
-      schema: LeadListResponseSchema,
-    });
+    return this.http.json({ method: "GET", path: "/v1/leads", schema: LeadListResponseSchema });
   }
 }
 

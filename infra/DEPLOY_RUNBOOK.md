@@ -18,14 +18,19 @@ secret prompts or a private local terminal session.
 ## Environment Variable Names (No Values)
 
 - API: DATABASE_URL, DIRECT_URL, PII_ENCRYPTION_KEY, BETTER_AUTH_SECRET, BETTER_AUTH_URL, AUTH_COOKIE_DOMAIN, APP_ENV, NODE_ENV, PORT, TZ.
-- Worker: DATABASE_URL, DIRECT_URL, PII_ENCRYPTION_KEY, RESEND_API_KEY, RESEND_DOMAIN_VERIFIED, EMAIL_FROM_TRANSACTIONAL, LEAD_NOTIFICATION_EMAIL, APP_ENV, NODE_ENV, TZ.
+- Worker: DATABASE_URL, DIRECT_URL, PII_ENCRYPTION_KEY, GUEST_TOKEN_PEPPER (same value as the API), RESEND_API_KEY, EMAIL_FROM_TRANSACTIONAL, EMAIL_FROM_INVITATIONS, LEAD_NOTIFICATION_EMAIL, NEXT_PUBLIC_INVITATION_URL, NEXT_PUBLIC_ADMIN_URL, APP_ENV, NODE_ENV, TZ.
 - Marketing: API_URL, CONTACT_EMAIL, CONTACT_PHONE, VERCEL_ENV (provider-managed), NEXT_TELEMETRY_DISABLED.
 - GitHub production deployment: FLY_API_TOKEN repository secret, added by the owner, never committed.
 
 Configure sender hello@managevent.com.au and the owner's confirmed lead inbox in
-the worker environment. Both remain editable without source changes. Keep
-RESEND_DOMAIN_VERIFIED false until the owner confirms DNS changes and Resend
-reports the domain verified. Never exercise a live email send before then.
+the worker environment. Both remain editable without source changes.
+
+RESEND_API_KEY is the only email switch: the worker sends real email as soon as
+it is set, and RESEND_DOMAIN_VERIFIED is no longer read by anything. Leave
+RESEND_API_KEY unset until the owner confirms DNS changes and Resend reports
+the domain verified. Without it nothing is sent, the API answers
+503 EMAIL_NOT_CONFIGURED to invitation and reminder emails, and lead.created
+records a Message row with status NOT_CONFIGURED.
 
 ## Owner Authentication And Secrets
 

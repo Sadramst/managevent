@@ -1,3 +1,6 @@
+import { readdirSync, readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { describe, expect, it } from "vitest";
 import {
   createDbClient,
@@ -16,6 +19,23 @@ import {
   PrismaClient,
   seedDatabase,
 } from "./index.js";
+
+/**
+ * The seed mirrors `/content`, so the expected counts are whatever `/content` really holds:
+ * one ceremony and one package per JSON file, and one venue per entry in the Perth venue list.
+ */
+const contentDir = resolve(dirname(fileURLToPath(import.meta.url)), "../../../content");
+const countJsonFiles = (dir: string): number =>
+  readdirSync(resolve(contentDir, dir)).filter((file) => file.endsWith(".json")).length;
+const contentCounts = {
+  ceremonies: countJsonFiles("ceremonies"),
+  packages: countJsonFiles("packages"),
+  venues: (
+    JSON.parse(
+      readFileSync(resolve(contentDir, "locations/perth/venues.json"), "utf8"),
+    ) as unknown[]
+  ).length,
+};
 
 describe("@managevent/db", () => {
   describe("Prefixed UUIDv7 ID generator", () => {
@@ -104,9 +124,12 @@ describe("@managevent/db", () => {
   describe("Perth placeholder seed & database integration", () => {
     it("loads ceremonies, packages and Perth venues from /content", () => {
       const fixtures = loadContentSeedFixtures();
-      expect(fixtures.ceremonies.length).toBeGreaterThanOrEqual(3);
-      expect(fixtures.packages.length).toBeGreaterThanOrEqual(3);
-      expect(fixtures.venues.length).toBeGreaterThanOrEqual(8);
+      expect(contentCounts.ceremonies).toBeGreaterThan(0);
+      expect(contentCounts.packages).toBeGreaterThan(0);
+      expect(contentCounts.venues).toBeGreaterThan(0);
+      expect(fixtures.ceremonies).toHaveLength(contentCounts.ceremonies);
+      expect(fixtures.packages).toHaveLength(contentCounts.packages);
+      expect(fixtures.venues).toHaveLength(contentCounts.venues);
     });
 
     it("seeds the Postgres database and round-trips encrypted RSVP records", async () => {
@@ -115,9 +138,9 @@ describe("@managevent/db", () => {
 
       try {
         const summary = await seedDatabase(rawClient);
-        expect(summary.ceremoniesCount).toBeGreaterThanOrEqual(3);
-        expect(summary.venuesCount).toBeGreaterThanOrEqual(8);
-        expect(summary.packagesCount).toBeGreaterThanOrEqual(3);
+        expect(summary.ceremoniesCount).toBe(contentCounts.ceremonies);
+        expect(summary.venuesCount).toBe(contentCounts.venues);
+        expect(summary.packagesCount).toBe(contentCounts.packages);
 
         // Verify round-trip of encrypted RSVP via the Prisma extension
         const userId = generateId("usr_");

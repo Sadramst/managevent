@@ -8,7 +8,10 @@
 export {
   buildBetterAuthConfig,
   createManageventAuth,
+  logAuthEvent,
   type ManageventAuthConfigOptions,
+  MFA_REQUIRED_ROLES,
+  TRUSTED_CLIENT_IP_HEADER,
 } from "./better-auth.js";
 
 export { prismaAdapter } from "better-auth/adapters/prisma";

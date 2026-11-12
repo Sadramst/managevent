@@ -12,8 +12,11 @@ export interface InvitationPlanEntitlements {
   maxGuests: number | "unlimited";
   maxEmailInvitations: number | "unlimited";
   allThemesAndAnimations: boolean;
+  /** Retired concept (English only for now). Kept for type stability; never surfaced in a DTO. */
   bilingualEnFa: boolean;
   rsvpAndDietary: boolean;
+  /** RSVP reminder emails to parties that have not responded. */
+  rsvpReminders: boolean;
   customEventSlug: boolean;
   fullMusicLibraryAndUpload: boolean;
   allGateStyles: boolean;
@@ -36,6 +39,7 @@ export const INVITATION_PLANS: Readonly<Record<InvitationPlan, InvitationPlanEnt
     allThemesAndAnimations: false,
     bilingualEnFa: true,
     rsvpAndDietary: true,
+    rsvpReminders: false,
     customEventSlug: false,
     fullMusicLibraryAndUpload: false,
     allGateStyles: false,
@@ -56,6 +60,7 @@ export const INVITATION_PLANS: Readonly<Record<InvitationPlan, InvitationPlanEnt
     allThemesAndAnimations: true,
     bilingualEnFa: true,
     rsvpAndDietary: true,
+    rsvpReminders: true,
     customEventSlug: true,
     fullMusicLibraryAndUpload: true,
     allGateStyles: true,
@@ -76,6 +81,7 @@ export const INVITATION_PLANS: Readonly<Record<InvitationPlan, InvitationPlanEnt
     allThemesAndAnimations: true,
     bilingualEnFa: true,
     rsvpAndDietary: true,
+    rsvpReminders: true,
     customEventSlug: true,
     fullMusicLibraryAndUpload: true,
     allGateStyles: true,

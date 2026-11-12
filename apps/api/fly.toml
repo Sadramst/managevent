@@ -14,6 +14,9 @@ primary_region = "syd"
   NODE_ENV = "production"
   PORT = "4000"
   TZ = "Australia/Perth"
+  # Fly's edge sets this header with the address it accepted the connection from. The API
+  # takes the client IP from it (never from x-forwarded-for). API_PROXY_SECRET is a secret.
+  TRUSTED_CLIENT_IP_HEADER = "fly-client-ip"
 
 [http_service]
   internal_port = 4000

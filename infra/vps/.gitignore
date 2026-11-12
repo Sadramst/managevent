@@ -1,0 +1,6 @@
+# Written on the server by deploy.sh; never committed.
+.deploy-state
+# Local backup archives, if BACKUP_DIR is ever pointed here.
+backups/
+*.dump
+*.age

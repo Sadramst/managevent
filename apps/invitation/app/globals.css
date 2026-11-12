@@ -1,33 +1,4429 @@
 @import "@managevent/config/tailwind.css";
-@import "@fontsource/cormorant-garamond/latin-400.css";
 @import "@fontsource/cormorant-garamond/latin-600.css";
-@import "@fontsource/cormorant-garamond/latin-700.css";
 @import "@fontsource/plus-jakarta-sans/latin-400.css";
-@import "@fontsource/plus-jakarta-sans/latin-500.css";
 @import "@fontsource/plus-jakarta-sans/latin-600.css";
-@import "@fontsource/plus-jakarta-sans/latin-700.css";
+@import "@managevent/ui/brand.css";
 
-/* Base theme tokens for guest invitations */
-:root {
-  --theme-bg: #faf7f2;
-  --theme-bg-warm: #f4efe6;
-  --theme-bg-surface: #ffffff;
-  --theme-text: #18181b;
-  --theme-text-muted: #52525b;
-  --theme-accent: #5c1a24;
-  --theme-gold: #c5a059;
-  --theme-gold-deep: #9a7736;
-  --theme-border: #e8dece;
-  --theme-font-display: "Cormorant Garamond", Georgia, serif;
-  --theme-font-body: "Plus Jakarta Sans", system-ui, sans-serif;
+/* ==========================================================================
+   invitation.managevent.com.au: app-specific styles only.
+   The shared shell (base type, .wrap, .section, .button, forms, header, footer, logo, tables,
+   tabs, dialogs ...) lives in @managevent/ui/brand.css. These rules are unlayered, so they win
+   over the shell where they overlap. Tokens only (no hex), logical properties only.
+
+   Sections:
+     1. App frame          (sticky footer, main spacing)
+     2. Shared primitives  (components/ui: spinner, toast, menu, field extras, dialog close)
+     3. Auth pages         (sign-in, sign-up, two-factor, reset)
+     4. Host Studio shell  (components/studio/StudioShell, StudioTabs)
+   Feature engineers: add a new numbered section for your area below; do not edit 1 to 4.
+   ========================================================================== */
+
+/* ---- 1. App frame -------------------------------------------------------- */
+body {
+  min-block-size: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+body > main,
+.studio-main {
+  flex: 1 0 auto;
+  /* A flex item with auto inline margins (.wrap) would shrink to its content without this. */
+  inline-size: 100%;
+}
+/* Programmatic focus targets (skip link, error summary) keep the ring off the whole region. */
+main:focus {
+  outline: none;
 }
 
-@layer base {
-  body {
-    background-color: var(--theme-bg, #faf7f2);
-    color: var(--theme-text, #18181b);
-    font-family: var(--theme-font-body, "Plus Jakarta Sans", sans-serif);
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
+/* ---- 2. Shared primitives ------------------------------------------------ */
+
+/* Spinner: a quiet ring. With reduced motion it stops turning and stays visible. */
+.spinner {
+  display: inline-block;
+  flex: none;
+  inline-size: 1.1em;
+  block-size: 1.1em;
+  border: 2px solid color-mix(in srgb, currentColor 30%, transparent);
+  border-block-start-color: currentColor;
+  border-radius: 999px;
+  animation: spinner-turn 0.8s linear infinite;
+}
+.spinner-large {
+  inline-size: 2rem;
+  block-size: 2rem;
+  border-width: 3px;
+}
+@keyframes spinner-turn {
+  to {
+    transform: rotate(360deg);
   }
+}
+@media (prefers-reduced-motion: reduce) {
+  .spinner {
+    animation: none;
+  }
+}
+.loading-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-block-size: 12rem;
+  color: var(--me-ink-muted);
+}
+
+/* Icon inside a button or link. */
+.icon {
+  flex: none;
+  inline-size: 1.15em;
+  block-size: 1.15em;
+}
+
+/* Icon-only button (dialog close, row actions). 44px touch target. */
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--me-radius-control);
+  background: transparent;
+  color: var(--me-ink-muted);
+  cursor: pointer;
+}
+.icon-button:hover {
+  background: var(--me-tint);
+  color: var(--me-ink);
+}
+.icon-button svg {
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+}
+
+/* Field extras: a control with a trailing action (show password, copy). */
+.field-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+.field-row > :is(input, select) {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.field-row > .button {
+  flex: none;
+}
+.field:has(> .error) :is(input, select, textarea) {
+  border-color: var(--me-danger);
+}
+.error-summary:focus {
+  outline: 3px solid var(--me-danger);
+  outline-offset: 2px;
+}
+
+/* Popover menu on a native <details> (components/ui/Menu). Works without JavaScript. */
+.menu {
+  position: relative;
+}
+.menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.menu > summary::-webkit-details-marker {
+  display: none;
+}
+.menu-panel {
+  position: absolute;
+  inset-block-start: calc(100% + 0.4rem);
+  inset-inline-end: 0;
+  z-index: 40;
+  min-inline-size: 15rem;
+  max-inline-size: min(22rem, calc(100vw - 2 * var(--me-gutter)));
+  max-block-size: min(28rem, 70dvh);
+  overflow: auto;
+  padding: 0.5rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-raised);
+}
+.menu[data-align="start"] .menu-panel {
+  inset-inline: 0 auto;
+}
+.menu-heading {
+  margin: 0;
+  padding: 0.5rem 0.75rem 0.25rem;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+.menu-text {
+  margin: 0;
+  padding: 0 0.75rem 0.5rem;
+  font-size: 0.9rem;
+  overflow-wrap: anywhere;
+}
+.menu-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 0;
+  border-radius: var(--me-radius-control);
+  background: transparent;
+  color: var(--me-ink);
+  font: inherit;
+  font-size: 0.94rem;
+  text-align: start;
+  text-decoration: none;
+  cursor: pointer;
+}
+.menu-item:hover {
+  background: var(--me-tint);
+}
+.menu-item[aria-current="page"] {
+  color: var(--me-primary);
+  font-weight: 600;
+}
+.menu-item:focus-visible {
+  outline-offset: -3px;
+}
+.menu-sep {
+  margin: 0.4rem 0;
+  border: 0;
+  border-block-start: 1px solid var(--me-rule);
+}
+
+/* Toasts (components/ui/Toast): a polite live region at the bottom of the viewport. */
+.toast-region {
+  position: fixed;
+  inset-block-end: max(1rem, env(safe-area-inset-bottom));
+  inset-inline: 0;
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding-inline: var(--me-gutter);
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-inline-size: min(34rem, 100%);
+  padding: 0.75rem 0.75rem 0.75rem 1rem;
+  border-radius: var(--me-radius-panel);
+  border: 1px solid var(--me-rule-strong);
+  border-inline-start: 4px solid var(--toast-tone, var(--me-primary));
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  box-shadow: var(--me-shadow-raised);
+  font-size: 0.94rem;
+  animation: toast-in var(--me-duration-ui) var(--me-ease);
+}
+.toast[data-tone="success"] {
+  --toast-tone: var(--me-success);
+}
+.toast[data-tone="danger"] {
+  --toast-tone: var(--me-danger);
+}
+.toast[data-tone="warning"] {
+  --toast-tone: var(--me-warning);
+}
+.toast p {
+  margin: 0;
+}
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+}
+
+/* The brand link in the public header is a touch target too (the shared shell sizes it to the
+   logo, which is 37px tall on a phone). */
+.site-brand {
+  min-block-size: 44px;
+}
+
+/* Dialog: the CSS reset removes the browser's auto margin, so centre modals again (the drawer
+   positions itself). */
+dialog.dialog:not(.drawer) {
+  margin: auto;
+}
+
+/* Dialog: sticky header close button sits flush with the title. */
+.dialog-header > .icon-button {
+  margin-block-start: -0.4rem;
+  margin-inline-end: -0.6rem;
+}
+@media (max-width: 680px) {
+  .dialog {
+    padding: 1.25rem;
+  }
+  .dialog-footer > .button {
+    flex: 1 1 auto;
+  }
+}
+
+/* In-page tab panels (components/ui/Tabs). */
+.tab-panel {
+  padding-block-start: 1.5rem;
+}
+.tab-panel:focus-visible {
+  outline-offset: 2px;
+}
+
+/* ---- 3. Auth pages ------------------------------------------------------- */
+.auth {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 30rem);
+  gap: 3.5rem;
+  align-items: start;
+  padding-block: 3.5rem 4.5rem;
+}
+.auth-intro h1 {
+  margin-block-end: 1rem;
+}
+.auth-points {
+  list-style: none;
+  margin: 2rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.9rem;
+  max-inline-size: 34rem;
+}
+.auth-points li {
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--me-accent);
+  color: var(--me-ink-muted);
+}
+.auth-card {
+  padding: 2.25rem;
+}
+.auth-card h2 {
+  margin-block: 0 1.25rem;
+}
+.auth-card form > .button {
+  margin-block-start: 0.35rem;
+}
+.auth-alt {
+  margin-block: 1.5rem 0;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--me-rule);
+  font-size: 0.94rem;
+}
+.auth-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin-block: 0 1.15rem;
+}
+.auth-row .check {
+  margin-block: 0;
+}
+.auth-row .link,
+.auth-alt .link,
+.auth-legal .link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+.auth-legal {
+  margin-block: 1rem 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.auth-legal .link {
+  display: inline;
+  font-weight: 600;
+}
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-block: 1.5rem;
+  color: var(--me-ink-muted);
+  font-size: 0.85rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-block-start: 1px solid var(--me-rule);
+}
+/* Password strength: four segments plus a text label (never colour alone). */
+.strength {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 0.1rem 0;
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.strength-bars {
+  display: grid;
+  grid-template-columns: repeat(4, 1.75rem);
+  gap: 0.25rem;
+}
+.strength-bars span {
+  block-size: 4px;
+  border-radius: 999px;
+  background: var(--me-rule-strong);
+}
+.strength-bars span[data-on="true"] {
+  background: var(--me-primary);
+}
+.code-input {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.3em;
+  font-size: 1.35rem;
+  text-align: center;
+}
+@media (max-width: 960px) {
+  .auth {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-block: 2rem 3rem;
+  }
+  .auth-card {
+    max-inline-size: 34rem;
+    inline-size: 100%;
+    justify-self: center;
+  }
+  /* On a phone the form comes first; the reassurance points follow it. */
+  .auth-points {
+    display: none;
+  }
+}
+@media (max-width: 680px) {
+  .auth-card {
+    padding: 1.5rem 1.25rem;
+  }
+}
+
+/* ---- 4. Host Studio shell ------------------------------------------------ */
+.studio-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--me-surface) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--me-rule);
+}
+.studio-bar-inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-block-size: var(--me-header-block);
+  padding-block: 0.5rem;
+}
+.studio-brand {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  text-decoration: none;
+  border-radius: var(--me-radius-control);
+}
+.studio-switcher {
+  min-inline-size: 0;
+  margin-inline-start: 0.25rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 1px solid var(--me-rule);
+}
+.studio-switcher-toggle,
+.studio-account-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-inline-size: 100%;
+  min-block-size: 44px;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--me-radius-control);
+  color: var(--me-ink);
+  font-weight: 600;
+  font-size: 0.94rem;
+}
+.studio-switcher-toggle:hover,
+.studio-account-toggle:hover {
+  background: var(--me-tint);
+}
+.studio-switcher-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.studio-switcher-toggle svg,
+.studio-account-toggle svg {
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--me-ink-muted);
+}
+.studio-bar-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: none;
+  margin-inline-start: auto;
+}
+.studio-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 2rem;
+  block-size: 2rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.studio-main {
+  padding-block-end: 4rem;
+}
+.studio-foot {
+  border-block-start: 1px solid var(--me-rule);
+  padding-block: 1.25rem;
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.studio-foot .cluster {
+  --cluster-gap: 0.25rem 1.25rem;
+}
+.studio-foot a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  color: inherit;
+}
+/* Event tab bar: sticks under the top bar and scrolls sideways on a phone. */
+.studio-tabs-bar {
+  position: sticky;
+  inset-block-start: var(--me-header-block);
+  z-index: 20;
+  background: var(--me-surface);
+}
+.studio-tabs-bar .tabs {
+  scrollbar-width: none;
+  overscroll-behavior-inline: contain;
+}
+.studio-tabs-bar .tabs::-webkit-scrollbar {
+  display: none;
+}
+@media (max-width: 680px) {
+  .studio-account-name,
+  .studio-brand .brand-wordmark {
+    display: none;
+  }
+  .studio-switcher {
+    padding-inline-start: 0.5rem;
+  }
+  .studio-tabs-bar .wrap {
+    padding-inline: 0;
+  }
+  .studio-tabs-bar .tabs {
+    padding-inline: calc(var(--me-gutter) - 0.75rem);
+    gap: 0;
+  }
+  .studio-tabs-bar .tab {
+    padding-inline: 0.75rem;
+  }
+}
+
+/* ---- 5. Public pages ------------------------------------------------------
+   Home, templates, pricing, email preferences and page not found (components/public).
+   The same compositions as www's /invitations page (numbered steps, ruled feature list, plan
+   cards, FAQ, closing band), so the two sites read as siblings. Prefix: `pub-`.
+   -------------------------------------------------------------------------- */
+
+/* Text link that leads somewhere else: bold, primary, with a trailing arrow. */
+.pub-more {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-weight: 600;
+  color: var(--me-primary);
+  text-decoration: none;
+}
+.pub-more::after {
+  content: "\2192";
+  content: "\2192" / "";
+  display: inline-block;
+  flex: none;
+  margin-inline-start: 0.45em;
+  transition: transform var(--me-duration-ui) var(--me-ease);
+}
+[dir="rtl"] .pub-more::after {
+  content: "\2190";
+  content: "\2190" / "";
+}
+.pub-more:hover {
+  text-decoration: underline;
+  text-decoration-color: var(--me-accent);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.35em;
+}
+.pub-more:hover::after {
+  transform: translateX(0.2em);
+}
+[dir="rtl"] .pub-more:hover::after {
+  transform: translateX(-0.2em);
+}
+.pub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 2rem;
+  margin-block: 1.5rem 0;
+}
+.pub-after {
+  margin-block-start: 2rem;
+}
+.notice a {
+  color: var(--me-primary);
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+/* Section head with a link pushed to the end. */
+.pub-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.25rem 2rem;
+  margin-block-end: 2.5rem;
+}
+.pub-head-row > .section-head {
+  flex: 1 1 28rem;
+  margin-block-end: 0;
+}
+.pub-head-row > .section-head > :last-child {
+  margin-block-end: 0;
+}
+
+/* Numbered steps (a real sequence, so the numerals mean something). */
+.pub-steps {
+  display: grid;
+  grid-template-columns: repeat(var(--pub-steps-cols, 3), minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: pub-step;
+}
+.pub-steps > li {
+  counter-increment: pub-step;
+  padding-block-start: 1.1rem;
+  border-block-start: 1px solid var(--me-rule-strong);
+}
+.pub-steps > li::before {
+  content: counter(pub-step, decimal-leading-zero);
+  display: block;
+  margin-block-end: 0.4rem;
+  font-family: var(--me-font-display);
+  font-size: 2.2rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--me-accent-strong);
+  font-variant-numeric: lining-nums;
+}
+.pub-steps h3 {
+  font-size: 1.4rem;
+  margin-block-end: 0.4rem;
+}
+.pub-steps p {
+  margin-block-end: 0;
+  font-size: 0.94rem;
+  color: var(--me-ink-muted);
+}
+.pub-steps-4 {
+  --pub-steps-cols: 4;
+}
+
+/* Feature list: a ruled two-column list, lighter than a wall of cards. */
+.pub-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 3.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-features > li {
+  position: relative;
+  padding-block: 1.35rem;
+  padding-inline-start: 2.25rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.pub-features > li:nth-last-child(-n + 2) {
+  border-block-end: 1px solid var(--me-rule);
+}
+.pub-features > li::before,
+.pub-checks > li::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 1.95rem;
+  inset-inline-start: 0.2rem;
+  inline-size: 0.9rem;
+  block-size: 0.48rem;
+  border-block-end: 2px solid var(--me-accent-strong);
+  border-inline-start: 2px solid var(--me-accent-strong);
+  transform: rotate(-45deg);
+}
+[dir="rtl"] :is(.pub-features, .pub-checks) > li::before {
+  transform: rotate(45deg);
+}
+.pub-features h3 {
+  margin-block: 0 0.3rem;
+  font-size: 1.4rem;
+}
+.pub-features p {
+  margin: 0;
+  font-size: 0.94rem;
+  color: var(--me-ink-muted);
+}
+
+/* Check list */
+.pub-checks {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-checks > li {
+  position: relative;
+  padding-inline-start: 1.75rem;
+}
+.pub-checks > li::before {
+  inset-block-start: 0.5em;
+  inset-inline-start: 0.15rem;
+  inline-size: 0.8rem;
+  block-size: 0.42rem;
+}
+
+/* Arch composition beside a page hero (same as www). */
+.pub-arch {
+  max-inline-size: 23rem;
+  margin-inline: auto;
+  padding-block-start: 4.5rem;
+  background: var(--me-surface-raised);
+  text-align: center;
+  box-shadow: var(--me-shadow-raised);
+}
+.pub-arch-mark {
+  display: block;
+  inline-size: 2.75rem;
+  block-size: auto;
+  margin: 0 auto 0.75rem;
+  color: var(--me-accent-strong);
+}
+.pub-arch-title {
+  margin-block: 0 1rem;
+  font-family: var(--me-font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--me-primary);
+}
+.pub-arch ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-arch li {
+  padding-block: 0.7rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.94rem;
+}
+
+/* Invitation preview: a small invitation drawn in its own theme. The colours arrive as
+   `--inv-*` custom properties from @managevent/ui/themes (set inline by InvitationPreview),
+   so no theme colour is written here. */
+.pub-inv {
+  display: flex;
+  align-items: stretch;
+  padding: 1.25rem;
+  background: var(--inv-bg);
+  color: var(--inv-ink);
+}
+.pub-inv-sheet {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  min-block-size: 15rem;
+  padding: 2.25rem 1.25rem 1.5rem;
+  border: 1px solid var(--inv-rule);
+  border-radius: 10px;
+  background: var(--inv-surface);
+  text-align: center;
+}
+.pub-inv[data-shape="arch"] .pub-inv-sheet {
+  border-start-start-radius: 999px;
+  border-start-end-radius: 999px;
+  padding-block-start: 3.25rem;
+}
+.pub-inv-mark {
+  display: block;
+  inline-size: 1.9rem;
+  block-size: auto;
+  margin-block-end: 0.7rem;
+  color: var(--inv-accent);
+}
+.pub-inv-hosts {
+  margin: 0 0 0.5rem;
+  max-inline-size: 22ch;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.45;
+  color: var(--inv-ink-muted);
+}
+.pub-inv-headline {
+  margin: 0;
+  max-inline-size: 14ch;
+  font-family: var(--inv-font-display);
+  font-size: 1.7rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--inv-ink);
+  text-wrap: balance;
+}
+.pub-inv-rule {
+  display: block;
+  inline-size: 2.5rem;
+  margin-block: 0.9rem 0.8rem;
+  border-block-start: 1px solid var(--inv-rule);
+}
+.pub-inv-title {
+  margin: 0;
+  max-inline-size: 24ch;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: var(--inv-ink-muted);
+  text-wrap: balance;
+}
+/* The large preview in the home hero. */
+.pub-hero-preview {
+  max-inline-size: 24rem;
+  margin-inline: auto;
+}
+.pub-hero-preview .pub-inv {
+  padding: 1.5rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-sheet);
+  box-shadow: var(--me-shadow-raised);
+}
+.pub-hero-preview .pub-inv-sheet {
+  min-block-size: 23rem;
+  padding-inline: 1.75rem;
+}
+.pub-hero-preview .pub-inv-mark {
+  inline-size: 2.6rem;
+}
+.pub-hero-preview .pub-inv-hosts {
+  font-size: 0.82rem;
+}
+.pub-hero-preview .pub-inv-headline {
+  font-size: clamp(2.2rem, 4vw, 2.9rem);
+}
+.pub-hero-preview .pub-inv-title {
+  font-size: 0.94rem;
+}
+.pub-hero-preview-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0 1rem;
+  margin-block-start: 0.6rem;
+}
+.pub-hero-preview-foot p {
+  flex: 1 1 12rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+
+/* Template and sample cards. */
+.pub-templates {
+  display: grid;
+  grid-template-columns: repeat(var(--pub-template-cols, 3), minmax(0, 1fr));
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-templates-2 {
+  --pub-template-cols: 2;
+}
+.pub-template {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+}
+.pub-template-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: 1.35rem 1.5rem 1.5rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.pub-template-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin: 0 0 0.75rem;
+  padding: 0;
+  list-style: none;
+}
+.pub-template-name {
+  margin-block: 0 0.4rem;
+  font-size: 1.55rem;
+  color: var(--me-ink);
+}
+.pub-template-summary {
+  flex: 1;
+  margin: 0;
+  font-size: 0.94rem;
+  color: var(--me-ink-muted);
+}
+.pub-template-meta {
+  margin-block: 0.9rem 0;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.pub-template-meta strong {
+  color: var(--me-ink);
+}
+.pub-template-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-block-start: 1.1rem;
+}
+.pub-template-actions .button {
+  flex: 1 1 9rem;
+  min-block-size: 44px;
+}
+/* Compact sample card on the home page: the whole card opens the sample. */
+.pub-sample {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  overflow: hidden;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  text-decoration: none;
+  transition:
+    border-color var(--me-duration-ui) var(--me-ease),
+    box-shadow var(--me-duration-ui) var(--me-ease);
+}
+.pub-sample:hover {
+  border-color: var(--me-primary);
+  box-shadow: var(--me-shadow-raised);
+}
+.pub-sample-body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+  padding: 0.9rem 1.25rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.pub-sample-name {
+  font-family: var(--me-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.pub-sample-open {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-primary);
+}
+[data-experience-mode="memorial"] .pub-sample:hover {
+  box-shadow: none;
+}
+
+/* Memorial section inside a celebration page: the calm palette, set by the wrapper. */
+.pub-memorial {
+  background: var(--me-surface);
+  color: var(--me-ink);
+  border-block: 1px solid var(--me-rule);
+}
+
+/* Plans */
+.pub-plans {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.pub-plan {
+  display: flex;
+  flex-direction: column;
+  block-size: 100%;
+  container-type: inline-size;
+}
+/* Keeps the plan names on one line across the row despite the thicker rule on the accent card. */
+.pub-plan.card-accent {
+  padding-block-start: calc(1.75rem - 2px);
+}
+.pub-plan-name {
+  margin-block: 0 0.5rem;
+  font-family: var(--me-font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--me-ink);
+}
+.pub-plan-price {
+  margin-block: 0;
+  font-family: var(--me-font-display);
+  /* Sized from the card, so a long word such as "Complimentary" never leaves it. */
+  font-size: clamp(1.5rem, 2.3vw, 2.1rem);
+  font-size: clamp(1.4rem, 15cqi, 2.6rem);
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--me-primary);
+  font-variant-numeric: lining-nums;
+}
+.pub-plan-price small {
+  font-family: var(--me-font-body);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+.pub-plan-note {
+  margin-block: 0.75rem 0;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.pub-plan .pub-checks {
+  flex: 1;
+  align-content: start;
+  margin-block: 1.1rem 0;
+  padding-block-start: 1.1rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.9rem;
+}
+.pub-plan .button {
+  margin-block-start: 1.35rem;
+}
+.pub-scroll-hint {
+  display: none;
+  margin-block: 0.75rem 0;
+}
+.pub-plan-table {
+  margin-block-start: 2rem;
+}
+.pub-plan-table :is(th, td) {
+  vertical-align: top;
+}
+.pub-plan-table tbody th {
+  font-weight: 600;
+  min-inline-size: 13rem;
+}
+.pub-plan-table thead th {
+  min-inline-size: 9rem;
+}
+.pub-no {
+  color: var(--me-ink-muted);
+}
+
+/* Closing band */
+.pub-dark :is(h2, h3) {
+  color: var(--me-on-primary);
+}
+.pub-dark .section-lead,
+.pub-dark p {
+  color: var(--me-ink-muted);
+}
+.pub-cta {
+  text-align: center;
+}
+.pub-cta :is(h2, p) {
+  margin-inline: auto;
+}
+.pub-cta .page-hero-actions {
+  justify-content: center;
+}
+
+/* FAQ: native details, readable without JavaScript. */
+.pub-faq {
+  border-block-start: 1px solid var(--me-rule);
+}
+.pub-faq details {
+  border-block-end: 1px solid var(--me-rule);
+}
+.pub-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-block-size: 56px;
+  padding-block: 0.85rem;
+  cursor: pointer;
+  list-style: none;
+}
+.pub-faq summary::-webkit-details-marker {
+  display: none;
+}
+.pub-faq summary h3 {
+  margin: 0;
+  font-size: 1.35rem;
+}
+.pub-faq summary::after {
+  content: "";
+  flex: none;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  margin-inline-end: 0.4rem;
+  border-block-end: 2px solid var(--me-primary);
+  border-inline-end: 2px solid var(--me-primary);
+  transform: rotate(45deg);
+  transition: transform var(--me-duration-ui) var(--me-ease);
+}
+.pub-faq details[open] > summary::after {
+  transform: rotate(-135deg);
+}
+.pub-faq details > p {
+  margin-block: 0 1.25rem;
+  color: var(--me-ink-muted);
+}
+
+/* Short single-purpose pages: email preferences, page not found. */
+.pub-quiet {
+  padding-block: 3.5rem 4.5rem;
+}
+.pub-quiet h1 {
+  max-inline-size: 20ch;
+  margin-block-end: 1rem;
+}
+.pub-quiet .lead {
+  margin-block-end: 0;
+}
+.pub-quiet form {
+  margin-block-start: 1.75rem;
+}
+.pub-quiet-cards {
+  margin-block-start: 2.5rem;
+}
+.pub-quiet-cards .card {
+  display: flex;
+  flex-direction: column;
+}
+.pub-quiet-cards .card-body {
+  flex: 1;
+}
+
+@media (max-width: 1100px) {
+  .pub-plans {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 960px) {
+  .pub-features {
+    column-gap: 2rem;
+  }
+  .pub-steps-4,
+  .pub-templates {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .pub-arch {
+    margin-inline: 0;
+  }
+  .pub-hero-preview {
+    margin-inline: 0;
+  }
+}
+@media (max-width: 680px) {
+  .pub-scroll-hint {
+    display: block;
+  }
+  .pub-features,
+  .pub-plans,
+  .pub-steps,
+  .pub-steps-4,
+  .pub-templates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .pub-features > li:nth-last-child(2) {
+    border-block-end: 0;
+  }
+  .pub-arch,
+  .pub-hero-preview {
+    max-inline-size: 100%;
+  }
+  .pub-hero-preview .pub-inv-sheet {
+    min-block-size: 19rem;
+  }
+  .pub-quiet {
+    padding-block: 2.25rem 3rem;
+  }
+  .pub-quiet form .button {
+    inline-size: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-faq summary::after,
+  .pub-more::after,
+  .pub-sample {
+    transition: none;
+  }
+  .pub-more:hover::after {
+    transform: none;
+  }
+}
+/* A notice that sits between a section head and a grid. */
+.pub-notice-gap {
+  margin-block-end: 1.5rem;
+}
+/* Cards in one row share a height: the preview stretches, the text below stays aligned. */
+:is(.pub-sample, .pub-template) > .pub-inv {
+  flex: 1 0 auto;
+}
+/* The home headline is two short sentences; let each keep its own line. */
+.pub-home-hero h1 {
+  max-inline-size: 19ch;
+}
+/* In a wide card the sheet keeps the proportions of an invitation, so the arch stays an arch. */
+.pub-inv-sheet {
+  max-inline-size: 20rem;
+  margin-inline: auto;
+}
+.pub-hero-preview .pub-inv-sheet {
+  max-inline-size: none;
+}
+
+/* ---- 6. Host Studio: events, wizard, overview, design, details, settings (STUDIO-A) ----
+   components/event-studio and components/invitation-preview. Prefix: `es-`; the card preview
+   is `inv-preview`. Tokens only; the preview alone takes its colours from the invitation's
+   theme (`--pv-*`, set inline from @managevent/ui/themes).
+   -------------------------------------------------------------------------- */
+
+/* Small shared pieces. */
+.es-gap {
+  margin-block-end: 1.5rem;
+}
+.es-gap-top {
+  margin-block-start: 1rem;
+}
+.es-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+}
+.es-page-header {
+  padding-block-start: 0.5rem;
+}
+.es-page-lead {
+  margin-block: 0.5rem 0;
+  max-inline-size: 60ch;
+}
+/* Tab pages under an event: the same frame as the Guests, Share and Responses tabs. */
+.es-page {
+  padding-block-end: 1rem;
+}
+.es-page .page-header {
+  padding-block: 1.75rem 1.5rem;
+}
+.es-page .page-header .lead {
+  margin-block: 0.4rem 0;
+  max-inline-size: 62ch;
+}
+.es-page-overview {
+  padding-block-start: 1.75rem;
+}
+.es-field-last {
+  margin-block-end: 0;
+}
+.es-textarea-short {
+  min-block-size: 5rem;
+}
+.es-empty-line {
+  margin-block: 0 1rem;
+  color: var(--me-ink-muted);
+  font-size: 0.94rem;
+}
+[dir="rtl"] .es-flip {
+  transform: scaleX(-1);
+}
+.es-narrow-only {
+  display: none;
+}
+
+/* Headings inside cards: the page already has its h1, so these stay modest. */
+.es-block-title,
+.es-section-title,
+.es-publish-title,
+.es-list-title,
+.es-pass-title {
+  max-inline-size: none;
+  margin: 0;
+  font-size: 1.55rem;
+  color: var(--me-primary);
+}
+
+/* Groups of fields: a plain legend, no box. */
+.es-fieldset {
+  min-inline-size: 0;
+  margin: 0 0 1.75rem;
+  padding: 0;
+  border: 0;
+}
+.es-fieldset > legend,
+.es-legend {
+  margin: 0 0 0.5rem;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--me-ink);
+}
+.es-fieldset > .help {
+  margin-block: -0.25rem 0.9rem;
+  max-inline-size: 62ch;
+}
+.es-fieldset:last-of-type {
+  margin-block-end: 0;
+}
+/* A plain block standing in for a fieldset (memorial opening note) keeps the group spacing. */
+.es-fieldset + div.es-fieldset {
+  margin-block-start: 1.75rem;
+}
+
+/* ---- 6a. Invitation card preview (components/invitation-preview) ---------- */
+.inv-preview {
+  margin: 0;
+  padding: 1.25rem;
+  border-radius: var(--me-radius-panel);
+  background: var(--pv-warm);
+  color: var(--pv-ink);
+  font-family: var(--pv-body);
+}
+.inv-preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-block-size: 25rem;
+  padding: 2.25rem 1.5rem 2rem;
+  border: 1px solid var(--pv-rule);
+  border-radius: 6px;
+  background: var(--pv-surface);
+  /* A second, finer rule just inside the edge, as on a printed card. */
+  box-shadow:
+    inset 0 0 0 5px var(--pv-surface),
+    inset 0 0 0 6px color-mix(in srgb, var(--pv-rule) 55%, transparent);
+  text-align: center;
+  overflow: hidden;
+}
+.inv-preview[data-shape="arch"] .inv-preview-card {
+  padding-block-start: 4.75rem;
+  border-start-start-radius: 999px;
+  border-start-end-radius: 999px;
+  border-end-start-radius: 14px;
+  border-end-end-radius: 14px;
+}
+.inv-preview[data-shape="panel"] .inv-preview-card {
+  border-radius: 18px;
+}
+.inv-preview p {
+  max-inline-size: 100%;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.inv-preview-ornament {
+  inline-size: 3.5rem;
+  block-size: auto;
+  flex: none;
+  fill: none;
+  stroke: var(--pv-accent);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.inv-preview-cover {
+  inline-size: 7rem;
+  aspect-ratio: 4 / 5;
+  flex: none;
+  object-fit: cover;
+  border: 1px solid var(--pv-rule);
+  border-radius: 6px;
+}
+.inv-preview[data-shape="arch"] .inv-preview-cover {
+  border-start-start-radius: 999px;
+  border-start-end-radius: 999px;
+}
+.inv-preview-memory {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.85rem;
+  color: var(--pv-muted);
+}
+.inv-preview-memory strong {
+  font-family: var(--pv-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--pv-heading);
+}
+.inv-preview-headline {
+  font-family: var(--pv-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--pv-heading);
+  text-wrap: balance;
+  font-variant-numeric: lining-nums;
+}
+.inv-preview-sub {
+  font-size: 0.94rem;
+  color: var(--pv-muted);
+}
+.inv-preview-rule {
+  inline-size: 3.5rem;
+  flex: none;
+  margin-block: 0.35rem;
+  border-block-start: 1px solid var(--pv-accent);
+}
+.inv-preview-when {
+  font-size: 0.94rem;
+  font-weight: 600;
+}
+.inv-preview-where {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+.inv-preview-where span {
+  color: var(--pv-muted);
+}
+.inv-preview-wording {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  margin-block-start: 0.35rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--pv-muted);
+  white-space: pre-line;
+}
+.inv-preview-meta {
+  font-size: 0.82rem;
+  color: var(--pv-muted);
+}
+.inv-preview-button {
+  margin-block-start: 0.6rem;
+  padding: 0.5rem 1.4rem;
+  border-radius: var(--me-radius-control);
+  background: var(--pv-heading);
+  color: var(--pv-surface);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+/* Not typed yet: the stand-in text is quieter but still readable (4.5:1 in every theme). */
+.inv-preview [data-placeholder],
+.inv-preview [data-placeholder] strong {
+  color: var(--pv-muted);
+  font-weight: 400;
+}
+/* The small tile on template and event cards. */
+.inv-preview[data-size="thumb"] {
+  inline-size: 6.75rem;
+  flex: none;
+  padding: 0.4rem;
+  border-radius: var(--me-radius-control);
+}
+.inv-preview[data-size="thumb"] .inv-preview-card {
+  gap: 0.2rem;
+  min-block-size: 8.25rem;
+  padding: 0.9rem 0.45rem 0.7rem;
+  box-shadow: none;
+}
+.inv-preview[data-size="thumb"][data-shape="plain"] .inv-preview-card {
+  border-radius: 4px;
+}
+.inv-preview[data-size="thumb"][data-shape="arch"] .inv-preview-card {
+  padding-block-start: 1.9rem;
+  border-end-start-radius: 6px;
+  border-end-end-radius: 6px;
+}
+.inv-preview[data-size="thumb"][data-shape="panel"] .inv-preview-card {
+  border-radius: 8px;
+}
+.inv-preview[data-size="thumb"] .inv-preview-ornament {
+  inline-size: 1.5rem;
+}
+.inv-preview[data-size="thumb"] .inv-preview-headline {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  overflow: hidden;
+  font-size: 0.82rem;
+  line-height: 1.15;
+}
+.inv-preview[data-size="thumb"] .inv-preview-memory {
+  display: none;
+}
+.inv-preview[data-size="thumb"] .inv-preview-rule {
+  inline-size: 1.25rem;
+  margin-block: 0.15rem;
+}
+.inv-preview[data-size="thumb"] .inv-preview-meta {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+  font-size: 0.56rem;
+  line-height: 1.3;
+}
+
+/* ---- 6b. My events ------------------------------------------------------- */
+.es-events {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(22rem, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.es-events > li {
+  display: flex;
+}
+.es-event {
+  display: flex;
+  align-items: flex-start;
+  gap: 1.25rem;
+  inline-size: 100%;
+  padding: 1.1rem;
+}
+.es-event-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-inline-size: 0;
+  flex: 1 1 auto;
+}
+.es-event-badges {
+  --cluster-gap: 0.35rem;
+}
+.es-event-title {
+  margin: 0.15rem 0 0;
+  font-size: 1.45rem;
+  color: var(--me-primary);
+  overflow-wrap: anywhere;
+}
+.es-event-meta,
+.es-event-empty {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--me-ink-muted);
+}
+.es-event-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.5rem;
+  margin: 0.35rem 0 0;
+  padding-block-start: 0.6rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+}
+.es-event-counts > div {
+  display: flex;
+  flex-direction: column-reverse;
+}
+.es-event-counts dt {
+  font-size: 0.74rem;
+  color: var(--me-ink-muted);
+}
+.es-event-counts dd {
+  margin: 0;
+  font-family: var(--me-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.1;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.es-list-section {
+  margin-block-start: 3rem;
+}
+.es-list-title {
+  margin-block-end: 1rem;
+}
+/* First visit: what the studio is for, beside an empty invitation card. */
+.es-welcome {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 20rem);
+  gap: 3rem;
+  align-items: center;
+}
+.es-welcome-text h2 {
+  margin-block-start: 0;
+}
+.es-welcome-steps {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1.5rem 0 2rem;
+  padding: 0;
+  list-style: none;
+  counter-reset: es-step;
+}
+.es-welcome-steps li {
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+  counter-increment: es-step;
+}
+.es-welcome-steps li::before {
+  content: counter(es-step);
+  flex: none;
+  inline-size: 1.4rem;
+  font-family: var(--me-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--me-accent-strong);
+  font-variant-numeric: lining-nums;
+}
+
+/* ---- 6c. Choice controls (a radio input styled as a chip, card or swatch) -- */
+.es-chip,
+.es-choice-label,
+.es-swatch,
+.es-gate {
+  position: relative;
+  cursor: pointer;
+}
+.es-chip input,
+.es-choice-label input,
+.es-swatch input,
+.es-gate input {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+}
+.es-chip-group + .es-chip-group {
+  margin-block-start: 1.1rem;
+}
+.es-chip-group-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.es-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.es-chip {
+  font-weight: 400;
+}
+.es-chip span {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-chip);
+  background: var(--me-surface-raised);
+  font-size: 0.94rem;
+  transition:
+    background-color var(--me-duration-micro) ease,
+    border-color var(--me-duration-micro) ease;
+}
+.es-chip:hover span {
+  border-color: var(--me-primary);
+}
+.es-chip input:checked + span {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+  font-weight: 600;
+}
+.es-chip input:focus-visible + span {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 3px;
+}
+.es-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: 0.9rem;
+}
+.es-choice {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  transition: border-color var(--me-duration-micro) ease;
+}
+.es-choice:hover {
+  border-color: var(--me-primary);
+}
+.es-choice[data-selected],
+.es-swatch[data-selected],
+.es-gate[data-selected] {
+  border-color: var(--me-primary);
+  box-shadow: 0 0 0 1px var(--me-primary);
+  background: var(--me-tint);
+}
+/* On the tinted selected card the muted grey falls under 4.5:1 in Memorial Mode. */
+:is(.es-choice, .es-gate)[data-selected] .es-choice-desc {
+  color: var(--me-ink);
+}
+.es-choice[data-locked] {
+  background: var(--me-surface);
+}
+.es-choice[data-locked]:hover {
+  border-color: var(--me-rule-strong);
+}
+.es-choice[data-locked] .es-choice-label {
+  cursor: not-allowed;
+}
+.es-choice[data-locked] .inv-preview {
+  opacity: 0.7;
+}
+.es-choice-label {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1 1 auto;
+  padding: 0.8rem;
+  font-weight: 400;
+}
+.es-choice-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-inline-size: 0;
+}
+.es-choice-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.6rem;
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.es-choice-desc {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--me-ink-muted);
+}
+.es-choice-link {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  min-block-size: 44px;
+  margin-inline-start: 0.8rem;
+  font-size: 0.85rem;
+}
+:is(.es-choice-label, .es-swatch, .es-gate):focus-within {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 3px;
+  border-radius: var(--me-radius-panel);
+}
+@supports selector(:has(*)) {
+  :is(.es-choice-label, .es-swatch, .es-gate):focus-within {
+    outline: none;
+  }
+  :is(.es-choice-label, .es-swatch, .es-gate):has(input:focus-visible) {
+    outline: 3px solid var(--me-primary);
+    outline-offset: 3px;
+    border-radius: var(--me-radius-panel);
+  }
+}
+.es-swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: 0.75rem;
+}
+.es-swatch,
+.es-gate {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  min-block-size: 56px;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  font-weight: 400;
+  transition: border-color var(--me-duration-micro) ease;
+}
+.es-swatch:hover,
+.es-gate:hover {
+  border-color: var(--me-primary);
+}
+.es-swatch-name {
+  flex: 1 1 auto;
+  font-size: 0.94rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.es-dots {
+  display: inline-flex;
+  flex: none;
+}
+.es-dots span {
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--me-ink) 25%, transparent);
+  border-radius: 999px;
+  background: var(--dot);
+}
+.es-dots span + span {
+  margin-inline-start: -0.45rem;
+}
+.es-gates {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: 0.75rem;
+}
+.es-gate-glyph {
+  inline-size: 4.5rem;
+  block-size: 3rem;
+  flex: none;
+}
+.es-gate-bg {
+  fill: var(--gate-bg);
+  stroke: var(--gate-line);
+  stroke-width: 1;
+}
+.es-gate-line {
+  fill: none;
+  stroke: var(--gate-line);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+.es-gate-seal {
+  fill: var(--gate-seal);
+}
+.es-gate-ribbon {
+  fill: var(--gate-ribbon);
+}
+
+/* ---- 6d. New invitation wizard ------------------------------------------- */
+.es-steps {
+  margin-block-end: 1.5rem;
+}
+.es-steps-count {
+  display: none;
+  margin: 0 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+.es-steps ol {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.es-steps li {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  border-block-start: 3px solid var(--me-rule);
+}
+.es-steps li[data-state="current"],
+.es-steps li[data-state="done"] {
+  border-block-start-color: var(--me-primary);
+}
+.es-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-block-size: 44px;
+  padding: 0.5rem 0.25rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--me-ink-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: start;
+}
+button.es-step {
+  cursor: pointer;
+  color: var(--me-ink);
+}
+button.es-step:hover {
+  color: var(--me-primary);
+}
+.es-steps li[data-state="current"] .es-step {
+  color: var(--me-primary);
+}
+.es-step-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  flex: none;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-variant-numeric: lining-nums;
+}
+.es-step-mark svg {
+  inline-size: 0.9rem;
+  block-size: 0.9rem;
+}
+.es-steps li[data-state="current"] .es-step-mark {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+}
+.es-wizard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 2.5rem;
+  align-items: start;
+}
+.es-wizard-form {
+  padding: 2rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.es-step-head {
+  margin-block-end: 1.75rem;
+}
+.es-step-head h2 {
+  margin-block: 0 0.5rem;
+  font-size: 1.9rem;
+}
+.es-step-head h2:focus {
+  outline: none;
+}
+.es-step-head p {
+  margin-block-end: 0.35rem;
+}
+.es-wizard-form > .alert {
+  margin-block-end: 1.75rem;
+}
+.es-when {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: 0 1rem;
+}
+.es-rows {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0 0 1rem;
+  padding: 0;
+  list-style: none;
+}
+.es-rows:empty {
+  display: none;
+}
+.es-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 1rem 0.5rem 1rem 1rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface);
+}
+.es-row > legend {
+  padding-inline: 0.4rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+.es-row-grow,
+.es-row-fields {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.es-row-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: 0 1rem;
+}
+.es-row-fields {
+  align-items: end;
+}
+.es-row-fields .field {
+  margin-block-end: 0;
+}
+.es-row-tools {
+  display: flex;
+  flex-direction: column;
+  flex: none;
+}
+.es-row-remove {
+  flex: none;
+}
+.es-rows-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+}
+.es-rows-foot p {
+  margin: 0;
+}
+.es-count {
+  display: flex;
+  flex-direction: column;
+}
+.es-count strong {
+  color: var(--me-ink);
+}
+.es-choices + .help {
+  margin-block: 1rem 0;
+}
+.es-review dd {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: baseline;
+  gap: 0.25rem 0.9rem;
+  overflow-wrap: anywhere;
+}
+.es-review-muted > span {
+  font-weight: 400;
+  color: var(--me-ink-muted);
+}
+.es-review-edit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.es-review-preview {
+  display: none;
+  margin-block-end: 1.5rem;
+}
+.es-wizard-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-block-start: 2rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.es-wizard-aside,
+.es-editor-aside {
+  position: sticky;
+  inset-block-start: calc(var(--me-header-block) + 1.5rem);
+  display: grid;
+  gap: 0.75rem;
+}
+.es-aside-title {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+
+/* ---- 6e. Event header and scope ------------------------------------------ */
+.es-scope {
+  color: var(--me-ink);
+}
+/* A memorial event carries its calm palette to the bottom of the studio page. */
+.studio-main:has(> .es-scope[data-experience-mode="memorial"]) {
+  display: flex;
+  flex-direction: column;
+  padding-block-end: 0;
+}
+.es-scope[data-experience-mode="memorial"] {
+  flex: 1 0 auto;
+  padding-block-end: 4rem;
+  background: var(--me-surface);
+}
+.es-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem 1.5rem;
+  padding-block: 1.1rem 0.6rem;
+}
+.es-header-main {
+  min-inline-size: 0;
+}
+.es-header-title {
+  max-inline-size: 40ch;
+  margin: 0;
+  font-family: var(--me-font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.2;
+  color: var(--me-ink);
+  overflow-wrap: anywhere;
+}
+.es-header-meta {
+  margin: 0.1rem 0 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.es-header-side {
+  --cluster-gap: 0.5rem;
+}
+.es-header-side .button {
+  margin-inline-start: 0.35rem;
+}
+.es-header-notice {
+  padding-block-start: 1.5rem;
+}
+
+/* ---- 6f. Overview -------------------------------------------------------- */
+.es-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 2.5rem;
+  align-items: start;
+}
+.es-overview-main,
+.es-overview-side {
+  display: grid;
+  gap: 2.25rem;
+  min-inline-size: 0;
+}
+.es-overview-side {
+  position: sticky;
+  inset-block-start: calc(var(--me-header-block) + 4.5rem);
+}
+.es-overview-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.es-publish {
+  padding: 1.5rem;
+  border-inline-start: 4px solid var(--me-accent);
+  scroll-margin-block-start: calc(var(--me-header-block) + 5rem);
+}
+.es-publish[data-state="live"] {
+  border-inline-start-color: var(--me-success);
+}
+.es-publish-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem 1.25rem;
+}
+.es-publish-icon {
+  display: inline-flex;
+  flex: none;
+  color: var(--me-accent-strong);
+}
+.es-publish[data-state="live"] .es-publish-icon {
+  color: var(--me-success);
+}
+.es-publish-icon svg {
+  inline-size: 2rem;
+  block-size: 2rem;
+}
+.es-publish-text {
+  flex: 1 1 16rem;
+  min-inline-size: 0;
+}
+.es-publish-text p {
+  margin: 0.25rem 0 0;
+}
+.es-publish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.es-publish-notice {
+  margin-block-start: 1.25rem;
+}
+.es-missing {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+.es-missing li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  min-block-size: 44px;
+  border-block-start: 1px solid var(--me-rule-soft);
+}
+.es-missing .link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+.es-block-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  margin-block-end: 1rem;
+}
+.es-block-head p {
+  margin: 0;
+}
+.es-checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.es-checklist li {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.es-checklist li:last-child {
+  border-block-end: 0;
+}
+.es-check-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  flex: none;
+  border: 1.5px solid var(--me-rule-strong);
+  border-radius: 999px;
+}
+.es-check-mark svg {
+  inline-size: 1rem;
+  block-size: 1rem;
+}
+.es-checklist li[data-done] .es-check-mark {
+  border-color: var(--me-success);
+  background: var(--me-success);
+  color: var(--me-surface-raised);
+}
+.es-check-text {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.es-check-text p {
+  margin: 0;
+}
+.es-check-title {
+  font-weight: 600;
+}
+.es-checklist li[data-done] .es-check-title {
+  color: var(--me-ink-muted);
+}
+.es-check-action {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-block-size: 44px;
+  font-size: 0.9rem;
+}
+.es-stats-foot {
+  max-inline-size: none;
+  margin: 1rem 0 0;
+}
+.es-stats-foot .link,
+.es-block-head .link {
+  /* Stand-alone links, not links in a sentence: a full 44px touch target. */
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+}
+.es-stats-foot .link {
+  margin-inline-end: 0.75rem;
+}
+.es-side-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1.5rem;
+}
+.es-side-card p {
+  margin: 0;
+}
+.es-side-card .cluster {
+  --cluster-gap: 0.25rem 1.25rem;
+}
+.es-side-card .link {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-size: 0.9rem;
+}
+.es-side-card p .link {
+  display: inline;
+}
+.es-dl > div {
+  padding-block: 0.55rem;
+  font-size: 0.9rem;
+}
+.es-dl dd {
+  overflow-wrap: anywhere;
+}
+.es-plan-name {
+  font-family: var(--me-font-display);
+  font-size: 1.45rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.es-meter {
+  inline-size: 100%;
+  block-size: 0.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--me-rule-soft);
+  accent-color: var(--me-primary);
+  overflow: hidden;
+  appearance: none;
+}
+.es-meter::-webkit-progress-bar {
+  background: var(--me-rule-soft);
+}
+.es-meter::-webkit-progress-value {
+  background: var(--me-primary);
+}
+.es-meter::-moz-progress-bar {
+  background: var(--me-primary);
+}
+
+/* ---- 6g. Editors (Design, Details) and the save bar ---------------------- */
+.es-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22rem;
+  gap: 2rem 2.5rem;
+  align-items: start;
+}
+.es-editor-main {
+  min-inline-size: 0;
+}
+.es-editor-aside {
+  inset-block-start: calc(var(--me-header-block) + 4.5rem);
+}
+.es-sections {
+  display: grid;
+  gap: 1.5rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.es-section {
+  padding: 1.75rem;
+  scroll-margin-block-start: calc(var(--me-header-block) + 4.5rem);
+}
+.es-section-head {
+  margin-block-end: 1.25rem;
+}
+.es-section-head p {
+  margin: 0.35rem 0 0;
+}
+.es-section[data-tone="danger"] {
+  border-color: color-mix(in srgb, var(--me-danger) 45%, transparent);
+}
+.es-section[data-tone="danger"] .es-section-title {
+  color: var(--me-danger);
+}
+.es-schedule-top {
+  display: grid;
+  grid-template-columns: 9.5rem minmax(0, 1fr);
+  gap: 0 1rem;
+}
+.es-row .fields .field {
+  margin-block-end: 0;
+}
+.es-row-plain {
+  align-items: flex-start;
+}
+.es-photo-field {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.9rem;
+}
+.es-photo-thumb {
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  flex: none;
+  object-fit: cover;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-control);
+}
+.es-photo-field > .es-photo-thumb {
+  margin-block-end: 1.15rem;
+}
+.es-row .es-photo-thumb {
+  margin-block-end: 0;
+}
+.es-photo-broken {
+  flex: 0 1 12rem;
+  margin-block-end: 1.15rem;
+  color: var(--me-warning);
+}
+.es-list-label {
+  margin: 0.5rem 0 0.6rem;
+}
+/* The save bar docks to the bottom of the window while its editor is on screen. */
+.es-savebar {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 15;
+  grid-column: 1 / -1;
+  padding-block-end: env(safe-area-inset-bottom);
+  border: 1px solid var(--me-rule-strong);
+  border-block-end: 0;
+  border-start-start-radius: var(--me-radius-panel);
+  border-start-end-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  box-shadow: 0 -8px 24px -18px color-mix(in srgb, var(--me-ink) 35%, transparent);
+}
+.es-savebar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  max-inline-size: none;
+  padding: 0.75rem 1.25rem;
+}
+.es-savebar-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.es-savebar-dot {
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  flex: none;
+  border-radius: 999px;
+  background: var(--me-success);
+}
+.es-savebar[data-dirty] .es-savebar-dot {
+  background: var(--me-warning);
+}
+.es-savebar[data-dirty] .es-savebar-status {
+  font-weight: 600;
+  color: var(--me-ink);
+}
+.es-savebar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-inline-start: auto;
+}
+.es-savebar-actions .button {
+  white-space: nowrap;
+}
+/* Keep a focused field clear of the docked bar, and toasts above it. */
+html:has(.es-savebar) {
+  scroll-padding-block-end: 6rem;
+}
+body:has(.es-savebar) .toast-region {
+  inset-block-end: calc(5.25rem + env(safe-area-inset-bottom));
+}
+
+/* ---- 6h. Settings -------------------------------------------------------- */
+.es-settings-layout {
+  grid-template-columns: 13rem minmax(0, 50rem);
+}
+.es-settings-nav {
+  inset-block-start: calc(var(--me-header-block) + 4.5rem);
+}
+.es-settings {
+  display: grid;
+  gap: 1.5rem;
+  min-inline-size: 0;
+}
+.es-toggle {
+  margin-block: 0;
+  padding-block: 0.7rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  cursor: pointer;
+}
+.es-fieldset > .es-toggle:first-of-type,
+form > .es-toggle:first-child {
+  border-block-start: 0;
+}
+.es-toggle > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.es-toggle-label {
+  font-size: 0.96rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+.es-toggle input:disabled ~ span {
+  opacity: 0.65;
+}
+.es-deadline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1rem;
+}
+.es-deadline .field {
+  flex: 0 1 13rem;
+}
+.es-deadline .field + .field {
+  flex-basis: 9rem;
+}
+.es-well-fields {
+  margin-block-start: 1.25rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+}
+.es-form-actions {
+  margin-block-start: 1.5rem;
+}
+.es-link-current {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  margin: 0 0 1.25rem;
+}
+.es-link-url {
+  padding: 0.65rem 0.8rem;
+  border: 1px dashed var(--me-rule-strong);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface);
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+  overflow-wrap: anywhere;
+}
+.es-link-url strong {
+  color: var(--me-ink);
+}
+.es-link-edit {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.es-link-suffix {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  min-block-size: 48px;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.es-link-edit:has(.error) .es-link-suffix {
+  align-self: center;
+}
+.es-locked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin: 0;
+  color: var(--me-ink-muted);
+}
+.es-pass {
+  margin-block-start: 1.5rem;
+  padding: 1.5rem;
+  border: 1px solid var(--me-rule-strong);
+  border-block-start: 3px solid var(--me-primary);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface);
+}
+.es-pass-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+}
+.es-pass-price {
+  margin: 0;
+  font-weight: 600;
+}
+.es-pass-features {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1.5rem;
+  margin: 1.1rem 0 1.4rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.94rem;
+}
+.es-pass-features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+.es-pass-features .icon {
+  margin-block-start: 0.3rem;
+  color: var(--me-success);
+}
+
+/* ---- 6i. Narrower screens ------------------------------------------------ */
+@media (max-width: 1100px) {
+  .es-wizard-grid,
+  .es-overview,
+  .es-editor {
+    grid-template-columns: minmax(0, 1fr) 19rem;
+    gap: 2rem;
+  }
+}
+@media (max-width: 960px) {
+  .es-wizard-grid,
+  .es-overview,
+  .es-editor {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-wizard-aside,
+  .es-aside-wide-only {
+    display: none;
+  }
+  .es-editor-aside {
+    position: static;
+    order: -1;
+    max-inline-size: 26rem;
+    inline-size: 100%;
+    justify-self: center;
+  }
+  .es-review-preview {
+    display: block;
+    max-inline-size: 26rem;
+    margin-inline: auto;
+  }
+  .es-narrow-only {
+    display: inline-flex;
+  }
+  .es-overview-side {
+    position: static;
+    max-inline-size: 26rem;
+    inline-size: 100%;
+    justify-self: center;
+  }
+  .es-welcome {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+  }
+  .es-settings-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-settings-nav {
+    display: none;
+  }
+  .es-welcome-preview {
+    max-inline-size: 22rem;
+    inline-size: 100%;
+    justify-self: center;
+  }
+}
+@media (max-width: 680px) {
+  .es-events {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-event {
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.9rem;
+  }
+  .es-event .inv-preview {
+    inline-size: 5.5rem;
+  }
+  .es-page-header .button {
+    flex: 1 1 100%;
+  }
+  .es-steps-count {
+    display: block;
+  }
+  .es-steps .es-step {
+    font-size: 0;
+    gap: 0;
+    padding-inline: 0;
+  }
+  .es-steps li[data-state="current"] .es-step {
+    font-size: 0.85rem;
+    gap: 0.45rem;
+  }
+  .es-steps li {
+    flex: 0 1 auto;
+  }
+  .es-steps li[data-state="current"] {
+    flex: 1 1 auto;
+  }
+  .es-wizard-form {
+    padding: 1.25rem;
+  }
+  .es-step-head h2 {
+    font-size: 1.65rem;
+  }
+  .es-chip span {
+    padding-inline: 0.85rem;
+    font-size: 0.9rem;
+  }
+  .es-choices,
+  .es-swatches,
+  .es-gates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-when {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .es-when > :first-child {
+    grid-column: 1 / -1;
+  }
+  .es-row {
+    padding: 0.9rem 0.25rem 0.9rem 0.9rem;
+  }
+  .es-row-fields,
+  .es-schedule-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-row-fields .field + .field,
+  .es-row .fields .field + .field {
+    margin-block-start: 0.9rem;
+  }
+  .es-wizard-actions .button {
+    flex: 1 1 0;
+  }
+  .es-wizard-actions > span {
+    display: none;
+  }
+  .es-header {
+    padding-block: 0.9rem 0.4rem;
+  }
+  .es-header-title {
+    font-size: 1.3rem;
+  }
+  .es-page .page-header {
+    padding-block: 1.25rem 1.1rem;
+  }
+  .es-page-overview {
+    padding-block-start: 1.25rem;
+  }
+  .es-header-side .button {
+    margin-inline-start: 0;
+  }
+  .es-overview-cards {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .es-publish {
+    padding: 1.25rem;
+  }
+  .es-publish-icon {
+    display: none;
+  }
+  .es-publish-actions,
+  .es-publish-actions .button {
+    flex: 1 1 100%;
+  }
+  .es-checklist li {
+    flex-wrap: wrap;
+    gap: 0.25rem 0.9rem;
+    padding: 0.9rem 1rem;
+  }
+  .es-check-text {
+    flex-basis: calc(100% - 2.6rem);
+  }
+  .es-check-action {
+    margin-inline-start: 2.5rem;
+  }
+  .es-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+  .es-stats .stat {
+    padding: 1rem;
+  }
+  .es-section,
+  .es-side-card {
+    padding: 1.25rem;
+  }
+  .es-savebar {
+    margin-inline: calc(var(--me-gutter) * -1);
+    border-inline: 0;
+    border-radius: 0;
+  }
+  .es-savebar-inner {
+    padding: 0.6rem var(--me-gutter);
+  }
+  .es-savebar-status {
+    flex: 1 1 8rem;
+    font-size: 0.85rem;
+  }
+  .es-savebar-actions {
+    flex: 0 1 auto;
+    flex-wrap: nowrap;
+    gap: 0.25rem;
+  }
+  .es-savebar-actions .button {
+    padding: 0.7rem 0.9rem;
+    font-size: 0.94rem;
+  }
+  .es-savebar-actions .button-ghost {
+    padding-inline: 0.6rem;
+  }
+  /* With nothing to save the bar is one quiet line; the buttons arrive with the first change. */
+  .es-savebar:not([data-dirty]) .es-savebar-save {
+    display: none;
+  }
+  .es-savebar[data-dirty] .es-savebar-status {
+    flex-basis: 100%;
+  }
+  .es-savebar[data-dirty] .es-savebar-actions {
+    flex: 1 1 100%;
+  }
+  .es-savebar[data-dirty] .es-savebar-save {
+    flex: 1 1 auto;
+  }
+  body:has(.es-savebar) .toast-region {
+    inset-block-end: calc(5rem + env(safe-area-inset-bottom));
+  }
+  .es-photo-thumb {
+    inline-size: 3.5rem;
+    block-size: 3.5rem;
+  }
+  .es-deadline .field,
+  .es-deadline .field + .field {
+    flex: 1 1 8rem;
+  }
+  .es-pass {
+    padding: 1.25rem;
+  }
+  .es-pass-features {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .es-chip span,
+  .es-choice,
+  .es-swatch,
+  .es-gate {
+    transition: none;
+  }
+}
+/* ---- end of 6 ---- */
+
+/* ---- 7. Guests, share, responses, awaiting and door check-in (STUDIO-B) ------
+   Classes are prefixed `sb-`. Components: components/guest-list, share, responses, awaiting,
+   check-in. Tokens only, logical properties only. */
+
+/* Page frame: every STUDIO-B page is `.wrap.sb-page` with a `.page-header`. */
+.sb-page .page-header {
+  padding-block: 1.75rem 1.25rem;
+}
+.sb-page .page-header .lead {
+  margin-block: 0.4rem 0;
+  max-inline-size: 62ch;
+}
+.sb-stats {
+  grid-template-columns: repeat(auto-fit, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+  margin-block-end: 1.5rem;
+}
+.sb-stats .stat {
+  padding: 1rem 1.15rem;
+}
+.sb-notice {
+  margin-block-end: 1.5rem;
+}
+.sb-premium {
+  margin-block: 0.5rem 0;
+}
+.sb-section {
+  margin-block-start: 2.5rem;
+}
+.sb-section > h2 {
+  font-size: 1.75rem;
+  margin-block: 0 0.35rem;
+}
+.sb-section > h2 + p {
+  margin-block: 0 1.1rem;
+  color: var(--me-ink-muted);
+}
+.sb-heading {
+  font-family: var(--me-font-body);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--me-ink);
+  margin-block: 0 0.85rem;
+}
+.sb-link-button {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0 0.25rem;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sb-menu-danger {
+  color: var(--me-danger);
+}
+.sb-page .icon-button[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+/* Icon-only menu toggle (<summary class="icon-button">) gets a hairline so it reads as a button. */
+.sb-page .menu > summary.icon-button {
+  border: 1px solid var(--me-rule-strong);
+  background: var(--me-surface-raised);
+}
+
+/* Toolbar: search grows, filters stay compact, the actions sit at the end. */
+.sb-toolbar {
+  align-items: flex-end;
+  margin-block-end: 0.5rem;
+}
+.sb-toolbar > .sb-search {
+  flex: 2 1 16rem;
+  max-inline-size: 34rem;
+}
+.sb-toolbar > .sb-filter {
+  flex: 1 1 10rem;
+  max-inline-size: 16rem;
+}
+.sb-toolbar > .sb-actions {
+  margin-inline-start: auto;
+}
+.sb-search-box {
+  position: relative;
+}
+.sb-search-box > .icon {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 0.9rem;
+  transform: translateY(-50%);
+  color: var(--me-ink-muted);
+  pointer-events: none;
+}
+.sb-search-box > input {
+  padding-inline-start: 2.6rem;
+}
+.sb-count {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 0.75rem;
+  min-block-size: 44px;
+  margin-block: 0 0.5rem;
+  max-inline-size: none;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+
+/* Household rows: a card per household; people, reply and actions. */
+.sb-party-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+}
+.sb-party {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.sb-party-main {
+  display: grid;
+  gap: 0.45rem;
+  min-inline-size: 0;
+}
+.sb-party-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.75rem;
+}
+.sb-party-name {
+  margin: 0;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+.sb-party-guests {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 1.1rem;
+  font-size: 0.94rem;
+}
+.sb-party-guests > li {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sb-party-guest-status {
+  font-size: 0.8rem;
+  color: var(--me-ink-muted);
+}
+.sb-party-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.1rem 0;
+  margin: 0;
+  max-inline-size: none;
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.sb-party-meta > span:not(:last-child)::after {
+  content: "\00b7";
+  margin-inline: 0.5rem;
+}
+.sb-party-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.sb-party-actions .button {
+  min-block-size: 44px;
+}
+
+.sb-dialog-wide {
+  max-inline-size: 760px;
+}
+.sb-editor-section + .sb-editor-section {
+  margin-block-start: 1.75rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.sb-drafts {
+  display: grid;
+  gap: 0.25rem;
+}
+.sb-drafts > .help {
+  margin-block-end: 0.75rem;
+}
+.sb-drafts > .button {
+  justify-self: start;
+}
+.sb-draft {
+  padding-block-end: 0.75rem;
+  margin-block-end: 0.75rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-draft .field {
+  margin-block-end: 0.5rem;
+}
+.sb-draft-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.sb-draft-head > .field {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.sb-draft-head > .icon-button {
+  margin-block-end: 0.6rem;
+}
+.sb-draft-options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+}
+.sb-draft-options .check {
+  margin-block: 0.5rem;
+}
+.sb-draft-options .button {
+  min-block-size: 44px;
+}
+
+/* Reply choices: a row of radio "segments"; the checked one is outlined and marked. */
+.sb-reply-list {
+  display: grid;
+  gap: 1rem;
+  margin-block-end: 1rem;
+}
+.sb-choice-field {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  min-inline-size: 0;
+}
+.sb-choice-field > legend {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0;
+  margin-block-end: 0.5rem;
+  font-weight: 600;
+}
+.sb-choice-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.sb-choice {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1 1 8.5rem;
+  min-block-size: 48px;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--me-ink-muted);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  font-weight: 400;
+  font-size: 0.94rem;
+  cursor: pointer;
+}
+.sb-choice > input {
+  inline-size: 20px;
+  block-size: 20px;
+  min-block-size: 20px;
+  flex: none;
+  margin: 0;
+}
+.sb-choice:has(input:checked) {
+  border-color: var(--me-primary);
+  box-shadow: inset 0 0 0 1px var(--me-primary);
+  background: var(--me-tint);
+  font-weight: 600;
+}
+.sb-choice:has(input:focus-visible) {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 2px;
+}
+.sb-choice:has(input:disabled) {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* People inside the edit drawer. */
+.sb-person-list {
+  list-style: none;
+  margin: 0 0 0.75rem;
+  padding: 0;
+}
+.sb-person {
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-person-new {
+  border-block-end: 0;
+}
+.sb-person-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+.sb-person-main {
+  display: grid;
+  gap: 0.25rem;
+  justify-items: start;
+  min-inline-size: 0;
+}
+.sb-person-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-weight: 600;
+}
+.sb-person-contact {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+  overflow-wrap: anywhere;
+}
+.sb-person-actions {
+  display: flex;
+  flex: none;
+}
+.sb-person-form .form-actions {
+  margin-block-start: 0.5rem;
+}
+
+/* CSV import. */
+.sb-file-input {
+  padding: 0.6rem;
+  block-size: auto;
+}
+.sb-import-file {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.sb-import-paste {
+  margin-block-end: 1.15rem;
+}
+.sb-import-paste > summary {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  color: var(--me-primary);
+  font-weight: 600;
+  cursor: pointer;
+}
+.sb-import-paste textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85rem;
+}
+.sb-import-help {
+  padding: 1rem 1.15rem;
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface);
+  border: 1px solid var(--me-rule);
+}
+.sb-import-help-title {
+  margin: 0 0 0.5rem;
+  font-family: var(--me-font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-ink);
+}
+.sb-import-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem 1.5rem;
+  margin: 0 0 0.5rem;
+  font-size: 0.82rem;
+}
+.sb-import-columns > div {
+  display: flex;
+  gap: 0.5rem;
+}
+.sb-import-columns dt {
+  flex: none;
+  min-inline-size: 4.5rem;
+}
+.sb-import-columns dd {
+  margin: 0;
+  color: var(--me-ink-muted);
+}
+.sb-import-columns code {
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.sb-import-errors {
+  margin-block: 1rem;
+}
+.sb-import-errors ul {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  font-size: 0.9rem;
+}
+.sb-import-errors li {
+  margin-block: 0.25rem;
+}
+.sb-import-preview {
+  max-block-size: 18rem;
+  margin-block-start: 1rem;
+}
+.sb-import-guest {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-inline-end: 0.85rem;
+}
+
+@media (max-width: 760px) {
+  .sb-party {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 1rem;
+  }
+  .sb-party-actions {
+    justify-content: flex-start;
+  }
+  .sb-party-actions > .button {
+    flex: 1 1 auto;
+  }
+  .sb-toolbar > .sb-filter {
+    max-inline-size: none;
+    flex: 1 1 8rem;
+  }
+  .sb-toolbar > .sb-actions {
+    inline-size: 100%;
+    margin-inline-start: 0;
+  }
+  .sb-toolbar > .sb-actions > .button {
+    flex: 1 1 auto;
+  }
+  .sb-import-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sb-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Share: message preview, QR dialog, email invitations. */
+.sb-section-first {
+  margin-block-start: 0.5rem;
+}
+.sb-message-preview {
+  margin-block: 0 1.25rem;
+  padding: 0 1.15rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.sb-message-preview > summary {
+  display: flex;
+  align-items: center;
+  min-block-size: 48px;
+  font-weight: 600;
+  color: var(--me-primary);
+  cursor: pointer;
+}
+.sb-message-preview[open] {
+  padding-block-end: 1rem;
+}
+.sb-message-text {
+  margin: 0 0 0.75rem;
+  padding: 0.9rem 1rem;
+  max-inline-size: none;
+  border-inline-start: 3px solid var(--me-accent);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface);
+  font-size: 0.94rem;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.sb-qr {
+  display: grid;
+  justify-items: center;
+}
+.sb-qr-image {
+  display: block;
+  inline-size: min(18rem, 100%);
+  block-size: auto;
+  aspect-ratio: 1;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.sb-qr-loading {
+  display: grid;
+  place-items: center;
+}
+.sb-qr .dialog-footer {
+  inline-size: 100%;
+}
+.sb-quota {
+  margin-block: 0 1rem;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.sb-email-form > .alert {
+  margin-block-end: 1.25rem;
+}
+.sb-email-tools {
+  --cluster-gap: 0.25rem 0.5rem;
+  margin-block-end: 0.5rem;
+}
+.sb-email-tools .button {
+  min-block-size: 44px;
+}
+.sb-email-count {
+  margin-inline-start: auto;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.sb-check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-block-size: 22rem;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 0 1.5rem;
+}
+.sb-check-list .check {
+  margin-block: 0;
+  padding-block: 0.6rem;
+  min-block-size: 44px;
+}
+.sb-check-name {
+  display: block;
+  font-weight: 600;
+}
+.sb-check-note {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--me-ink-muted);
+}
+.sb-skipped-title {
+  margin-block: 0.75rem 0.25rem;
+  font-weight: 600;
+}
+.sb-skipped {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  font-size: 0.9rem;
+}
+
+/* Responses and awaiting replies. */
+.sb-header-actions {
+  justify-content: flex-end;
+}
+.sb-header-actions .button {
+  min-block-size: 44px;
+}
+.sb-subnav {
+  margin-block-end: 1.5rem;
+}
+.sb-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  align-items: start;
+}
+.sb-columns-wide {
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 2rem;
+}
+.sb-side {
+  display: grid;
+  gap: 1.25rem;
+}
+.sb-side .card-body {
+  margin-block: 0 0.85rem;
+}
+.sb-h2 {
+  font-size: 1.75rem;
+  margin-block: 0 1rem;
+}
+.sb-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.85rem;
+}
+.sb-feed,
+.sb-quotes,
+.sb-songs,
+.sb-wishes,
+.sb-table-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.sb-feed > li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block: 0.65rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-feed > li:last-child,
+.sb-quotes > li:last-child,
+.sb-songs > li:last-child {
+  border-block-end: 0;
+  padding-block-end: 0;
+}
+.sb-feed-main {
+  display: grid;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+.sb-feed-date {
+  font-size: 0.8rem;
+  color: var(--me-ink-muted);
+}
+.sb-quotes > li {
+  padding-block: 0.85rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-quotes blockquote,
+.sb-wish-message {
+  margin: 0;
+  padding-inline-start: 0.9rem;
+  border-inline-start: 2px solid var(--me-accent);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+.sb-quote-from {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.75rem;
+  margin: 0.4rem 0 0;
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.sb-songs {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+  gap: 0 2rem;
+}
+.sb-songs > li {
+  display: grid;
+  padding-block: 0.6rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-song {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.sb-song-from {
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.sb-flag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+  color: var(--me-danger);
+}
+.sb-diet-counts {
+  margin-block-end: 1rem;
+}
+.sb-diet-counts .pill,
+.sb-table-list .pill {
+  gap: 0.35rem;
+  font-size: 0.82rem;
+}
+.sb-diet-guest {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+}
+.sb-diet-note {
+  display: block;
+  margin-block-start: 0.25rem;
+  overflow-wrap: anywhere;
+}
+.sb-by-table {
+  margin-block-start: 1.5rem;
+}
+.sb-table-list > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.85rem;
+  padding-block: 0.6rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-table-list .sb-diet-counts {
+  margin-block-end: 0;
+}
+.sb-table-name {
+  min-inline-size: 7rem;
+  font-weight: 600;
+}
+.sb-wishes {
+  display: grid;
+  gap: 0.75rem;
+}
+.sb-wish {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1.15rem 1.35rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.sb-wish-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem 1rem;
+}
+.sb-wish-from {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 0.75rem;
+  margin: 0;
+  font-weight: 600;
+}
+.sb-wish-date {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--me-ink-muted);
+}
+.sb-wish .notice {
+  margin: 0;
+}
+.sb-wish-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.sb-wish-actions .button {
+  min-block-size: 44px;
+}
+
+/* Door check-in: no site chrome; totals and the last result stay pinned while the list scrolls. */
+.sb-door-page {
+  padding-block-end: 3rem;
+}
+.sb-door-top {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 20;
+  padding-block: 0.6rem;
+  background: var(--me-surface);
+  border-block-end: 1px solid var(--me-rule-strong);
+}
+.sb-door-top-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+}
+.sb-door-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-inline-size: 0;
+}
+.sb-door-title > .icon-button {
+  margin-inline-start: -0.6rem;
+}
+.sb-door-title h1 {
+  margin: 0;
+  max-inline-size: none;
+  font-size: 1.5rem;
+  line-height: 1.15;
+  color: var(--me-primary);
+}
+.sb-door-title p {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--me-ink-muted);
+  overflow-wrap: anywhere;
+}
+.sb-door-totals {
+  flex: none;
+  display: grid;
+  gap: 0.3rem;
+  min-inline-size: 9.5rem;
+}
+.sb-door-totals dl {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1.25rem;
+  margin: 0;
+}
+.sb-door-totals dl > div {
+  display: grid;
+  justify-items: end;
+}
+.sb-door-totals dt {
+  font-size: 0.72rem;
+  color: var(--me-ink-muted);
+}
+.sb-door-totals dd {
+  margin: 0;
+  font-family: var(--me-font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--me-primary);
+  font-variant-numeric: lining-nums tabular-nums;
+}
+.sb-door-bar {
+  display: block;
+  block-size: 6px;
+  border-radius: 999px;
+  background: var(--me-rule-strong);
+  overflow: hidden;
+}
+.sb-door-bar > span {
+  display: block;
+  block-size: 100%;
+  background: var(--me-success);
+  transition: inline-size var(--me-duration-ui) var(--me-ease);
+}
+.sb-door-result {
+  --door-tone: var(--me-success);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-block-start: 0.6rem;
+  padding: 0.75rem 0.5rem 0.75rem 0.9rem;
+  border: 2px solid var(--door-tone);
+  border-inline-start-width: 8px;
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.sb-door-result[data-tone="warning"] {
+  --door-tone: var(--me-warning);
+}
+.sb-door-result[data-tone="danger"] {
+  --door-tone: var(--me-danger);
+}
+.sb-door-result-icon {
+  flex: none;
+  inline-size: 2.25rem;
+  block-size: 2.25rem;
+  color: var(--door-tone);
+}
+.sb-door-result-text {
+  flex: 1 1 auto;
+  display: grid;
+  gap: 0.15rem;
+  justify-items: start;
+  min-inline-size: 0;
+}
+.sb-door-result-text > strong {
+  font-size: 1.15rem;
+  line-height: 1.3;
+  color: var(--door-tone);
+}
+.sb-door-result-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.6rem;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.sb-door-body {
+  padding-block-start: 1rem;
+}
+.sb-door-search {
+  position: relative;
+}
+.sb-door-search > .icon {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 1rem;
+  transform: translateY(-50%);
+  inline-size: 1.4rem;
+  block-size: 1.4rem;
+  color: var(--me-ink-muted);
+  pointer-events: none;
+}
+.sb-door-search > input {
+  min-block-size: 60px;
+  padding-inline: 3rem;
+  font-size: 1.15rem;
+  border-width: 1.5px;
+}
+.sb-door-search > .icon-button {
+  position: absolute;
+  inset-block-start: 8px;
+  inset-inline-end: 8px;
+}
+.sb-door-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-block: 0.85rem 1rem;
+}
+.sb-door-filter {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--me-ink-muted);
+  border-radius: var(--me-radius-control);
+  overflow: hidden;
+  background: var(--me-surface-raised);
+}
+.sb-seg {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-block-size: 44px;
+  padding-inline: 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+  cursor: pointer;
+}
+.sb-seg + .sb-seg {
+  border-inline-start: 1px solid var(--me-rule-strong);
+}
+.sb-seg > input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  min-block-size: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.sb-seg:has(input:checked) {
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+}
+.sb-seg:has(input:checked) > span {
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+.sb-seg:has(input:focus-visible) {
+  outline: 3px solid var(--me-primary);
+  outline-offset: -3px;
+}
+.sb-seg:has(input:checked:focus-visible) {
+  outline-color: var(--me-accent);
+}
+.sb-door-buttons .button {
+  min-block-size: 44px;
+}
+.sb-door-camera {
+  margin-block-end: 1rem;
+}
+.sb-door-camera > video {
+  display: block;
+  inline-size: 100%;
+  max-inline-size: 28rem;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: var(--me-radius-panel);
+  border: 1.5px solid var(--me-accent);
+  background: var(--me-ink);
+}
+.sb-door-code {
+  max-inline-size: 34rem;
+}
+.sb-door-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  overflow: hidden;
+}
+.sb-door-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  padding: 0.85rem 1.15rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.sb-door-row:last-child {
+  border-block-end: 0;
+}
+.sb-door-row[data-arrived] {
+  background: var(--me-surface);
+}
+.sb-door-row-main {
+  display: grid;
+  gap: 0.2rem;
+  min-inline-size: 0;
+}
+.sb-door-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+}
+.sb-door-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 0.9rem;
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.sb-door-flags {
+  margin-block-start: 0.15rem;
+}
+.sb-door-checkin {
+  flex: none;
+  min-block-size: 56px;
+  min-inline-size: 7.5rem;
+}
+.sb-door-arrived {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-success);
+}
+.sb-door-message {
+  padding-block: 3rem;
+}
+.sb-door-message .lead {
+  margin-block: 0.75rem 1rem;
+}
+
+/* Tables that become stacked cards on a phone (roles keep the table semantics). */
+@media (max-width: 680px) {
+  .sb-stack-wrap {
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .sb-stack-table,
+  .sb-stack-table tbody,
+  .sb-stack-table tr,
+  .sb-stack-table th,
+  .sb-stack-table td,
+  .sb-stack-table caption {
+    display: block;
+  }
+  .sb-stack-table {
+    min-inline-size: 0;
+  }
+  .sb-stack-table caption {
+    padding-inline: 0;
+    background: transparent;
+  }
+  .sb-stack-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .sb-stack-table tbody tr {
+    margin-block-end: 0.75rem;
+    padding: 0.85rem 1rem;
+    border: 1px solid var(--me-rule);
+    border-radius: var(--me-radius-panel);
+    background: var(--me-surface-raised);
+  }
+  .sb-stack-table tbody tr:hover > * {
+    background: transparent;
+  }
+  .sb-stack-table tbody th,
+  .sb-stack-table tbody td {
+    padding: 0.2rem 0;
+    border: 0;
+  }
+  .sb-stack-table tbody th {
+    font-size: 1.05rem;
+    margin-block-end: 0.25rem;
+  }
+  .sb-stack-table tbody td::before {
+    content: attr(data-label);
+    display: block;
+    font-size: 0.75rem;
+    color: var(--me-ink-muted);
+  }
+  /* A stacked card lists only what the guest shared; "None" rows are left out. */
+  .sb-stack-table tbody td[data-empty] {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .sb-columns,
+  .sb-columns-wide {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+  .sb-columns-wide {
+    gap: 2rem;
+  }
+}
+@media (max-width: 760px) {
+  /* Wrapped meta lines: spacing instead of dots, so no dot is left hanging at a line end. */
+  .sb-party-meta {
+    gap: 0.1rem 0.9rem;
+  }
+  .sb-party-meta > span:not(:last-child)::after {
+    content: none;
+  }
+  .sb-share-row .sb-party-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sb-share-row .sb-party-actions > .menu {
+    justify-self: end;
+  }
+  .sb-header-actions {
+    justify-content: flex-start;
+  }
+  .sb-header-actions > .button {
+    flex: 1 1 auto;
+  }
+  .sb-wish {
+    padding: 1rem;
+  }
+  .sb-door-top-inner {
+    gap: 0.5rem 1rem;
+  }
+  .sb-door-title h1 {
+    font-size: 1.25rem;
+  }
+  .sb-door-title p {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .sb-door-totals {
+    min-inline-size: 7.5rem;
+  }
+  .sb-door-totals dl {
+    gap: 0.9rem;
+  }
+  .sb-door-totals dd {
+    font-size: 1.6rem;
+  }
+  .sb-door-filter {
+    inline-size: 100%;
+  }
+  .sb-door-buttons {
+    inline-size: 100%;
+  }
+  .sb-door-buttons > .button {
+    flex: 1 1 auto;
+  }
+  .sb-door-row {
+    padding: 0.85rem 0.9rem;
+  }
+  .sb-door-checkin {
+    min-inline-size: 6.5rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-door-bar > span {
+    transition: none;
+  }
+}
+
+/* Toolbar controls share one height so the row lines up. */
+.sb-toolbar select,
+.sb-toolbar input {
+  min-block-size: 48px;
+}
+.sb-toolbar .button {
+  min-block-size: 48px;
+  padding-block: 0.6rem;
+}
+@media (max-width: 760px) {
+  .sb-stats .stat {
+    padding: 0.75rem 0.9rem;
+  }
+  .sb-stats .stat-value {
+    font-size: 1.6rem;
+  }
+  /* Reply choices: two to a row on a phone, so a family of four still fits a screen. */
+  .sb-choice-group {
+    gap: 0.4rem;
+  }
+  .sb-choice {
+    flex: 1 1 calc(50% - 0.4rem);
+    padding-inline: 0.6rem;
+    font-size: 0.88rem;
+  }
+}
+/* Feedback inside a drawer or dialog (a toast would sit behind the modal backdrop). */
+.sb-inline-note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-success);
+}
+.sb-inline-note:empty {
+  display: none;
+}
+.sb-inline-note[data-tone="danger"] {
+  color: var(--me-danger);
+}
+.sb-person-list + .sb-inline-note,
+.notice + .sb-inline-note {
+  margin-block: 0.25rem 0.85rem;
+}
+/* The file picker, drawn like the other controls with its button in the brand style. */
+.sb-file-input {
+  inline-size: 100%;
+  min-block-size: 56px;
+  padding: 0.5rem;
+  border: 1px dashed var(--me-ink-muted);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  color: var(--me-ink-muted);
+  font: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.sb-file-input::file-selector-button {
+  min-block-size: 40px;
+  margin-inline-end: 0.85rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid var(--me-primary);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  color: var(--me-primary);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+.sb-file-input:hover::file-selector-button {
+  background: var(--me-tint);
+}
+/* ---- end of 7 (STUDIO-B) ---- */
+
+/* ---- 8. Final visual pass --------------------------------------------------
+   Small corrections found while looking at every screen at 1440px and 390px. They sit last so
+   they win over the sections above without editing them. */
+
+/* Dialogs: the action row stays docked while a long form scrolls behind it, and a title uses
+   the width of the dialog (the shared heading measure wrapped "QR code for …" early).
+   The dialog gives up its bottom padding to the row, so nothing shows beneath the docked row. */
+.dialog {
+  --dialog-pad: 2rem;
+  scroll-padding-block-end: 7rem;
+}
+.dialog-title {
+  max-inline-size: none;
+}
+.dialog:has(> .dialog-footer, > :not(dialog) > .dialog-footer) {
+  padding-block-end: 0;
+}
+.dialog-footer {
+  position: sticky;
+  inset-block-end: 0;
+  z-index: 2;
+  margin-inline: calc(var(--dialog-pad) * -1);
+  padding-inline: var(--dialog-pad);
+  padding-block-end: var(--dialog-pad);
+  background: var(--me-surface-raised);
+}
+@media (max-width: 680px) {
+  .dialog {
+    --dialog-pad: 1.25rem;
+  }
+  .dialog-footer {
+    gap: 0.5rem;
+    padding-block-start: 0.75rem;
+  }
+  /* Three stacked buttons would cover a quarter of a phone screen: that row stays in the flow. */
+  .dialog-footer:has(> :nth-child(3)) {
+    position: static;
+  }
+}
+
+/* The error summary takes focus after a failed submit: the ring follows the rounded box. */
+.error-summary {
+  border-radius: var(--me-radius-panel);
+}
+
+/* A status chip inside a heading keeps the body face (it inherited the display serif). */
+:is(h1, h2, h3, h4) > .badge {
+  font-family: var(--me-font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.4;
+}
+
+/* Reply choices: an even two-by-two grid instead of three and a stretched fourth. */
+.sb-choice-group {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+/* The share message is a disclosure: say so with a chevron. */
+.sb-message-preview > summary {
+  justify-content: space-between;
+  gap: 1rem;
+  list-style: none;
+}
+.sb-message-preview > summary::-webkit-details-marker {
+  display: none;
+}
+.sb-message-preview > summary::after {
+  content: "";
+  flex: none;
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  margin-inline-end: 0.3rem;
+  border-block-end: 2px solid var(--me-primary);
+  border-inline-end: 2px solid var(--me-primary);
+  transform: rotate(45deg);
+  transition: transform var(--me-duration-ui) var(--me-ease);
+}
+.sb-message-preview[open] > summary::after {
+  transform: rotate(-135deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  .sb-message-preview > summary::after {
+    transition: none;
+  }
+}
+
+/* Event tiles: a long word in a title moves to the next line whole instead of splitting. */
+.inv-preview[data-size="thumb"] .inv-preview-headline {
+  overflow-wrap: break-word;
+  hyphens: auto;
+}
+
+@media (max-width: 680px) {
+  /* The docked save bar is two rows tall on a phone once there are changes to save. */
+  html:has(.es-savebar) {
+    scroll-padding-block-end: 9.5rem;
+  }
+
+  /* List editors (schedule, story, questions, first guests): the fields take the full width
+     and the move and remove buttons sit in a row beneath them. */
+  .es-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.25rem;
+    padding: 0.9rem 0.9rem 0.35rem;
+  }
+  .es-row-plain {
+    padding-block-end: 0.9rem;
+  }
+  .es-row-tools {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+  .es-row-remove {
+    align-self: flex-end;
+  }
+
+  /* Wizard: "Back" keeps its own width so the main action stays on one line. */
+  .es-wizard-actions .button {
+    white-space: nowrap;
+  }
+  .es-wizard-actions .button-secondary {
+    flex: 0 0 auto;
+  }
+
+  /* First visit and settings: stand-alone actions fill the row like every other phone action. */
+  .es-welcome .cluster > .button,
+  .es-deadline > .button {
+    flex: 1 1 100%;
+  }
+  .es-event .inv-preview[data-size="thumb"] .inv-preview-card {
+    padding-inline: 0.3rem;
+  }
+  .es-event .inv-preview[data-size="thumb"] .inv-preview-headline {
+    font-size: 0.7rem;
+  }
+
+  /* Plan comparison: one card per feature, each plan on its own line (no sideways scroll). */
+  .pub-scroll-hint {
+    display: none;
+  }
+  .pub-plan-table {
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .pub-plan-table .table,
+  .pub-plan-table :is(tbody, tr, th, td, caption) {
+    display: block;
+  }
+  .pub-plan-table .table {
+    min-inline-size: 0;
+  }
+  .pub-plan-table caption {
+    padding-inline: 0;
+    background: transparent;
+  }
+  .pub-plan-table thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .pub-plan-table tbody tr {
+    margin-block-end: 0.75rem;
+    padding: 0.9rem 1rem 0.6rem;
+    border: 1px solid var(--me-rule);
+    border-radius: var(--me-radius-panel);
+    background: var(--me-surface-raised);
+  }
+  .pub-plan-table tbody tr:hover > * {
+    background: transparent;
+  }
+  .pub-plan-table tbody th {
+    min-inline-size: 0;
+    padding: 0 0 0.5rem;
+    border: 0;
+    font-size: 1rem;
+  }
+  .pub-plan-table tbody td {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border: 0;
+    border-block-start: 1px solid var(--me-rule-soft);
+    font-size: 0.9rem;
+    text-align: end;
+  }
+  .pub-plan-table tbody td::before {
+    content: attr(data-label);
+    flex: none;
+    max-inline-size: 55%;
+    color: var(--me-ink-muted);
+    text-align: start;
+  }
+
+  /* Import preview: one card per household. */
+  .sb-import-preview {
+    max-block-size: none;
+  }
+  .sb-stack-table td.cell-num {
+    text-align: start;
+  }
+}
+/* ---- end of 8 ---- */
+
+/* ---- 8a. More of the final pass ---- */
+/* The memorial section stacks under 960px: the heading and its text read as one block. */
+@media (max-width: 960px) {
+  .pub-memorial .split {
+    gap: 1.25rem;
+  }
+}
+/* The QR dialog centres its content in a grid: its action row still spans the dialog. */
+.sb-qr .dialog-footer {
+  justify-self: stretch;
+  inline-size: auto;
+}
+@media (max-width: 680px) {
+  /* Empty states: the next step fills the row, like the other phone actions. */
+  .empty > .cluster > .button {
+    flex: 1 1 100%;
+  }
+}
+/* ---- end of 8a ---- */
+
+/* ---- 8b. Memorial occasion in the new-invitation wizard ----
+   Choosing a memorial occasion swaps the wizard to the calm palette. Its muted text is tuned for
+   the calm surface (4.5:1) and fell just short on the ivory page behind it, so the calm surface
+   is painted behind the whole page for as long as that occasion is selected. */
+.studio-main:has(.es-wizard[data-experience-mode="memorial"]) {
+  position: relative;
+  isolation: isolate;
+}
+.es-wizard[data-experience-mode="memorial"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--me-surface);
+}
+
+/* ---- 8c. Door check-in ---- */
+/* The search field has its own labelled clear button: hide the browser's second one. */
+.sb-door-search > input::-webkit-search-cancel-button {
+  appearance: none;
+  display: none;
+}
+/* A memorial event keeps its calm surface to the bottom of the door list, not only in the bar. */
+.sb-door-page[data-experience-mode="memorial"] {
+  background: var(--me-surface);
+}
+
+/* Copying can be refused (in-app browsers, a denied permission). The text is then shown in a
+   read-only field, already selected, so it can be copied by hand (components/ui/CopyButton). */
+.copy-manual {
+  display: grid;
+  gap: 0.35rem;
+  flex: 1 1 100%;
+  grid-column: 1 / -1;
+  inline-size: 100%;
+  min-inline-size: 0;
+  text-align: start;
+}
+.copy-manual > :is(input, textarea) {
+  inline-size: 100%;
+  min-inline-size: 0;
+  font-size: 0.9rem;
+}
+.copy-manual > textarea {
+  resize: vertical;
+}
+/* The household's link under its QR code, as text that can be selected. */
+.sb-qr-link {
+  inline-size: 100%;
+  margin-block: 1rem 0;
+  text-align: start;
+}
+.sb-qr-link > input {
+  inline-size: 100%;
+  font-size: 0.9rem;
 }

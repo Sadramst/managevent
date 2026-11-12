@@ -1,121 +1,208 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
+import { fillCopy, getInvitationShell, getInvitationStudioGuests } from "@managevent/i18n";
+import { AwaitingList } from "@/components/awaiting/AwaitingList";
+import { ReminderEmailForm } from "@/components/awaiting/ReminderEmailForm";
+import { PremiumPointer } from "@/components/guest-list/PremiumPointer";
+import { ResponsesNav } from "@/components/responses/ResponsesNav";
+import { buttonClass, CopyButton, EmptyState, Notice } from "@/components/ui";
+import { formatLocalDate } from "@/lib/dates";
+import { deadlineText } from "@/lib/guest-list/deadline";
 import {
-  buildReminderText,
-  formatDateAu,
-  getAwaitingParties,
-  getChaseCounts,
-  getDeadlineStatus,
-  getReminderMode,
-} from "@/lib/rsvp-chase";
-import { chaseCopy } from "@/lib/rsvp-chase-copy";
-import { CopyButton } from "./CopyButton";
+  experienceModeAttr,
+  isMemorial,
+  loadEvent,
+  premiumPointerFor,
+} from "@/lib/guest-list/event";
+import { loadAllParties, toLinkPartyView } from "@/lib/guest-list/load";
+import { personalise, reminderMessageTemplate } from "@/lib/guest-list/messages";
+import { hasPendingGuest } from "@/lib/guest-list/view";
+import { privateMetadata } from "@/lib/metadata";
+import { getServerApi } from "@/lib/server-api";
+import { requireHost } from "@/lib/session";
+import { routes, wwwLinks } from "@/lib/urls";
 
-export const metadata: Metadata = {
-  title: chaseCopy.pageTitle,
-  robots: { index: false, follow: false, noarchive: true },
-};
+const copy = getInvitationStudioGuests("en");
+const shell = getInvitationShell("en");
 
-export const dynamic = "force-dynamic";
+export const metadata: Metadata = privateMetadata(copy.awaiting.metaTitle);
 
-interface AwaitingPageProps {
+export default async function EventAwaitingPage({
+  params,
+}: {
   params: Promise<{ eventId: string }>;
-}
-
-export default async function AwaitingRepliesPage({ params }: AwaitingPageProps) {
+}) {
   const { eventId } = await params;
-  // DECISION-NEEDED(PROD-INV-01): this route is as open as the existing studio routes.
-  // It must inherit the host-access gate from the Fixer team's auth work once that lands.
-  const event = invitationStore.getEventById(eventId);
-  if (!event) notFound();
+  const { capabilities } = await requireHost();
+  const api = await getServerApi();
+  const event = await loadEvent(api, eventId);
+  const [loaded, summary, messaging] = await Promise.all([
+    // Every household, not the API's `status: "PENDING"` filter: that filter is on the
+    // household's overall status, which is already "attending" once one member says yes, so a
+    // guest added later (or left unanswered) would be counted as awaiting but never listed.
+    loadAllParties(api, eventId),
+    api.responses.getSummary(eventId),
+    api.messaging.getStatus(eventId),
+  ]);
 
-  const mode = getReminderMode(event);
-  const counts = getChaseCounts(event);
-  const awaiting = getAwaitingParties(event);
-  const deadline = getDeadlineStatus(event, new Date());
-  const deadlineDate = event.rsvpDeadline ? formatDateAu(event.rsvpDeadline, event.timeZone) : "";
+  const memorial = isMemorial(event);
+  const published = event.invitation.publishedAt !== null;
+  const parties = loaded.items
+    .filter(hasPendingGuest)
+    .map((party) => toLinkPartyView(party, event.timeZone));
+  const { awaiting, responses, common } = copy;
+  const { deadline } = summary;
+  const closed = deadline.state === "CLOSED";
+  const premium = premiumPointerFor(event, capabilities);
+  const emailReady = capabilities.emailInvitations && messaging.emailConfigured;
 
-  let deadlineText: string;
-  if (deadline.kind === "no-deadline") deadlineText = chaseCopy.noDeadline;
-  else if (mode === "memorial") deadlineText = chaseCopy.memorialRepliesRequested(deadlineDate);
-  else if (deadline.kind === "open") deadlineText = chaseCopy.deadlineOpen(deadline.daysRemaining);
-  else if (deadline.kind === "due-today") deadlineText = chaseCopy.deadlineDueToday;
-  else deadlineText = chaseCopy.deadlineClosed(deadline.daysOverdue);
-
-  const stats: Array<[string, number]> = [
-    [chaseCopy.statAwaiting, counts.awaiting],
-    [chaseCopy.statReplied, counts.replied],
-    [chaseCopy.statTotal, counts.total],
-  ];
+  const reminderTemplate = reminderMessageTemplate(
+    awaiting.reminder,
+    { title: event.title, hosts: event.invitation.content.hosts, memorial },
+    deadline.rsvpDeadlineLocal && !closed ? formatLocalDate(deadline.rsvpDeadlineLocal) : null,
+  );
+  const genericReminder = personalise(
+    reminderTemplate,
+    memorial ? awaiting.reminder.genericNameMemorial : awaiting.reminder.genericName,
+    awaiting.reminder.genericLink,
+  );
 
   return (
-    <main className="min-h-screen bg-stone-50 px-4 py-8 text-stone-900">
-      <div className="mx-auto max-w-3xl">
-        <Link
-          href={`/studio/${event.id}`}
-          className="text-sm text-stone-700 underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
+    <div className="wrap sb-page" {...experienceModeAttr(memorial)}>
+      <header className="page-header">
+        <div>
+          <h1 className="page-title">{awaiting.title}</h1>
+          <p className="lead">{memorial ? awaiting.leadMemorial : awaiting.lead}</p>
+        </div>
+      </header>
+
+      <ResponsesNav eventId={eventId} current="awaiting" copy={responses.nav} />
+
+      {summary.totals.guests === 0 ? (
+        <EmptyState
+          title={awaiting.noGuests.title}
+          actions={
+            <Link className={buttonClass()} href={routes.eventTab(eventId, "guests")}>
+              {awaiting.noGuests.action}
+            </Link>
+          }
         >
-          {chaseCopy.backToStudio}
-        </Link>
-        <h1 className="mt-4 text-2xl font-semibold">{chaseCopy.pageTitle}</h1>
-        <p className="mt-1 text-stone-700">{event.title}</p>
-        <p className="mt-1 text-stone-700">
-          {deadlineText}
-          {mode !== "memorial" && deadlineDate ? ` (${deadlineDate})` : ""}
-        </p>
+          <p>{awaiting.noGuests.body}</p>
+        </EmptyState>
+      ) : parties.length === 0 ? (
+        <EmptyState
+          title={awaiting.empty.title}
+          actions={
+            <Link className={buttonClass()} href={routes.eventTab(eventId, "responses")}>
+              {awaiting.empty.action}
+            </Link>
+          }
+        >
+          <p>{awaiting.empty.body}</p>
+        </EmptyState>
+      ) : (
+        <>
+          <Notice tone={closed ? "warning" : "info"} className="sb-notice">
+            <p>
+              <strong>
+                {fillCopy(parties.length === 1 ? awaiting.countOne : awaiting.count, {
+                  count: parties.length,
+                })}
+              </strong>{" "}
+              {deadlineText(responses.deadline, deadline, memorial)}
+            </p>
+          </Notice>
 
-        <dl className="mt-6 grid grid-cols-3 gap-3 text-start">
-          {stats.map(([label, value]) => (
-            <div key={label} className="rounded-lg border border-stone-300 bg-white p-3">
-              <dt className="text-xs text-stone-700">{label}</dt>
-              <dd className="text-xl font-semibold">{value}</dd>
-            </div>
-          ))}
-        </dl>
+          {!published ? (
+            <Notice tone="warning" title={common.notPublishedTitle} className="sb-notice">
+              <p>{common.notPublished}</p>
+              <p className="sb-premium">
+                <Link className="link" href={routes.event(eventId)}>
+                  {common.publishLink}
+                </Link>
+              </p>
+            </Notice>
+          ) : null}
 
-        {awaiting.length === 0 ? (
-          <p className="mt-8">{chaseCopy.nobodyAwaiting}</p>
-        ) : (
-          <ul className="mt-8 space-y-4">
-            {awaiting.map((party) => {
-              const text = buildReminderText(event, party, mode);
-              const areaId = `msg-${party.id}`;
-              return (
-                <li key={party.id} className="rounded-lg border border-stone-300 bg-white p-4">
-                  <div className="flex flex-wrap items-baseline justify-between gap-2">
-                    <h2 className="text-lg font-medium">{party.displayName}</h2>
-                    <p className="text-sm text-stone-700">
-                      {chaseCopy.seats(party.maxSeats)}
-                      {party.tableLabel ? ` · ${chaseCopy.table(party.tableLabel)}` : ""}
+          <div className="sb-columns sb-columns-wide">
+            <section aria-labelledby="awaiting-list-title">
+              <h2 id="awaiting-list-title" className="sb-h2">
+                {awaiting.list.title}
+              </h2>
+              <AwaitingList
+                eventId={eventId}
+                parties={parties}
+                reminderTemplate={reminderTemplate}
+                allowMaybe={event.invitation.rsvpConfig.allowMaybe}
+                copy={awaiting}
+                replyCopy={copy.guests.reply}
+                common={common}
+              />
+              {loaded.truncated ? (
+                <Notice tone="warning" className="sb-notice">
+                  {common.loadMoreFailed}
+                </Notice>
+              ) : null}
+            </section>
+
+            <div className="sb-side">
+              <section className="card" aria-labelledby="awaiting-reminder-title">
+                <h2 id="awaiting-reminder-title" className="card-title">
+                  {awaiting.reminder.title}
+                </h2>
+                <p className="card-body">{awaiting.reminder.lead}</p>
+                <p className="sb-message-text">{genericReminder}</p>
+                <CopyButton
+                  value={genericReminder}
+                  label={awaiting.reminder.copy}
+                  copiedLabel={awaiting.reminder.copied}
+                />
+              </section>
+
+              <section className="card" aria-labelledby="awaiting-email-title">
+                <h2 id="awaiting-email-title" className="card-title">
+                  {awaiting.email.title}
+                </h2>
+                {!messaging.remindersEntitled ? (
+                  premium ? (
+                    <>
+                      <p>
+                        <strong>{awaiting.email.premiumTitle}</strong>
+                      </p>
+                      <p className="card-body">{awaiting.email.premium}</p>
+                      <PremiumPointer {...premium} copy={common.premium} />
+                    </>
+                  ) : (
+                    <p className="card-body">{awaiting.email.premium}</p>
+                  )
+                ) : !emailReady ? (
+                  <>
+                    <p className="card-body">{shell.capabilities.emailInvitationsOff}</p>
+                    <p className="sb-premium">
+                      <a className="link" href={wwwLinks.contact} rel="noopener">
+                        {shell.capabilities.contactUs}
+                      </a>
                     </p>
-                  </div>
-                  <label htmlFor={areaId} className="mt-3 block text-sm text-stone-700">
-                    {chaseCopy.messageLabel(party.displayName)}
-                  </label>
-                  <textarea
-                    id={areaId}
-                    readOnly
-                    rows={6}
-                    defaultValue={text}
-                    className="mt-1 w-full rounded-md border border-stone-300 bg-stone-50 p-2 text-start text-sm"
-                  />
-                  <div className="mt-2">
-                    <CopyButton
-                      text={text}
-                      label={chaseCopy.copy}
-                      ariaLabel={chaseCopy.copyAria(party.displayName)}
-                      copiedLabel={chaseCopy.copied}
-                      failedLabel={chaseCopy.copyFailed}
+                  </>
+                ) : closed ? (
+                  <p className="card-body">{awaiting.email.closed}</p>
+                ) : !published ? (
+                  <p className="card-body">{awaiting.email.notPublished}</p>
+                ) : (
+                  <>
+                    <p className="card-body">{awaiting.email.lead}</p>
+                    <ReminderEmailForm
+                      eventId={eventId}
+                      timeZone={event.timeZone}
+                      copy={awaiting.email}
                     />
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
-      </div>
-    </main>
+                  </>
+                )}
+              </section>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
   );
 }

@@ -293,11 +293,28 @@ test("the sitemap lists every indexable route and robots.txt points to it", asyn
   expect(robots).toContain("Disallow: /admin");
 });
 
-test("admin command centre renders CRM pipeline, events, partners and finance with no axe violations", async ({
+test("the staff console is closed to the public: /admin sends a signed-out visitor to sign in", async ({
   page,
+  request,
 }) => {
+  // The redirect itself, before any page renders: no enquiry data is ever in the response.
+  const gate = await request.get("/admin", { maxRedirects: 0 });
+  expect(gate.status()).toBe(307);
+  expect(gate.headers().location).toBe("/admin/sign-in");
+  expect(gate.headers()["x-robots-tag"]).toContain("noindex");
+  expect(gate.headers()["cache-control"]).toContain("no-store");
+  // The redirect carries the page title only: no table, no enquiry, none of the old mock data.
+  expect(await gate.text()).not.toMatch(/<table|console-inbox|Command Centre|ABN|Wesfarmers/);
+
+  const errors = trackErrors(page);
   await page.goto("/admin");
-  await expect(page.locator("h1")).toContainText("Managevent Admin & Planner Command Centre");
+  await expect(page).toHaveURL(/\/admin\/sign-in$/);
+  await expect(page.locator("h1")).toHaveText("Sign in");
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+  // The console has its own shell: no public header, footer or sign-up.
+  await expect(page.locator(".site-header-bar, .footer-shell")).toHaveCount(0);
+  await expect(page.locator("body")).not.toContainText(/sign up|create an account/i);
   expect(await fitsViewport(page)).toBe(true);
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  expect(errors).toEqual([]);
 });

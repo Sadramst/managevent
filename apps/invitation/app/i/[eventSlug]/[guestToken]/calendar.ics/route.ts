@@ -1,67 +1,55 @@
-import { NextResponse } from "next/server";
-import { invitationStore } from "@/lib/invitation-store";
-import { formatCeremonyDate } from "@/lib/i18n";
-import { escapeIcsText, formatIcsDate } from "./ics-helpers";
+import { isApiError } from "@managevent/api-client";
+import { getServerApi } from "@/lib/server-api";
 
-interface RouteContext {
-  params: Promise<{
-    eventSlug: string;
-    guestToken: string;
-  }>;
+/**
+ * "Add to calendar": the event as an `.ics` download, built by the API
+ * (`guestSite.getCalendar`). A plain link reaches it, so it works with JavaScript off and in
+ * in-app browsers. The file carries no guest name.
+ *
+ * Unknown link → 404, link turned off → 410 (normally answered by `proxy.ts` first).
+ * Never log the path: the token is a credential.
+ */
+export const dynamic = "force-dynamic";
+
+const BASE_HEADERS = {
+  "cache-control": "private, no-store",
+  "x-robots-tag": "noindex, nofollow, noarchive",
+} as const;
+
+/** A header-safe file name: ASCII letters, digits, dot, dash and underscore, ending in `.ics`. */
+function safeFilename(name: string): string {
+  const base = name
+    .replace(/\.ics$/i, "")
+    .replace(/[^A-Za-z0-9._-]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 80);
+  return `${base || "invitation"}.ics`;
 }
 
-export async function GET(request: Request, context: RouteContext) {
-  const { eventSlug, guestToken } = await context.params;
-  const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
-
-  if (!lookup) {
-    return new NextResponse("Invitation not found", { status: 404 });
+export async function GET(
+  _request: Request,
+  { params }: { params: Promise<{ eventSlug: string; guestToken: string }> },
+): Promise<Response> {
+  const { eventSlug, guestToken } = await params;
+  try {
+    const api = await getServerApi();
+    const calendar = await api.guestSite.getCalendar(eventSlug, guestToken);
+    return new Response(calendar.ics, {
+      status: 200,
+      headers: {
+        ...BASE_HEADERS,
+        "content-type": "text/calendar; charset=utf-8",
+        "content-disposition": `attachment; filename="${safeFilename(calendar.filename)}"`,
+      },
+    });
+  } catch (err) {
+    const status = isApiError(err, "LINK_REVOKED")
+      ? 410
+      : isApiError(err, "NOT_FOUND") || isApiError(err, "VALIDATION_ERROR")
+        ? 404
+        : isApiError(err, "RATE_LIMITED")
+          ? 429
+          : 502;
+    return new Response(null, { status, headers: BASE_HEADERS });
   }
-
-  const { event, party } = lookup;
-  const startIcs = formatIcsDate(event.startsAt);
-  const endIcs = event.endsAt
-    ? formatIcsDate(event.endsAt)
-    : formatIcsDate(
-        new Date(new Date(event.startsAt).getTime() + 5 * 60 * 60 * 1000).toISOString(),
-      );
-
-  const localWhen = formatCeremonyDate(event.startsAt, "en", {
-    includeTime: true,
-    includeWeekday: true,
-    timeZone: event.timeZone,
-  });
-  const origin = new URL(request.url).origin;
-  const guestUrl = `${origin}/i/${event.slug}/${party.token}`;
-
-  const icsLines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//Managevent Australia//Digital Invitations//EN",
-    "CALSCALE:GREGORIAN",
-    "METHOD:PUBLISH",
-    "BEGIN:VEVENT",
-    `UID:evt_${event.id}_${party.id}@managevent.com.au`,
-    `DTSTAMP:${formatIcsDate(new Date().toISOString())}`,
-    `DTSTART:${startIcs}`,
-    `DTEND:${endIcs}`,
-    `SUMMARY:${escapeIcsText(event.title)}`,
-    `DESCRIPTION:${escapeIcsText(event.content.headline)}\\n\\n${escapeIcsText(`When: ${localWhen}`)}\\nPersonal invitation for ${escapeIcsText(party.displayName)}.\\nAccess details: ${escapeIcsText(guestUrl)}`,
-    `LOCATION:${escapeIcsText(`${event.venue.name}, ${event.venue.address}`)}`,
-    `URL:${guestUrl}`,
-    "STATUS:CONFIRMED",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ];
-
-  const icsPayload = icsLines.join("\r\n");
-
-  return new NextResponse(icsPayload, {
-    status: 200,
-    headers: {
-      "Content-Type": "text/calendar; charset=utf-8",
-      "Content-Disposition": `attachment; filename="${event.slug}.ics"`,
-      "Cache-Control": "private, no-cache, no-store, must-revalidate",
-    },
-  });
 }

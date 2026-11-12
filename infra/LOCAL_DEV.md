@@ -25,9 +25,11 @@ corepack enable
 # 2. Install dependencies (also downloads the PostgreSQL 16 binaries used by `pnpm db:local`)
 pnpm install
 
-# 3. Copy .env.example to .env (never commit .env), then fill in the three local secrets
+# 3. Copy .env.example to .env (never commit .env), then fill in the local secrets
 cp .env.example .env
-node scripts/generate-deployment-secrets.mjs   # prints PII_ENCRYPTION_KEY, BETTER_AUTH_SECRET, GUEST_TOKEN_PEPPER
+node scripts/generate-deployment-secrets.mjs   # prints KEY=value lines. Copy PII_ENCRYPTION_KEY, BETTER_AUTH_SECRET,
+                                               # GUEST_TOKEN_PEPPER and API_PROXY_SECRET into .env. Do NOT copy
+                                               # POSTGRES_PASSWORD: the local database uses postgres/postgres.
 
 # 4. Start PostgreSQL 16 (database: managevent, port: 5432). Pick one:
 pnpm db:local:detach      # no Docker: runs in the background

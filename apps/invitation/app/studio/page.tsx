@@ -1,146 +1,127 @@
-import React from "react";
-import Link from "next/link";
-import { invitationStore } from "@/lib/invitation-store";
-import { Plus, Calendar, Users, ArrowRight, ExternalLink, Settings, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
-import { BrandLogo } from "@/components/BrandLogo";
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { fillCopy, getInvitationStudio } from "@managevent/i18n";
+import { INVITATION_PLANS } from "@managevent/payments/plans";
+import { Section } from "@managevent/ui/brand";
+import { EventCard } from "@/components/event-studio/EventCard";
+import { InvitationPreview } from "@/components/invitation-preview/InvitationPreview";
+import { buttonClass, Notice } from "@/components/ui";
+import { privateMetadata } from "@/lib/metadata";
+import { getServerApi } from "@/lib/server-api";
+import { requireHost } from "@/lib/session";
+import { routes } from "@/lib/urls";
 
-export const metadata: Metadata = {
-  title: "Host Studio",
-  robots: {
-    index: false,
-    follow: false,
-    noarchive: true,
-  },
-};
+const copy = getInvitationStudio("en");
 
-export default function StudioDashboardPage() {
-  const events = invitationStore.getAllEvents();
+export const metadata: Metadata = privateMetadata(copy.events.title);
+
+/**
+ * My events: every invitation the host owns or co-hosts (`GET /v1/events`), soonest first, with
+ * past events under their own heading. A host with no events is invited to create one.
+ */
+export default async function StudioHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ deleted?: string | string[] }>;
+}) {
+  await requireHost();
+  const [{ deleted }, api] = await Promise.all([searchParams, getServerApi()]);
+  const { items } = await api.events.list();
+  const text = copy.events;
+
+  const now = Date.now();
+  const byStart = [...items].sort((a, b) => a.startsAt.localeCompare(b.startsAt));
+  const isPast = (startsAt: string) => Date.parse(startsAt) < now;
+  const upcoming = byStart.filter((event) => !isPast(event.startsAt));
+  const past = byStart.filter((event) => isPast(event.startsAt)).reverse();
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900">
-      {/* Studio Header */}
-      <header className="border-b bg-stone-950 px-6 py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center transition-opacity hover:opacity-90">
-              <BrandLogo variant="compact" subtitle="Host Studio" size="sm" />
-            </Link>
-          </div>
-
-          <Link
-            href="/studio/new"
-            className="inline-flex items-center gap-1.5 rounded-button bg-gradient-to-r from-amber-400 to-amber-600 px-4 py-2 text-xs font-bold text-stone-950 shadow-md hover:brightness-110 transition-all"
-          >
-            <Plus className="h-4 w-4" />
-            <span>Create New Event</span>
-          </Link>
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="mx-auto max-w-7xl px-6 py-10 space-y-8">
+    <Section tight>
+      <div className="page-header es-page-header">
         <div>
-          <h1 className="font-display text-2xl sm:text-3xl font-bold text-stone-900">
-            Your Event Invitations
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm text-stone-500">
-            Manage invitations, track real-time RSVP responses, and coordinate catering dietary
-            requirements.
-          </p>
+          <p className="eyebrow">{text.eyebrow}</p>
+          <h1 className="page-title">{text.title}</h1>
+          {items.length > 0 ? <p className="lead es-page-lead">{text.lead}</p> : null}
         </div>
+        {items.length > 0 ? (
+          <Link className={buttonClass()} href={routes.studioNew}>
+            <Plus className="icon" aria-hidden="true" />
+            {text.newEvent}
+          </Link>
+        ) : null}
+      </div>
 
-        {/* Events Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {events.map((event) => {
-            const summary = invitationStore.getEventResponsesSummary(event.id);
-            const attendingTotal = summary
-              ? summary.confirmedAdults + summary.confirmedChildren
-              : 0;
-            const primaryParty = event.parties[0];
-            const sampleGuestLink = primaryParty ? `/i/${event.slug}/${primaryParty.token}` : "#";
+      {deleted === "1" ? (
+        <Notice tone="success" role="status" className="es-gap">
+          {text.deleted}
+        </Notice>
+      ) : null}
 
-            return (
-              <div
-                key={event.id}
-                className="group flex flex-col justify-between rounded-card border bg-white p-6 shadow-xs hover:shadow-md transition-all duration-200"
-              >
-                <div>
-                  {/* Status & Plan Pill */}
-                  <div className="flex items-center justify-between mb-3">
-                    <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 text-[10px] font-semibold text-emerald-800">
-                      ● Published
-                    </span>
-                    <span className="text-[10px] font-mono text-stone-500 uppercase">
-                      {event.ceremonySlug}
-                    </span>
-                  </div>
-
-                  <h3 className="font-display text-xl font-bold text-stone-900 group-hover:text-amber-700 transition-colors">
-                    {event.title}
-                  </h3>
-
-                  <div className="mt-3 space-y-1.5 text-xs text-stone-600">
-                    <div className="flex items-center gap-2">
-                      <Calendar className="h-3.5 w-3.5 text-stone-400" />
-                      <span>
-                        {new Date(event.startsAt).toLocaleDateString("en-AU", {
-                          dateStyle: "medium",
-                        })}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Users className="h-3.5 w-3.5 text-stone-400" />
-                      <span>{event.parties.length} parties invited</span>
-                    </div>
-                  </div>
-
-                  {/* Attendance Progress Bar */}
-                  {summary && summary.totalGuests > 0 && (
-                    <div className="mt-5 rounded-button bg-stone-50 border p-3">
-                      <div className="flex items-center justify-between text-xs font-semibold mb-1.5">
-                        <span className="text-stone-700">RSVP Confirmed</span>
-                        <span className="text-amber-700">
-                          {attendingTotal} / {summary.totalGuests} Attending
-                        </span>
-                      </div>
-                      <div className="h-2 w-full overflow-hidden rounded-full bg-stone-200">
-                        <div
-                          className="h-full bg-emerald-500 transition-all duration-500"
-                          style={{
-                            width: `${Math.min(100, (attendingTotal / summary.totalGuests) * 100)}%`,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Footer Actions */}
-                <div className="mt-6 pt-4 border-t flex items-center justify-between">
-                  <a
-                    href={sampleGuestLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-stone-500 hover:text-stone-800"
-                  >
-                    <span>Guest View</span>
-                    <ExternalLink className="h-3 w-3" />
-                  </a>
-
-                  <Link
-                    href={`/studio/${event.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-button bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 transition-colors"
-                  >
-                    <span>Manage Studio</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+      {items.length === 0 ? (
+        <div className="panel es-welcome">
+          <div className="es-welcome-text">
+            <h2>{text.empty.title}</h2>
+            <p className="lead">
+              {fillCopy(text.empty.body, { guests: INVITATION_PLANS.FREE.maxGuests })}
+            </p>
+            <ol className="es-welcome-steps">
+              {text.empty.steps.map((step) => (
+                <li key={step}>{step}</li>
+              ))}
+            </ol>
+            <div className="cluster">
+              <Link className={buttonClass({ size: "large" })} href={routes.studioNew}>
+                {text.empty.action}
+              </Link>
+              <Link className={buttonClass({ variant: "ghost" })} href={routes.templates}>
+                {text.empty.templates}
+              </Link>
+            </div>
+          </div>
+          <InvitationPreview
+            className="es-welcome-preview"
+            themeId="royal-ivory"
+            templateSlug="royal-classic"
+            memorial={false}
+            headline=""
+            hosts=""
+            dateLine=""
+            labels={copy.preview}
+          />
         </div>
-      </main>
-    </div>
+      ) : (
+        <>
+          {upcoming.length > 0 ? (
+            <section aria-labelledby="events-upcoming">
+              <h2 id="events-upcoming" className={past.length > 0 ? "es-list-title" : "sr-only"}>
+                {text.upcoming}
+              </h2>
+              <ul className="es-events">
+                {upcoming.map((event) => (
+                  <li key={event.id}>
+                    <EventCard event={event} past={false} copy={copy} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+          {past.length > 0 ? (
+            <section aria-labelledby="events-past" className="es-list-section">
+              <h2 id="events-past" className="es-list-title">
+                {text.past}
+              </h2>
+              <ul className="es-events">
+                {past.map((event) => (
+                  <li key={event.id}>
+                    <EventCard event={event} past copy={copy} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
+        </>
+      )}
+    </Section>
   );
 }

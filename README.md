@@ -6,17 +6,17 @@ Our full-service planning and vendor marketplace are powered by our own digital 
 
 _A product by **Appilico**._
 
-| Surface                                                           | Domain                         | App folder         | Status                                                                                 |
-| ----------------------------------------------------------------- | ------------------------------ | ------------------ | -------------------------------------------------------------------------------------- |
-| Marketing site, Instant Cost Estimator, Venues & `/admin` Console | `www.managevent.com.au`        | `apps/marketing`   | ✅ Built & verified locally (English (en-AU), multi-language ready)                    |
-| Digital invitations, Host Studio, guest micro-sites & QR passes   | `invitation.managevent.com.au` | `apps/invitation`  | ✅ Built & verified locally (`INV-01` … `INV-15`)                                      |
-| Admin and planner command centre (CRM, Run-sheets, GST, Audit)    | `admin.managevent.com.au`      | `apps/admin`       | ✅ Domain engine (`@managevent/admin`) + integrated UI at `/admin` in `apps/marketing` |
-| Backend API and webhooks (Hono on Node 22 + OpenAPI 3.1)          | `api.managevent.com.au`        | `apps/api`         | ✅ Built & verified locally (`Dockerfile` + `fly.toml` pinned to Sydney `syd`)         |
-| Background jobs (`pg-boss`: email notifications & RSVP bridge)    | (internal)                     | `apps/worker`      | ✅ Built & verified locally (`fly.toml` pinned to Sydney `syd`)                        |
-| Customer portal                                                   | `app.managevent.com.au`        | `apps/portal`      | ⬜ Planned (Phase 3: `PRT-01` … `PRT-11`)                                              |
-| Vendor portal                                                     | `vendors.managevent.com.au`    | `apps/vendors`     | ⬜ Planned (Phase 4: `VEN-01` … `VEN-06`)                                              |
-| iOS and Android (customers and on-the-day crew)                   | App Store / Google Play        | `apps/mobile`      | ⬜ Planned (Phase 5: `MOB-01` … `MOB-07`)                                              |
-| Windows back-office and venue kiosk                               | Microsoft Store / MSI          | `apps/desktop-win` | ⬜ Planned (Phase 6: `WIN-01` … `WIN-06`)                                              |
+| Surface                                                           | Domain                         | App folder         | Status                                                                                  |
+| ----------------------------------------------------------------- | ------------------------------ | ------------------ | --------------------------------------------------------------------------------------- |
+| Marketing site, Instant Cost Estimator, Venues & `/admin` Console | `www.managevent.com.au`        | `apps/marketing`   | ✅ Built & verified locally (English (en-AU), multi-language ready)                     |
+| Digital invitations, Host Studio, guest micro-sites & QR passes   | `invitation.managevent.com.au` | `apps/invitation`  | ✅ Built & verified locally (`INV-01` … `INV-15`)                                       |
+| Admin and planner command centre (CRM, Run-sheets, GST, Audit)    | `admin.managevent.com.au`      | `apps/admin`       | ✅ Domain engine (`@managevent/admin`) + integrated UI at `/admin` in `apps/marketing`  |
+| Backend API and webhooks (Hono on Node 22 + OpenAPI 3.1)          | `api.managevent.com.au`        | `apps/api`         | ✅ Built & verified locally (`Dockerfile`; runs on the Sydney VPS, see `DEPLOYMENT.md`) |
+| Background jobs (`pg-boss`: email notifications & RSVP bridge)    | (internal)                     | `apps/worker`      | ✅ Built & verified locally (`Dockerfile`; runs on the Sydney VPS, see `DEPLOYMENT.md`) |
+| Customer portal                                                   | `app.managevent.com.au`        | `apps/portal`      | ⬜ Planned (Phase 3: `PRT-01` … `PRT-11`)                                               |
+| Vendor portal                                                     | `vendors.managevent.com.au`    | `apps/vendors`     | ⬜ Planned (Phase 4: `VEN-01` … `VEN-06`)                                               |
+| iOS and Android (customers and on-the-day crew)                   | App Store / Google Play        | `apps/mobile`      | ⬜ Planned (Phase 5: `MOB-01` … `MOB-07`)                                               |
+| Windows back-office and venue kiosk                               | Microsoft Store / MSI          | `apps/desktop-win` | ⬜ Planned (Phase 6: `WIN-01` … `WIN-06`)                                               |
 
 ## Repository status
 

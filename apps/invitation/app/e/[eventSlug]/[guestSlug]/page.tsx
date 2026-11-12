@@ -1,43 +1,19 @@
-import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { invitationStore } from "@/lib/invitation-store";
+import { getInvitationPublic } from "@managevent/i18n";
+import { privateMetadata } from "@/lib/metadata";
+import { legacyPath, redirectLegacyLink } from "@/lib/public/legacy";
 
-export const metadata: Metadata = {
-  robots: { index: false, follow: false, noarchive: true },
-};
+/**
+ * An old `/e/<event>/<guest>` link. The API resolves it (`guestSite.resolveLegacy`) and the
+ * visitor is sent to the current guest page; anything unknown is a real 404.
+ */
+export const metadata: Metadata = privateMetadata(getInvitationPublic("en").legacy.metaTitle);
 
-interface LegacyAppilicoEventProps {
-  params: Promise<{
-    eventSlug: string;
-    guestSlug: string;
-  }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function LegacyAppilicoEventPage({
+export default async function LegacyGuestPage({
   params,
-  searchParams,
-}: LegacyAppilicoEventProps) {
+}: {
+  params: Promise<{ eventSlug: string; guestSlug: string }>;
+}) {
   const { eventSlug, guestSlug } = await params;
-  const query = await searchParams;
-
-  const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestSlug);
-
-  if (!lookup) {
-    notFound();
-  }
-
-  const { event, party } = lookup;
-
-  const search = new URLSearchParams();
-  for (const [key, val] of Object.entries(query)) {
-    if (typeof val === "string") {
-      search.set(key, val);
-    } else if (Array.isArray(val)) {
-      for (const item of val) search.append(key, item);
-    }
-  }
-
-  const queryString = search.toString() ? `?${search.toString()}` : "";
-  redirect(`/i/${event.slug}/${party.token}${queryString}`);
+  return redirectLegacyLink(legacyPath("e", [eventSlug, guestSlug]));
 }

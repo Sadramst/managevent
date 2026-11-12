@@ -1,18 +1,111 @@
-# Environments
+# Environments and environment variables
 
-| Env        | Web                           | API                     | DB                               | Stripe / Twilio    |
-| ---------- | ----------------------------- | ----------------------- | -------------------------------- | ------------------ |
-| local      | `localhost:3000–3004`         | `localhost:4000`        | Docker Postgres 16               | Test mode or mocks |
-| preview    | Vercel preview per PR         | Shared staging API      | Staging DB (a branch DB if Neon) | Test               |
-| staging    | `*.staging.managevent.com.au` | `api.staging…`          | Staging DB (Sydney)              | Test               |
-| production | `*.managevent.com.au`         | `api.managevent.com.au` | Prod DB (Sydney) with PITR       | **Live**           |
+This is the authoritative list of what each running service reads. How the system is deployed is in [`../DEPLOYMENT.md`](../DEPLOYMENT.md); the decision behind it is [ADR-0011](../docs/architecture/adr/0011-production-on-single-sydney-vps.md).
 
-## Ports (local)
+## Environments
 
-marketing 3000 · invitation 3001 · portal 3002 · vendors 3003 · admin 3004 · api 4000 · desktop dev 1420 · Expo 8081
+| Environment | Where                                                   | Database                                                                                                             | Stripe / Resend                                                       |
+| ----------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| local       | `localhost` (marketing 3100, invitation 3001, API 4000) | PostgreSQL 16 on `localhost:5432`: `pnpm db:local` (no Docker) or `docker compose up -d` ([LOCAL_DEV](LOCAL_DEV.md)) | No keys by default: both features report "not configured"             |
+| CI          | GitHub Actions (`.github/workflows/ci.yml`)             | `postgres:16-alpine` service container                                                                               | Test-only placeholders; nothing contacts a provider                   |
+| production  | One Vultr VPS in Sydney, `infra/vps/docker-compose.yml` | `postgres:16-alpine` container, named volume, nightly encrypted backups                                              | Live keys when the owner sets them; otherwise reported as unavailable |
 
-## Secrets
+There is no staging environment and there are no per-pull-request previews (ADR-0011, OPEN_DECISIONS D-19).
 
-- **Web apps:** Vercel environment variables. **API and worker:** Fly secrets (or AWS Secrets Manager). **Mobile:** EAS secrets. **CI:** GitHub Actions secrets.
-- **Never** in the repo. `.env.example` lists the names only.
-- Rotate keys every 12 months, or immediately if one is exposed.
+Local ports: marketing 3100 · invitation 3001 · API 4000. Reserved for apps that are not built yet: portal 3002 · vendors 3003 · admin 3004 · desktop dev 1420 · Expo 8081.
+
+## Where values live
+
+| Environment | File or store                                                                                     | Notes                                                                                      |
+| ----------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| local       | `.env` in the repository root (copy of `.env.example`), loaded by `node scripts/with-env.mjs`     | Gitignored                                                                                 |
+| CI          | `env:` block of the `checks` job                                                                  | Placeholders only                                                                          |
+| production  | `/opt/managevent/infra/vps/.env` (copy of `infra/vps/.env.example`), mode `0600`, read by Compose | Gitignored. Keep a copy in the owner's password manager                                    |
+| deployment  | GitHub Environment `production` secrets                                                           | `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY`, `VPS_KNOWN_HOSTS`. Used only by the Deploy workflow |
+| deployment  | GitHub repository variables                                                                       | `CONTACT_EMAIL`, `CONTACT_PHONE` (public values): build arguments of the marketing image   |
+
+Never commit a value. Generate secrets with `node scripts/generate-deployment-secrets.mjs`. Rotate a secret immediately if it is exposed; what each rotation costs is in the tables below.
+
+## Production variables
+
+"Set in" says who provides the value: **`.env`** means the owner writes it in `infra/vps/.env`; **Compose** means `docker-compose.yml` sets it and there is nothing to configure. A dot means the service does not receive the variable.
+
+### Required
+
+Compose refuses to start anything while one of the `.env` values in this table is missing.
+
+| Variable                         | api | worker | marketing | invitation | Set in  | What it is, and what breaks without it                                                                                                                                                                                                                                                                                                                                                                                                            |
+| -------------------------------- | :-: | :----: | :-------: | :--------: | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `POSTGRES_PASSWORD`              |  ·  |   ·    |     ·     |     ·      | `.env`  | Password of the `managevent` database role (read by the `db` container, and embedded in the two URLs below). Hex only. Applied when the database volume is first created; changing it afterwards also needs `ALTER ROLE`.                                                                                                                                                                                                                         |
+| `DATABASE_URL`, `DIRECT_URL`     |  ✓  |   ✓    |     ·     |     ·      | Compose | `postgresql://managevent:<password>@db:5432/managevent`. Prisma needs both; pg-boss uses the first. Without them the processes try `localhost:5432` and cannot connect. Also given to the `migrate` and `seed` tools.                                                                                                                                                                                                                             |
+| `PII_ENCRYPTION_KEY`             |  ✓  |   ✓    |     ·     |     ·      | `.env`  | 32 random bytes, Base64. AES-256-GCM key for guest health and dietary fields (`enc:v1`). Missing: any read or write of those fields throws. **Lost: the fields are unreadable in the live database and in every backup.** There is no key-version table yet, so do not rotate it without a re-encryption plan (OPEN_DECISIONS D-13).                                                                                                              |
+| `BETTER_AUTH_SECRET`             |  ✓  |   ·    |     ·     |     ·      | `.env`  | Signs sessions and cookies. Missing: the API throws at start. Changed: everyone is signed out.                                                                                                                                                                                                                                                                                                                                                    |
+| `GUEST_TOKEN_PEPPER`             |  ✓  |   ✓    |     ·     |     ·      | `.env`  | At least 32 characters. Signs guest links, QR passes and unsubscribe links. Missing or short: the API and worker throw when they first need it. Different values in api and worker: unsubscribe links in emails are rejected. **Changed: every guest link and pass already sent stops working.**                                                                                                                                                  |
+| `API_PROXY_SECRET`               |  ✓  |   ·    |     ✓     |     ✓      | `.env`  | At least 32 characters, the same value in all three. The web apps send it (header `x-managevent-proxy-secret`) with the visitor's address; the API believes a forwarded address only with it. Shorter than 32: the API refuses to start. Missing or mismatched: every visitor of a web app shares one rate-limit bucket, and consent and audit rows record the web container's address. Safe to rotate: change it and restart the three services. |
+| `TRUSTED_CLIENT_IP_HEADER`       |  ✓  |   ·    |     ·     |     ·      | Compose | Fixed to `x-real-ip`, the header Caddy overwrites on every request (see "Client address trust model" in `DEPLOYMENT.md`). Without it, everyone who calls `api.managevent.com.au` directly shares one rate-limit bucket (Caddy's address). Do not change it without changing the Caddyfile.                                                                                                                                                        |
+| `API_URL`                        |  ·  |   ·    |     ✓     |     ✓      | Compose | `http://api:4000`: how the web apps reach the API on the Docker network. Without it they try `localhost:4000` and every page that needs data, and every sign-in, fails with a 502.                                                                                                                                                                                                                                                                |
+| `CONTACT_EMAIL`, `CONTACT_PHONE` |  ·  |   ·    |     ✓     |     ·      | `.env`  | Public contact details on www. Required on purpose: the app has built-in fallback values that must not be published by accident. **Also build arguments of the marketing image** (see below): the public pages are prerendered at build time, so the running container's values only reach pages rendered on demand.                                                                                                                              |
+| `APP_ENV`, `NODE_ENV`, `TZ`      |  ✓  |   ✓    |     ✓     |     ✓      | Compose | `production`, `production`, `Australia/Perth`. `NODE_ENV=production` is what turns the "throw when a secret is missing" checks on.                                                                                                                                                                                                                                                                                                                |
+| `PORT`                           |  ✓  |   ·    |     ✓     |     ✓      | Compose | 4000, 3100, 3001. Caddy and the healthchecks expect exactly these.                                                                                                                                                                                                                                                                                                                                                                                |
+
+### URLs (defaults are the production values)
+
+| Variable                     | api | worker | marketing | invitation | Default                                | What it is, and what breaks when it is wrong                                                                                                                                                                                                         |
+| ---------------------------- | :-: | :----: | :-------: | :--------: | -------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BETTER_AUTH_URL`            |  ✓  |   ·    |     ·     |     ·      | `https://api.managevent.com.au`        | Base URL of the auth endpoints. Because it is `https`, cookies are `Secure` (`__Secure-managevent.session_token`). An `http` value would issue non-secure cookies.                                                                                   |
+| `AUTH_COOKIE_DOMAIN`         |  ✓  |   ·    |     ·     |     ·      | `.managevent.com.au`                   | Makes the session cookie valid on every subdomain, so signing in on `invitation.` also signs you in on `www.`. Empty: each site has its own session.                                                                                                 |
+| `AUTH_TRUSTED_ORIGINS`       |  ✓  |   ·    |     ·     |     ·      | empty                                  | Comma-separated browser origins allowed to sign in and to send state-changing requests with a cookie. Empty means "the origins of the `NEXT_PUBLIC_*_URL` values the API has", which is right for production. A wrong list makes sign-in answer 403. |
+| `NEXT_PUBLIC_MARKETING_URL`  |  ✓  |   ·    |     ✓     |     ✓      | `https://www.managevent.com.au`        | API: a trusted origin. Web apps: links between the two sites.                                                                                                                                                                                        |
+| `NEXT_PUBLIC_INVITATION_URL` |  ✓  |   ✓    |     ✓     |     ✓      | `https://invitation.managevent.com.au` | API: a trusted origin, and the base of Stripe return URLs and emailed sign-in links. Worker: the base of invitation and unsubscribe links in emails; without it those links point at `localhost:3001`.                                               |
+| `NEXT_PUBLIC_ADMIN_URL`      |  ✓  |   ✓    |     ✓     |     ·      | `https://www.managevent.com.au/admin`  | The staff console lives under `/admin` on www. API: a trusted origin. Worker: the "open this enquiry" link in the planner email; without it the link points at `localhost:3004`.                                                                     |
+| `NEXT_PUBLIC_API_URL`        |  ·  |   ·    |     ✓     |     ✓      | `https://api.managevent.com.au`        | Fallback base URL of the typed API client. The apps pass `API_URL` explicitly and the browser never calls the API directly, so this is a safety net only.                                                                                            |
+
+`CONTACT_EMAIL` and `CONTACT_PHONE` are **build arguments** of the marketing image, with no default: `next build` prerenders the public pages with them, and the build stops when either is missing. On the server `docker-compose.build.yml` passes the two `.env` lines; the Deploy workflow passes the repository variables of the same names. Keep the two places equal, and rebuild the image to change them.
+
+`NEXT_PUBLIC_*` values are also **build arguments** of the two web images (`apps/marketing/Dockerfile`, `apps/invitation/Dockerfile`), because Next.js compiles them into the browser bundle. The images are built with the production defaults above. Changing one of them in `.env` changes server-side code only, until the image is rebuilt with the matching `--build-arg` (`docker-compose.build.yml` passes them through).
+
+`NEXT_PUBLIC_PORTAL_URL` and `NEXT_PUBLIC_VENDORS_URL` exist for apps that are not built. The API would treat them as trusted origins; they are not set in production.
+
+### Optional providers
+
+Leaving a provider unconfigured never fakes anything: the feature answers `503`, and `GET /v1/me` reports it as unavailable so the UI does not offer it.
+
+| Variable                   | api | worker | marketing | invitation | What it is, and what happens without it                                                                                                                                                                                                                                                                                        |
+| -------------------------- | :-: | :----: | :-------: | :--------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `RESEND_API_KEY`           |  ✓  |   ✓    |     ·     |     ·      | The only email switch. Without it: no email at all. Magic links, password reset and email invitations are off (`503 EMAIL_NOT_CONFIGURED`); a new enquiry is stored and shown in `/admin`, but no auto-reply or planner alert is sent (the worker records `NOT_CONFIGURED`). Set it only after the sending domain is verified. |
+| `EMAIL_FROM_TRANSACTIONAL` |  ✓  |   ✓    |     ·     |     ·      | Sender of account and enquiry emails. Default `Managevent <hello@managevent.com.au>`. Its domain must be verified in Resend or every send is rejected.                                                                                                                                                                         |
+| `EMAIL_FROM_INVITATIONS`   |  ·  |   ✓    |     ·     |     ·      | Sender of invitation and reminder emails. Empty: `EMAIL_FROM_TRANSACTIONAL` is used, which needs one verified domain instead of two.                                                                                                                                                                                           |
+| `LEAD_NOTIFICATION_EMAIL`  |  ·  |   ✓    |     ·     |     ·      | Planner inbox for new enquiries. Empty: the enquirer still gets the auto-reply, but no planner is alerted; enquiries are only visible in `/admin`. Only the worker reads it.                                                                                                                                                   |
+| `STRIPE_SECRET_KEY`        |  ✓  |   ·    |     ·     |     ·      | `sk_live_...` (or `sk_test_...`). Without it the Premium upgrade is reported as unavailable and checkout answers `503 PAYMENTS_NOT_CONFIGURED`. Placeholder-looking values are rejected.                                                                                                                                       |
+| `STRIPE_WEBHOOK_SECRET`    |  ✓  |   ·    |     ·     |     ·      | `whsec_...` of the endpoint `https://api.managevent.com.au/v1/webhooks/stripe`. Without it the webhook answers `503`; an upgrade is then applied only when the host returns from Stripe to the confirmation page, so a host who pays and closes the tab stays on the free plan. Set both or neither.                           |
+
+### Deployment and operations (read by Compose and the scripts, not by the apps)
+
+| Variable                                                                   | Read by                   | What it is                                                                                                                                                                                |
+| -------------------------------------------------------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `IMAGE_PREFIX`, `IMAGE_TAG`                                                | Compose, `deploy.sh`      | Which images run: `managevent-` + tag for images built on the server, `ghcr.io/<owner>/managevent-` + commit for images from GitHub Actions. Written by `deploy.sh`; do not edit by hand. |
+| `BACKUP_DIR`                                                               | `backup.sh`, `restore.sh` | Where archives are kept on the server. Default `/var/backups/managevent`.                                                                                                                 |
+| `BACKUP_AGE_RECIPIENT`                                                     | `backup.sh`               | age **public** key. Without it archives are not encrypted and are never uploaded.                                                                                                         |
+| `BACKUP_RCLONE_REMOTE`, or `BACKUP_S3_URI` + `BACKUP_S3_ENDPOINT`          | `backup.sh`               | Off-server destination in Australia. Without one, backups do not survive the loss of the server.                                                                                          |
+| `BACKUP_KEEP_DAILY`, `BACKUP_KEEP_WEEKLY`, `BACKUP_KEEP_PREDEPLOY`         | `backup.sh`               | Retention by count. Defaults 7, 4 and 5.                                                                                                                                                  |
+| `BACKUP_HEARTBEAT_URL`                                                     | `backup.sh`               | Optional URL fetched after a successful nightly run, for a "no backup arrived" alert.                                                                                                     |
+| `BACKUP_AGE_IDENTITY_FILE`                                                 | `restore.sh`              | Path of the age private key during a restore. Not kept on the server.                                                                                                                     |
+| `STAFF_BOOTSTRAP_PASSWORD`                                                 | `staff:create`            | Optional password for a new staff account (12+ characters). Not set in production: the tool generates one and prints it once.                                                             |
+| `MANAGEVENT_API_HOST`, `MANAGEVENT_WWW_HOST`, `MANAGEVENT_INVITATION_HOST` | `deploy.sh`               | Hostnames the health verification checks. Default: the three production names.                                                                                                            |
+
+## Read by the code but not set in production
+
+| Variable               | Where                  | Effect when unset                                                                                     |
+| ---------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------- |
+| `FLY_REGION`           | `apps/api` (`/health`) | The health body reports `"region": "syd"`. Cosmetic.                                                  |
+| `VERCEL`, `VERCEL_ENV` | `apps/marketing`       | Only change headers and `robots` on a Vercel preview. Never set on the VPS, so the site is indexable. |
+
+The root `.env.example` also lists groups for modules that are not built yet (`TWILIO_*`, `R2_*`, `GEMINI_*`, `XERO_*`, `ABN_LOOKUP_GUID`, OAuth client ids, `SUPABASE_*`, `SENTRY_DSN`, `EXPO_ACCESS_TOKEN`). No running service reads them, and the production Compose file does not pass them. Add a variable there, here and in `turbo.json` (`globalEnv`) in the same pull request as the code that first reads it.
+
+## Checking a server
+
+```bash
+cd /opt/managevent/infra/vps
+docker compose config --quiet && echo "environment is complete"   # fails, naming the variable, if a required one is missing
+docker compose exec api env | cut -d= -f1 | sort                  # names only: never print values
+```

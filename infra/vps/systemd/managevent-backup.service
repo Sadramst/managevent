@@ -1,0 +1,19 @@
+# Nightly PostgreSQL backup for Managevent. Installed by copying this file and the timer to
+# /etc/systemd/system/ (see DEPLOYMENT.md, "Backups").
+[Unit]
+Description=Managevent PostgreSQL backup
+Documentation=file:///opt/managevent/DEPLOYMENT.md
+Wants=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+# rclone, the aws cli and docker look for their configuration under the home directory.
+Environment=HOME=/root
+# backup.sh reads its settings from /opt/managevent/infra/vps/.env. It exits non-zero on any
+# failure, which marks this unit failed (`systemctl --failed`, `journalctl -u managevent-backup`).
+ExecStart=/usr/bin/bash /opt/managevent/infra/vps/backup.sh
+# Give way to the site: lowest CPU and disk priority.
+Nice=19
+IOSchedulingClass=idle
+TimeoutStartSec=30min

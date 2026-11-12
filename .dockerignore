@@ -1,14 +1,44 @@
+# Build context for the four images (apps/{api,worker,marketing,invitation}/Dockerfile).
+# The context is the repository root. Keep every workspace package.json in it: the install
+# layer needs all of them next to the lockfile.
+
+# Version control, editors, CI
 .git
+.github
+.vscode
+.cursor
+
+# Dependencies and build output (always produced inside the image)
 **/node_modules
+.pnpm-store
 **/.next
 **/.turbo
+**/dist
 **/coverage
+**/*.tsbuildinfo
 **/test-results
 **/playwright-report
+apps/desktop-win/src-tauri/target
+apps/desktop-win/src-tauri/gen
+apps/mobile/ios
+apps/mobile/android
+.expo
+.vercel
+
+# Secrets and local state: never in an image
 **/.env
 **/.env.*
 **/*.key
 **/*.pem
 **/*.p12
+**/*.age
+.local
+infra/vps/backups
+
+# Not needed by any image; leaving them out also means a documentation-only change does not
+# invalidate the source layer. `*.md` matches the repository root only (content/ and the
+# packages keep theirs).
+*.md
+docs
+infra
 **/*.log
-.vercel

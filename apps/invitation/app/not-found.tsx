@@ -1,42 +1,56 @@
-import React from "react";
-import Link from "next/link";
-import { SearchX, ArrowLeft, Home } from "lucide-react";
+import { getInvitationPublic } from "@managevent/i18n";
+import { Card, Container, Eyebrow } from "@managevent/ui/brand";
+import { SiteChrome } from "@/components/site/SiteChrome";
+import { buttonClass } from "@/components/ui";
+import { routes } from "@/lib/urls";
 
+/**
+ * The branded 404 for every unknown URL and every `notFound()`, including unknown guest links
+ * and old links that no longer resolve. It is deliberately the same page for all of them: it
+ * never hints whether an invitation link once existed.
+ *
+ * It renders under the root layout only, so it brings the site chrome itself. It is static: no
+ * API calls, so it still works when the API is down (the header shows the signed-out actions).
+ */
 export default function NotFound() {
+  const copy = getInvitationPublic("en").notFound;
   return (
-    <div className="min-h-screen bg-stone-900 text-stone-100 flex flex-col items-center justify-center p-6 text-center">
-      <div className="mx-auto max-w-md rounded-card border border-stone-800 bg-stone-950/80 p-8 shadow-2xl backdrop-blur-md">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-amber-500/10 border border-amber-500/20">
-          <SearchX className="h-7 w-7 text-amber-400" />
-        </div>
-
-        <h1 className="font-display text-2xl sm:text-3xl font-bold text-white">
-          Invitation Not Found
-        </h1>
-
-        <p className="mt-3 font-serif text-sm text-stone-400 leading-relaxed">
-          The requested ceremony link or guest pass token could not be verified. It may have expired
-          or been replaced by the host.
-        </p>
-
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-button bg-amber-500 px-4 py-2 text-xs font-bold text-stone-950 hover:bg-amber-400 transition-colors"
-          >
-            <Home className="h-4 w-4" />
-            <span>Managevent Home</span>
-          </Link>
-
-          <Link
-            href="/studio"
-            className="inline-flex items-center gap-2 rounded-button border border-stone-700 bg-stone-800 px-4 py-2 text-xs font-semibold text-stone-300 hover:text-white transition-colors"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            <span>Host Studio</span>
-          </Link>
-        </div>
-      </div>
-    </div>
+    <SiteChrome signedIn={false}>
+      <main id="main" tabIndex={-1}>
+        <title>{copy.metaTitle}</title>
+        <meta name="robots" content="noindex, nofollow, noarchive" />
+        <Container size="narrow" className="pub-quiet">
+          <Eyebrow>{copy.eyebrow}</Eyebrow>
+          <h1>{copy.title}</h1>
+          <p className="lead">{copy.body}</p>
+          <div className="grid grid-2 pub-quiet-cards">
+            <Card variant="accent">
+              <h2 className="card-title">{copy.guestTitle}</h2>
+              <p className="card-body">{copy.guestBody}</p>
+            </Card>
+            <Card>
+              <h2 className="card-title">{copy.hostTitle}</h2>
+              <p className="card-body">{copy.hostBody}</p>
+              <p>
+                <a
+                  className={buttonClass({ variant: "secondary", size: "small" })}
+                  href={routes.signIn}
+                >
+                  {copy.signIn}
+                </a>
+              </p>
+            </Card>
+          </div>
+          <div className="page-hero-actions">
+            <a className={buttonClass()} href={routes.home}>
+              {copy.home}
+            </a>
+            <a className={buttonClass({ variant: "secondary" })} href={routes.templates}>
+              {copy.templates}
+            </a>
+          </div>
+        </Container>
+      </main>
+    </SiteChrome>
   );
 }

@@ -59,4 +59,4 @@ Vitest (content loader, helpers). Playwright: home → Builder → estimate → 
 
 ## Status
 
-✅ Scaffolded and built (`apps/marketing`: English-only (en-AU); legacy `/fa` URLs 301 to English, Ceremony showcase, Instant Cost Estimator `#estimator`, Perth Venues showcase, Digital Bridge explainer, Enquiry & Booking form, and `/admin` Command Centre).
+✅ Scaffolded and built (`apps/marketing`: English-only (en-AU); legacy `/fa` URLs 301 to English, Ceremony showcase, Instant Cost Estimator `#estimator`, Perth Venues showcase, Digital Bridge explainer, Enquiry & Booking form). The staff console at `/admin` (sign-in with two-factor, enquiries inbox and detail from the real API; see `README.md`) is built: it has its own root layout in `app/admin`, is never indexed or cached, and must only ever show data the API returns.

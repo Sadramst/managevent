@@ -1,197 +1,136 @@
-"use client";
-
-import React, { use, useEffect, useState } from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
-import { INVITATION_THEMES } from "@managevent/ui/themes";
-import { ArrowLeft, Download, QrCode as QrIcon, CheckCircle2 } from "lucide-react";
+import { fillCopy, getInvitationGuest } from "@managevent/i18n";
+import type { Metadata, Viewport } from "next";
 import QRCode from "qrcode";
+import { Badge } from "@/components/ui/Badge";
+import { GuestShell, GuestStatus } from "@/components/views/GuestShell";
+import { SectionMark } from "@/components/views/Ornaments";
+import { formatLocalDateTime } from "@/lib/dates";
+import { loadGuestPasses } from "@/lib/guest/load";
+import { guestOpenedPath } from "@/lib/guest/paths";
+import { getGuestTheme } from "@/lib/guest/theme";
+import { privateMetadata } from "@/lib/metadata";
 
-interface PassPageProps {
-  params: Promise<{
-    eventSlug: string;
-    guestToken: string;
-  }>;
+/**
+ * Door passes: one QR code for each person in the party who has replied yes.
+ *
+ * Each code is drawn on the server from the signed payload of the pass (`MV1.{passId}.{sig}`),
+ * which holds no personal information and is not the guest link. The payload is also printed
+ * under the code as text, for a door device that cannot scan. Nothing here needs JavaScript,
+ * so a pass still shows at a venue with a poor connection once the page has loaded.
+ */
+export const dynamic = "force-dynamic";
+
+const copy = getInvitationGuest("en");
+
+export const metadata: Metadata = privateMetadata(copy.meta.passTitle);
+
+interface PageProps {
+  params: Promise<{ eventSlug: string; guestToken: string }>;
 }
 
-export default function GuestPassPage({ params }: PassPageProps) {
-  const { eventSlug, guestToken } = use(params);
-  const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
-
-  const [qrDataUrl, setQrDataUrl] = useState<string | null>(null);
-
-  // Hooks must run before any conditional return (notFound throws).
-  const event = lookup?.event;
-  const party = lookup?.party;
-  const theme =
-    INVITATION_THEMES[event?.themeId ?? "royal-ivory"] || INVITATION_THEMES["royal-ivory"];
-  const { colors } = theme;
-  const eventSlugForQr = event?.slug;
-  const partyTokenForQr = party?.token;
-
-  useEffect(() => {
-    if (!eventSlugForQr || !partyTokenForQr) return;
-    const origin =
-      typeof window !== "undefined"
-        ? window.location.origin
-        : "https://invitation.managevent.com.au";
-    const checkinPayload = `${origin}/i/${eventSlugForQr}/${partyTokenForQr}`;
-
-    QRCode.toDataURL(checkinPayload, {
-      width: 280,
-      margin: 1,
-      color: {
-        dark: colors.accentInk,
-        light: "#FFFFFF",
-      },
-    })
-      .then((url) => setQrDataUrl(url))
-      .catch((err) => console.error("Error creating pass QR", err));
-  }, [eventSlugForQr, partyTokenForQr, colors.accentInk]);
-
-  if (!event || !party) {
-    notFound();
-  }
-
-  const handlePrint = () => {
-    window.print();
+export async function generateViewport({ params }: PageProps): Promise<Viewport> {
+  const { eventSlug, guestToken } = await params;
+  const result = await loadGuestPasses(eventSlug, guestToken);
+  if (result.kind !== "ok") return {};
+  return {
+    themeColor: getGuestTheme(result.data.themeId, result.data.experienceMode).themeColor,
   };
+}
+
+export default async function GuestPassPage({ params }: PageProps) {
+  const link = await params;
+  const result = await loadGuestPasses(link.eventSlug, link.guestToken);
+  if (result.kind === "gone") return <GuestStatus title={copy.gone.title} body={copy.gone.body} />;
+  if (result.kind === "busy") return <GuestStatus title={copy.busy.title} body={copy.busy.body} />;
+
+  const view = result.data;
+  const passes = await Promise.all(
+    view.passes.map(async (pass) => ({
+      ...pass,
+      // Dark modules on a light ground with a quiet zone, whatever the theme of the invitation.
+      image: await QRCode.toDataURL(pass.qr, { errorCorrectionLevel: "M", margin: 2, width: 480 }),
+    })),
+  );
 
   return (
-    <div
-      className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center font-sans"
-      style={{
-        backgroundColor: colors.bg,
-        color: colors.ink,
-      }}
-    >
-      {/* Back button */}
-      <div className="w-full max-w-sm mb-6 print:hidden">
-        <Link
-          href={`/i/${event.slug}/${party.token}`}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold hover:opacity-80 transition-opacity"
-          style={{ color: colors.accentInk }}
-        >
-          <ArrowLeft className="h-4 w-4" />
-          <span>Back to Invitation</span>
-        </Link>
-      </div>
-
-      {/* Pass Ticket Card */}
-      <div
-        className="w-full max-w-sm rounded-card border shadow-xl overflow-hidden print:shadow-none"
-        style={{
-          backgroundColor: colors.surface,
-          borderColor: colors.rule,
-        }}
-      >
-        {/* Ticket Header */}
-        <div
-          className="p-6 text-center border-b"
-          style={{
-            backgroundColor: colors.bgWarm,
-            borderColor: colors.rule,
-          }}
-        >
-          <span
-            className="font-mono text-[10px] uppercase tracking-widest"
-            style={{ color: colors.accent }}
-          >
-            Digital Ceremony Pass
-          </span>
-          <h1 className="mt-1 font-display text-2xl font-bold" style={{ color: colors.accentInk }}>
-            {event.content.coupleOrHostNames}
-          </h1>
-          <p className="mt-1 font-serif text-xs italic" style={{ color: colors.inkMuted }}>
-            {event.title}
+    <GuestShell themeId={view.themeId} experienceMode={view.experienceMode}>
+      <main id="main" className="inv-pass-page">
+        <header className="inv-pass-head">
+          <SectionMark themeId={view.themeId} />
+          <h1>{copy.pass.title}</h1>
+          <p className="inv-pass-event">{view.event.title}</p>
+          <p>
+            {formatLocalDateTime(view.event.startsAtLocal)}
+            {view.event.venueName ? (
+              <>
+                <br />
+                {view.event.venueName}
+              </>
+            ) : null}
           </p>
-        </div>
+        </header>
 
-        {/* QR Code Section */}
-        <div className="p-6 flex flex-col items-center text-center">
-          <div
-            className="rounded-card border p-3 shadow-inner bg-white"
-            style={{ borderColor: colors.rule }}
-          >
-            {qrDataUrl ? (
-              <img src={qrDataUrl} alt="Check-in QR Code" className="h-48 w-48" />
-            ) : (
-              <div className="flex h-48 w-48 items-center justify-center text-xs opacity-50">
-                Generating pass...
-              </div>
-            )}
+        {!view.enabled ? (
+          <div className="inv-status-card inv-pass-empty">
+            <h2>{copy.pass.notEnabledTitle}</h2>
+            <p>{copy.pass.notEnabledBody}</p>
           </div>
-
-          <h2 className="mt-4 font-serif text-lg font-bold" style={{ color: colors.accentInk }}>
-            {party.displayName}
-          </h2>
-
-          {party.status === "YES" ? (
-            <div className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-              <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>RSVP Confirmed</span>
-            </div>
-          ) : (
-            <div
-              className="mt-2 inline-flex items-center gap-1 text-xs font-medium px-2.5 py-0.5 rounded-full border"
-              style={{ color: colors.inkMuted, borderColor: colors.rule }}
-            >
-              <span>
-                {party.status === "NO"
-                  ? "RSVP declined"
-                  : party.status === "MAYBE"
-                    ? "RSVP tentative"
-                    : "RSVP pending"}
-              </span>
-            </div>
-          )}
-
-          {/* Details Grid */}
-          <div
-            className="mt-6 w-full grid grid-cols-2 gap-3 text-start border-t pt-4"
-            style={{ borderColor: colors.rule }}
-          >
-            <div>
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Seats</span>
-              <span className="font-semibold text-xs">{party.maxSeats} Guest(s)</span>
-            </div>
-            <div>
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Table</span>
-              <span className="font-semibold text-xs">{party.tableLabel || "Open Seating"}</span>
-            </div>
-            <div className="col-span-2">
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Venue</span>
-              <span className="font-semibold text-xs truncate block">{event.venue.name}</span>
-            </div>
+        ) : passes.length === 0 ? (
+          <div className="inv-status-card inv-pass-empty">
+            <h2>{copy.pass.emptyTitle}</h2>
+            <p>{copy.pass.emptyBody}</p>
+            <a className="button" href={guestOpenedPath(link, "rsvp")}>
+              {copy.pass.emptyAction}
+            </a>
           </div>
-        </div>
+        ) : (
+          <ul className="inv-pass-grid" aria-label={copy.pass.title}>
+            {passes.map((pass) => (
+              <li key={pass.passId} className="inv-pass">
+                <div className="inv-pass-top">
+                  <h2 className="inv-pass-name">{pass.guestName}</h2>
+                  <div className="inv-pass-meta">
+                    {pass.isChild ? <Badge tone="neutral">{copy.pass.child}</Badge> : null}
+                    {view.party.tableLabel ? (
+                      <Badge tone="neutral">{view.party.tableLabel}</Badge>
+                    ) : null}
+                    {pass.checkedInAt ? <Badge tone="success">{copy.pass.checkedIn}</Badge> : null}
+                  </div>
+                </div>
+                <div className="inv-pass-qr">
+                  {/* A data URI built on this server: nothing to optimise or fetch. */}
+                  <img
+                    src={pass.image}
+                    width={240}
+                    height={240}
+                    alt={fillCopy(copy.pass.qrAlt, { name: pass.guestName })}
+                  />
+                </div>
+                {/* The same payload as the QR code, as text: a door device that cannot scan
+                    (or a cracked screen) can still check this guest in by entering it. */}
+                <p className="inv-pass-code">
+                  <span className="inv-pass-code-label">{copy.pass.codeLabel}</span>
+                  <code translate="no">{pass.qr}</code>
+                </p>
+                <p className="inv-pass-foot">
+                  {fillCopy(copy.pass.forParty, { name: view.party.displayName })}
+                </p>
+              </li>
+            ))}
+          </ul>
+        )}
 
-        {/* Perforated Divider */}
-        <div className="relative border-t border-dashed" style={{ borderColor: colors.rule }}>
-          <div
-            className="absolute -top-3 -start-3 h-6 w-6 rounded-full border"
-            style={{ backgroundColor: colors.bg, borderColor: colors.rule }}
-          />
-          <div
-            className="absolute -top-3 -end-3 h-6 w-6 rounded-full border"
-            style={{ backgroundColor: colors.bg, borderColor: colors.rule }}
-          />
+        <div className="inv-pass-actions">
+          {view.enabled && passes.length > 0 ? (
+            <p>
+              {copy.pass.lead} {copy.pass.brightness} {copy.pass.codeHint}
+            </p>
+          ) : null}
+          <a className="button button-secondary" href={guestOpenedPath(link)}>
+            {copy.nav.backToInvitation}
+          </a>
         </div>
-
-        {/* Footer print action */}
-        <div className="p-4 text-center print:hidden">
-          <button
-            type="button"
-            onClick={handlePrint}
-            className="inline-flex items-center gap-2 rounded-button px-4 py-2 text-xs font-bold shadow-xs hover:brightness-105 transition-all text-white"
-            style={{ backgroundColor: colors.accent }}
-          >
-            <Download className="h-3.5 w-3.5" />
-            <span>Print or Save Pass</span>
-          </button>
-        </div>
-      </div>
-    </div>
+      </main>
+    </GuestShell>
   );
 }

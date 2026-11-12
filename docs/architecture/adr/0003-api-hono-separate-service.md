@@ -1,6 +1,6 @@
 # ADR-0003: A separate API service (Hono) and worker in Sydney
 
-- **Status:** Accepted
+- **Status:** Accepted. The hosting clause (Fly.io `syd` as the default host, D-01) is superseded by [ADR-0011](0011-production-on-single-sydney-vps.md): the API and worker run as containers on the Sydney VPS.
 - **Context:** Mobile, desktop and five web apps all need one authorisation layer, plus webhooks, long-running jobs (reminders, payouts, media, AI) and scheduled tasks.
 - **Decision:**
   - `apps/api` is built with Hono on Node 22, uses Zod validators from `packages/validators`, and generates OpenAPI from them. Routes are versioned under `/v1`.

@@ -1,19 +1,87 @@
 # syntax=docker/dockerfile:1
+#
+# Managevent marketing site and staff console (Next.js, www.managevent.com.au).
+# The build context is the repository root:
+#   docker build -f apps/marketing/Dockerfile -t managevent-marketing:local .
+#
+# next.config.ts does not use `output: "standalone"`, so the image keeps the workspace and
+# node_modules and starts the app with `next start`.
+
 FROM node:22-alpine AS base
-RUN apk add --no-cache openssl ca-certificates
-RUN corepack enable
+# openssl: Prisma's engines link against it (the Prisma client is generated at install).
+# ca-certificates: outbound TLS.
+# corepack provides the pnpm version pinned in the root package.json ("packageManager").
+# /app and the pnpm store belong to the unprivileged `node` user (uid 1000), which installs,
+# builds and runs everything below: nothing in this image runs as root after this layer.
+RUN apk add --no-cache openssl ca-certificates \
+ && corepack enable \
+ && mkdir -p /app /pnpm/store \
+ && chown node:node /app /pnpm/store
+ENV COREPACK_ENABLE_DOWNLOAD_PROMPT=0
+WORKDIR /app
+
+# Collects only the files that decide what `pnpm install` does: every workspace manifest, the
+# lockfile, the pnpm settings and the Prisma schema (packages/db generates its client in a
+# postinstall script). The next stage copies this folder, and Docker keys that copy on file
+# contents, so the install layer is reused whenever none of these files changed.
+FROM base AS manifests
+WORKDIR /src
+COPY . .
+RUN set -eu; mkdir -p /out/packages/db/prisma; \
+    cp package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc /out/; \
+    for manifest in apps/*/package.json packages/*/package.json; do \
+      mkdir -p "/out/$(dirname "$manifest")"; \
+      cp "$manifest" "/out/$manifest"; \
+    done; \
+    cp packages/db/prisma/schema.prisma /out/packages/db/prisma/schema.prisma
 
 FROM base AS deps
 WORKDIR /app
-COPY . .
-RUN pnpm install --frozen-lockfile
+USER node
+COPY --chown=node:node --from=manifests /out/ ./
+# Installs this app and the workspace packages it depends on, nothing else (no mobile, desktop
+# or browser-test dependencies). devDependencies are kept on purpose: the build needs
+# TypeScript and Tailwind. NODE_ENV is therefore set only after the install.
+# The pnpm store is a BuildKit cache mount: it survives between builds on the same machine and
+# never ends up in the image.
+RUN --mount=type=cache,id=managevent-pnpm-store,target=/pnpm/store,uid=1000,gid=1000,sharing=locked \
+    pnpm install --frozen-lockfile --store-dir /pnpm/store --filter "@managevent/marketing..."
 
 FROM deps AS runner
-WORKDIR /app
+COPY --chown=node:node . .
+# Regenerates the Prisma client from the schema that was just copied.
 RUN pnpm --filter @managevent/db db:generate
+
+# NEXT_PUBLIC_* values are compiled into the browser bundle by `next build`, so they must be
+# known here; setting them only on the running container changes server-side code and nothing
+# else. The defaults are the production URLs. Override with --build-arg for another environment.
+ARG NEXT_PUBLIC_API_URL=https://api.managevent.com.au
+ARG NEXT_PUBLIC_MARKETING_URL=https://www.managevent.com.au
+ARG NEXT_PUBLIC_INVITATION_URL=https://invitation.managevent.com.au
+ARG NEXT_PUBLIC_ADMIN_URL=https://www.managevent.com.au/admin
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_MARKETING_URL=$NEXT_PUBLIC_MARKETING_URL
+ENV NEXT_PUBLIC_INVITATION_URL=$NEXT_PUBLIC_INVITATION_URL
+ENV NEXT_PUBLIC_ADMIN_URL=$NEXT_PUBLIC_ADMIN_URL
+
+# The public contact details shown on www. The public pages are prerendered by `next build`, so
+# the values are fixed HERE: setting CONTACT_EMAIL / CONTACT_PHONE only on the running
+# container does not change a page that was already built. There is no default on purpose
+# (lib/site.ts falls back to a personal address and number that must never be published), and
+# the build stops when either is missing. They are public values, not secrets.
+ARG CONTACT_EMAIL
+ARG CONTACT_PHONE
+RUN if [ -z "$CONTACT_EMAIL" ] || [ -z "$CONTACT_PHONE" ]; then \
+      echo "CONTACT_EMAIL and CONTACT_PHONE are required build arguments (--build-arg): the public pages are prerendered with them." >&2; \
+      exit 1; \
+    fi
+ENV CONTACT_EMAIL=$CONTACT_EMAIL
+ENV CONTACT_PHONE=$CONTACT_PHONE
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+# The build needs about 1.3 GB of heap. On the 2 GB VPS build one image at a time
+# (infra/vps/deploy.sh does), or let GitHub Actions build it (.github/workflows/deploy.yml).
 ENV NODE_OPTIONS="--max-old-space-size=1280"
 RUN pnpm --filter @managevent/marketing build
 
@@ -21,4 +89,8 @@ ENV NODE_OPTIONS="--max-old-space-size=384"
 ENV PORT=3100
 EXPOSE 3100
 
-CMD ["pnpm", "--filter", "@managevent/marketing", "start"]
+# Started with node directly rather than through pnpm: one process instead of three, and
+# SIGTERM reaches the server. The working directory matters: the app resolves files relative
+# to it. Liveness: any HTTP answer on port 3100 (see the healthcheck in docker-compose.yml).
+WORKDIR /app/apps/marketing
+CMD ["node", "node_modules/next/dist/bin/next", "start", "--port", "3100"]

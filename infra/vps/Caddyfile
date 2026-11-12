@@ -1,6 +1,20 @@
 # Caddy configuration for Managevent on the dedicated Sydney VPS.
-# Caddy obtains and renews certificates automatically once each hostname resolves to
-# this server and ports 80/443 are reachable.
+#
+# Caddy is the only process that listens on the public interface (80 and 443). It terminates TLS
+# and forwards to the containers on the internal Docker network. Certificates are obtained and
+# renewed automatically once each hostname resolves to this server.
+#
+# Validate every change before reloading (a syntax error takes all four hostnames down):
+#   docker compose exec caddy caddy validate --config /etc/caddy/Caddyfile
+#   docker compose exec caddy caddy reload   --config /etc/caddy/Caddyfile
+#
+# Trust model for the client address (see DEPLOYMENT.md, "Client address trust model"):
+# - Nothing sits in front of Caddy, so `trusted_proxies` is deliberately NOT configured. Caddy
+#   therefore discards any X-Forwarded-For / X-Forwarded-Proto / X-Forwarded-Host a caller sends
+#   and writes its own from the TCP connection.
+# - The `edge` snippet below also removes or overwrites every other header our apps would accept
+#   as a client address, and the header that carries the web apps' shared secret.
+# If a CDN or load balancer is ever placed in front of this server, revisit all of this first.
 {
 	email admin@managevent.com.au
 
@@ -8,43 +22,118 @@
 	# ZeroSSL; a stalled ZeroSSL order blocks the next Let's Encrypt attempt and can
 	# leave issuance hanging for many minutes. A single issuer keeps retries fast.
 	acme_ca https://acme-v02.api.letsencrypt.org/directory
+
+	# One log format for everything Caddy writes (access logs and its own error logs, which
+	# also contain the request). Guest links are credentials and must never be logged, so:
+	# - the path after a guest-link prefix and every query string are replaced;
+	# - request and response headers are dropped (Referer can hold a guest link);
+	# - addresses are truncated to the /24 (IPv4) or /48 (IPv6) network.
+	# Docker's json-file driver rotates the output (see docker-compose.yml).
+	log {
+		format filter {
+			wrap json
+			fields {
+				request>uri regexp "^(/(?:v1/)?(?:i|e|legacy|anniversary|display)/).*$|\?.*$" "$1[redacted]"
+				request>headers delete
+				resp_headers delete
+				request>remote_ip ip_mask 24 48
+				request>client_ip ip_mask 24 48
+			}
+		}
+	}
 }
 
-api.managevent.com.au {
+# Applied to every proxied hostname.
+(edge) {
+	# Access log, written through the default logger configured above.
+	log
+
 	encode zstd gzip
+
+	# Headers a caller must never be able to choose. The marketing app reads the visitor address
+	# from `x-real-ip` and `x-forwarded-for`; the invitation app also reads `fly-client-ip` and
+	# `x-vercel-forwarded-for`, before those two (apps/invitation/lib/client-ip.ts), so the two
+	# deletions below are what keeps a visitor from choosing an address there. The API reads
+	# `x-real-ip` (TRUSTED_CLIENT_IP_HEADER). Caddy rewrites X-Forwarded-For
+	# itself; the other three are removed or overwritten here. The proxy secret is what makes
+	# the API believe a forwarded address, so a copy arriving from the internet is dropped.
+	request_header -Fly-Client-Ip
+	request_header -X-Vercel-Forwarded-For
+	request_header -X-Managevent-Proxy-Secret
+	request_header X-Real-Ip {remote_host}
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"
 		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
+		# `?` sets a header only when the app did not send it. The apps own their
+		# Referrer-Policy, Permissions-Policy, X-Frame-Options and Content-Security-Policy.
+		?Referrer-Policy "strict-origin-when-cross-origin"
 		-Server
+		-X-Powered-By
+	}
+}
+
+api.managevent.com.au {
+	import edge
+
+	header {
+		?Permissions-Policy "accelerometer=(), browsing-topics=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+		?X-Frame-Options "DENY"
+	}
+
+	# JSON bodies only. The largest legitimate one is a 2,000-row guest CSV import.
+	request_body {
+		max_size 2MB
 	}
 
 	reverse_proxy api:4000 {
 		health_uri /health
 		health_interval 15s
+		health_timeout 5s
+		# While the API container is being replaced, hold a request briefly instead of
+		# failing it at once. Only requests that could not be sent at all are retried.
+		lb_try_duration 10s
+		lb_try_interval 500ms
 	}
 }
 
+# The apex only redirects. Its DNS A record must point at this server before Caddy can obtain
+# a certificate for it; until then this block is inert and Caddy logs a failed order now and
+# then (see DEPLOYMENT.md, "DNS").
 managevent.com.au {
-	redir https://www.managevent.com.au{uri} permanent
-}
-
-www.managevent.com.au {
-	encode zstd gzip
+	log
 
 	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
+		Strict-Transport-Security "max-age=31536000"
 		-Server
 	}
 
-	reverse_proxy marketing:3100
+	redir https://www.managevent.com.au{uri} permanent
+}
+
+# Marketing site and the staff console at /admin. /admin is protected by the app's own
+# sign-in (staff role plus two-factor, enforced by the API), not by anything in this file.
+# /api/auth/* is the browser's sign-in proxy and must stay reachable.
+www.managevent.com.au {
+	import edge
+
+	header {
+		?Permissions-Policy "accelerometer=(), browsing-topics=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
+	}
+
+	# Enquiry form and sign-in JSON only.
+	request_body {
+		max_size 2MB
+	}
+
+	reverse_proxy marketing:3100 {
+		lb_try_duration 10s
+		lb_try_interval 500ms
+	}
 }
 
 invitation.managevent.com.au {
-	encode zstd gzip
+	import edge
 
 	# Route this host through ZeroSSL's ACME endpoint (which issued its active cert).
 	tls {
@@ -54,12 +143,17 @@ invitation.managevent.com.au {
 	}
 
 	header {
-		Strict-Transport-Security "max-age=31536000; includeSubDomains"
-		X-Content-Type-Options "nosniff"
-		Referrer-Policy "strict-origin-when-cross-origin"
-		-Server
+		# Camera stays available to this site itself for door check-in (QR scanning).
+		?Permissions-Policy "accelerometer=(), browsing-topics=(), camera=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()"
 	}
 
-	reverse_proxy invitation:3001
-}
+	# Host studio actions, including a guest CSV import pasted into a form.
+	request_body {
+		max_size 6MB
+	}
 
+	reverse_proxy invitation:3001 {
+		lb_try_duration 10s
+		lb_try_interval 500ms
+	}
+}

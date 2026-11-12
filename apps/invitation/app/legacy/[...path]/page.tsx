@@ -1,24 +1,16 @@
-import { redirect, notFound } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
+import type { Metadata } from "next";
+import { getInvitationPublic } from "@managevent/i18n";
+import { privateMetadata } from "@/lib/metadata";
+import { legacyPath, redirectLegacyLink } from "@/lib/public/legacy";
 
-interface LegacyCatchAllProps {
-  params: Promise<{ path: string[] }>;
-}
+/**
+ * An imported link from one of the earlier invitation sites, served under `/legacy/...`.
+ * The API resolves it (`guestSite.resolveLegacy`) and the visitor is sent to the current guest
+ * page; anything unknown is a real 404. Nothing is rendered here and nothing is logged.
+ */
+export const metadata: Metadata = privateMetadata(getInvitationPublic("en").legacy.metaTitle);
 
-export default async function LegacyCatchAllPage({ params }: LegacyCatchAllProps) {
+export default async function LegacyLinkPage({ params }: { params: Promise<{ path: string[] }> }) {
   const { path } = await params;
-  const tokenCandidate = path[path.length - 1];
-  if (!tokenCandidate) {
-    notFound();
-  }
-
-  // Try finding in all events
-  for (const event of invitationStore.getAllEvents()) {
-    const lookup = invitationStore.findGuestPartyByToken(event.slug, tokenCandidate);
-    if (lookup) {
-      redirect(`/i/${lookup.event.slug}/${lookup.party.token}`);
-    }
-  }
-
-  notFound();
+  return redirectLegacyLink(legacyPath("legacy", path));
 }

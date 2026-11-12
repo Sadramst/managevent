@@ -1,42 +1,19 @@
-import { redirect, notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { invitationStore } from "@/lib/invitation-store";
+import { getInvitationPublic } from "@managevent/i18n";
+import { privateMetadata } from "@/lib/metadata";
+import { legacyPath, redirectLegacyLink } from "@/lib/public/legacy";
 
-export const metadata: Metadata = {
-  robots: { index: false, follow: false, noarchive: true },
-};
+/**
+ * An old `/anniversary/<slug>` link. The API resolves it (`guestSite.resolveLegacy`) and the
+ * visitor is sent to the current guest page; anything unknown is a real 404.
+ */
+export const metadata: Metadata = privateMetadata(getInvitationPublic("en").legacy.metaTitle);
 
-interface LegacyAnniversaryProps {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}
-
-export default async function LegacyAnniversaryPage({
+export default async function AnniversaryLegacyPage({
   params,
-  searchParams,
-}: LegacyAnniversaryProps) {
+}: {
+  params: Promise<{ slug: string }>;
+}) {
   const { slug } = await params;
-  const query = await searchParams;
-
-  // Find guest in the anniversary event by legacy slug or token
-  const lookup = invitationStore.findGuestPartyByToken("anniversary", slug);
-
-  if (!lookup) {
-    notFound();
-  }
-
-  const { event, party } = lookup;
-
-  // Build query string to preserve lang or other params
-  const search = new URLSearchParams();
-  for (const [key, val] of Object.entries(query)) {
-    if (typeof val === "string") {
-      search.set(key, val);
-    } else if (Array.isArray(val)) {
-      for (const item of val) search.append(key, item);
-    }
-  }
-
-  const queryString = search.toString() ? `?${search.toString()}` : "";
-  redirect(`/i/${event.slug}/${party.token}${queryString}`);
+  return redirectLegacyLink(legacyPath("anniversary", [slug]));
 }

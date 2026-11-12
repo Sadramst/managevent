@@ -2,6 +2,23 @@ import { createServer } from "node:http";
 
 createServer(async (request, response) => {
   response.setHeader("Content-Type", "application/json");
+  if (request.url === "/v1/me" && request.method === "GET") {
+    // Nobody is ever signed in against the mock: the staff console sends visitors to sign in.
+    // The signed-in console is covered against the real API (playwright.real.config.ts).
+    response.end(
+      JSON.stringify({
+        user: null,
+        capabilities: {
+          emailPassword: true,
+          magicLink: false,
+          passwordReset: false,
+          emailInvitations: false,
+          stripeCheckout: false,
+        },
+      }),
+    );
+    return;
+  }
   if (request.url !== "/v1/leads" || request.method !== "POST") {
     response.end(JSON.stringify({ status: "ok" }));
     return;

@@ -12,3 +12,17 @@ updates:
     directory: "/"
     schedule:
       interval: monthly
+  # Base images of the four production Dockerfiles (ADR-0011).
+  - package-ecosystem: docker
+    directories:
+      - /apps/api
+      - /apps/worker
+      - /apps/marketing
+      - /apps/invitation
+    schedule:
+      interval: monthly
+  # postgres and caddy images in the production Compose file.
+  - package-ecosystem: docker-compose
+    directory: /infra/vps
+    schedule:
+      interval: monthly

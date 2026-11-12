@@ -8,6 +8,6 @@ Repo-level scripts (no application code yet). Planned:
 | `seo-thin-content-guard.ts`       | MKT-10 | Fail CI if an indexable city page is below the content threshold               |
 | `create-github-issues.ts`         | FND-15 | Create labels and issues from `ROADMAP.md` with the `gh` CLI                   |
 | `import-legacy-anniversary.ts`    | INV-14 | Import the Appilico anniversary event and its `LegacySlug` rows                |
-| `generate-deployment-secrets.mjs` | INFRA  | Generate cryptographically secure keys for production deployment               |
+| `generate-deployment-secrets.mjs` | INFRA  | Print the five deployment secrets as `KEY=value`, or write them with `--out`   |
 | `dev-db.mjs`                      | INFRA  | Local PostgreSQL 16 without Docker (`pnpm db:local`, see `infra/LOCAL_DEV.md`) |
 | `with-env.mjs`                    | INFRA  | Run a command with the root `.env` loaded (`pnpm with-env <command>`)          |

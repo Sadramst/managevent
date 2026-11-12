@@ -49,4 +49,4 @@ Playwright: lead lifecycle, proposal → deposit link, vendor approval with audi
 
 ## Status
 
-✅ Scaffolded (`@managevent/admin` domain & CRM workflow engine + `/admin` Command Centre UI in `apps/marketing`).
+🟨 Staff-role helpers only (`@managevent/admin`). Admin Lite (enquiries inbox and detail, staff sign-in with two-factor) is live at `/admin` in `apps/marketing`, on the real API. No other module is built; the mock Command Centre and its helpers were removed.

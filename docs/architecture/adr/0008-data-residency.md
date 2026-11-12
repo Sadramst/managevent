@@ -1,5 +1,7 @@
 # ADR-0008: Data residency for third parties
 
+> The Supabase/Neon and Vercel rows are replaced by the register in [ADR-0011](0011-production-on-single-sydney-vps.md): core data and request processing are on the Sydney VPS, with encrypted backups in an Australian bucket. The rule and the other rows stand.
+
 **Rule:** personal information about customers, guests, vendors or staff is stored and processed in Australia wherever a reasonable option exists. Any offshore processing must be (1) listed in the privacy policy (APP 8), (2) covered by a contract with the processor, and (3) recorded below.
 
 | Service                        | Data                                    | Location                                       | Status                                                                                     |

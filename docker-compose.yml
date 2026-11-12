@@ -1,3 +1,8 @@
+# LOCAL DEVELOPMENT ONLY: a PostgreSQL 16 for a developer machine that has Docker.
+# `pnpm db:local` does the same without Docker (infra/LOCAL_DEV.md).
+#
+# This is NOT the production stack. Production is infra/vps/docker-compose.yml (DEPLOYMENT.md).
+# Never run this file on the server: it uses the well-known development password.
 services:
   postgres:
     image: postgres:16-alpine
@@ -9,7 +14,9 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:-managevent}
       TZ: Australia/Perth
     ports:
-      - "5432:5432"
+      # Loopback only. A port published by Docker bypasses host firewalls such as UFW, so
+      # without the address this database would be reachable from the network.
+      - "127.0.0.1:5432:5432"
     volumes:
       - managevent_pgdata:/var/lib/postgresql/data
     healthcheck:

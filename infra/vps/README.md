@@ -1,48 +1,39 @@
-# Managevent Production Stack on Dedicated Sydney VPS (`syd`)
+# `infra/vps`: the production stack
 
-| Item              | Value                                                                            |
-| ----------------- | -------------------------------------------------------------------------------- |
-| Provider / region | Vultr `syd` (Sydney, AU) — satisfies the `ap-southeast-2` PII rule               |
-| Plan              | `vc2-1c-2gb` — 1 vCPU, 2 GB RAM, 55 GB SSD, plus a 5 GB swapfile                 |
-| Host              | `managevent-prod` (`managevent-api`), Ubuntu 24.04                               |
-| Public IP         | `139.180.163.128`                                                                |
-| Hostnames         | `www.managevent.com.au`, `invitation.managevent.com.au`, `api.managevent.com.au` |
-| Path              | `/opt/managevent`                                                                |
+Everything that runs on the Sydney VPS is defined in this folder. **How to use it is in the root [`DEPLOYMENT.md`](../../DEPLOYMENT.md)**; this page only says what each file is.
 
-## What runs
+| File                                          | What it is                                                                                                                                                             |
+| --------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `docker-compose.yml`                          | The stack: `db`, `api`, `worker`, `marketing`, `invitation`, `caddy`, plus the one-off tools `migrate` and `seed`. References images by `IMAGE_PREFIX` and `IMAGE_TAG` |
+| `docker-compose.build.yml`                    | Override that adds `build:` for building the four images on the server (the manual path)                                                                               |
+| `.env.example`                                | Template for `.env` (never committed). Every variable is explained in [`../ENVIRONMENTS.md`](../ENVIRONMENTS.md)                                                       |
+| `Caddyfile`                                   | TLS, the four hostnames, security headers, body limits, the redacted access log, client-address hygiene                                                                |
+| `deploy.sh`                                   | Deploy, verify, roll back. Used by hand and by `.github/workflows/deploy.yml`                                                                                          |
+| `backup.sh`, `restore.sh`                     | Encrypted PostgreSQL backups with retention; restore drill and restore                                                                                                 |
+| `lib.sh`                                      | Helpers shared by the three scripts                                                                                                                                    |
+| `systemd/managevent-backup.service`, `.timer` | The nightly backup schedule                                                                                                                                            |
 
-| Container                 | Role                                                                                       | Exposure       |
-| ------------------------- | ------------------------------------------------------------------------------------------ | -------------- |
-| `managevent-db-1`         | PostgreSQL 16 (`managevent`)                                                               | internal only  |
-| `managevent-api-1`        | Hono API on `:4000` (`api.managevent.com.au`)                                              | via Caddy only |
-| `managevent-worker-1`     | `pg-boss` consumer (`lead.created`, `headcount.changed`)                                   | none           |
-| `managevent-marketing-1`  | Next.js Marketing + `/admin` Command Centre on `:3100` (`www.managevent.com.au`)           | via Caddy only |
-| `managevent-invitation-1` | Next.js Invitations Studio + Guest Micro-sites on `:3001` (`invitation.managevent.com.au`) | via Caddy only |
-| `managevent-caddy-1`      | Automatic TLS termination + reverse proxy                                                  | 80, 443        |
+Files that exist only on the server, all gitignored: `.env` (secrets, mode `0600`) and `.deploy-state` (the previous image tag, written by `deploy.sh` for rollback).
 
-Only ports 22, 80 and 443 are reachable through UFW. Postgres and internal app ports are never exposed directly.
+## Everyday commands
 
-## Updating the deployment
+Run them on the server. The scripts are started with `bash`, so they do not depend on the executable bit.
 
 ```bash
-cd /opt/managevent
-git pull
-cd infra/vps
-export COMPOSE_PARALLEL_LIMIT=1
-# Build one service at a time. The 2 GB host cannot run parallel Next.js builds.
-docker compose build api && docker compose build worker \
-  && docker compose build marketing && docker compose build invitation
-docker compose run --rm migrate
-docker compose run --rm seed
-docker compose up -d
+cd /opt/managevent/infra/vps
+docker compose ps                         # state and health
+docker compose logs --tail 100 api        # or worker, marketing, invitation, caddy, db
+bash deploy.sh                            # git pull, build, back up, migrate, start, verify
+bash deploy.sh --rollback                 # previous images again
+bash deploy.sh --verify                   # health checks only
+bash backup.sh                            # a backup now
+bash restore.sh --drill --identity <key>  # prove the newest backup restores
 ```
 
-Never start a second build while one is running (check `ps aux | grep "docker compose"` first). `COMPOSE_PARALLEL_LIMIT=1` makes Compose build and start at most one service at a time, which avoids out-of-memory stalls on this plan. The memory limits in `docker-compose.yml` are unchanged. Plan size is DECISION-NEEDED.
+## Rules of this folder
 
-The apex `managevent.com.au` permanently redirects to `https://www.managevent.com.au`. Its DNS A record must point at this server for Caddy to issue a certificate.
-
-`marketing` and `invitation` wait for `api` to be healthy (`/health`). They have no healthcheck of their own because no health endpoint is confirmed for them.
-
-## Secrets
-
-`infra/vps/.env` (mode `0600`, gitignored) holds `POSTGRES_PASSWORD`, `PII_ENCRYPTION_KEY`, and `BETTER_AUTH_SECRET`.
+- **Only Caddy publishes ports.** Never add `ports:` to another service: the client-address trust model depends on the API being reachable from the Docker network only.
+- **Every required secret has a `${VAR:?}` guard** in `docker-compose.yml`, so a missing value stops Compose before anything is started or replaced. Keep that when adding one.
+- **Validate before you restart.** `deploy.sh` checks the Compose configuration and the Caddyfile first. When working by hand, use the commands under "Updating" in `DEPLOYMENT.md`.
+- **One build at a time** on the 2 GB plan.
+- CI checks this folder on every pull request: shell syntax, ShellCheck, `docker compose config` with a complete environment and with none, and `caddy validate`.

@@ -1,6 +1,6 @@
 # ADR-0004: PostgreSQL + Prisma in Sydney
 
-- **Status:** Accepted; Step 2 founder approval confirmed Supabase Sydney on 2026-10-23.
+- **Status:** Accepted; Step 2 founder approval confirmed Supabase Sydney on 2026-10-23. The provider clause (Supabase, session pooler) is superseded by [ADR-0011](0011-production-on-single-sydney-vps.md): PostgreSQL 16 runs in a container on the Sydney VPS and both URLs connect to it directly. The Prisma pin and the migration rules stand.
 - **Decision:**
   - PostgreSQL 16+ in `ap-southeast-2`.
   - **Supabase Sydney** (`ap-southeast-2`) is the production provider. `DATABASE_URL` and `DIRECT_URL` both use its **session-mode pooler**, not the transaction pooler: migrations and pg-boss require session semantics.

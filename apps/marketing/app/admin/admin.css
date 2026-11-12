@@ -1,0 +1,436 @@
+/* ==========================================================================
+   Staff console (www.managevent.com.au/admin).
+   The shared shell (@managevent/ui/brand.css: .table, .tabs, .dl, .badge, .card,
+   forms ...) does most of the work. These are the console-only pieces.
+   Colours come from --me-* tokens; logical properties only.
+   ========================================================================== */
+
+/* ---- Header bar ----------------------------------------------------------- */
+.console-bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 30;
+  background: color-mix(in srgb, var(--me-surface-raised) 94%, transparent);
+  backdrop-filter: blur(10px);
+  border-block-end: 1px solid var(--me-rule);
+}
+.console-bar-inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 1.5rem;
+  min-block-size: 4rem;
+  padding-block: 0.5rem;
+}
+.console-brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  border-radius: var(--me-radius-control);
+}
+.console-nav {
+  display: flex;
+  gap: 0.25rem;
+}
+.console-nav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 0.85rem;
+  border-radius: var(--me-radius-control);
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--me-ink);
+  text-decoration: none;
+}
+.console-nav a:hover {
+  background: var(--me-tint);
+}
+.console-nav a[aria-current="page"] {
+  color: var(--me-primary);
+}
+.console-nav a[aria-current="page"]::after {
+  content: "";
+  position: absolute;
+  inset: auto 0.85rem 0.3rem;
+  border-block-end: 2px solid var(--me-primary);
+}
+.console-account {
+  display: flex;
+  flex-direction: column;
+  margin-inline-start: auto;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  text-align: end;
+  min-inline-size: 0;
+}
+.console-account-name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.console-account-role {
+  font-size: 0.78rem;
+  color: var(--me-ink-muted);
+}
+.console-sign-out {
+  margin: 0;
+}
+
+/* ---- Page frame ----------------------------------------------------------- */
+.console-main {
+  padding-block: 0.25rem 4.5rem;
+  min-block-size: calc(100dvh - 4rem);
+}
+.console-main .page-header {
+  padding-block: 1.75rem 1.25rem;
+}
+.console-main .page-title {
+  overflow-wrap: anywhere;
+}
+.console-header-lead {
+  margin-block: 0.35rem 0;
+  color: var(--me-ink-muted);
+}
+.console-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.15rem 1.25rem;
+  margin-block: 0.5rem 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.console-meta > * {
+  margin: 0;
+}
+.console-crumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-block-size: 44px;
+  margin-block-start: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-primary);
+  text-decoration: none;
+}
+.console-crumb:hover {
+  text-decoration: underline;
+}
+.console-crumb svg {
+  flex: none;
+  inline-size: 1em;
+  block-size: 1em;
+}
+.console-main .console-crumb + .page-header {
+  padding-block-start: 0.5rem;
+}
+/* The "back" chevron points the other way in a right-to-left locale. */
+[dir="rtl"] .console-crumb svg {
+  transform: scaleX(-1);
+}
+
+/* ---- Inbox ---------------------------------------------------------------- */
+.console-count {
+  display: inline-block;
+  margin-inline-start: 0.5rem;
+  padding: 0.05rem 0.5rem;
+  border-radius: var(--me-radius-chip);
+  border: 1px solid var(--me-rule);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  font-size: 0.74rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.5;
+}
+.console-search {
+  margin-block: 1.25rem 1rem;
+}
+.console-search .field {
+  max-inline-size: 26rem;
+}
+.console-search-row {
+  display: flex;
+  gap: 0.5rem;
+}
+.console-search-row input {
+  margin: 0;
+}
+.console-search .help {
+  margin-block-start: 0.1rem;
+}
+.console-search-row .button {
+  flex: none;
+}
+.console-note {
+  margin-block: 0 1rem;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.console-inbox .console-row-link {
+  color: var(--me-primary);
+  font-weight: 600;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.console-inbox .console-row-link:hover {
+  text-decoration: underline;
+}
+.console-inbox .cell-sub {
+  overflow-wrap: anywhere;
+}
+.console-inbox td .pill {
+  margin-inline-start: 0.4rem;
+}
+.console-empty-value {
+  color: var(--me-ink-muted);
+}
+.console-inbox-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-block-start: 1rem;
+}
+.console-inbox-footer p {
+  margin: 0;
+}
+
+/* ---- Enquiry detail ------------------------------------------------------- */
+.console-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+.console-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-inline-size: 0;
+}
+.console-detail .card {
+  padding: 1.5rem;
+}
+.console-card-title {
+  font-family: var(--me-font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--me-primary);
+  max-inline-size: none;
+  margin-block: 0 0.35rem;
+}
+.console-detail .dl dd {
+  overflow-wrap: anywhere;
+  min-inline-size: 0;
+}
+.console-detail .dl dt {
+  flex: none;
+}
+.console-message {
+  margin: 0;
+  max-inline-size: none;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.console-stage-current {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-block-end: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.console-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.console-form-status {
+  margin-block: 0.85rem 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--me-success);
+}
+.console-form-status.error {
+  color: var(--me-danger);
+}
+.console-form-status.muted {
+  color: var(--me-ink-muted);
+}
+.console-form-status:focus-visible {
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+.console-detail textarea {
+  margin: 0;
+  min-block-size: 9rem;
+}
+.console-notes-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.console-detail .form-actions {
+  margin-block-start: 1rem;
+}
+
+/* ---- Sign in -------------------------------------------------------------- */
+.console-auth {
+  display: grid;
+  place-items: center;
+  min-block-size: 100dvh;
+  padding-block: 2.5rem;
+}
+.console-auth-inner {
+  inline-size: min(100%, 28rem);
+}
+.console-auth-brand {
+  display: flex;
+  justify-content: center;
+  margin-block-end: 1.75rem;
+}
+.console-auth .panel {
+  padding: 2rem;
+}
+.console-auth h1 {
+  font-size: 2.25rem;
+  max-inline-size: none;
+  margin-block: 0 0.5rem;
+  color: var(--me-primary);
+}
+.console-auth .lead {
+  font-size: 0.95rem;
+  margin-block-end: 1.5rem;
+}
+.console-auth .field input {
+  margin: 0;
+}
+.console-auth .alert {
+  margin-block-end: 1.25rem;
+}
+.console-auth .form-actions {
+  flex-direction: column;
+}
+.console-auth-help {
+  margin-block: 1.5rem 0;
+  text-align: center;
+}
+.console-code-input {
+  font-size: 1.35rem;
+  letter-spacing: 0.35em;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+
+/* ---- Narrow screens ------------------------------------------------------- */
+@media (max-width: 960px) {
+  .console-detail {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 680px) {
+  /* Row one: logo and sign-out. Row two: the section link and who is signed in. */
+  .console-brand {
+    order: 1;
+  }
+  .console-sign-out {
+    order: 2;
+    margin-inline-start: auto;
+  }
+  .console-nav {
+    order: 3;
+    margin-inline-start: -0.85rem;
+  }
+  .console-account {
+    order: 4;
+  }
+  .console-auth .panel,
+  .console-detail .card {
+    padding: 1.25rem;
+  }
+  /* Label above value, so a long email address is not squeezed into half the card. */
+  .console-detail .dl > div {
+    flex-direction: column;
+    gap: 0.1rem;
+    padding-block: 0.6rem;
+  }
+  .console-detail .dl dd {
+    text-align: start;
+  }
+
+  /* The inbox becomes one card per enquiry instead of a sideways-scrolling table. The ARIA
+     table roles in the markup keep it a table for assistive technology. */
+  .console-inbox-wrap {
+    overflow: visible;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+  .console-inbox {
+    display: block;
+    min-inline-size: 0;
+  }
+  .console-inbox thead {
+    position: absolute;
+    inline-size: 1px;
+    block-size: 1px;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+  .console-inbox tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  .console-inbox tbody tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.3rem 1rem;
+    align-items: start;
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--me-rule);
+    border-radius: var(--me-radius-panel);
+    background: var(--me-surface-raised);
+  }
+  .console-inbox tbody :is(th, td) {
+    display: block;
+    padding: 0;
+    border: 0;
+    background: transparent;
+  }
+  .console-inbox tbody tr:hover > * {
+    background: transparent;
+  }
+  .console-inbox [data-cell="name"] {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1rem;
+  }
+  .console-inbox [data-cell="stage"] {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
+  }
+  .console-inbox tbody td:not([data-cell="stage"]) {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.6rem;
+    font-size: 0.88rem;
+    text-align: start;
+  }
+  .console-inbox tbody td:not([data-cell="stage"])::before {
+    content: attr(data-label);
+    flex: 0 0 6.5rem;
+    color: var(--me-ink-muted);
+  }
+  .console-inbox-footer .button {
+    flex: 1 1 100%;
+  }
+}

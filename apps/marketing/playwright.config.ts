@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
+ * The public site against the mock API (`tests/mock-api.mjs`, port 4101).
+ *
  * Browser channel override. Set `PW_CHANNEL=chrome` (or `msedge`) to run against an installed
  * browser instead of Playwright's bundled Chromium, for example on a machine where
  * `playwright install` has not been run.
@@ -10,6 +12,8 @@ const browser = channel ? { channel } : {};
 
 export default defineConfig({
   testDir: "./tests",
+  // The staff console spec needs the real API and database: see playwright.real.config.ts.
+  testIgnore: "**/admin.spec.ts",
   fullyParallel: false,
   use: { baseURL: "http://localhost:3100", trace: "retain-on-failure" },
   projects: [

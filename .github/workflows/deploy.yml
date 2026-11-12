@@ -1,0 +1,258 @@
+name: Deploy
+
+# Builds the four images in GitHub Actions, pushes them to GHCR and rolls them out on the
+# Sydney VPS over SSH (ADR-0011). The server only pulls and restarts: no build runs on it.
+#
+# Triggers:
+#   - automatically after the CI workflow succeeds for a push to main;
+#   - manually (Actions > Deploy > Run workflow), optionally for an older commit on main.
+# Either way the `deploy` job waits for an approval on the GitHub Environment `production`.
+#
+# One-time setup by the repository owner (DEPLOYMENT.md, "Continuous deployment"):
+#   Environment `production` with required reviewers, and these environment secrets:
+#     VPS_HOST          server address
+#     VPS_USER          SSH user that can run docker and write /opt/managevent
+#     VPS_SSH_KEY       private key of a deploy-only key pair (public half in authorized_keys)
+#     VPS_KNOWN_HOSTS   output of `ssh-keyscan -t ed25519 <VPS_HOST>`, checked out of band
+#   Repository variables (Settings > Secrets and variables > Actions > Variables; public values):
+#     CONTACT_EMAIL     the public contact address shown on www
+#     CONTACT_PHONE     the public contact number shown on www
+#   The marketing image prerenders the public pages with them, so they are build arguments. Keep
+#   them equal to the two lines of the same name in infra/vps/.env on the server.
+#   GHCR needs no secret: images are pushed, and pulled on the server, with this run's
+#   GITHUB_TOKEN, which stops working when the run ends.
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Full commit SHA on main to deploy (empty = the newest commit on main)
+        required: false
+        type: string
+      allow_without_ci:
+        description: Deploy even if CI has not passed for this commit (emergency only)
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  resolve:
+    name: Decide what to deploy
+    # After CI: only a successful run for a push to main. Manually: only from main.
+    if: >-
+      (github.event_name == 'workflow_run'
+        && github.event.workflow_run.conclusion == 'success'
+        && github.event.workflow_run.event == 'push'
+        && github.event.workflow_run.head_branch == 'main')
+      || (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      sha: ${{ steps.pick.outputs.sha }}
+      prefix: ${{ steps.pick.outputs.prefix }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Pick the commit and the image names
+        id: pick
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          CI_SHA: ${{ github.event.workflow_run.head_sha }}
+          REQUESTED: ${{ inputs.commit }}
+          ALLOW_WITHOUT_CI: ${{ inputs.allow_without_ci }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT_NAME" = "workflow_run" ]; then
+            sha="$CI_SHA"
+          else
+            sha="${REQUESTED:-$(git rev-parse origin/main)}"
+          fi
+          if ! printf '%s' "$sha" | grep -Eq '^[0-9a-f]{40}$'; then
+            echo "::error::'$sha' is not a full 40-character commit SHA"
+            exit 1
+          fi
+          if ! git merge-base --is-ancestor "$sha" origin/main; then
+            echo "::error::$sha is not on main"
+            exit 1
+          fi
+          if [ "$EVENT_NAME" = "workflow_dispatch" ] && [ "$ALLOW_WITHOUT_CI" != "true" ]; then
+            passed="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?head_sha=${sha}&status=success&per_page=1" --jq '.total_count')"
+            if [ "$passed" = "0" ]; then
+              echo "::error::CI has not passed for $sha. Wait for it, or rerun with allow_without_ci."
+              exit 1
+            fi
+          fi
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "prefix=ghcr.io/${GITHUB_REPOSITORY_OWNER,,}/managevent-" >> "$GITHUB_OUTPUT"
+          echo "Deploying \`$sha\`" >> "$GITHUB_STEP_SUMMARY"
+
+  build:
+    name: Build and push (${{ matrix.app }})
+    needs: resolve
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+      matrix:
+        app: [api, worker, marketing, invitation]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+      - uses: docker/setup-buildx-action@v3
+      - uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # The marketing image bakes the public contact details into its prerendered pages. The
+      # build stops here, before anything is pushed or deployed, when they are not configured.
+      - name: Build arguments
+        id: args
+        env:
+          APP: ${{ matrix.app }}
+          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
+          CONTACT_PHONE: ${{ vars.CONTACT_PHONE }}
+        run: |
+          set -euo pipefail
+          if [ "$APP" != "marketing" ]; then
+            exit 0
+          fi
+          if [ -z "$CONTACT_EMAIL" ] || [ -z "$CONTACT_PHONE" ]; then
+            echo "::error::Set the repository variables CONTACT_EMAIL and CONTACT_PHONE (DEPLOYMENT.md, Continuous deployment)"
+            exit 1
+          fi
+          {
+            echo "list<<MANAGEVENT_BUILD_ARGS"
+            echo "CONTACT_EMAIL=$CONTACT_EMAIL"
+            echo "CONTACT_PHONE=$CONTACT_PHONE"
+            echo "MANAGEVENT_BUILD_ARGS"
+          } >> "$GITHUB_OUTPUT"
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: apps/${{ matrix.app }}/Dockerfile
+          platforms: linux/amd64
+          push: true
+          build-args: ${{ steps.args.outputs.list }}
+          tags: ${{ needs.resolve.outputs.prefix }}${{ matrix.app }}:${{ needs.resolve.outputs.sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ needs.resolve.outputs.sha }}
+          cache-from: type=gha,scope=image-${{ matrix.app }}
+          cache-to: type=gha,scope=image-${{ matrix.app }},mode=max
+
+  deploy:
+    name: Roll out on the VPS
+    needs: [resolve, build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Never two rollouts at once, and never cancel one half-way. Builds are not serialised: a
+    # run that is still waiting for approval does not hold up the images of the next commit.
+    concurrency:
+      group: deploy-production
+      cancel-in-progress: false
+    # Approval gate: configure required reviewers on this environment.
+    environment:
+      name: production
+      url: https://www.managevent.com.au
+    permissions:
+      contents: read
+      packages: read
+    env:
+      VPS_HOST: ${{ secrets.VPS_HOST }}
+      VPS_USER: ${{ secrets.VPS_USER }}
+      VPS_REPO_DIR: ${{ vars.VPS_REPO_DIR || '/opt/managevent' }}
+      SHA: ${{ needs.resolve.outputs.sha }}
+      PREFIX: ${{ needs.resolve.outputs.prefix }}
+    steps:
+      - name: Configure SSH
+        env:
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_KNOWN_HOSTS: ${{ secrets.VPS_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          for name in VPS_HOST VPS_USER VPS_SSH_KEY VPS_KNOWN_HOSTS; do
+            if [ -z "${!name}" ]; then
+              echo "::error::The secret $name is not set on the production environment (DEPLOYMENT.md, Continuous deployment)"
+              exit 1
+            fi
+          done
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          # The host key comes from a secret, not from the network: no trust on first use.
+          printf '%s\n' "$VPS_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          {
+            echo "Host vps"
+            echo "  HostName $VPS_HOST"
+            echo "  User $VPS_USER"
+            echo "  IdentityFile ~/.ssh/deploy_key"
+            echo "  IdentitiesOnly yes"
+            echo "  StrictHostKeyChecking yes"
+            echo "  BatchMode yes"
+            echo "  ConnectTimeout 20"
+            echo "  ServerAliveInterval 30"
+          } > ~/.ssh/config
+
+      - name: Let the server pull this run's images
+        env:
+          GHCR_USER: ${{ github.actor }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          # The variables are meant to expand here, on the runner.
+          # shellcheck disable=SC2029
+          printf '%s' "$GHCR_TOKEN" | ssh vps "docker login ghcr.io --username '$GHCR_USER' --password-stdin"
+
+      # deploy.sh: fast-forward the checkout to this commit, pull the images, back up, migrate,
+      # start, verify all three hostnames, and start the previous images again if that fails.
+      - name: Deploy
+        run: |
+          set -euo pipefail
+          # The variables are meant to expand here, on the runner (all three are validated above).
+          # shellcheck disable=SC2029
+          ssh vps "bash '$VPS_REPO_DIR/infra/vps/deploy.sh' --image-tag '$SHA' --image-prefix '$PREFIX' --git-ref '$SHA'"
+
+      - name: Remove the registry login from the server
+        if: always()
+        run: ssh vps "docker logout ghcr.io" || true
+
+      - name: Smoke test over the public internet
+        run: |
+          set -euo pipefail
+          curl -fsS --retry 5 --retry-delay 5 --retry-all-errors --max-time 20 https://api.managevent.com.au/health | grep -q '"status":"ok"'
+          curl -fsS --retry 5 --retry-delay 5 --retry-all-errors --max-time 20 -o /dev/null https://www.managevent.com.au/
+          curl -fsS --retry 5 --retry-delay 5 --retry-all-errors --max-time 20 -o /dev/null https://invitation.managevent.com.au/
+          echo "Deployed \`$SHA\` and all three hostnames answer." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: What to do when this run failed
+        if: failure()
+        run: |
+          {
+            echo "### Deploy failed"
+            echo "- If the Deploy step failed, deploy.sh has already started the previous images again; its last lines say whether that worked."
+            echo "- If only the smoke test failed, the server considers itself healthy: check DNS and certificates."
+            echo "- To go back by hand: \`ssh <server> bash /opt/managevent/infra/vps/deploy.sh --rollback\` (DEPLOYMENT.md, Rollback)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Remove the SSH key from the runner
+        if: always()
+        run: rm -f ~/.ssh/deploy_key

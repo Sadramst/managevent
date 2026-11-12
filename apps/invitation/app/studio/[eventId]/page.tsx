@@ -1,351 +1,368 @@
-"use client";
-
-import React, { use, useState } from "react";
+import type { Metadata } from "next";
+import { Check, ExternalLink } from "lucide-react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
-import type { GuestParty } from "@/lib/types";
-import type { InvitationThemeId } from "@managevent/types";
-import { StatsOverview } from "@/components/studio/StatsOverview";
-import { GuestTable } from "@/components/studio/GuestTable";
-import { AddPartyModal } from "@/components/studio/AddPartyModal";
-import { CsvImportModal } from "@/components/studio/CsvImportModal";
-import { WhatsAppStudioModal } from "@/components/studio/WhatsAppStudioModal";
-import { QrCodeModal } from "@/components/studio/QrCodeModal";
-import { ThemeStudio } from "@/components/studio/ThemeStudio";
-import {
-  ArrowLeft,
-  ExternalLink,
-  Users,
-  Palette,
-  BarChart3,
-  Settings,
-  Share2,
-  FileSpreadsheet,
-  Check,
-  Copy,
-} from "lucide-react";
+import { fillCopy, getInvitationShell, getInvitationStudio } from "@managevent/i18n";
+import { Card } from "@managevent/ui/brand";
+import { PublishPanel } from "@/components/event-studio/PublishPanel";
+import { InvitationPreview } from "@/components/invitation-preview/InvitationPreview";
+import { buttonClass, CopyButton, EmptyState, Notice, Stats, StatTile } from "@/components/ui";
+import { formatLocalDateTime } from "@/lib/dates";
+import { isMemorialEvent, occasionLabel } from "@/lib/event-studio/catalog";
+import { loadEvent, loadPlan, loadSummaryOptional } from "@/lib/event-studio/data";
+import { privateMetadata } from "@/lib/metadata";
+import { requireHost } from "@/lib/session";
+import { absoluteInviteUrl, routes } from "@/lib/urls";
 
-interface StudioEventPageProps {
-  params: Promise<{ eventId: string }>;
+const copy = getInvitationStudio("en");
+const shell = getInvitationShell("en");
+
+export const metadata: Metadata = privateMetadata(copy.overview.title);
+
+function countNumber(value: string | string[] | undefined): number {
+  const parsed = typeof value === "string" ? Number.parseInt(value, 10) : Number.NaN;
+  return Number.isFinite(parsed) && parsed > 0 ? Math.min(parsed, 99) : 0;
 }
 
-export default function StudioEventPage({ params }: StudioEventPageProps) {
-  const { eventId } = use(params);
-  const event = invitationStore.getEventById(eventId);
+/**
+ * Overview of one event: publish or unpublish, what is still to do, replies so far, a preview
+ * of the invitation, the event details and the plan.
+ */
+export default async function EventOverviewPage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ eventId: string }>;
+  searchParams: Promise<{ created?: string | string[]; skipped?: string | string[] }>;
+}) {
+  await requireHost();
+  const [{ eventId }, query] = await Promise.all([params, searchParams]);
+  const event = await loadEvent(eventId);
+  const [summary, plan] = await Promise.all([loadSummaryOptional(eventId), loadPlan(eventId)]);
 
-  const [activeTab, setActiveTab] = useState<
-    "overview" | "guests" | "design" | "responses" | "settings"
-  >("overview");
+  const text = copy.overview;
+  const { invitation, checklist } = event;
+  const content = invitation.content;
+  const memorial = isMemorialEvent(event);
+  const published = invitation.publishedAt !== null;
+  const canEdit = event.role !== "VIEWER";
+  const skipped = countNumber(query.skipped);
 
-  // Modals
-  const [isAddOpen, setIsAddOpen] = useState(false);
-  const [isCsvOpen, setIsCsvOpen] = useState(false);
-  const [whatsAppParty, setWhatsAppParty] = useState<GuestParty | null>(null);
-  const [qrParty, setQrParty] = useState<GuestParty | null>(null);
-  const [copiedLink, setCopiedLink] = useState(false);
+  const detailsHref = routes.eventTab(eventId, "content");
+  const guestsHref = routes.eventTab(eventId, "guests");
+  const settingsHref = routes.eventTab(eventId, "settings");
+  const previewPath = invitation.previewPath?.startsWith("/i/") ? invitation.previewPath : null;
+  const previewUrl = absoluteInviteUrl(previewPath);
 
-  // Trigger state refresh on mutation
-  const [, setRefreshKey] = useState(0);
-  const forceUpdate = () => setRefreshKey((k) => k + 1);
+  const steps = [
+    {
+      key: "wording",
+      done: checklist.hasWording,
+      href: `${detailsHref}#wording`,
+      ...text.checklist.wording,
+    },
+    {
+      key: "venue",
+      done: checklist.hasVenue,
+      href: `${detailsHref}#venue`,
+      ...text.checklist.venue,
+    },
+    { key: "guests", done: checklist.hasGuests, href: guestsHref, ...text.checklist.guests },
+    { key: "published", done: checklist.published, href: null, ...text.checklist.published },
+  ];
+  const doneCount = steps.filter((step) => step.done).length;
 
-  if (!event) {
-    notFound();
-  }
+  const totals = summary?.totals;
+  const guestCount = totals?.guests ?? event.counts.guests;
+  const partyCount = totals?.parties ?? event.counts.parties;
+  const coming = totals ? totals.adultsYes + totals.childrenYes : event.counts.yes;
+  const awaiting = totals?.pending ?? event.counts.pending;
+  const deadline = summary?.deadline;
+  const deadlineDate = deadline?.rsvpDeadlineLocal
+    ? formatLocalDateTime(deadline.rsvpDeadlineLocal)
+    : null;
 
-  const summary = invitationStore.getEventResponsesSummary(event.id);
-  const primaryParty = event.parties[0];
-  const origin =
-    typeof window !== "undefined" ? window.location.origin : "https://invitation.managevent.com.au";
-  const previewUrl = primaryParty
-    ? `${origin}/i/${event.slug}/${primaryParty.token}`
-    : `${origin}/i/${event.slug}`;
-
-  const handleAddParty = (
-    partyName: string,
-    seats: number,
-    tags: string[],
-    tableLabel?: string,
-  ) => {
-    invitationStore.addPartyToEvent(event.id, partyName, seats, tags, tableLabel);
-    forceUpdate();
-  };
-
-  const handleCsvImport = (rows: import("@/lib/csv-helper").CsvGuestRow[]) => {
-    for (const row of rows) {
-      const seats = row.seats ?? 1;
-      const tags = row.tags ? row.tags.split(",").map((t) => t.trim()) : ["CSV Import"];
-      invitationStore.addPartyToEvent(event.id, row.name, seats, tags, row.table);
-    }
-    forceUpdate();
-  };
-
-  const handleSelectTheme = (newThemeId: InvitationThemeId) => {
-    event.themeId = newThemeId;
-    event.updatedAt = new Date().toISOString();
-    forceUpdate();
-  };
-
-  const handleCopyPublicLink = () => {
-    navigator.clipboard.writeText(previewUrl).then(() => {
-      setCopiedLink(true);
-      setTimeout(() => setCopiedLink(false), 2000);
-    });
-  };
+  const guestLimit = plan.usage.guestLimit;
 
   return (
-    <div className="min-h-screen bg-stone-50 text-stone-900 pb-16">
-      {/* Studio Header */}
-      <header className="border-b bg-white px-6 py-4 sticky top-0 z-30">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Link
-              href="/studio"
-              className="rounded-full p-1.5 text-stone-500 hover:bg-stone-100 hover:text-stone-900 transition-colors"
-            >
-              <ArrowLeft className="h-4 w-4" />
-            </Link>
-            <div>
-              <div className="flex items-center gap-2">
-                <h1 className="font-display text-lg font-bold text-stone-900">{event.title}</h1>
-                <span className="rounded-full bg-stone-100 border px-2 py-0.5 text-[10px] font-mono text-stone-600 uppercase">
-                  {event.ceremonySlug}
-                </span>
-              </div>
-              <p className="text-xs text-stone-500 font-sans">
-                {event.venue.name} •{" "}
-                {new Date(event.startsAt).toLocaleDateString("en-AU", { dateStyle: "medium" })}
-              </p>
-            </div>
-          </div>
+    <div className="wrap es-page es-page-overview">
+      <h1 className="sr-only">{text.title}</h1>
 
-          {/* Quick Actions */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={handleCopyPublicLink}
-              className="inline-flex items-center gap-1.5 rounded-button border px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
-            >
-              {copiedLink ? (
-                <Check className="h-3.5 w-3.5 text-emerald-600" />
-              ) : (
-                <Copy className="h-3.5 w-3.5" />
-              )}
-              <span>{copiedLink ? "Copied!" : "Copy Guest Link"}</span>
-            </button>
+      {query.created === "1" ? (
+        <Notice tone="success" role="status" title={text.created.title} className="es-gap">
+          <p>{text.created.body}</p>
+          {skipped > 0 ? <p>{fillCopy(text.created.guestsSkipped, { count: skipped })}</p> : null}
+        </Notice>
+      ) : null}
 
-            <a
-              href={previewUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-button bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800"
-            >
-              <span>Preview Micro-site</span>
-              <ExternalLink className="h-3.5 w-3.5" />
-            </a>
-          </div>
-        </div>
+      <div className="es-overview">
+        <div className="es-overview-main">
+          <PublishPanel
+            eventId={eventId}
+            published={published}
+            canEdit={canEdit}
+            shareHref={routes.eventTab(eventId, "share")}
+            fixLinks={{
+              HEADLINE: `${detailsHref}#wording`,
+              HOSTS: `${detailsHref}#wording`,
+              VENUE: `${detailsHref}#venue`,
+              START_IN_FUTURE: `${detailsHref}#event`,
+            }}
+            copy={text.publish}
+            networkError={shell.errors.NETWORK_ERROR}
+          />
 
-        {/* Navigation Tabs */}
-        <div className="mx-auto max-w-7xl mt-4 flex gap-6 text-xs font-semibold border-t pt-2">
-          {[
-            { id: "overview", label: "Overview & Metrics", icon: BarChart3 },
-            { id: "guests", label: `Guest List (${event.parties.length})`, icon: Users },
-            { id: "design", label: "Design & Theme", icon: Palette },
-            { id: "responses", label: "Catering & Dietary", icon: FileSpreadsheet },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeTab === tab.id;
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() =>
-                  setActiveTab(tab.id as "overview" | "guests" | "design" | "responses")
-                }
-                className={`inline-flex items-center gap-2 border-b-2 pb-2 transition-all ${
-                  isActive
-                    ? "border-amber-600 text-amber-900 font-bold"
-                    : "border-transparent text-stone-500 hover:text-stone-800"
-                }`}
-              >
-                <Icon className="h-4 w-4" />
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </header>
-
-      {/* Main Container */}
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* TAB 1: OVERVIEW */}
-        {activeTab === "overview" && summary && (
-          <div className="space-y-8">
-            <StatsOverview summary={summary} />
-
-            {/* Quick Guest List Snapshot */}
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-display text-base font-bold text-stone-900">
-                  Recent Guest Activity
-                </h3>
-                <button
-                  type="button"
-                  onClick={() => setActiveTab("guests")}
-                  className="text-xs font-semibold text-amber-700 hover:underline"
-                >
-                  View full guest list →
-                </button>
-              </div>
-
-              <GuestTable
-                parties={event.parties.slice(0, 5)}
-                eventSlug={event.slug}
-                eventId={event.id}
-                onOpenAddModal={() => setIsAddOpen(true)}
-                onOpenWhatsApp={(party) => setWhatsAppParty(party)}
-                onOpenQr={(party) => setQrParty(party)}
-              />
-            </div>
-          </div>
-        )}
-
-        {/* TAB 2: GUESTS */}
-        {activeTab === "guests" && (
-          <div className="space-y-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="font-display text-xl font-bold text-stone-900">
-                  Guest Parties & Invitations
+          {doneCount < steps.length ? (
+            <section aria-labelledby="checklist-title" className="es-block">
+              <div className="es-block-head">
+                <h2 id="checklist-title" className="es-block-title">
+                  {text.checklist.title}
                 </h2>
-                <p className="mt-0.5 text-xs text-stone-500">
-                  Assign seats, generate personalized WhatsApp messages, and export dietary records.
+                <p className="muted small">
+                  {fillCopy(text.checklist.progress, { done: doneCount, total: steps.length })}
                 </p>
               </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setIsCsvOpen(true)}
-                  className="inline-flex items-center gap-1.5 rounded-button border px-3 py-1.5 text-xs font-semibold text-stone-700 hover:bg-stone-50"
-                >
-                  <FileSpreadsheet className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Bulk Import CSV</span>
-                </button>
-              </div>
-            </div>
-
-            <GuestTable
-              parties={event.parties}
-              eventSlug={event.slug}
-              eventId={event.id}
-              onOpenAddModal={() => setIsAddOpen(true)}
-              onOpenWhatsApp={(party) => setWhatsAppParty(party)}
-              onOpenQr={(party) => setQrParty(party)}
-            />
-          </div>
-        )}
-
-        {/* TAB 3: DESIGN */}
-        {activeTab === "design" && (
-          <div className="space-y-6">
-            <ThemeStudio
-              currentThemeId={event.themeId}
-              experienceMode={event.experienceMode}
-              onSelectTheme={handleSelectTheme}
-            />
-          </div>
-        )}
-
-        {/* TAB 4: RESPONSES & CATERING */}
-        {activeTab === "responses" && summary && (
-          <div className="space-y-8">
-            <div>
-              <h2 className="font-display text-xl font-bold text-stone-900">
-                Catering & Dietary Breakdown
-              </h2>
-              <p className="mt-0.5 text-xs text-stone-500">
-                Exportable summary formatted for Perth caterers with UTF-8 BOM encoding.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-              {/* Dietary card */}
-              <div className="rounded-card border bg-white p-6 shadow-xs">
-                <h3 className="font-serif text-base font-bold text-stone-900 mb-4">
-                  Dietary Breakdown
-                </h3>
-                {Object.keys(summary.dietaryBreakdown).length === 0 ? (
-                  <p className="text-xs text-stone-500">
-                    No special dietary requirements recorded yet.
-                  </p>
-                ) : (
-                  <div className="space-y-2">
-                    {Object.entries(summary.dietaryBreakdown).map(([key, count]) => (
-                      <div
-                        key={key}
-                        className="flex items-center justify-between border-b pb-2 text-xs"
-                      >
-                        <span className="font-medium text-stone-700">{key.replace("_", " ")}</span>
-                        <span className="rounded-full bg-amber-100 px-2 py-0.5 font-bold text-amber-800">
-                          {count} {count === 1 ? "guest" : "guests"}
+              <ol className="es-checklist">
+                {steps.map((step) => (
+                  <li key={step.key} data-done={step.done ? true : undefined}>
+                    <span className="es-check-mark" aria-hidden="true">
+                      {step.done ? <Check /> : null}
+                    </span>
+                    <div className="es-check-text">
+                      <p className="es-check-title">
+                        {step.title}
+                        <span className="sr-only">
+                          : {step.done ? text.checklist.done : text.checklist.todo}
                         </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      </p>
+                      <p className="muted small">{step.body}</p>
+                    </div>
+                    {step.done || !canEdit || !step.href ? null : (
+                      <Link className="link es-check-action" href={step.href}>
+                        {step.action}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ol>
+            </section>
+          ) : null}
 
-              {/* Guest Notes / Messages */}
-              <div className="rounded-card border bg-white p-6 shadow-xs">
-                <h3 className="font-serif text-base font-bold text-stone-900 mb-4">
-                  Messages & Wishes from Guests
-                </h3>
-                {summary.messages.length === 0 ? (
-                  <p className="text-xs text-stone-500">No guest messages received yet.</p>
-                ) : (
-                  <div className="space-y-3 max-h-60 overflow-y-auto">
-                    {summary.messages.map((m, idx) => (
-                      <div key={idx} className="rounded-button bg-stone-50 p-3 text-xs border">
-                        <div className="font-semibold text-stone-900">{m.from}</div>
-                        <p className="mt-1 text-stone-600 italic">"{m.message}"</p>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+          <section aria-labelledby="stats-title" className="es-block">
+            <div className="es-block-head">
+              <h2 id="stats-title" className="es-block-title">
+                {text.stats.title}
+              </h2>
+              {guestCount > 0 ? (
+                <Link className="link" href={routes.eventTab(eventId, "responses")}>
+                  {text.stats.viewResponses}
+                </Link>
+              ) : null}
             </div>
+            {guestCount === 0 ? (
+              <EmptyState
+                level={3}
+                title={text.stats.emptyTitle}
+                actions={
+                  canEdit ? (
+                    <Link className={buttonClass()} href={guestsHref}>
+                      {text.stats.addGuests}
+                    </Link>
+                  ) : undefined
+                }
+              >
+                {text.stats.emptyBody}
+              </EmptyState>
+            ) : (
+              <>
+                <Stats label={text.stats.title} className="es-stats">
+                  <StatTile
+                    label={text.stats.invited}
+                    value={guestCount}
+                    note={
+                      partyCount === 1
+                        ? text.stats.householdsOne
+                        : fillCopy(text.stats.households, { count: partyCount })
+                    }
+                  />
+                  <StatTile
+                    label={text.stats.coming}
+                    value={coming}
+                    note={
+                      totals
+                        ? fillCopy(text.stats.comingNote, {
+                            adults: totals.adultsYes,
+                            children: totals.childrenYes,
+                          })
+                        : undefined
+                    }
+                  />
+                  {totals ? <StatTile label={text.stats.notComing} value={totals.no} /> : null}
+                  <StatTile
+                    label={text.stats.awaiting}
+                    value={awaiting}
+                    note={
+                      totals && totals.maybe > 0
+                        ? fillCopy(text.stats.maybe, { count: totals.maybe })
+                        : undefined
+                    }
+                  />
+                </Stats>
+                <p className="muted small es-stats-foot">
+                  {!deadline || deadline.state === "NONE" || !deadlineDate
+                    ? text.stats.deadlineNone
+                    : deadline.state === "CLOSED"
+                      ? fillCopy(text.stats.deadlineClosed, { date: deadlineDate })
+                      : deadline.state === "DUE_TODAY"
+                        ? text.stats.deadlineToday
+                        : fillCopy(text.stats.deadlineOpen, { date: deadlineDate })}{" "}
+                  {canEdit ? (
+                    <Link className="link" href={`${settingsHref}#replies`}>
+                      {!deadline || deadline.state === "NONE"
+                        ? text.stats.setDeadline
+                        : text.stats.changeDeadline}
+                    </Link>
+                  ) : null}
+                  {awaiting > 0 ? (
+                    <>
+                      {" "}
+                      <Link className="link" href={routes.eventTab(eventId, "awaiting")}>
+                        {text.stats.viewAwaiting}
+                      </Link>
+                    </>
+                  ) : null}
+                </p>
+              </>
+            )}
+          </section>
+
+          <div className="es-overview-cards">
+            <Card as="section" aria-labelledby="event-title" className="es-side-card">
+              <h2 id="event-title" className="es-block-title">
+                {text.event.title}
+              </h2>
+              <dl className="dl es-dl">
+                <div>
+                  <dt>{text.event.occasion}</dt>
+                  <dd>{occasionLabel(event.ceremonySlug, copy.catalog)}</dd>
+                </div>
+                <div>
+                  <dt>{text.event.when}</dt>
+                  <dd>{formatLocalDateTime(event.startsAtLocal)}</dd>
+                </div>
+                <div>
+                  <dt>{text.event.where}</dt>
+                  <dd>{content.venue?.name || text.event.noVenue}</dd>
+                </div>
+                <div>
+                  <dt>{text.event.template}</dt>
+                  <dd>{copy.catalog.templates[invitation.templateSlug].name}</dd>
+                </div>
+                <div>
+                  <dt>{text.event.colours}</dt>
+                  <dd>{copy.catalog.themes[invitation.themeId]}</dd>
+                </div>
+              </dl>
+              {canEdit ? (
+                <div className="cluster">
+                  <Link className="link" href={detailsHref}>
+                    {text.event.edit}
+                  </Link>
+                  <Link className="link" href={routes.eventTab(eventId, "design")}>
+                    {text.event.design}
+                  </Link>
+                </div>
+              ) : null}
+            </Card>
+
+            <Card as="section" aria-labelledby="plan-title" className="es-side-card">
+              <h2 id="plan-title" className="es-block-title">
+                {text.plan.title}
+              </h2>
+              <p className="es-plan-name">
+                {memorial ? copy.catalog.plans.memorial : copy.catalog.plans[plan.effectivePlan]}
+              </p>
+              <p className="muted small">
+                {memorial
+                  ? text.plan.memorialBody
+                  : plan.effectivePlan === "FREE"
+                    ? fillCopy(text.plan.freeBody, { limit: guestLimit ?? "" })
+                    : plan.effectivePlan === "AGENCY"
+                      ? text.plan.agencyBody
+                      : text.plan.premiumBody}
+              </p>
+              <p className="small num">
+                {guestLimit === null
+                  ? fillCopy(text.plan.guestsUnlimited, { count: plan.usage.guests })
+                  : fillCopy(text.plan.guestsUsed, { count: plan.usage.guests, limit: guestLimit })}
+              </p>
+              {guestLimit !== null ? (
+                <progress
+                  className="es-meter"
+                  max={guestLimit}
+                  value={Math.min(plan.usage.guests, guestLimit)}
+                  aria-label={text.plan.title}
+                />
+              ) : null}
+              {memorial ? null : (
+                <Link className="link" href={`${settingsHref}#plan`}>
+                  {plan.effectivePlan === "FREE" ? text.plan.manage : text.plan.view}
+                </Link>
+              )}
+            </Card>
           </div>
-        )}
-      </main>
+        </div>
 
-      {/* Modals */}
-      <AddPartyModal
-        isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
-        onAdd={handleAddParty}
-      />
-
-      <CsvImportModal
-        isOpen={isCsvOpen}
-        onClose={() => setIsCsvOpen(false)}
-        onImport={handleCsvImport}
-      />
-
-      <WhatsAppStudioModal
-        isOpen={Boolean(whatsAppParty)}
-        party={whatsAppParty}
-        event={event}
-        onClose={() => setWhatsAppParty(null)}
-      />
-
-      <QrCodeModal
-        isOpen={Boolean(qrParty)}
-        party={qrParty}
-        event={event}
-        onClose={() => setQrParty(null)}
-      />
+        <aside className="es-overview-side">
+          <Card as="section" aria-labelledby="preview-title" className="es-side-card">
+            <h2 id="preview-title" className="es-block-title">
+              {text.preview.title}
+            </h2>
+            <InvitationPreview
+              themeId={invitation.themeId}
+              templateSlug={invitation.templateSlug}
+              memorial={memorial}
+              headline={content.headline}
+              subheadline={content.subheadline}
+              hosts={content.hosts}
+              honoureeName={content.honoureeName}
+              wording={content.wording}
+              dateLine={formatLocalDateTime(event.startsAtLocal)}
+              venueName={content.venue?.name}
+              venueAddress={content.venue?.address}
+              coverImageUrl={content.coverImageUrl}
+              labels={copy.preview}
+            />
+            {previewPath && previewUrl ? (
+              <>
+                <p className="muted small">
+                  {published ? text.preview.liveNote : text.preview.draftNote}
+                </p>
+                <div className="cluster">
+                  <a
+                    className={buttonClass({ variant: "secondary", size: "small" })}
+                    href={previewPath}
+                    target="_blank"
+                    rel="noopener"
+                  >
+                    <ExternalLink className="icon" aria-hidden="true" />
+                    {text.preview.open}
+                  </a>
+                  <CopyButton value={previewUrl} label={text.preview.copy} variant="ghost" />
+                </div>
+              </>
+            ) : canEdit ? (
+              <p className="muted small">
+                {text.preview.none}{" "}
+                <Link className="link" href={guestsHref}>
+                  {text.preview.addGuest}
+                </Link>
+              </p>
+            ) : (
+              <p className="muted small">{text.preview.unavailable}</p>
+            )}
+          </Card>
+        </aside>
+      </div>
     </div>
   );
 }

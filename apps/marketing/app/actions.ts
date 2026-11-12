@@ -3,6 +3,8 @@
 import { randomUUID } from "node:crypto";
 import { createApiClient } from "@managevent/api-client";
 import { EnabledLocaleSchema, LeadCreateSchema } from "@managevent/validators";
+import { headers } from "next/headers";
+import { clientIpFromHeaders } from "../lib/client-ip";
 
 export interface EnquiryState {
   status: "idle" | "invalid" | "sent" | "failed";
@@ -41,7 +43,14 @@ export async function submitEnquiry(
     };
   }
   try {
-    const api = createApiClient({ baseUrl: process.env.API_URL || "http://localhost:4000" });
+    // The visitor's address goes with the enquiry (the client adds the shared proxy secret, so
+    // the API believes it). Without it every visitor would share this server's rate-limit
+    // bucket, and the marketing-consent record would hold this server's address.
+    const forwardedFor = clientIpFromHeaders(await headers());
+    const api = createApiClient({
+      baseUrl: process.env.API_URL || "http://localhost:4000",
+      ...(forwardedFor ? { forwardedFor } : {}),
+    });
     await api.createLead(parsed.data, { idempotencyKey: randomUUID() });
     return { status: "sent" };
   } catch {

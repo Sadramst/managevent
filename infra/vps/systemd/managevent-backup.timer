@@ -1,0 +1,13 @@
+# Runs managevent-backup.service every night at 03:15 Perth time (the quietest hour for a
+# Perth-first product), with up to ten minutes of jitter.
+[Unit]
+Description=Nightly Managevent PostgreSQL backup
+
+[Timer]
+OnCalendar=*-*-* 03:15:00 Australia/Perth
+RandomizedDelaySec=10min
+# Run at the next boot if the server was off at 03:15.
+Persistent=true
+
+[Install]
+WantedBy=timers.target

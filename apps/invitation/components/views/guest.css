@@ -1,0 +1,1567 @@
+/* ==========================================================================
+   Guest micro-site: /i/{eventSlug}/{guestToken} and /pass (and legacy links that render it).
+
+   Imported by components/views/GuestShell.tsx, so it loads only on guest pages. Every colour is
+   a token: GuestShell sets the brand `--me-*` tokens from the invitation's theme
+   (lib/guest/theme.ts), which re-colours the brand.css classes used here (buttons, fields,
+   alerts, badges), plus a few `--inv-*` tokens for the things only invitations have (warm band,
+   theme rule, seal and ribbon). No hex values, logical properties only.
+
+   Sections:
+     1. Page frame and no-JavaScript rule
+     2. Banners (sample, preview)
+     3. Hero and theme frames
+     4. Sections, details, timeline, gallery, FAQ
+     5. Countdown and music
+     6. Reply form and summary
+     7. Wishing well and tribute book
+     8. Footer
+     9. Gate
+    10. Passes
+   ========================================================================== */
+
+/* ---- 1. Page frame ------------------------------------------------------- */
+.inv {
+  position: relative;
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  min-block-size: 100dvh;
+  background: var(--me-surface);
+  color: var(--me-ink);
+  font-family: var(--inv-font-body);
+  overflow-wrap: break-word;
+}
+.inv :is(h1, h2, h3, h4) {
+  font-family: var(--inv-font-display);
+}
+.inv-page {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.inv-page:focus {
+  outline: none;
+}
+.inv-page > main {
+  flex: 1 0 auto;
+}
+/* Anchors (#rsvp) land with a little air above them; there is no sticky header here. */
+.inv [id] {
+  scroll-margin-block-start: 1rem;
+}
+
+/* Without JavaScript the gate, the countdown, the music and the forms are not shown: the page
+   underneath is complete on its own. GuestShell also sets this from a <noscript> style, for
+   browsers that do not know the `scripting` media feature. */
+@media (scripting: none) {
+  .inv-js-only {
+    display: none !important;
+  }
+}
+
+/* ---- 2. Banners ---------------------------------------------------------- */
+.inv-banner {
+  padding: 0.6rem var(--me-gutter);
+  border-block-end: 1px solid var(--me-rule);
+  background: var(--inv-bg-warm);
+  color: var(--me-ink);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  text-align: center;
+}
+.inv-banner p {
+  max-inline-size: none;
+  margin: 0;
+}
+.inv-banner a {
+  color: var(--me-primary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* ---- 3. Hero and theme frames -------------------------------------------- */
+.inv-hero {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 2rem;
+  padding: clamp(1.75rem, 6vw, 4.5rem) var(--me-gutter) clamp(2.25rem, 6vw, 4rem);
+  overflow: clip;
+}
+.inv-hero[data-cover="true"] {
+  align-items: center;
+}
+.inv-frame {
+  position: relative;
+  z-index: 1;
+  inline-size: min(100%, 44rem);
+  padding: clamp(3.25rem, 11vw, 5.5rem) clamp(1.1rem, 6vw, 4rem) clamp(2rem, 6vw, 3.25rem);
+  text-align: center;
+  border: 1px solid var(--inv-rule);
+  border-start-start-radius: 50% clamp(8rem, 38vw, 15rem);
+  border-start-end-radius: 50% clamp(8rem, 38vw, 15rem);
+  border-end-start-radius: var(--me-radius-panel);
+  border-end-end-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+/* The second, inner line of the arch. */
+.inv-frame::before {
+  content: "";
+  position: absolute;
+  inset: 0.5rem;
+  border: 1px solid var(--me-rule);
+  border-radius: inherit;
+  pointer-events: none;
+}
+.inv-emblem {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  margin-inline: auto;
+  color: var(--me-accent);
+}
+.inv-greeting {
+  margin: 1.5rem auto 0.15rem;
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+.inv-hosts {
+  margin: 0 auto;
+  color: var(--me-ink-muted);
+}
+.inv-headline {
+  max-inline-size: 13ch;
+  margin: 1.25rem auto 0.75rem;
+  font-size: clamp(2.7rem, 11vw, 4.75rem);
+  line-height: 1.02;
+  color: var(--me-primary);
+}
+.inv-headline[data-length="long"] {
+  max-inline-size: 20ch;
+  font-size: clamp(2.05rem, 7.4vw, 3.35rem);
+  line-height: 1.08;
+}
+.inv-subheadline {
+  max-inline-size: 28ch;
+  margin: 0 auto;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 3.8vw, 1.6rem);
+  line-height: 1.3;
+}
+.inv-hero-rule {
+  inline-size: 4rem;
+  margin: 1.75rem auto;
+  border: 0;
+  border-block-start: 1px solid var(--inv-rule);
+}
+.inv-hero-date {
+  margin: 0 auto;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.45rem, 4.6vw, 1.95rem);
+  line-height: 1.2;
+}
+.inv-hero-meta {
+  margin: 0.4rem auto 0;
+  color: var(--me-ink-muted);
+}
+.inv-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-block-start: 2rem;
+}
+.inv-hero-actions .button {
+  min-inline-size: 10.5rem;
+}
+
+/* The hosts' cover photograph, in an arch of its own. */
+.inv-cover {
+  position: relative;
+  z-index: 1;
+  inline-size: min(100%, 22rem);
+  margin: 0;
+}
+.inv-cover img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-start-start-radius: 50% 11rem;
+  border-start-end-radius: 50% 11rem;
+  border-end-start-radius: var(--me-radius-panel);
+  border-end-end-radius: var(--me-radius-panel);
+  outline: 1px solid var(--inv-rule);
+  outline-offset: 0.45rem;
+}
+@media (min-width: 960px) {
+  .inv-hero[data-cover="true"] {
+    grid-template-columns: minmax(0, 22rem) minmax(0, 44rem);
+    justify-content: center;
+    gap: 3.5rem;
+  }
+}
+
+/* Royal Ivory: a soft gold light from above the arch. */
+.inv[data-theme="royal-ivory"] .inv-hero {
+  background: radial-gradient(
+    ellipse 70% 55% at 50% 0%,
+    color-mix(in srgb, var(--me-accent) 20%, transparent),
+    transparent 70%
+  );
+}
+
+/* Alabaster and Platinum: no arch at all. Two hairlines and a great deal of space. */
+.inv[data-theme="alabaster-platinum"] .inv-frame {
+  padding-block: clamp(2.5rem, 8vw, 4rem);
+  border-inline: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.inv[data-theme="alabaster-platinum"] .inv-frame::before {
+  content: none;
+}
+.inv[data-theme="alabaster-platinum"] .inv-headline {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  color: var(--me-ink);
+}
+.inv[data-theme="alabaster-platinum"] .inv-headline[data-length="long"] {
+  font-size: clamp(2.3rem, 8.4vw, 4rem);
+}
+
+/* Midnight Celestial: stars behind a translucent arch. */
+.inv-starfield {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--me-accent);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.inv[data-theme="midnight-celestial"] .inv-hero {
+  background: radial-gradient(
+    ellipse 80% 60% at 50% 0%,
+    color-mix(in srgb, var(--me-accent) 16%, transparent),
+    transparent 70%
+  );
+}
+.inv[data-theme="midnight-celestial"] .inv-frame {
+  background: color-mix(in srgb, var(--me-surface-raised) 72%, transparent);
+  backdrop-filter: blur(2px);
+}
+.inv[data-theme="midnight-celestial"] .inv-headline {
+  color: var(--me-ink);
+}
+
+/* Emerald Botanic: branches growing in from two corners. */
+.inv-branch {
+  position: absolute;
+  inline-size: clamp(7rem, 26vw, 15rem);
+  block-size: auto;
+  color: var(--me-primary);
+  opacity: 0.55;
+  pointer-events: none;
+}
+.inv-branch[data-corner="start"] {
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  transform: scaleX(-1) rotate(90deg);
+}
+.inv-branch[data-corner="end"] {
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  transform: scaleX(-1) rotate(-90deg);
+}
+.inv[data-theme="emerald-botanic"] .inv-hero {
+  background: linear-gradient(to bottom, var(--inv-bg-warm), var(--me-surface));
+}
+
+/* Memorial themes: no arch and no ornament, as Memorial Mode requires. */
+.inv[data-experience-mode="memorial"] .inv-frame {
+  padding-block-start: clamp(2.25rem, 7vw, 3.5rem);
+  border-radius: var(--me-radius-panel);
+}
+.inv[data-experience-mode="memorial"] .inv-frame::before {
+  content: none;
+}
+.inv[data-experience-mode="memorial"] .inv-headline {
+  color: var(--me-ink);
+}
+/* Slate and Linen: a warm linen band ruled above and below, instead of a card. */
+.inv[data-theme="memorial-slate"] .inv-hero {
+  background: var(--inv-bg-warm);
+  border-block-end: 1px solid var(--me-rule);
+}
+.inv[data-theme="memorial-slate"] .inv-frame {
+  border-inline: 0;
+  border-block: 3px double var(--inv-rule);
+  border-radius: 0;
+  background: transparent;
+}
+
+/* ---- 4. Sections --------------------------------------------------------- */
+.inv-section {
+  padding: clamp(2.5rem, 7vw, 4.25rem) var(--me-gutter);
+}
+.inv-section[data-band="true"] {
+  background: var(--inv-bg-warm);
+  border-block: 1px solid var(--me-rule-soft);
+}
+.inv-inner {
+  max-inline-size: 42rem;
+  margin-inline: auto;
+}
+.inv-inner[data-wide="true"] {
+  max-inline-size: 50rem;
+}
+.inv-section-head {
+  display: grid;
+  justify-items: center;
+  gap: 0.6rem;
+  margin-block-end: 2rem;
+  text-align: center;
+}
+.inv-section-head h2 {
+  max-inline-size: none;
+  margin: 0;
+  font-size: clamp(1.9rem, 5.4vw, 2.5rem);
+}
+.inv-section-head p {
+  margin: 0;
+  color: var(--me-ink-muted);
+}
+.inv-mark {
+  display: block;
+  color: var(--me-accent);
+}
+
+.inv-wording p {
+  max-inline-size: 34ch;
+  margin: 0 auto 1.25rem;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.3rem, 4vw, 1.6rem);
+  line-height: 1.45;
+  text-align: center;
+  white-space: pre-line;
+}
+.inv-wording p:last-child {
+  margin-block-end: 0;
+}
+.inv-past {
+  max-inline-size: none;
+  margin: 0;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: 1.5rem;
+  text-align: center;
+  color: var(--me-primary);
+}
+
+/* When and where. */
+.inv-details {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+@media (min-width: 680px) {
+  .inv-details {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.inv-detail {
+  padding: 1.5rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.inv-detail[data-span="full"] {
+  grid-column: 1 / -1;
+}
+.inv-detail h2 {
+  margin: 0 0 0.5rem;
+  font-family: var(--inv-font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--me-accent-strong);
+}
+.inv-detail-main {
+  margin: 0 0 0.35rem;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: 1.55rem;
+  line-height: 1.2;
+}
+.inv-detail p {
+  margin: 0 0 0.25rem;
+}
+.inv-detail .muted {
+  color: var(--me-ink-muted);
+}
+.inv-detail address {
+  font-style: normal;
+  white-space: pre-line;
+}
+.inv-detail p.inv-detail-note {
+  margin-block-start: 1rem;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.94rem;
+}
+.inv-detail-note strong {
+  display: block;
+  font-size: 0.85rem;
+}
+.inv-detail .button {
+  margin-block-start: 1rem;
+}
+
+.inv-story p {
+  margin: 0 auto 1.15rem;
+  font-size: 1.05rem;
+  white-space: pre-line;
+}
+.inv-story p:last-child {
+  margin-block-end: 0;
+}
+
+/* The order of the day. */
+.inv-timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.inv-timeline li {
+  display: grid;
+  grid-template-columns: 5rem minmax(0, 1fr);
+  gap: 0 1.1rem;
+}
+.inv-timeline-time {
+  padding-block-start: 0.05rem;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  text-align: end;
+  color: var(--me-primary);
+  white-space: nowrap;
+}
+.inv-timeline-body {
+  position: relative;
+  padding-block-end: 1.6rem;
+  padding-inline-start: 1.35rem;
+  border-inline-start: 1px solid var(--inv-rule);
+}
+.inv-timeline li:last-child .inv-timeline-body {
+  padding-block-end: 0.25rem;
+}
+.inv-timeline-body::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.55rem;
+  inset-inline-start: -0.3rem;
+  inline-size: 0.55rem;
+  block-size: 0.55rem;
+  border: 1px solid var(--me-accent);
+  border-radius: 999px;
+  background: var(--me-surface);
+}
+.inv-section[data-band="true"] .inv-timeline-body::before {
+  background: var(--inv-bg-warm);
+}
+.inv-timeline-title {
+  margin: 0;
+  font-size: 1.3rem;
+  line-height: 1.35;
+}
+.inv-timeline-body p {
+  margin: 0.2rem 0 0;
+  color: var(--me-ink-muted);
+  font-size: 0.94rem;
+}
+.inv-timeline-body .inv-timeline-place {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-accent-strong);
+}
+
+.inv-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.inv-gallery img {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--me-radius-control);
+  background: var(--inv-bg-warm);
+}
+
+/* Questions and answers, on native <details>. */
+.inv-faq {
+  border-block-end: 1px solid var(--me-rule);
+}
+.inv-faq:first-of-type {
+  border-block-start: 1px solid var(--me-rule);
+}
+.inv-faq summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-block-size: 56px;
+  padding-block: 0.75rem;
+  font-weight: 600;
+  list-style: none;
+  cursor: pointer;
+}
+.inv-faq summary::-webkit-details-marker {
+  display: none;
+}
+.inv-faq summary::after {
+  content: "";
+  flex: none;
+  inline-size: 0.6rem;
+  block-size: 0.6rem;
+  margin-inline: 0.25rem 0.4rem;
+  border-inline-end: 1.5px solid var(--me-primary);
+  border-block-end: 1.5px solid var(--me-primary);
+  transform: translateY(-0.15rem) rotate(45deg);
+  transition: transform var(--me-duration-ui) var(--me-ease);
+}
+.inv-faq[open] summary::after {
+  transform: translateY(0.15rem) rotate(-135deg);
+}
+.inv-faq p {
+  margin: 0;
+  padding-block-end: 1.1rem;
+  color: var(--me-ink-muted);
+  white-space: pre-line;
+}
+
+/* ---- 5. Countdown and music ---------------------------------------------- */
+.inv-countdown {
+  /* Reserved before hydration so the page does not move when the tiles appear. */
+  min-block-size: 5.6rem;
+}
+.inv-countdown-tiles {
+  display: flex;
+  justify-content: center;
+  gap: clamp(0.4rem, 2.5vw, 1rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.inv-countdown-tile {
+  display: grid;
+  justify-items: center;
+  gap: 0.3rem;
+  flex: 0 1 5.25rem;
+  min-inline-size: 0;
+  padding: 0.85rem 0.25rem 0.7rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.inv-countdown-value {
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 7.5vw, 2.6rem);
+  line-height: 1;
+  color: var(--me-primary);
+}
+.inv-countdown-unit {
+  font-size: 0.78rem;
+  color: var(--me-ink-muted);
+}
+
+.inv-music {
+  position: fixed;
+  inset-block-end: max(1rem, env(safe-area-inset-bottom));
+  inset-inline-end: 1rem;
+  z-index: 40;
+}
+.inv-music-button {
+  display: grid;
+  place-items: center;
+  inline-size: 48px;
+  block-size: 48px;
+  padding: 0;
+  border: 1px solid var(--inv-rule);
+  border-radius: 999px;
+  background: var(--me-surface-raised);
+  color: var(--me-primary);
+  box-shadow: var(--me-shadow-raised);
+  cursor: pointer;
+}
+.inv-music-button svg {
+  inline-size: 1.2rem;
+  block-size: 1.2rem;
+}
+
+/* ---- 6. Reply form and summary ------------------------------------------- */
+.inv-sheet {
+  max-inline-size: 42rem;
+  margin-inline: auto;
+  padding: clamp(1.1rem, 5vw, 2.5rem);
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-sheet);
+  background: var(--me-surface-raised);
+}
+.inv-form {
+  display: grid;
+  gap: 1.75rem;
+  min-inline-size: 0;
+}
+.inv-form .field {
+  margin-block-end: 0;
+}
+.inv-form .alert {
+  margin: 0;
+}
+.inv-form .error-summary:focus {
+  outline: none;
+}
+.inv-error-list {
+  margin: 0.4rem 0 0;
+  padding-inline-start: 1.1rem;
+}
+.inv-error-list a {
+  display: inline-block;
+  padding-block: 0.3rem;
+  color: var(--me-danger);
+}
+.inv-people {
+  display: grid;
+  gap: 1rem;
+}
+.inv-person {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 1.1rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: color-mix(in srgb, var(--inv-bg-warm) 55%, var(--me-surface-raised));
+}
+.inv-person-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.6rem;
+  margin: 0;
+  font-size: 1.5rem;
+}
+.inv-person-name .pill {
+  font-family: var(--inv-font-body);
+  font-weight: 400;
+}
+
+/* Yes / no (/ not sure): real radio buttons, drawn as large tap targets. */
+.inv-choice {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 9.5rem), 1fr));
+  gap: 0.5rem;
+}
+.inv-choice:focus {
+  outline: none;
+}
+.inv-choice-option {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  min-block-size: 52px;
+  padding: 0.6rem 0.9rem;
+  border: 1px solid var(--me-ink-muted);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition:
+    background-color var(--me-duration-micro) ease,
+    border-color var(--me-duration-micro) ease,
+    color var(--me-duration-micro) ease;
+}
+.inv-choice-option:hover {
+  background: var(--me-tint);
+}
+.inv-choice-option input,
+.inv-tag input {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.inv-choice-option[data-checked="true"] {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+}
+/* The choice is marked with a tick as well as colour. */
+.inv-choice-option[data-checked="true"] > span::before,
+.inv-tag[data-checked="true"] > span::before {
+  content: "";
+  display: inline-block;
+  inline-size: 0.4rem;
+  block-size: 0.75rem;
+  margin-inline-end: 0.6rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: translateY(-0.1rem) rotate(45deg);
+}
+.inv-choice-option:has(input:focus-visible),
+.inv-tag:has(input:focus-visible) {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 3px;
+}
+@supports not selector(:has(*)) {
+  .inv-choice-option:focus-within,
+  .inv-tag:focus-within {
+    outline: 3px solid var(--me-primary);
+    outline-offset: 3px;
+  }
+}
+.inv-choice[aria-invalid="true"] .inv-choice-option {
+  border-color: var(--me-danger);
+}
+
+.inv-health {
+  display: grid;
+  gap: 1rem;
+  min-inline-size: 0;
+}
+.inv-health textarea {
+  min-block-size: 4.75rem;
+}
+.inv-tags {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.inv-tags legend,
+.inv-form-block > legend {
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.inv-tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-block-start: 0.6rem;
+}
+.inv-tag {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid var(--me-ink-muted);
+  border-radius: var(--me-radius-chip);
+  background: var(--me-surface-raised);
+  font-size: 0.9rem;
+  font-weight: 400;
+  cursor: pointer;
+  transition:
+    background-color var(--me-duration-micro) ease,
+    border-color var(--me-duration-micro) ease;
+}
+.inv-tag:hover {
+  background: var(--me-tint);
+}
+.inv-tag[data-checked="true"] {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+  font-weight: 600;
+}
+.inv-health-allergy {
+  display: grid;
+  gap: 1rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--me-accent);
+}
+.inv-onfile {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.inv-onfile p {
+  flex: 1 1 14rem;
+  margin: 0;
+}
+
+.inv-form-block {
+  display: grid;
+  gap: 0.75rem;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.inv-form-block > h3 {
+  margin: 0;
+}
+.inv-form-block > p,
+.inv-form-block .help {
+  margin: 0;
+}
+.inv-form-block > .button {
+  justify-self: start;
+}
+.inv-form-block .fields {
+  gap: 0.75rem 1.25rem;
+}
+.inv-plus-head {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.inv-plus-name {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+}
+.inv-plus .check {
+  margin-block: 0;
+}
+.inv-song {
+  align-items: center;
+}
+.inv-consent .check {
+  margin-block: 0.25rem;
+}
+.inv-consent .check input {
+  /* The whole row is the target; the box itself stays a comfortable size. */
+  inline-size: 24px;
+  block-size: 24px;
+  min-block-size: 24px;
+  flex-basis: 24px;
+}
+.inv-consent-health {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1.1rem;
+  border: 1px solid var(--me-rule-strong);
+  border-inline-start: 4px solid var(--me-primary);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-tint);
+}
+.inv-consent-health h3 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+.inv-consent-health p {
+  margin: 0;
+}
+.inv-form-actions {
+  margin-block-start: 0;
+}
+.inv-form-actions .button {
+  flex: 1 1 12rem;
+}
+
+.inv-reply {
+  display: grid;
+  gap: 1.1rem;
+}
+.inv-reply .alert {
+  margin: 0;
+}
+.inv-reply-title {
+  margin: 0;
+}
+.inv-confirm {
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 1.5rem 1.25rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-tint);
+  text-align: center;
+}
+.inv-confirm:focus {
+  outline: none;
+}
+.inv-confirm-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 4.8vw, 1.9rem);
+  color: var(--me-primary);
+}
+.inv-confirm p {
+  margin: 0;
+}
+.inv-reply-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-block-start: 1px solid var(--me-rule);
+}
+.inv-reply-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-block: 0.8rem;
+  border-block-end: 1px solid var(--me-rule-soft);
+}
+.inv-reply-name {
+  display: grid;
+  font-weight: 600;
+}
+.inv-reply-note {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--me-ink-muted);
+}
+.inv-reply-extra,
+.inv-reply-passes {
+  margin: 0;
+}
+.inv-reply-message {
+  margin: 0.35rem 0 0;
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--me-accent);
+  color: var(--me-ink-muted);
+  white-space: pre-line;
+}
+.inv-reply .form-actions {
+  margin-block-start: 0.25rem;
+}
+.inv-noscript {
+  margin: 0;
+}
+
+/* ---- 7. Wishing well and tribute book ------------------------------------ */
+.inv-well {
+  display: grid;
+  gap: 2rem;
+}
+.inv-well-message {
+  max-inline-size: 36ch;
+  margin: 0 auto;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.25rem, 3.8vw, 1.5rem);
+  line-height: 1.45;
+  text-align: center;
+  white-space: pre-line;
+}
+.inv-well-prompt {
+  max-inline-size: 48ch;
+  margin: 0 auto;
+  text-align: center;
+  color: var(--me-ink-muted);
+  white-space: pre-line;
+}
+.inv-gift {
+  padding: 1.25rem;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+}
+.inv-gift h3 {
+  margin: 0 0 0.75rem;
+}
+.inv-gift-rows {
+  margin: 0;
+}
+.inv-gift-rows > div {
+  padding-block: 0.6rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+}
+.inv-gift-rows dt {
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.inv-gift-rows dd {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  min-inline-size: 0;
+  margin: 0;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.inv-gift-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-block-start: 1rem;
+}
+.inv-gift .small {
+  margin: 1rem 0 0;
+  color: var(--me-ink-muted);
+}
+.inv-wish-form h3 {
+  margin: 0;
+}
+.inv-wish-form {
+  gap: 1.1rem;
+}
+.inv-wish-form .check {
+  margin-block: 0;
+}
+.inv-wishes {
+  display: grid;
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.inv-wishes li {
+  padding: 1rem 1.25rem;
+  border-inline-start: 2px solid var(--me-accent);
+  background: var(--me-surface-raised);
+}
+.inv-wishes blockquote {
+  margin: 0 0 0.5rem;
+  white-space: pre-line;
+}
+.inv-wishes cite {
+  font-size: 0.85rem;
+  font-style: normal;
+  color: var(--me-ink-muted);
+}
+.inv-wishes-title {
+  margin: 0 0 1rem;
+  text-align: center;
+}
+
+/* ---- 8. Footer ----------------------------------------------------------- */
+.inv-footer {
+  display: grid;
+  justify-items: center;
+  gap: 0.15rem;
+  padding: 1.75rem var(--me-gutter) max(2rem, env(safe-area-inset-bottom));
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.85rem;
+  text-align: center;
+  color: var(--me-ink-muted);
+}
+.inv-footer p {
+  max-inline-size: 60ch;
+  margin: 0;
+}
+.inv-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  padding-inline: 0.25rem;
+  color: inherit;
+}
+
+/* ---- 9. Gate ------------------------------------------------------------- */
+.inv-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  overflow: hidden;
+  background-color: var(--me-surface);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--me-accent) 40%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 26px 26px;
+}
+.inv-gate-card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  justify-items: center;
+  gap: 1.25rem;
+  inline-size: min(100%, 24rem);
+  padding: 2.5rem 1.5rem 2.25rem;
+  border: 1px solid var(--inv-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-raised);
+  text-align: center;
+}
+.inv-gate-text {
+  display: grid;
+  gap: 0.25rem;
+}
+.inv-gate-for {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.inv-gate-name {
+  max-inline-size: 16ch;
+  margin: 0;
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 7.5vw, 2.4rem);
+  line-height: 1.15;
+  color: var(--me-primary);
+  overflow-wrap: anywhere;
+}
+.inv-gate-open {
+  display: grid;
+  justify-items: center;
+  gap: 0.65rem;
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--me-radius-panel);
+  color: inherit;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.inv-gate-open-plain {
+  padding: 0;
+}
+.inv-gate-open-plain:focus-visible {
+  outline: none;
+}
+.inv-gate-open-plain:focus-visible .button {
+  outline: 3px solid var(--me-primary);
+  outline-offset: 4px;
+}
+.inv-gate-hint {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-ink-muted);
+}
+.inv-seal {
+  position: relative;
+  display: grid;
+  place-items: center;
+  inline-size: 5.5rem;
+  block-size: 5.5rem;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle at 34% 28%,
+    color-mix(in srgb, var(--inv-seal) 78%, var(--inv-on-seal)),
+    var(--inv-seal) 62%
+  );
+  color: var(--inv-on-seal);
+  box-shadow:
+    0 0 0 5px color-mix(in srgb, var(--inv-seal) 22%, transparent),
+    0 12px 22px -10px color-mix(in srgb, var(--me-ink) 60%, transparent);
+  animation: inv-seal-invite 2.6s ease-in-out infinite;
+}
+.inv-seal::after {
+  content: "";
+  position: absolute;
+  inset: 0.4rem;
+  border: 1px solid color-mix(in srgb, var(--inv-on-seal) 55%, transparent);
+  border-radius: inherit;
+}
+.inv-glyph {
+  inline-size: 2.15rem;
+  block-size: 2.15rem;
+}
+@keyframes inv-seal-invite {
+  50% {
+    box-shadow:
+      0 0 0 10px color-mix(in srgb, var(--inv-seal) 12%, transparent),
+      0 12px 22px -10px color-mix(in srgb, var(--me-ink) 60%, transparent);
+  }
+}
+
+/* Wax seal: an envelope flap, sealed at its tip. */
+.inv-gate[data-gate="wax-seal"] .inv-gate-card,
+.inv-gate[data-gate="ribbon"] .inv-gate-card {
+  padding-block-start: 0;
+}
+.inv-gate[data-gate="ribbon"] .inv-gate-card {
+  overflow: hidden;
+}
+/* An envelope has square corners, and its flap lifts clear of it. */
+.inv-gate[data-gate="wax-seal"] .inv-gate-card {
+  border-radius: 4px;
+}
+.inv-gate[data-gate="wax-seal"] .inv-gate-open,
+.inv-gate[data-gate="ribbon"] .inv-gate-open {
+  position: relative;
+  z-index: 2;
+  order: -1;
+}
+.inv-gate[data-gate="wax-seal"] .inv-gate-open {
+  /* The seal's centre sits on the tip of the flap. */
+  margin-block-start: calc(7.5rem - 2.75rem - 0.25rem);
+}
+.inv-gate-flap {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  inline-size: 100%;
+  block-size: 7.5rem;
+  transform-origin: 50% 0;
+}
+.inv-gate-flap-fill {
+  fill: var(--inv-bg-warm);
+}
+.inv-gate-flap-line {
+  fill: none;
+  stroke: var(--inv-rule);
+  stroke-width: 1;
+}
+
+/* Ribbon: a band across the card, tied at the centre. */
+.inv-gate[data-gate="ribbon"] .inv-gate-open {
+  margin-block-start: 1.5rem;
+}
+.inv-gate-ribbon {
+  position: absolute;
+  inset-block-start: calc(1.5rem + 0.25rem + 2.75rem - 1.1rem);
+  block-size: 2.2rem;
+  inline-size: 50%;
+  background: var(--inv-ribbon);
+  box-shadow:
+    inset 0 3px 0 color-mix(in srgb, var(--me-surface-raised) 35%, transparent),
+    inset 0 -3px 0 color-mix(in srgb, var(--me-ink) 14%, transparent);
+}
+.inv-gate-ribbon[data-side="start"] {
+  inset-inline-start: 0;
+}
+.inv-gate-ribbon[data-side="end"] {
+  inset-inline-end: 0;
+}
+
+/* Arch: two doors that part. The doors carry the backdrop, so the page shows between them. */
+.inv-gate[data-gate="arch"] {
+  background: transparent;
+}
+.inv-gate-door {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 50%;
+  overflow: hidden;
+  background-color: var(--me-surface);
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--me-accent) 40%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 26px 26px;
+}
+.inv-gate-door[data-side="start"] {
+  inset-inline-start: 0;
+  border-inline-end: 1px solid var(--me-rule);
+}
+.inv-gate-door[data-side="end"] {
+  inset-inline-end: 0;
+}
+/* Each door carries half of the arch outline. */
+.inv-gate-door::after {
+  content: "";
+  position: absolute;
+  inset-block: 12vh 0;
+  inline-size: min(44vw, 13.5rem);
+  border: 1px solid var(--inv-rule);
+  border-block-end: 0;
+  background: var(--me-surface-raised);
+}
+.inv-gate-door[data-side="start"]::after {
+  inset-inline-end: 0;
+  border-inline-end: 0;
+  border-start-start-radius: 100% min(44vw, 13.5rem);
+}
+.inv-gate-door[data-side="end"]::after {
+  inset-inline-start: 0;
+  border-inline-start: 0;
+  border-start-end-radius: 100% min(44vw, 13.5rem);
+}
+/* The name sits on the doors like a plate, covering the seam behind it. */
+.inv-gate[data-gate="arch"] .inv-gate-card {
+  inline-size: min(100%, 19rem);
+  margin-block-start: 8vh;
+  padding: 1.25rem 0.5rem;
+  border: 0;
+  background: var(--me-surface-raised);
+  box-shadow: none;
+}
+
+/* The opening sequence: about 1.6 seconds in all (Gate.tsx keeps the same clock). */
+.inv-gate[data-state="opening"] {
+  pointer-events: none;
+  animation: inv-gate-out 500ms var(--me-ease) 1100ms forwards;
+}
+.inv-gate[data-state="opening"] .inv-seal {
+  animation: inv-seal-break 520ms var(--me-ease) forwards;
+}
+.inv-gate[data-state="opening"] .inv-gate-hint {
+  animation: inv-gate-out 240ms ease forwards;
+}
+.inv-gate[data-state="opening"] .inv-gate-flap {
+  animation: inv-flap-open 640ms var(--me-ease) 360ms forwards;
+}
+.inv-gate[data-state="opening"] .inv-gate-ribbon {
+  animation: inv-part 620ms var(--me-ease) 240ms forwards;
+}
+.inv-gate[data-state="opening"]:is([data-gate="wax-seal"], [data-gate="ribbon"]) .inv-gate-card {
+  animation: inv-card-rise 640ms var(--me-ease) 940ms forwards;
+}
+.inv-gate[data-gate="arch"][data-state="opening"] {
+  animation: none;
+}
+.inv-gate[data-gate="arch"][data-state="opening"] .inv-gate-card {
+  animation: inv-gate-out 360ms ease forwards;
+}
+.inv-gate[data-gate="arch"][data-state="opening"] .inv-gate-door {
+  animation: inv-part 1150ms var(--me-ease) 380ms forwards;
+}
+.inv-gate[data-gate="plain-fade"][data-state="opening"] {
+  animation: inv-gate-out 600ms ease forwards;
+}
+.inv[data-experience-mode="memorial"] .inv-gate[data-state="opening"] {
+  animation: inv-gate-out 400ms ease forwards;
+}
+@keyframes inv-gate-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes inv-seal-break {
+  35% {
+    transform: scale(1.14) rotate(-6deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0.25) rotate(14deg);
+    opacity: 0;
+  }
+}
+@keyframes inv-flap-open {
+  70% {
+    transform: rotateX(180deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(180deg);
+    opacity: 0;
+  }
+}
+@keyframes inv-part {
+  to {
+    inline-size: 0;
+  }
+}
+@keyframes inv-card-rise {
+  to {
+    transform: translateY(-1.25rem) scale(1.03);
+  }
+}
+/* Reduced motion: no sequence, only a short fade. (brand.css already cuts every animation to
+   an instant under this preference; these rules keep the intent explicit.) */
+@media (prefers-reduced-motion: reduce) {
+  .inv-seal {
+    animation: none;
+  }
+  .inv-gate[data-state="opening"] * {
+    animation: none !important;
+  }
+  .inv-gate[data-state="opening"] {
+    animation: inv-gate-out 200ms linear forwards !important;
+  }
+}
+
+/* ---- 10. Passes ---------------------------------------------------------- */
+.inv-pass-page {
+  inline-size: 100%;
+  max-inline-size: 60rem;
+  margin-inline: auto;
+  padding: clamp(1.75rem, 6vw, 3.5rem) var(--me-gutter) 3rem;
+}
+.inv-pass-head {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-block-end: 2rem;
+  text-align: center;
+}
+.inv-pass-head h1 {
+  max-inline-size: none;
+  margin: 0;
+  font-size: clamp(2.2rem, 8vw, 3rem);
+  color: var(--me-primary);
+}
+.inv-pass-head p {
+  margin: 0;
+  color: var(--me-ink-muted);
+}
+.inv-pass-head p.inv-pass-event {
+  font-family: var(--inv-font-display);
+  font-weight: 600;
+  font-size: 1.35rem;
+  line-height: 1.3;
+  color: var(--me-ink);
+}
+.inv-pass-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 20rem));
+  justify-content: center;
+  gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.inv-pass {
+  display: grid;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-sheet);
+  background: var(--me-surface-raised);
+  text-align: center;
+  overflow: hidden;
+  break-inside: avoid;
+}
+.inv-pass-top {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  padding: 1.35rem 1.25rem 1.1rem;
+  border-block-end: 1px dashed var(--inv-rule);
+}
+.inv-pass-name {
+  margin: 0;
+  font-size: 1.75rem;
+  overflow-wrap: anywhere;
+}
+.inv-pass-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.inv-pass-qr {
+  display: grid;
+  justify-items: center;
+  padding: 1.25rem;
+}
+.inv-pass-qr img {
+  display: block;
+  inline-size: min(100%, 15rem);
+  block-size: auto;
+  border-radius: var(--me-radius-control);
+  image-rendering: pixelated;
+}
+.inv-pass-foot {
+  margin: 0;
+  padding: 0 1.25rem 1.25rem;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.inv-pass-actions {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  margin-block-start: 2rem;
+  text-align: center;
+}
+.inv-pass-actions p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--me-ink-muted);
+}
+.inv-status {
+  display: grid;
+  place-items: center;
+  flex: 1 0 auto;
+  padding: 2.5rem var(--me-gutter);
+}
+.inv-status-card {
+  inline-size: min(100%, 32rem);
+  padding: 2.5rem 1.75rem;
+  border: 1px solid var(--inv-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  text-align: center;
+}
+.inv-status-card h1 {
+  max-inline-size: none;
+  margin: 0 0 1rem;
+  font-size: clamp(1.9rem, 6vw, 2.4rem);
+}
+.inv-status-card p {
+  margin: 0 auto;
+}
+.inv-status-card .button {
+  margin-block-start: 1.5rem;
+}
+.inv-pass-empty {
+  margin-inline: auto;
+}
+.inv-pass-empty h2 {
+  max-inline-size: none;
+  margin: 0 0 0.75rem;
+  font-size: 1.75rem;
+}
+
+@media (max-width: 680px) {
+  .inv-hero-actions .button,
+  .inv-reply .form-actions .button {
+    flex: 1 1 100%;
+  }
+  .inv-timeline li {
+    grid-template-columns: 4.4rem minmax(0, 1fr);
+    gap: 0 0.85rem;
+  }
+  .inv-timeline-time {
+    font-size: 1.1rem;
+  }
+  .inv-person {
+    padding: 0.9rem;
+  }
+}
+
+@media print {
+  .inv-banner,
+  .inv-gate,
+  .inv-music,
+  .inv-pass-actions {
+    display: none !important;
+  }
+}
+
+/* The pass payload as text under its QR code, for a door device that cannot scan. */
+.inv-pass-code {
+  display: grid;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0 1.25rem 1rem;
+  font-size: 0.75rem;
+  color: var(--me-ink-muted);
+}
+.inv-pass-code-label {
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.inv-pass-code code {
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--me-ink);
+  overflow-wrap: anywhere;
+  user-select: all;
+}

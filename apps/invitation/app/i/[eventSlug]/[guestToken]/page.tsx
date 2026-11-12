@@ -1,100 +1,33 @@
-import React from "react";
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
-import { INVITATION_THEMES } from "@managevent/ui/themes";
-import { GuestInvitationView } from "@/components/views/GuestInvitationView";
+import type { Metadata, Viewport } from "next";
+import {
+  GuestInvitationPage,
+  guestInvitationMetadata,
+  guestInvitationViewport,
+} from "@/components/views/GuestInvitationPage";
 
-interface GuestPageProps {
-  params: Promise<{
-    eventSlug: string;
-    guestToken: string;
-  }>;
-  searchParams: Promise<{
-    lang?: string;
-    opened?: string;
-    muted?: string;
-  }>;
+/**
+ * The guest micro-site: what an invited household sees at their private link.
+ *
+ * The link is the credential (there is no sign-in), so this page is never cached, never indexed
+ * and never logged. `proxy.ts` answers a link the host has turned off with 410 before this
+ * renders; an unknown link is a real 404.
+ */
+export const dynamic = "force-dynamic";
+
+interface PageProps {
+  params: Promise<{ eventSlug: string; guestToken: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: GuestPageProps): Promise<Metadata> {
-  const { eventSlug, guestToken } = await params;
-  const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
-
-  if (!lookup) {
-    return {
-      title: "Invitation Not Found",
-      robots: { index: false, follow: false, noarchive: true },
-    };
-  }
-
-  const { event } = lookup;
-
-  return {
-    title: `${event.title} | Managevent Invitations`,
-    description: event.content.headline || event.content.subheadline,
-    robots: {
-      index: false,
-      follow: false,
-      noarchive: true,
-    },
-    openGraph: {
-      title: event.title,
-      description: event.content.headline || "You are warmly invited.",
-      images: event.content.coverImageUrl ? [{ url: event.content.coverImageUrl }] : undefined,
-    },
-  };
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  return guestInvitationMetadata(await params);
 }
 
-export default async function GuestInvitationPage({ params }: GuestPageProps) {
-  const { eventSlug, guestToken } = await params;
+export async function generateViewport({ params }: PageProps): Promise<Viewport> {
+  return guestInvitationViewport(await params);
+}
 
-  const lookup = invitationStore.findGuestPartyByToken(eventSlug, guestToken);
-
-  if (!lookup) {
-    notFound();
-  }
-
-  const { event, party } = lookup;
-  const theme = INVITATION_THEMES[event.themeId] || INVITATION_THEMES["royal-ivory"];
-  const initialLocale = event.defaultLanguage;
-
-  return (
-    <>
-      {/* Zero-JS First Paint Fallback */}
-      <noscript>
-        <div
-          style={{
-            padding: "2rem",
-            fontFamily: "serif",
-            background: "#fdfbf7",
-            color: "#18181b",
-            textAlign: "center",
-          }}
-        >
-          <h1>{event.title}</h1>
-          <h2>{event.content.coupleOrHostNames}</h2>
-          <p>{event.content.headline}</p>
-          <hr style={{ margin: "1rem auto", maxWidth: "300px" }} />
-          <p>
-            <strong>When:</strong> {new Date(event.startsAt).toUTCString()}
-          </p>
-          <p>
-            <strong>Where:</strong> {event.venue.name}, {event.venue.address}
-          </p>
-          <p>
-            <em>Please enable JavaScript to view full animations, interactive RSVP, and music.</em>
-          </p>
-        </div>
-      </noscript>
-
-      {/* Main Interactive Guest Micro-Site */}
-      <GuestInvitationView
-        event={event}
-        party={party}
-        theme={theme}
-        initialLocale={initialLocale}
-      />
-    </>
-  );
+export default async function GuestInvitationRoute({ params, searchParams }: PageProps) {
+  const [link, query] = await Promise.all([params, searchParams]);
+  return <GuestInvitationPage link={link} opened={query.opened === "1"} />;
 }

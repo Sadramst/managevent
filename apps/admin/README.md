@@ -1,13 +1,15 @@
 # `@managevent/admin`
 
-Admin & Planner Command Centre domain and workflow engine for Managevent (`admin.managevent.com.au` and `/admin` in `apps/marketing`).
+Domain helpers for the Managevent staff console.
 
-## Capabilities
+## What is here
 
-- **CRM Lead Pipeline (`createAdminLeadRecord`, `transitionLeadStage`)**: Validates staff roles (`PLANNER_STAFF`, `SUPER_ADMIN`), derives `ExperienceMode` (`CELEBRATION` vs `MEMORIAL`) via `getExperienceMode()`, and emits immutable `AdminAuditRecord` entries on every stage transition.
-- **ATO GST & Marketplace Commission (`computeAdminPipelineFinancials`)**: Computes active gross pipeline (inc. GST), net ex-GST revenue, 10% GST liability, and 12% Marketplace vendor commission in integer AUD cents via `@managevent/payments`.
-- **APP 3 Sensitive Health Data Protection (`maskDietaryHealthSummary`, `revealDietaryHealthSummary`)**: Masks guest dietary and allergy counts by default and emits an audit log entry whenever a coordinator reveals dietary notes for catering run-sheets.
+- `ADMIN_STAFF_ROLES`, `isAdminStaffRole(role)`, `hasAdminStaffRole(roles)`, `assertAdminStaffRole(role)`: who counts as staff (`PLANNER_STAFF`, `SUPER_ADMIN`).
 
-## UI Surface
+That is all. The earlier helpers that built in-memory lead records, pipeline totals and a dietary "reveal" only served a mock screen and were removed with it. Lead stages, the audit trail, permissions and money all live in the API (`apps/api`, `packages/auth`, `packages/payments`).
 
-The interactive Planner & Admin Command Centre UI is served at `/admin` via [`apps/marketing/app/[locale]/admin/page.tsx`](../marketing/app/[locale]/admin/page.tsx) and [`apps/marketing/components/admin-dashboard.tsx`](../marketing/components/admin-dashboard.tsx).
+## Where the console is
+
+The staff console is served at `/admin` by `apps/marketing` (see [its README](../marketing/README.md#staff-console-admin)): sign-in with two-factor, the enquiries inbox and the enquiry detail page, all from the real API. Its page helpers are in `apps/marketing/lib/admin`, because `apps/marketing` does not depend on this package yet.
+
+This package becomes the `admin.managevent.com.au` app in Phase 4 (see `AGENTS.md`). Until then, do not add modules here that have no real data behind them.

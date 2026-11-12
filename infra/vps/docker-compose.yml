@@ -1,9 +1,30 @@
-# Managevent full production stack for the dedicated Sydney VPS (`syd`).
+# Managevent production stack for the single Sydney VPS (ADR-0011).
 #
-# Runs PostgreSQL 16, the Hono API (`api.managevent.com.au`), the pg-boss worker,
-# the Next.js marketing & `/admin` app (`www.managevent.com.au`), the Next.js
-# digital invitation app (`invitation.managevent.com.au`), and Caddy for TLS.
+# PostgreSQL 16, the Hono API (api.managevent.com.au), the pg-boss worker, the Next.js marketing
+# site with the staff console (www.managevent.com.au), the Next.js invitation app
+# (invitation.managevent.com.au) and Caddy for TLS. Only Caddy publishes ports.
+#
+# Images are referenced by tag, never built by this file:
+#   IMAGE_PREFIX  default `managevent-`  (images built on this server)
+#                 or `ghcr.io/<owner>/managevent-` (images built by GitHub Actions)
+#   IMAGE_TAG     default `local`; deploy.sh writes the deployed tag into .env
+# To build on the server add the override file (deploy.sh does this for you):
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml build api
+#
+# Every variable is documented in ../ENVIRONMENTS.md. `${VAR:?}` stops Compose with a clear
+# message when a required secret is missing, before anything is started or replaced.
 name: managevent
+
+# Docker's default json-file driver never rotates. Cap every container at 5 x 10 MB.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+x-database-url: &database-url # POSTGRES_PASSWORD must be URL-safe (the generator emits hex).
+  DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+  DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
 
 services:
   db:
@@ -21,63 +42,94 @@ services:
       interval: 10s
       timeout: 5s
       retries: 12
+    # Give PostgreSQL time to finish a clean shutdown before Docker kills it.
+    stop_grace_period: 1m
     mem_limit: 512m
+    logging: *logging
 
   api:
-    image: managevent-api:local
-    build:
-      context: ../..
-      dockerfile: apps/api/Dockerfile
+    image: ${IMAGE_PREFIX:-managevent-}api:${IMAGE_TAG:-local}
     restart: unless-stopped
+    init: true
     depends_on:
       db:
         condition: service_healthy
     environment:
+      <<: *database-url
       APP_ENV: production
       NODE_ENV: production
       PORT: "4000"
       TZ: Australia/Perth
-      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
-      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
       PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?BETTER_AUTH_SECRET is required}
       BETTER_AUTH_URL: ${BETTER_AUTH_URL:-https://api.managevent.com.au}
-      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-managevent.com.au}
+      AUTH_COOKIE_DOMAIN: ${AUTH_COOKIE_DOMAIN:-.managevent.com.au}
+      # Empty means: trust the origins of the NEXT_PUBLIC_*_URL values below.
+      AUTH_TRUSTED_ORIGINS: ${AUTH_TRUSTED_ORIGINS:-}
+      GUEST_TOKEN_PEPPER: ${GUEST_TOKEN_PEPPER:?GUEST_TOKEN_PEPPER is required (32+ characters, same value for api and worker)}
+      # Shared with marketing and invitation. With it the API believes the visitor address
+      # those two forward; without it every visitor shares one rate-limit bucket per web app.
+      API_PROXY_SECRET: ${API_PROXY_SECRET:?API_PROXY_SECRET is required (32+ characters, same value for api, marketing and invitation)}
+      # Caddy overwrites X-Real-IP with the address of the TCP connection on every request it
+      # forwards (Caddyfile, snippet `edge`), and port 4000 is reachable only from the Docker
+      # network, so this header cannot be chosen by a caller. Not configurable on purpose: it
+      # is only correct together with that Caddyfile.
+      TRUSTED_CLIENT_IP_HEADER: x-real-ip
+      NEXT_PUBLIC_MARKETING_URL: ${NEXT_PUBLIC_MARKETING_URL:-https://www.managevent.com.au}
+      NEXT_PUBLIC_INVITATION_URL: ${NEXT_PUBLIC_INVITATION_URL:-https://invitation.managevent.com.au}
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-https://www.managevent.com.au/admin}
+      # Optional providers. Empty: the feature answers 503 and GET /v1/me reports it as off.
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
+      EMAIL_FROM_TRANSACTIONAL: ${EMAIL_FROM_TRANSACTIONAL:-Managevent <hello@managevent.com.au>}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
     expose:
       - "4000"
-    mem_limit: 384m
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:4000/health || exit 1"]
       interval: 15s
       timeout: 5s
       retries: 6
-      start_period: 30s
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 384m
+    logging: *logging
 
   worker:
-    image: managevent-worker:local
-    build:
-      context: ../..
-      dockerfile: apps/worker/Dockerfile
+    image: ${IMAGE_PREFIX:-managevent-}worker:${IMAGE_TAG:-local}
     restart: unless-stopped
+    init: true
     depends_on:
       db:
         condition: service_healthy
     environment:
+      <<: *database-url
       APP_ENV: production
       NODE_ENV: production
       TZ: Australia/Perth
-      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
-      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
       PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+      # Must equal the API's value: the worker signs unsubscribe links that the API verifies.
+      GUEST_TOKEN_PEPPER: ${GUEST_TOKEN_PEPPER:?GUEST_TOKEN_PEPPER is required (32+ characters, same value for api and worker)}
+      RESEND_API_KEY: ${RESEND_API_KEY:-}
       EMAIL_FROM_TRANSACTIONAL: ${EMAIL_FROM_TRANSACTIONAL:-Managevent <hello@managevent.com.au>}
+      # Empty: invitation and reminder emails use EMAIL_FROM_TRANSACTIONAL.
+      EMAIL_FROM_INVITATIONS: ${EMAIL_FROM_INVITATIONS:-}
+      # Empty: no planner notification is sent for a new enquiry.
+      LEAD_NOTIFICATION_EMAIL: ${LEAD_NOTIFICATION_EMAIL:-}
+      NEXT_PUBLIC_INVITATION_URL: ${NEXT_PUBLIC_INVITATION_URL:-https://invitation.managevent.com.au}
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-https://www.managevent.com.au/admin}
+    # No healthcheck: the worker has no HTTP port and no heartbeat. It exits when it cannot
+    # start and `restart` brings it back; deploy.sh checks that it stays up.
+    security_opt:
+      - no-new-privileges:true
     mem_limit: 320m
+    logging: *logging
 
   marketing:
-    image: managevent-marketing:local
-    build:
-      context: ../..
-      dockerfile: apps/marketing/Dockerfile
+    image: ${IMAGE_PREFIX:-managevent-}marketing:${IMAGE_TAG:-local}
     restart: unless-stopped
+    init: true
     depends_on:
       api:
         condition: service_healthy
@@ -86,20 +138,41 @@ services:
       NODE_ENV: production
       PORT: "3100"
       TZ: Australia/Perth
+      # Server-side calls stay on the Docker network; the browser never calls the API directly.
       API_URL: http://api:4000
-      NEXT_PUBLIC_API_URL: https://api.managevent.com.au
-      NEXT_PUBLIC_SITE_URL: https://www.managevent.com.au
-      NEXT_PUBLIC_INVITATION_URL: https://invitation.managevent.com.au
+      API_PROXY_SECRET: ${API_PROXY_SECRET:?API_PROXY_SECRET is required (32+ characters, same value for api, marketing and invitation)}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.managevent.com.au}
+      NEXT_PUBLIC_MARKETING_URL: ${NEXT_PUBLIC_MARKETING_URL:-https://www.managevent.com.au}
+      NEXT_PUBLIC_INVITATION_URL: ${NEXT_PUBLIC_INVITATION_URL:-https://invitation.managevent.com.au}
+      NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-https://www.managevent.com.au/admin}
+      # Shown on the public site. Required so the built-in fallback values are never published
+      # by accident. The public pages are prerendered when the image is BUILT, with the build
+      # arguments of the same names (docker-compose.build.yml, or the repository variables the
+      # Deploy workflow passes); these two only reach pages rendered on demand. Keep both equal.
+      CONTACT_EMAIL: ${CONTACT_EMAIL:?CONTACT_EMAIL is required (public contact address shown on www)}
+      CONTACT_PHONE: ${CONTACT_PHONE:?CONTACT_PHONE is required (public contact number shown on www)}
     expose:
       - "3100"
+    healthcheck:
+      # Any HTTP answer below 500 means the Next server is up. /robots.txt is static.
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3100/robots.txt').then((r)=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
     mem_limit: 448m
+    logging: *logging
 
   invitation:
-    image: managevent-invitation:local
-    build:
-      context: ../..
-      dockerfile: apps/invitation/Dockerfile
+    image: ${IMAGE_PREFIX:-managevent-}invitation:${IMAGE_TAG:-local}
     restart: unless-stopped
+    init: true
     depends_on:
       api:
         condition: service_healthy
@@ -109,15 +182,33 @@ services:
       PORT: "3001"
       TZ: Australia/Perth
       API_URL: http://api:4000
-      NEXT_PUBLIC_API_URL: https://api.managevent.com.au
-      NEXT_PUBLIC_INVITATION_URL: https://invitation.managevent.com.au
+      API_PROXY_SECRET: ${API_PROXY_SECRET:?API_PROXY_SECRET is required (32+ characters, same value for api, marketing and invitation)}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-https://api.managevent.com.au}
+      NEXT_PUBLIC_MARKETING_URL: ${NEXT_PUBLIC_MARKETING_URL:-https://www.managevent.com.au}
+      NEXT_PUBLIC_INVITATION_URL: ${NEXT_PUBLIC_INVITATION_URL:-https://invitation.managevent.com.au}
     expose:
       - "3001"
+    healthcheck:
+      # Any HTTP answer below 500 means the Next server is up. /icon.svg is static.
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3001/icon.svg').then((r)=>process.exit(r.status<500?0:1)).catch(()=>process.exit(1))"
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    security_opt:
+      - no-new-privileges:true
     mem_limit: 448m
+    logging: *logging
 
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped
+    # Plain start order, not `service_healthy`: Caddy must come up (and keep certificates
+    # renewing) even while an app is still starting or is down.
     depends_on:
       - api
       - marketing
@@ -129,31 +220,45 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy-data:/data
       - caddy-config:/config
+    healthcheck:
+      # Caddy's admin API listens on localhost:2019 inside the container only.
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:2019/config/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
     mem_limit: 128m
+    logging: *logging
 
+  # One-off tools (`docker compose run --rm migrate`). They use the API image.
   migrate:
     profiles: ["tools"]
-    image: managevent-api:local
+    image: ${IMAGE_PREFIX:-managevent-}api:${IMAGE_TAG:-local}
+    init: true
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
-      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      <<: *database-url
       PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    working_dir: /app
     command: ["pnpm", "--filter", "@managevent/db", "db:migrate"]
+    logging: *logging
 
+  # Catalogue only (ceremonies, Perth placeholder venues, packages). Never test leads.
   seed:
     profiles: ["tools"]
-    image: managevent-api:local
+    image: ${IMAGE_PREFIX:-managevent-}api:${IMAGE_TAG:-local}
+    init: true
     depends_on:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
-      DIRECT_URL: postgresql://managevent:${POSTGRES_PASSWORD}@db:5432/managevent?schema=public
+      <<: *database-url
       PII_ENCRYPTION_KEY: ${PII_ENCRYPTION_KEY:?PII_ENCRYPTION_KEY is required}
+    working_dir: /app
     command: ["pnpm", "--filter", "@managevent/db", "db:seed"]
+    logging: *logging
 
 volumes:
   db-data:

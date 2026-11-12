@@ -1,0 +1,44 @@
+{
+  "slug": "community-hall-transformation",
+  "status": "placeholder",
+  "tier": "ESSENTIAL",
+  "name": {
+    "en": "Council & Community Hall Complete Setup"
+  },
+  "ceremonySlugs": ["community-hall-event", "cultural-wedding", "birthday-kids", "baby-shower"],
+  "guestMin": 40,
+  "guestMax": 220,
+  "fromPriceIncGstCents": 0,
+  "inclusions": [
+    {
+      "category": "hire",
+      "label": {
+        "en": "Banquet tables, chairs, full-drop linen & tableware delivery"
+      },
+      "qtyRule": "per-guest"
+    },
+    {
+      "category": "styling",
+      "label": {
+        "en": "Stage backdrop, warm room uplighting & table centrepieces"
+      }
+    },
+    {
+      "category": "catering",
+      "label": {
+        "en": "Buffet or shared banquet catering (Halal & allergy options included)"
+      },
+      "qtyRule": "per-guest"
+    },
+    {
+      "category": "staffing",
+      "label": {
+        "en": "Bump-in setup crew, floor service & curfew-compliant hall pack-down"
+      }
+    }
+  ],
+  "depositRule": {
+    "percent": 25,
+    "minCents": 50000
+  }
+}

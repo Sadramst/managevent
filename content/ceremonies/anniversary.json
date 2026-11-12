@@ -1,0 +1,84 @@
+{
+  "slug": "anniversary",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Wedding Anniversaries & Vow Renewals"
+  },
+  "summary": {
+    "en": "Intimate dinners, vow renewals and milestone 10th, 25th, 40th and 50th wedding anniversary celebrations styled and coordinated across Perth."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -150,
+      "label": {
+        "en": "Table styling, floral centrepieces & memory gallery setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Family & friends arrive for welcome drinks"
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Optional vow renewal or anniversary blessing"
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "Seated banquet or cocktail dining & retrospective slideshow"
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Tributes, cake cutting & live music"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can we showcase photos from across the decades on the invitation and at the venue?"
+      },
+      "a": {
+        "en": "Yes. Our digital anniversary invitations feature an interactive Story & Gallery view, and on the night we coordinate projector slideshows and a live guest photo wall."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you cater for multi-generational family gatherings?"
+      },
+      "a": {
+        "en": "Yes. We select step-free accessible Perth venues, arrange comfortable seating for elders and children's menus for younger guests, and manage all dietary needs."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "birthday-milestone", "engagement"],
+  "seo": {
+    "title": {
+      "en": "Anniversary Party & Vow Renewal Planner Perth WA"
+    },
+    "description": {
+      "en": "Celebrate 10th, 25th, 40th and 50th wedding anniversaries and vow renewals in Perth with bespoke table styling, catering, slideshows and digital invitations."
+    }
+  }
+}

@@ -307,9 +307,9 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
             {/* Party Members Breakdown (when attending) */}
             {overallStatus === "YES" && (
               <div className="space-y-4 pt-4 border-t" style={{ borderColor: colors.rule }}>
-                <h4 className="font-serif text-sm font-bold" style={{ color: colors.accentInk }}>
+                <h3 className="font-serif text-sm font-bold" style={{ color: colors.accentInk }}>
                   {"Party Members & Dietary Requirements"}
-                </h4>
+                </h3>
 
                 {membersState.map((member, idx) => (
                   <div
@@ -337,11 +337,11 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                           type="button"
                           onClick={() => handleMemberStatusChange(idx, "YES")}
                           className={`rounded-full px-2.5 py-1 text-xs font-medium transition-all ${
-                            member.status === "YES" ? "shadow-xs" : "opacity-60"
+                            member.status === "YES" ? "shadow-xs font-semibold" : "hover:bg-black/5"
                           }`}
                           style={{
                             backgroundColor:
-                              member.status === "YES" ? colors.accent : "transparent",
+                              member.status === "YES" ? colors.accentInk : "transparent",
                             color: member.status === "YES" ? "#FFFFFF" : colors.ink,
                           }}
                         >
@@ -351,7 +351,7 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
                           type="button"
                           onClick={() => handleMemberStatusChange(idx, "NO")}
                           className={`rounded-full px-2.5 py-1 text-xs font-medium transition-all ${
-                            member.status === "NO" ? "shadow-xs" : "opacity-60"
+                            member.status === "NO" ? "shadow-xs font-semibold" : "hover:bg-black/5"
                           }`}
                           style={{
                             backgroundColor:
@@ -518,7 +518,7 @@ export const RsvpDrawer: React.FC<RsvpDrawerProps> = ({ event, party, theme, loc
               disabled={isSubmitting}
               className="w-full rounded-button py-3 text-sm font-bold shadow-md transition-all duration-200 hover:shadow-lg disabled:opacity-50"
               style={{
-                backgroundColor: colors.accent,
+                backgroundColor: colors.accentInk,
                 color: "#FFFFFF",
               }}
             >

@@ -1,0 +1,87 @@
+{
+  "slug": "birthday-kids",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Kids' Birthday Parties"
+  },
+  "summary": {
+    "en": "Stress-free 1st birthdays and children's party packages across Perth parks, council halls and family homes — featuring themed styling, allergy-aware catering, custom cakes and WWCC-verified entertainers."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "catering",
+    "cake-sweets",
+    "entertainment",
+    "hire",
+    "invitations"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Themed backdrop, kids' table hire & shade marquee setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Families arrive; welcome grazing for parents & kids' activity zone"
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Hosted kids' entertainment & interactive games"
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Allergy-safe party food & adult refreshments"
+      }
+    },
+    {
+      "offsetMinutes": 105,
+      "label": {
+        "en": "Birthday cake song, photos & thank-you packs"
+      }
+    },
+    {
+      "offsetMinutes": 150,
+      "label": {
+        "en": "Effortless pack-down and venue clean"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "How do you manage nut allergies and children's dietary requirements?"
+      },
+      "a": {
+        "en": "Parents record each child's allergies directly in your Managevent digital invitation RSVP. Every allergen is tracked individually and never merged into 'other', so catering and cakes are prepared safely."
+      }
+    },
+    {
+      "q": {
+        "en": "Do your kids' party entertainers hold Working with Children Checks?"
+      },
+      "a": {
+        "en": "Yes. Every children's entertainer and on-site crew member assigned to a kids' event holds a current WA Working with Children Check (WWCC)."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-milestone", "baby-shower", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Kids Birthday Party Packages, Styling & Hire Perth WA"
+    },
+    "description": {
+      "en": "Turnkey 1st birthday and kids' party packages in Perth. Themed backdrops, kids' table hire, allergy-safe catering, custom cakes and digital family RSVPs."
+    }
+  }
+}

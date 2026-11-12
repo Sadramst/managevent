@@ -1,0 +1,98 @@
+{
+  "slug": "engagement",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Engagement Parties"
+  },
+  "summary": {
+    "en": "Celebrate your engagement in Perth with bespoke architectural backdrops, cocktail grazing or seated dining, custom signage, bar staffing, and interactive digital invitations."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -180,
+      "label": {
+        "en": "Backdrop, floral plinths, lighting & bar setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guest arrival, welcome drinks & QR check-in"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Roaming canapés & grazing station service"
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Couple welcome toast, speeches & cake moment"
+      }
+    },
+    {
+      "offsetMinutes": 135,
+      "label": {
+        "en": "DJ set, dance floor & live guest photo wall"
+      }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": {
+        "en": "Event conclusion & complete pack-down"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can you style and run an engagement party in a private Perth backyard?"
+      },
+      "a": {
+        "en": "Yes. We transform private homes and gardens across Perth Metro with clear-span marquees, festoon lighting, mobile bars, RSA bartenders, grazing tables, and full furniture hire."
+      }
+    },
+    {
+      "q": {
+        "en": "What is the best catering style for a 60 to 150 guest engagement party?"
+      },
+      "a": {
+        "en": "Cocktail canapés paired with an artisan grazing table or substantial bowl food is our most popular format for Perth engagement celebrations, keeping the atmosphere relaxed and social."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you provide digital invitations for engagement parties?"
+      },
+      "a": {
+        "en": "Yes. You can send personalised WhatsApp and SMS links with animated wax-seal reveals, collect dietary needs, and share a live photo wall on the night."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "proposal", "anniversary", "birthday-milestone"],
+  "seo": {
+    "title": {
+      "en": "Engagement Party Planner, Styling & Packages Perth WA"
+    },
+    "description": {
+      "en": "Plan an unforgettable engagement party in Perth. Bespoke backdrops, marquee & furniture hire, cocktail catering, RSA bar crew and digital RSVP invitations."
+    }
+  }
+}

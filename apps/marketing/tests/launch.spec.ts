@@ -74,3 +74,54 @@ test("venue ask link prefills the enquiry and unknown venues are ignored", async
   await expect(page.locator(".venue-note")).toHaveCount(0);
   await expect(page.locator('textarea[name="message"]')).toHaveValue("");
 });
+
+test("SEO hubs, Perth local pages, commercial aliases and Memorial Mode render with JSON-LD and zero axe violations", async ({
+  page,
+  request,
+}) => {
+  for (const path of [
+    "/ceremonies",
+    "/ceremonies/wedding",
+    "/packages",
+    "/venues",
+    "/services",
+    "/invitations",
+    "/memorials",
+    "/perth",
+    "/perth/wedding",
+    "/perth/wake-catering",
+    "/faq",
+    "/pricing",
+  ]) {
+    const res = await page.goto(path);
+    expect(res?.status()).toBe(200);
+    await expect(page.locator("h1")).toBeVisible();
+    expect(
+      await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
+    ).toBe(true);
+    expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
+  }
+
+  // Verify commercial alias /perth/wake-catering points canonical to /perth/wake and uses Memorial Mode
+  await page.goto("/perth/wake-catering");
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    "https://www.managevent.com.au/perth/wake",
+  );
+  await expect(page.locator("main")).toHaveAttribute("data-experience-mode", "memorial");
+
+  // Verify hidden city returns 404 and waitlist city is noindex
+  const hiddenCity = await page.goto("/brisbane");
+  expect(hiddenCity?.status()).toBe(404);
+  const waitlistCity = await page.goto("/sydney");
+  expect(waitlistCity?.status()).toBe(200);
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+
+  // Verify sitemap.xml is served and includes Perth and ceremony URLs
+  const sitemapRes = await request.get("/sitemap.xml");
+  expect(sitemapRes.status()).toBe(200);
+  const sitemapXml = await sitemapRes.text();
+  expect(sitemapXml).toContain("https://www.managevent.com.au/perth/wedding");
+  expect(sitemapXml).toContain("https://www.managevent.com.au/memorials");
+});
+

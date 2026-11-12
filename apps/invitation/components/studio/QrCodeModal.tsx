@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import type { GuestParty, EventModel } from "@/lib/types";
 import { X, QrCode as QrIcon, Download } from "lucide-react";
 import QRCode from "qrcode";
+import { redactForLog } from "@managevent/config/redact";
 
 interface QrCodeModalProps {
   party: GuestParty | null;
@@ -32,7 +33,7 @@ export const QrCodeModal: React.FC<QrCodeModalProps> = ({ party, event, isOpen, 
       },
     })
       .then((url) => setDataUrl(url))
-      .catch((err) => console.error("Error generating QR", err));
+      .catch((err) => console.error("Error generating QR", redactForLog(err)));
   }, [party, event.slug]);
 
   if (!isOpen || !party) return null;

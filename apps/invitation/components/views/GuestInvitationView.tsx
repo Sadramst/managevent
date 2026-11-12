@@ -71,7 +71,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
         onOpen={handleOpenGate}
       >
         {/* Floating Top Bar for Digital Pass */}
-        <div className="relative z-20 flex items-center justify-between px-4 py-3 sm:px-8">
+        <header className="relative z-20 flex items-center justify-between px-4 py-3 sm:px-8">
           {/* Pass Link */}
           <a
             href={`/i/${event.slug}/${party.token}/pass`}
@@ -85,7 +85,7 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
             <QrCode className="h-3.5 w-3.5" style={{ color: colors.accent }} />
             <span>{"Entry Pass"}</span>
           </a>
-        </div>
+        </header>
 
         {/* Main Invitation Sections */}
         <main className="relative z-10 mx-auto max-w-4xl space-y-4 pb-24">
@@ -135,8 +135,8 @@ export const GuestInvitationView: React.FC<GuestInvitationViewProps> = ({
 
         {/* Subtle Footer */}
         <footer
-          className="border-t py-8 text-center text-xs opacity-60"
-          style={{ borderColor: colors.rule }}
+          className="border-t py-8 text-center text-xs"
+          style={{ borderColor: colors.rule, color: colors.inkMuted }}
         >
           <p>{isMemorial ? event.title : `${event.title} • Ceremony curated by Managevent`}</p>
         </footer>

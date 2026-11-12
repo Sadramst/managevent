@@ -28,7 +28,7 @@ export function CopyButton({ text, label, ariaLabel, copiedLabel, failedLabel }:
       <button
         type="button"
         onClick={onCopy}
-        aria-label={ariaLabel}
+        aria-label={state === "copied" ? copiedLabel : ariaLabel}
         className="rounded-md bg-stone-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-stone-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stone-900"
       >
         {state === "copied" ? copiedLabel : label}

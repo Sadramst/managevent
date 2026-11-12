@@ -4,6 +4,7 @@ import { buildCsvWithBom } from "../lib/csv-helper";
 import {
   escapeIcsText,
   formatIcsDate,
+  foldIcsLine,
 } from "../app/i/[eventSlug]/[guestToken]/calendar.ics/ics-helpers";
 import { getExperienceMode } from "@managevent/i18n";
 
@@ -80,5 +81,17 @@ describe("invitation-app-19: ICS text escaping", () => {
   });
   it("formats the instant in UTC basic format", () => {
     expect(formatIcsDate("2026-09-18T18:30:00+08:00")).toBe("20260918T103000Z");
+  });
+  it("folds lines exceeding 75 octets with CRLF and space continuation", () => {
+    const shortLine = "SUMMARY:Short line";
+    expect(foldIcsLine(shortLine)).toBe(shortLine);
+
+    const longLine = "DESCRIPTION:" + "A".repeat(100);
+    const folded = foldIcsLine(longLine);
+    const split = folded.split("\r\n");
+    expect(split.length).toBeGreaterThan(1);
+    expect(split[0]!.length).toBeLessThanOrEqual(75);
+    expect(split[1]!.startsWith(" ")).toBe(true);
+    expect(split[1]!.length).toBeLessThanOrEqual(75);
   });
 });

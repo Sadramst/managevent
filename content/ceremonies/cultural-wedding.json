@@ -1,0 +1,87 @@
+{
+  "slug": "cultural-wedding",
+  "status": "published",
+  "family": "CULTURAL",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Cultural & Traditional Ceremonies"
+  },
+  "summary": {
+    "en": "Respectful, authentic styling and full-service production for multicultural weddings, engagements, tea ceremonies, Mehndi nights and traditional community celebrations in Perth."
+  },
+  "culturalNotes": {
+    "en": "Every family tradition has its own rhythm, symbolism and hospitality standards. We collaborate closely with your family elders, celebrants and specialist caterers — including certified Halal, vegetarian banquets, traditional ceremony stages, and multi-day schedules."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -240,
+      "label": {
+        "en": "Ceremony stage, traditional arch, floral installation & banquet table setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Family welcome procession & traditional hospitality"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Traditional ceremony rites, blessings & family photography"
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Feast service (Halal, banquet or regional cuisine) & cultural music"
+      }
+    },
+    {
+      "offsetMinutes": 270,
+      "label": {
+        "en": "Sweets, tea service, dancing & complete Managevent pack-down"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you coordinate certified Halal and culturally authentic catering in Perth?"
+      },
+      "a": {
+        "en": "Yes. We work with verified Perth caterers offering certified Halal banquets, Middle Eastern, South Asian, Mediterranean, East Asian and modern Australian menus, with full dietary tracking via your digital RSVPs."
+      }
+    },
+    {
+      "q": {
+        "en": "Can our digital invitation include multiple events like a Mehndi, tea ceremony and reception?"
+      },
+      "a": {
+        "en": "Yes. Our Timeline view supports multi-part and multi-day ceremonies, each with its own venue map, schedule and `.ics` calendar entry."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "engagement", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Cultural & Multicultural Wedding Planner, Styling & Halal Catering Perth"
+    },
+    "description": {
+      "en": "Bespoke multicultural and traditional wedding planning in Perth WA. Custom ceremony stages, Halal & vegetarian banquets, hire and multi-event digital invitations."
+    }
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "slug": "wake",
+  "status": "published",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": {
+    "en": "Wakes & Post-Service Refreshments"
+  },
+  "summary": {
+    "en": "Gentle, reliable wake catering, tea and coffee service, furniture hire and venue coordination across Perth family homes, river pavilions and community halls."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "catering",
+    "florals",
+    "tribute-display",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -90,
+      "label": {
+        "en": "Quiet setup at the family home or venue while the family attends the service"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Family and guests return from the service; warm tea, coffee & refreshments ready"
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Attentive table clearing and continuous hospitality"
+      }
+    },
+    {
+      "offsetMinutes": 180,
+      "label": {
+        "en": "Complete clean-up and pack-down so the family has nothing left to do"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can your team set up the wake at our family home while we are at the funeral service?"
+      },
+      "a": {
+        "en": "Yes. Our trusted Perth coordinators can prepare your home or garden with tables, glassware, urns, platters and floral arrangements while you are at the cemetery or chapel, so everything is calm and ready when you return."
+      }
+    },
+    {
+      "q": {
+        "en": "How do we estimate wake catering numbers when attendance is uncertain?"
+      },
+      "a": {
+        "en": "You can share a complimentary Memorial Mode invitation link via WhatsApp or SMS so relatives and friends can quietly indicate attendance, and our catering buffers ensure everyone is cared for."
+      }
+    }
+  ],
+  "relatedSlugs": ["celebration-of-life", "memorial-service", "funeral-coordination"],
+  "seo": {
+    "title": {
+      "en": "Wake Catering & Post-Funeral Gathering Coordinator Perth WA"
+    },
+    "description": {
+      "en": "Compassionate wake catering, tea & coffee service, home or hall setup, and discreet staffing in Perth. Everything prepared quietly while your family attends the service."
+    }
+  }
+}

@@ -12,13 +12,13 @@ export default defineConfig({
     {
       command: "node tests/mock-api.mjs",
       url: "http://127.0.0.1:4101",
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
     },
     {
       command: "pnpm start",
       url: "http://localhost:3100",
       env: { API_URL: "http://127.0.0.1:4101", NEXT_TELEMETRY_DISABLED: "1" },
-      reuseExistingServer: false,
+      reuseExistingServer: !process.env.CI,
     },
   ],
 });

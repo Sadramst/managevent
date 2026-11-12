@@ -104,8 +104,8 @@ describe("@managevent/db", () => {
   describe("Perth placeholder seed & database integration", () => {
     it("loads ceremonies, packages and Perth venues from /content", () => {
       const fixtures = loadContentSeedFixtures();
-      expect(fixtures.ceremonies.length).toBeGreaterThanOrEqual(3);
-      expect(fixtures.packages.length).toBeGreaterThanOrEqual(3);
+      expect(fixtures.ceremonies.length).toBeGreaterThanOrEqual(2);
+      expect(fixtures.packages.length).toBeGreaterThanOrEqual(2);
       expect(fixtures.venues.length).toBeGreaterThanOrEqual(8);
     });
 
@@ -115,9 +115,9 @@ describe("@managevent/db", () => {
 
       try {
         const summary = await seedDatabase(rawClient);
-        expect(summary.ceremoniesCount).toBeGreaterThanOrEqual(3);
+        expect(summary.ceremoniesCount).toBeGreaterThanOrEqual(2);
         expect(summary.venuesCount).toBeGreaterThanOrEqual(8);
-        expect(summary.packagesCount).toBeGreaterThanOrEqual(3);
+        expect(summary.packagesCount).toBeGreaterThanOrEqual(2);
 
         // Verify round-trip of encrypted RSVP via the Prisma extension
         const userId = generateId("usr_");

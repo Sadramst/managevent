@@ -1,13 +1,13 @@
 {
   "slug": "celebration-of-life",
-  "status": "draft",
+  "status": "published",
   "family": "SOLEMN",
   "experienceMode": "MEMORIAL",
   "name": {
-    "en": "Celebration of life"
+    "en": "Celebration of Life"
   },
   "summary": {
-    "en": "A gathering that honours their life, arranged gently and completely, so your family can be together."
+    "en": "A calm, dignified gathering that honours their life — arranged gently and completely across Perth so your family can be together without logistical weight."
   },
   "includes": [
     "planning",
@@ -23,27 +23,67 @@
     {
       "offsetMinutes": -120,
       "label": {
-        "en": "Venue preparation & tribute display"
+        "en": "Quiet venue preparation, floral arrangements, audio check & tribute display"
       }
     },
     {
       "offsetMinutes": 0,
       "label": {
-        "en": "Guests gather"
+        "en": "Family & guests gather"
       }
     },
     {
       "offsetMinutes": 20,
       "label": {
-        "en": "Words of remembrance"
+        "en": "Words of remembrance, readings & photo tribute"
       }
     },
     {
       "offsetMinutes": 60,
       "label": {
-        "en": "Refreshments & time together"
+        "en": "Refreshments, tea/coffee service & unhurried time together"
+      }
+    },
+    {
+      "offsetMinutes": 180,
+      "label": {
+        "en": "Discreet pack-down and care of family keepsakes"
       }
     }
   ],
-  "relatedSlugs": ["memorial-service", "wake"]
+  "faq": [
+    {
+      "q": {
+        "en": "How does Managevent support families alongside a funeral director?"
+      },
+      "a": {
+        "en": "Funeral directors care for the deceased and statutory funeral rites. Managevent coordinates the gathering itself — sourcing a peaceful Perth venue, arranging wake catering, setting up framed photos and slideshows, and managing guest RSVPs."
+      }
+    },
+    {
+      "q": {
+        "en": "Are digital memorial invitations and tribute books really complimentary?"
+      },
+      "a": {
+        "en": "Yes. All Memorial Mode digital invitations, attendance tracking and moderated online tribute books are provided free of charge to grieving families."
+      }
+    },
+    {
+      "q": {
+        "en": "How quickly can you arrange a celebration of life or wake in Perth?"
+      },
+      "a": {
+        "en": "We respond immediately to memorial enquiries and can coordinate venues, refreshments, florals and audio within 48 to 72 hours across metropolitan Perth."
+      }
+    }
+  ],
+  "relatedSlugs": ["memorial-service", "wake", "funeral-coordination"],
+  "seo": {
+    "title": {
+      "en": "Celebration of Life & Memorial Gathering Coordinator Perth WA"
+    },
+    "description": {
+      "en": "Calm, dignified celebration of life and memorial coordination in Perth. Venue sourcing, wake catering, tribute displays, AV slideshows and free memorial RSVP invitations."
+    }
+  }
 }

@@ -75,6 +75,8 @@ jobs:
         run: pnpm --filter @managevent/marketing exec playwright install --with-deps chromium
       - name: Marketing browser and accessibility checks
         run: pnpm --filter @managevent/marketing test:e2e
+      - name: Invitation browser, RSVP and accessibility checks
+        run: pnpm --filter @managevent/invitation test:e2e
 
   secrets-scan:
     name: Secret scan

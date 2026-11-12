@@ -55,35 +55,35 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     theme === "memorial"
       ? "#8C7A6B"
       : theme === "dark"
-      ? "#18181B"
-      : theme === "light"
-      ? "#FFFFFF"
-      : "#C5A059";
+        ? "#18181B"
+        : theme === "light"
+          ? "#FFFFFF"
+          : "#C5A059";
 
   const gradientStart =
     theme === "memorial"
       ? "#8C7A6B"
       : theme === "dark"
-      ? "#27272A"
-      : theme === "light"
-      ? "#FFFFFF"
-      : "#F3E2B8";
+        ? "#27272A"
+        : theme === "light"
+          ? "#FFFFFF"
+          : "#F3E2B8";
 
   const gradientEnd =
     theme === "memorial"
       ? "#57483B"
       : theme === "dark"
-      ? "#18181B"
-      : theme === "light"
-      ? "#E5E7EB"
-      : "#9E7D3B";
+        ? "#18181B"
+        : theme === "light"
+          ? "#E5E7EB"
+          : "#9E7D3B";
 
   const badgeBg =
     theme === "memorial"
       ? "bg-stone-900 border-stone-700 shadow-stone-950/40"
       : theme === "dark"
-      ? "bg-stone-100 border-stone-300"
-      : "bg-gradient-to-b from-[#2B0E14] to-[#150609] border-[#C5A059]/40 shadow-amber-950/50";
+        ? "bg-stone-100 border-stone-300"
+        : "bg-gradient-to-b from-[#2B0E14] to-[#150609] border-[#C5A059]/40 shadow-amber-950/50";
 
   const ArchEmblem = (
     <div
@@ -122,10 +122,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         />
 
         {/* Arch Keystone Star / Diamond */}
-        <path
-          d="M 30 3.5 L 32.5 6 L 30 8.5 L 27.5 6 Z"
-          fill={`url(#goldGrad-${size}-${theme})`}
-        />
+        <path d="M 30 3.5 L 32.5 6 L 30 8.5 L 27.5 6 Z" fill={`url(#goldGrad-${size}-${theme})`} />
 
         {/* Left Laurel Sprig Accent */}
         <path
@@ -175,11 +172,22 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   if (variant === "mark" || variant === "badge") {
     return (
-      <div className={`inline-flex items-center justify-center ${className}`}>
-        {ArchEmblem}
-      </div>
+      <div className={`inline-flex items-center justify-center ${className}`}>{ArchEmblem}</div>
     );
   }
+
+  const titleColor =
+    theme === "dark" ? "text-stone-900" : theme === "memorial" ? "text-stone-100" : "text-white";
+
+  const badgeClasses =
+    theme === "dark"
+      ? "rounded-full bg-amber-900/10 border border-amber-900/30 px-2 py-0.5 text-[10px] font-semibold text-amber-950"
+      : "rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-semibold text-amber-300";
+
+  const subtitleClasses =
+    theme === "dark"
+      ? "font-sans font-medium uppercase text-stone-700"
+      : "font-sans font-medium uppercase text-amber-300/80";
 
   return (
     <div className={`inline-flex items-center gap-3 ${className}`}>
@@ -188,24 +196,16 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       <div className="flex flex-col text-start">
         <div className="flex items-center gap-2">
           <span
-            className={`font-serif font-bold text-white uppercase ${titleSizes[size]} transition-colors`}
+            className={`font-serif font-bold ${titleColor} uppercase ${titleSizes[size]} transition-colors`}
             style={{ fontFamily: "'Cormorant Garamond', Georgia, serif" }}
           >
             Managevent
           </span>
-          {subtitle && variant === "compact" && (
-            <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-2 py-0.5 text-[10px] font-semibold text-amber-300">
-              {subtitle}
-            </span>
-          )}
+          {subtitle && variant === "compact" && <span className={badgeClasses}>{subtitle}</span>}
         </div>
 
         {variant === "full" && subtitle && (
-          <span
-            className={`font-sans font-medium uppercase text-amber-300/80 ${subtitleSizes[size]} mt-0.5`}
-          >
-            {subtitle}
-          </span>
+          <span className={`${subtitleClasses} ${subtitleSizes[size]} mt-0.5`}>{subtitle}</span>
         )}
       </div>
     </div>
@@ -213,4 +213,3 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 };
 
 export default BrandLogo;
-

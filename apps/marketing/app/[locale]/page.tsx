@@ -3,20 +3,48 @@ import { notFound } from "next/navigation";
 import { t } from "@managevent/i18n";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
 import type { CSSProperties } from "react";
+import { DynamicContactEmail, DynamicContactPhoneRow } from "../../components/dynamic-contact";
 import { EnquiryForm } from "../../components/enquiry-form";
 import { EventEstimator } from "../../components/event-estimator";
-import { loadCeremonies, loadPerthVenues } from "../../lib/content";
+import { loadCeremonies, loadPackages, loadPerthVenues } from "../../lib/content";
+import { buildFaqPageJsonLd } from "../../lib/seo-schema";
 import { contact, localePath, pageMetadata } from "../../lib/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  return pageMetadata("en", "Managevent");
+  return pageMetadata("en", "Managevent", "", {
+    description: t(locale === "en" ? "en" : "en", "marketing.launchDescription"),
+  });
 }
+
+const HOME_FAQS = [
+  {
+    question: "What does Managevent's '0 to 100' event planning cover in Perth?",
+    answer:
+      "We coordinate every stage of your ceremony or event in Perth, Western Australia: concept design, venue sourcing and council permits, bespoke arch and table styling, catering (including Halal and allergy-safe menus), furniture and marquee hire, audio-visuals, WA RSA bar staff, and our own digital invitation and QR check-in software.",
+  },
+  {
+    question: "How does the Digital RSVP-to-Catering Bridge work?",
+    answer:
+      "When guests RSVP on your personalised Managevent digital invitation, their headcount (adults and children) and encrypted dietary or allergy flags automatically calculate your catering portions, banquet table count, cake serves and staffing ratios.",
+  },
+  {
+    question: "Are your event estimates and packages shown in AUD inclusive of GST?",
+    answer:
+      "Yes. In compliance with Australian Consumer Law, all consumer pricing and cost estimates are displayed in Australian dollars (AUD) inclusive of 10% GST, with clear milestone schedules.",
+  },
+  {
+    question: "How does Memorial Mode support grieving families in Perth?",
+    answer:
+      "For celebrations of life, wakes and memorial services, our platform switches to Memorial Mode — removing celebratory language and motion, providing a calm alabaster and slate palette, offering complimentary Premium digital invitations and a moderated online tribute book, and coordinating wake venues and refreshments alongside your funeral director.",
+  },
+];
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   if (locale !== "en") notFound();
-  loadCeremonies();
+  const ceremonies = loadCeremonies();
+  const packages = loadPackages();
   const venues = loadPerthVenues().slice(0, 6);
 
   const families = [
@@ -24,10 +52,26 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
       "marketing.launchCelebration",
       "marketing.launchCelebrationBody",
       "marketing.launchCelebrationTags",
+      "/ceremonies#celebration",
     ],
-    ["marketing.launchCultural", "marketing.launchCulturalBody", "marketing.launchCulturalTags"],
-    ["marketing.launchCorporate", "marketing.launchCorporateBody", "marketing.launchCorporateTags"],
-    ["marketing.launchSolemn", "marketing.launchSolemnBody", "marketing.launchSolemnTags"],
+    [
+      "marketing.launchCultural",
+      "marketing.launchCulturalBody",
+      "marketing.launchCulturalTags",
+      "/ceremonies#cultural",
+    ],
+    [
+      "marketing.launchCorporate",
+      "marketing.launchCorporateBody",
+      "marketing.launchCorporateTags",
+      "/ceremonies#corporate",
+    ],
+    [
+      "marketing.launchSolemn",
+      "marketing.launchSolemnBody",
+      "marketing.launchSolemnTags",
+      "/memorials",
+    ],
   ] as const;
 
   const services = [
@@ -39,8 +83,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
     ["06", "marketing.launchSvc6Title", "marketing.launchSvc6Body"],
   ] as const;
 
+  const faqSchema = buildFaqPageJsonLd(HOME_FAQS);
+
   return (
     <main id="main">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       {/* Editorial Hero Section */}
       <section className="hero">
         <Image
@@ -102,7 +152,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
           <p className="section-lead">{t(locale, "marketing.launchFamiliesSub")}</p>
         </div>
         <div className="families">
-          {families.map(([title, body, tags], index) => (
+          {families.map(([title, body, tags, href], index) => (
             <article
               key={title}
               className="family-card"
@@ -111,14 +161,29 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               }
               data-experience-mode={index === 3 ? "memorial" : "celebration"}
             >
-              <span className="family-index" aria-hidden="true">
-                0{index + 1}
-              </span>
-              <h3>{t(locale, title)}</h3>
-              <p>{t(locale, body)}</p>
+              <div>
+                <span className="family-index" aria-hidden="true">
+                  0{index + 1}
+                </span>
+                <h3>
+                  <a href={localePath(locale, href)}>{t(locale, title)}</a>
+                </h3>
+                <p>{t(locale, body)}</p>
+              </div>
               <p className="family-tags">{t(locale, tags)}</p>
             </article>
           ))}
+        </div>
+        <div className="section-cta-row">
+          <a className="button button-secondary" href={localePath(locale, "/ceremonies")}>
+            {t(locale, "marketing.seoViewAllCeremonies")} ({ceremonies.length})
+          </a>
+          <a className="button button-secondary" href={localePath(locale, "/packages")}>
+            {t(locale, "marketing.seoViewAllPackages")} ({packages.length})
+          </a>
+          <a className="button button-secondary" href={localePath(locale, "/perth")}>
+            Perth Local Event Guide →
+          </a>
         </div>
       </section>
 
@@ -140,6 +205,14 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 <p>{t(locale, bodyKey)}</p>
               </article>
             ))}
+          </div>
+          <div className="section-cta-row">
+            <a className="button button-secondary" href={localePath(locale, "/services")}>
+              Explore All 0-to-100 Event Services →
+            </a>
+            <a className="button button-secondary" href={localePath(locale, "/how-it-works")}>
+              See How Our 0-to-100 Process Works →
+            </a>
           </div>
         </div>
       </section>
@@ -172,31 +245,42 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               );
               return (
                 <article key={venue.slug} className="venue-card">
-                  <div className="venue-card-meta">
-                    <span className="venue-area">{venue.area}</span>
-                    <span className="venue-type">{venue.type.replace("_", " ")}</span>
+                  <div>
+                    <div className="venue-card-meta">
+                      <span className="venue-area">{venue.area}</span>
+                      <span className="venue-type">{venue.type.replace("_", " ")}</span>
+                    </div>
+                    <h3>
+                      <a href={localePath(locale, `/venues/${venue.slug}`)}>{venue.name.en}</a>
+                    </h3>
+                    <p className="venue-cap">
+                      {t(locale, "marketing.launchVenueCapLabel", { max: maxCap })} ·{" "}
+                      {venue.indoorOutdoor ?? "INDOOR / OUTDOOR"}
+                    </p>
+                    <div className="venue-tags">
+                      {venue.suitableFor.slice(0, 4).map((tag) => (
+                        <span key={tag} className="venue-tag">
+                          {tag.replace(/-/g, " ")}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  <h3>{venue.name.en}</h3>
-                  <p className="venue-cap">
-                    {t(locale, "marketing.launchVenueCapLabel", { max: maxCap })} ·{" "}
-                    {venue.indoorOutdoor ?? "INDOOR / OUTDOOR"}
-                  </p>
-                  <div className="venue-tags">
-                    {venue.suitableFor.slice(0, 4).map((tag) => (
-                      <span key={tag} className="venue-tag">
-                        {tag.replace(/-/g, " ")}
-                      </span>
-                    ))}
+                  <div className="venue-card-actions">
+                    <a
+                      className="venue-ask"
+                      href={`${localePath(locale)}?venue=${encodeURIComponent(venue.slug)}#enquiry`}
+                    >
+                      {t(locale, "marketing.launchVenueAsk")}
+                    </a>
                   </div>
-                  <a
-                    className="venue-ask"
-                    href={`${localePath(locale)}?venue=${encodeURIComponent(venue.slug)}#enquiry`}
-                  >
-                    {t(locale, "marketing.launchVenueAsk")}
-                  </a>
                 </article>
               );
             })}
+          </div>
+          <div className="section-cta-row">
+            <a className="button button-secondary" href={localePath(locale, "/venues")}>
+              {t(locale, "marketing.seoViewAllVenues")} →
+            </a>
           </div>
         </div>
       </section>
@@ -223,6 +307,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               <p>{t(locale, "marketing.launchBridge3Body")}</p>
             </article>
           </div>
+          <div className="section-cta-row">
+            <a className="button button-secondary" href={localePath(locale, "/invitations")}>
+              Explore Digital Invitations & RSVP Bridge →
+            </a>
+          </div>
         </div>
       </section>
 
@@ -242,6 +331,27 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
+      {/* Home FAQ Teaser */}
+      <section id="faq" className="wrap section">
+        <div className="section-head">
+          <p className="kicker">Perth Event Planning Questions</p>
+          <h2>{t(locale, "marketing.seoFaqHeading")}</h2>
+        </div>
+        <div className="faq-grid">
+          {HOME_FAQS.map((item) => (
+            <article key={item.question} className="faq-card">
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </article>
+          ))}
+        </div>
+        <div className="section-cta-row">
+          <a className="button button-secondary" href={localePath(locale, "/faq")}>
+            View Full Perth Event Planning FAQ →
+          </a>
+        </div>
+      </section>
+
       {/* Enquiry & Consultation Form */}
       <section id="enquiry" className="wrap section enquiry">
         <div className="enquiry-sidebar">
@@ -252,18 +362,9 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
             <strong>Direct Perth Coordination Desk</strong>
             <p>
               Email:{" "}
-              <a href={`mailto:${contact.email}`}>
-                <bdi>{contact.email}</bdi>
-              </a>
+              <DynamicContactEmail fallback={contact.email} asLink />
             </p>
-            {contact.phone && (
-              <p>
-                Phone:{" "}
-                <a href={`tel:${contact.phone}`}>
-                  <bdi>{contact.phone}</bdi>
-                </a>
-              </p>
-            )}
+            <DynamicContactPhoneRow fallback={contact.phone} />
             <p className="enquiry-card-note">
               Staff & Coordinators:{" "}
               <a href={localePath(locale, "/admin")}>Open Planner Command Centre →</a>

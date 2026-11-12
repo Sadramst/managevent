@@ -57,35 +57,35 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     theme === "memorial"
       ? "#8C7A6B" // Warm Bronze
       : theme === "dark"
-      ? "#18181B" // Rich Charcoal
-      : theme === "light"
-      ? "#FFFFFF"
-      : "#C5A059"; // Champagne Gold
+        ? "#18181B" // Rich Charcoal
+        : theme === "light"
+          ? "#FFFFFF"
+          : "#C5A059"; // Champagne Gold
 
   const gradientStart =
     theme === "memorial"
       ? "#8C7A6B"
       : theme === "dark"
-      ? "#27272A"
-      : theme === "light"
-      ? "#FFFFFF"
-      : "#F3E2B8";
+        ? "#27272A"
+        : theme === "light"
+          ? "#FFFFFF"
+          : "#F3E2B8";
 
   const gradientEnd =
     theme === "memorial"
       ? "#57483B"
       : theme === "dark"
-      ? "#18181B"
-      : theme === "light"
-      ? "#E5E7EB"
-      : "#9E7D3B";
+        ? "#18181B"
+        : theme === "light"
+          ? "#E5E7EB"
+          : "#9E7D3B";
 
   const badgeBg =
     theme === "memorial"
       ? "bg-stone-900 border-stone-700 shadow-stone-950/40"
       : theme === "dark"
-      ? "bg-stone-100 border-stone-300"
-      : "bg-gradient-to-b from-[#2B0E14] to-[#150609] border-[#C5A059]/40 shadow-amber-950/50";
+        ? "bg-stone-100 border-stone-300"
+        : "bg-gradient-to-b from-[#2B0E14] to-[#150609] border-[#C5A059]/40 shadow-amber-950/50";
 
   // SVG Arch Emblem
   const ArchEmblem = (
@@ -129,10 +129,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         />
 
         {/* Arch Keystone Star / Diamond */}
-        <path
-          d="M 30 3.5 L 32.5 6 L 30 8.5 L 27.5 6 Z"
-          fill={`url(#goldGrad-${size}-${theme})`}
-        />
+        <path d="M 30 3.5 L 32.5 6 L 30 8.5 L 27.5 6 Z" fill={`url(#goldGrad-${size}-${theme})`} />
 
         {/* Left Laurel Sprig Accent */}
         <path
@@ -182,9 +179,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   if (variant === "mark" || variant === "badge") {
     return (
-      <div className={`inline-flex items-center justify-center ${className}`}>
-        {ArchEmblem}
-      </div>
+      <div className={`inline-flex items-center justify-center ${className}`}>{ArchEmblem}</div>
     );
   }
 
@@ -220,4 +215,3 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 };
 
 export default BrandLogo;
-

@@ -1,0 +1,43 @@
+{
+  "slug": "corporate-gala-turnkey",
+  "status": "placeholder",
+  "tier": "SIGNATURE",
+  "name": {
+    "en": "Corporate Gala & Brand Launch Turnkey"
+  },
+  "ceremonySlugs": ["gala-dinner", "product-launch", "end-of-year-party"],
+  "guestMin": 50,
+  "guestMax": 400,
+  "fromPriceIncGstCents": 0,
+  "inclusions": [
+    {
+      "category": "planning",
+      "label": {
+        "en": "Executive producer, run-sheet, venue liaison & $20M PLI compliance check"
+      }
+    },
+    {
+      "category": "av-lighting",
+      "label": {
+        "en": "Stage lectern, wireless microphones, PA sound & ambient uplighting"
+      }
+    },
+    {
+      "category": "catering",
+      "label": {
+        "en": "Plated banquet or executive cocktail package with full dietary matrix"
+      },
+      "qtyRule": "per-guest"
+    },
+    {
+      "category": "invitations",
+      "label": {
+        "en": "Corporate registration micro-site, table allocation & QR door check-in"
+      }
+    }
+  ],
+  "depositRule": {
+    "percent": 25,
+    "minCents": 50000
+  }
+}

@@ -99,7 +99,7 @@ export function createLeadCreatedJob(options?: {
       ? new ProductionResendAdapter()
       : new MockSafeResendAdapter());
   const plannerEmail =
-    options?.plannerInboxEmail ?? process.env.LEAD_NOTIFICATION_EMAIL ?? "m.sadra.mst@gmail.com";
+    options?.plannerInboxEmail ?? process.env.LEAD_NOTIFICATION_EMAIL ?? "appilico.au@gmail.com";
   const fromAddress =
     process.env.EMAIL_FROM_TRANSACTIONAL ?? "Managevent <hello@managevent.com.au>";
 

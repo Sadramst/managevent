@@ -1,0 +1,69 @@
+{
+  "slug": "end-of-year-party",
+  "status": "published",
+  "family": "CORPORATE",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Corporate Christmas & End-of-Year Parties"
+  },
+  "summary": {
+    "en": "Effortless Perth corporate Christmas parties, EOFY celebrations and team milestones — from Swan Valley long lunches and riverside sundowners to fully styled office transformations."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -150,
+      "label": {
+        "en": "Festive styling, mobile bar, sound system & furniture bump-in"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Team arrival, welcome drinks & grazing stations"
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "End-of-year thank-you speech & team awards"
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "DJ, live music, photo booth & celebration"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you provide RSA-certified bartenders for office or warehouse end-of-year parties?"
+      },
+      "a": {
+        "en": "Yes. Whenever alcohol is served at a private workplace or hired venue in WA, we roster WA RSA-certified bar and waitstaff and advise on liquor licensing requirements."
+      }
+    }
+  ],
+  "relatedSlugs": ["gala-dinner", "product-launch", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Corporate Christmas Party & EOFY Event Planner Perth WA"
+    },
+    "description": {
+      "en": "Plan your Perth corporate Christmas party or EOFY celebration. Venue sourcing, office transformations, catering, RSA bar staff, DJs and digital team RSVPs."
+    }
+  }
+}

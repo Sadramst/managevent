@@ -1,0 +1,61 @@
+{
+  "slug": "graduation",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Graduations & Academic Milestones"
+  },
+  "summary": {
+    "en": "Celebrate university, school and professional graduations in Perth with statement photo backdrops, family banquet or cocktail catering, and digital invitations."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "hire",
+    "invitations"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Photo backdrop, signage & dining table setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Graduate & family arrival, portrait photography"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Celebration meal, congratulatory speeches & cake"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can you coordinate post-ceremony celebrations near UWA, Curtin, Murdoch or ECU?"
+      },
+      "a": {
+        "en": "Yes. We arrange riverside venues around Matilda Bay, South Perth, Fremantle and Perth CBD, or bring full catering and styling to your family home."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-milestone", "gala-dinner", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Graduation Party Planner, Styling & Catering Perth WA"
+    },
+    "description": {
+      "en": "Celebrate graduations in Perth with custom photo backdrops, family catering, celebration cakes, furniture hire and digital invitations."
+    }
+  }
+}

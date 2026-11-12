@@ -25,12 +25,9 @@ export function EnquiryForm({
   const invalid = (name: string) => state.fields?.includes(name) || undefined;
 
   useEffect(() => {
-    const name = resolveVenueName(
-      new URLSearchParams(window.location.search).getAll("venue").length === 1
-        ? new URLSearchParams(window.location.search).get("venue")
-        : null,
-      venues,
-    );
+    const params = new URLSearchParams(window.location.search);
+    const venueSlug = params.getAll("venue").length === 1 ? params.get("venue") : null;
+    const name = resolveVenueName(venueSlug, venues);
     if (!name) return;
     setVenueName(name);
     setMessage((prev) => prev || t(locale, "marketing.launchVenuePrefill", { venue: name }));

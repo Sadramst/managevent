@@ -30,7 +30,10 @@ export default function HomePage() {
       {/* Navigation Header */}
       <header className="sticky top-0 z-50 border-b border-stone-800/80 bg-stone-950/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-          <Link href="/" className="group flex items-center transition-transform hover:scale-[1.01]">
+          <Link
+            href="/"
+            className="group flex items-center transition-transform hover:scale-[1.01]"
+          >
             <BrandLogo variant="compact" subtitle="Invitations" size="md" />
           </Link>
 
@@ -76,8 +79,8 @@ export default function HomePage() {
 
         {/* Subtitle */}
         <p className="mx-auto mt-6 max-w-2xl font-serif text-lg sm:text-xl text-stone-300/90 leading-relaxed">
-          From animated wax-seal reveals and Persian bilingual calligraphy to zero-friction RSVP,
-          dietary tracking, and door check-in for Perth and Australian ceremonies.
+          From animated wax-seal reveals and bespoke editorial typography to zero-friction RSVP,
+          encrypted dietary tracking, and door check-in for Perth and Australian ceremonies.
         </p>
 
         {/* Action Buttons */}
@@ -114,7 +117,8 @@ export default function HomePage() {
                   </p>
                   <div className="mx-auto mt-4 h-px w-24 bg-gradient-to-r from-transparent via-amber-400/60 to-transparent" />
                   <p className="mt-3 text-xs text-stone-400 max-w-xs font-serif italic">
-                    “Honouring moments of love, heritage, milestone, and remembrance with timeless craftsmanship.”
+                    “Honouring moments of love, heritage, milestone, and remembrance with timeless
+                    craftsmanship.”
                   </p>
                 </div>
               </div>
@@ -128,7 +132,8 @@ export default function HomePage() {
                   <div>
                     <h4 className="text-sm font-bold text-white">Animated Gate Reveal</h4>
                     <p className="text-xs text-stone-400 mt-0.5">
-                      Personalised wax seal break, silk ribbon tear, and envelope gate reveal customized to each guest.
+                      Personalised wax seal break, silk ribbon tear, and envelope gate reveal
+                      customized to each guest.
                     </p>
                   </div>
                 </div>
@@ -140,7 +145,8 @@ export default function HomePage() {
                   <div>
                     <h4 className="text-sm font-bold text-white">Private Dietary & RSVP Bridge</h4>
                     <p className="text-xs text-stone-400 mt-0.5">
-                      Dietary allergies and headcounts flow safely to your catering and table arrangements.
+                      Dietary allergies and headcounts flow safely to your catering and table
+                      arrangements.
                     </p>
                   </div>
                 </div>
@@ -152,7 +158,8 @@ export default function HomePage() {
                   <div>
                     <h4 className="text-sm font-bold text-white">Australian Privacy Compliant</h4>
                     <p className="text-xs text-stone-400 mt-0.5">
-                      All guest records, tokens, and RSVPs encrypted at rest in Sydney (ap-southeast-2).
+                      All guest records, tokens, and RSVPs encrypted at rest in Sydney
+                      (ap-southeast-2).
                     </p>
                   </div>
                 </div>
@@ -170,7 +177,8 @@ export default function HomePage() {
               Tailored for Every Ceremony
             </h2>
             <p className="mt-3 text-sm sm:text-base text-stone-400 font-serif">
-              Each ceremony category features dedicated typography, cultural layouts, color harmonies, and respectful motion.
+              Each ceremony category features dedicated typography, cultural layouts, color
+              harmonies, and respectful motion.
             </p>
           </div>
 
@@ -191,7 +199,8 @@ export default function HomePage() {
                   Classic Ivory & Champagne Gold Arch
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Double arch gold framing, couple love story timeline, ceremony order of service, wishing well gifts, and photo wall.
+                  Double arch gold framing, couple love story timeline, ceremony order of service,
+                  wishing well gifts, and photo wall.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
@@ -206,27 +215,28 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* 2. Persian Ceremonies */}
+            {/* 2. Cultural & Traditional Ceremonies */}
             <div className="group relative flex flex-col justify-between rounded-card border border-stone-800 bg-stone-900/70 p-6 transition-all duration-300 hover:border-amber-500/40 hover:shadow-xl hover:shadow-amber-950/20">
               <div>
                 <div className="flex items-center justify-between mb-4">
                   <span className="rounded-full bg-amber-500/10 border border-amber-500/30 px-3 py-1 text-xs font-semibold text-amber-300">
-                    Aqd & Persian Celebrations
+                    Cultural & Traditional Weddings
                   </span>
                   <Sparkles className="h-4 w-4 text-amber-400" />
                 </div>
                 <h3 className="font-serif text-2xl font-bold text-white group-hover:text-amber-200 transition-colors">
-                  Aria & Niloufar
+                  Elena & Marcus
                 </h3>
                 <p className="text-xs font-serif italic text-amber-200/70 mt-1">
-                  Persian Royal & Sofreh Aghd
+                  Emerald Botanic & Multi-Stage Schedule
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Full Persian/English bilingual toggle (RTL), Hafez poetry calligraphy, Sofreh Aghd symbol guide, and traditional music player.
+                  Multi-stage ceremony and banquet timelines, Halal and allergy-safe dietary
+                  matrices, cultural blessing notes, and household group RSVPs.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
-                <span className="text-[11px] text-stone-500 font-mono">Theme: Persian Royal</span>
+                <span className="text-[11px] text-stone-500 font-mono">Theme: Emerald Botanic</span>
                 <Link
                   href="/templates"
                   className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-400 hover:text-amber-300"
@@ -253,7 +263,8 @@ export default function HomePage() {
                   Terracotta Warmth & Wax Seal
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Interactive journey through the years, photo memories slideshow, dietary requirement selection, and VIP digital entry passes.
+                  Interactive journey through the years, photo memories slideshow, dietary
+                  requirement selection, and VIP digital entry passes.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
@@ -284,7 +295,8 @@ export default function HomePage() {
                   Minimalist Noir & Gold Accent
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Executive dress code guides, key speakers roster, table numbering, QR security gate entry, and sponsor recognition.
+                  Executive dress code guides, key speakers roster, table numbering, QR security
+                  gate entry, and sponsor recognition.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
@@ -315,7 +327,8 @@ export default function HomePage() {
                   Soft Alabaster & Warm Bronze
                 </p>
                 <p className="mt-3 text-xs text-stone-400 leading-relaxed">
-                  Respectful plain fade reveal, quiet tone, tribute book condolences, live-stream links, and no celebratory animations or upsells.
+                  Respectful plain fade reveal, quiet tone, tribute book condolences, live-stream
+                  links, and no celebratory animations or upsells.
                 </p>
               </div>
               <div className="mt-6 pt-4 border-t border-stone-800/80 flex items-center justify-between">
@@ -336,11 +349,10 @@ export default function HomePage() {
                 <div className="inline-flex h-10 w-10 items-center justify-center rounded-button bg-amber-500 text-stone-950 font-bold mb-4">
                   <Sparkles className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-2xl font-bold text-white">
-                  Design Your Invitation
-                </h3>
+                <h3 className="font-serif text-2xl font-bold text-white">Design Your Invitation</h3>
                 <p className="mt-2 text-xs text-stone-300 leading-relaxed">
-                  Use our AI wording assistant, import your guest list from CSV, and launch your private invitation in minutes.
+                  Use our AI wording assistant, import your guest list from CSV, and launch your
+                  private invitation in minutes.
                 </p>
               </div>
               <div className="mt-6">
@@ -374,7 +386,8 @@ export default function HomePage() {
               <Share2 className="h-6 w-6 text-amber-400 mb-4" />
               <h3 className="text-base font-bold text-white">WhatsApp & SMS Ready</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Smart messaging templates formatted for Australian numbers with unguessable private guest links.
+                Smart messaging templates formatted for Australian numbers with unguessable private
+                guest links.
               </p>
             </div>
 
@@ -382,7 +395,8 @@ export default function HomePage() {
               <QrCode className="h-6 w-6 text-emerald-400 mb-4" />
               <h3 className="text-base font-bold text-white">Digital Door Pass & QR</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Guests receive personalized Apple/Google Wallet compatible QR passes for seamless venue check-in.
+                Guests receive personalized Apple/Google Wallet compatible QR passes for seamless
+                venue check-in.
               </p>
             </div>
 
@@ -390,7 +404,8 @@ export default function HomePage() {
               <Lock className="h-6 w-6 text-rose-400 mb-4" />
               <h3 className="text-base font-bold text-white">Zero-JS SSR Resilience</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Core event details (date, venue, ceremony schedule) render instantly without JavaScript on low-connectivity mobile networks.
+                Core event details (date, venue, ceremony schedule) render instantly without
+                JavaScript on low-connectivity mobile networks.
               </p>
             </div>
 
@@ -398,7 +413,8 @@ export default function HomePage() {
               <Camera className="h-6 w-6 text-sky-400 mb-4" />
               <h3 className="text-base font-bold text-white">Live Celebration Photo Wall</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Guests can upload event photos directly from their phone with instant Host moderation and projector display mode.
+                Guests can upload event photos directly from their phone with instant Host
+                moderation and projector display mode.
               </p>
             </div>
 
@@ -406,7 +422,8 @@ export default function HomePage() {
               <Calendar className="h-6 w-6 text-purple-400 mb-4" />
               <h3 className="text-base font-bold text-white">Deterministic Calendar Sync</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                One-tap .ics downloads and Google/Apple calendar synchronization pinned to Western Australia (AWST) timezone.
+                One-tap .ics downloads and Google/Apple calendar synchronization pinned to Western
+                Australia (AWST) timezone.
               </p>
             </div>
 
@@ -414,7 +431,8 @@ export default function HomePage() {
               <Layers className="h-6 w-6 text-amber-400 mb-4" />
               <h3 className="text-base font-bold text-white">Managevent Marketplace Bridge</h3>
               <p className="mt-2 text-xs text-stone-400 leading-relaxed">
-                Guest headcounts, adult/child ratios, and dietary allocations directly drive catering and table seating plans.
+                Guest headcounts, adult/child ratios, and dietary allocations directly drive
+                catering and table seating plans.
               </p>
             </div>
           </div>
@@ -428,7 +446,8 @@ export default function HomePage() {
             <BrandLogo variant="compact" subtitle="Atelier" size="sm" />
             <span className="hidden sm:inline text-stone-700">|</span>
             <span>
-              © {new Date().getFullYear()} Managevent Australia. Personal data secured in Sydney (ap-southeast-2).
+              © {new Date().getFullYear()} Managevent Australia. Personal data secured in Sydney
+              (ap-southeast-2).
             </span>
           </div>
 

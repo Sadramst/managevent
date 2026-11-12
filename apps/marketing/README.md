@@ -24,8 +24,14 @@ The public platform for Managevent in Perth, Western Australia. It covers all ce
    - **Active Perth Events & Run-Sheets**: Live RSVP headcount progress, logistics bridge recommendations, and **APP 3 Masked Dietary & Allergy Health Notes** (click-to-reveal with staff audit logging).
    - **Perth Partner & Venue Compliance**: ABN status, $20M Public Liability Insurance, WA Liquor & RSA, Council Health permits, and 12% Marketplace commission tracking.
    - **Finance, ATO GST & Audit Log**: Gross pipeline (incl. GST), 10% GST liability split (`splitIncGstCents`), net ex-GST agency & hire revenue, and chronological staff audit log.
-3. **Legal & Compliance Pages (`/[locale]/[document]`)**:
-   - `/privacy`, `/terms`, and `/accessibility` (WCAG 2.2 AA).
+3. **Programmatic Local & Vertical SEO Hubs (`WEBSITE.md` §A3, §A6, §A7, §A10)**:
+   - **Ceremonies Hub & Detail (`/ceremonies`, `/ceremonies/[slug]`)**: All 20 ceremonies grouped by family (`CELEBRATION`, `CULTURAL`, `CORPORATE`, `SOLEMN`) with `Service`, `FAQPage`, and `BreadcrumbList` JSON-LD and automatic Memorial Mode for solemn routes.
+   - **Packages Catalogue & Detail (`/packages`, `/packages/[slug]`)**: 6 curated 0-to-100 packages with ACL-compliant AUD incl. GST pricing and deposit rules.
+   - **Perth Venues Catalogue & Detail (`/venues`, `/venues/[slug]`)**: 9 Perth venue profiles with `EventVenue` JSON-LD, capacities, rules, permit notes, and prefilled enquiry links.
+   - **Perth Local SEO Hub & Pages (`/perth`, `/perth/[slug]`)**: Covers all 20 ceremonies plus 9 commercial search aliases (`/perth/weddings`, `/perth/birthday-party-packages`, `/perth/kids-party-packages`, `/perth/engagement-parties`, `/perth/corporate-events`, `/perth/community-hall-events`, `/perth/wake-catering`, `/perth/memorial-services`, `/perth/cultural-weddings`) with canonical tags and build-time 300-word thin-content guard.
+   - **Commercial & Authority Pages**: `/services`, `/invitations`, `/memorials` (dedicated Memorial Mode hub), `/faq`, `/how-it-works`, `/pricing`, `/about`, `/contact`, plus dynamic `/sitemap.xml` and `/robots.txt`.
+4. **Legal, Gated Cities & Compliance Pages (`/[locale]/[document]`)**:
+   - `/privacy`, `/terms`, and `/accessibility` (WCAG 2.2 AA), plus gated national expansion cities (`waitlist` cities served with `noindex`; `hidden` cities return HTTP 404).
 
 ## Commands
 

@@ -7,3 +7,5 @@ Disallow: /anniversary/
 Disallow: /e/
 Allow: /
 Allow: /templates
+Sitemap: https://invitation.managevent.com.au/sitemap.xml
+

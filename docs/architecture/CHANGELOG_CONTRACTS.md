@@ -1,5 +1,12 @@
 # Contract changelog
 
+## Invitation pass and chase copy keys (2026-11-12)
+
+Additive `contract-change`. No breaking change.
+
+- `@managevent/i18n` (`dictionaries.ts`): new `en` keys under `invitation` namespace for digital pass status labels (`passTitle`, `passBack`, `passPrintOrSave`, `passRsvpConfirmed`, `passRsvpDeclined`, `passRsvpTentative`, `passRsvpPending`, `passSeats`, `passTableLabel`, `passOpenSeating`, `passVenue`, `passGenerating`) and host chase reminders (`chasePageTitle`, `chaseBackToStudio`, `chaseStatAwaiting`, `chaseStatReplied`, `chaseStatTotal`, `chaseNoDeadline`, `chaseDeadlineDueToday`, `chaseNobodyAwaiting`, `chaseCopy`, `chaseCopied`, `chaseCopyFailed`, `chaseCelebrationNoDeadline`, `chaseCelebrationClose`, `chaseMemorialNoDeadline`, `chaseMemorialClose`).
+- Consumers: `apps/invitation` (`pass/page.tsx`, `awaiting/page.tsx`, `lib/rsvp-chase-copy.ts`).
+
 ## Venue enquiry prefill keys (2026-11-11)
 
 Additive `contract-change`. No breaking change.

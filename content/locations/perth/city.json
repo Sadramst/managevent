@@ -8,21 +8,24 @@
   "timeZone": "Australia/Perth",
   "areasServed": [
     "Perth CBD",
-    "Joondalup",
-    "Wanneroo",
-    "Stirling",
-    "Bayswater",
     "Swan Valley",
     "Fremantle",
-    "Cockburn",
+    "Kings Park & Crawley",
+    "South Perth",
+    "Cottesloe & Western Suburbs",
+    "Joondalup",
+    "Wanneroo",
+    "Stirling & Scarborough",
+    "Bayswater",
     "Canning",
     "Melville",
-    "South Perth",
     "Victoria Park",
+    "Cockburn",
+    "Kalamunda & Perth Hills",
+    "Mundaring",
     "Armadale",
     "Rockingham",
-    "Kalamunda",
-    "Mundaring"
+    "Mandurah & Peel"
   ],
   "travelZones": {
     "metro": {
@@ -30,13 +33,13 @@
     },
     "outerMetro": {
       "feeIncGstCents": 0,
-      "note": "PLACEHOLDER – set by founder"
+      "note": "Outer metro (Swan Valley, Perth Hills, Joondalup, Rockingham) included in Estimator travel zone calculation."
     },
     "regional": {
       "quoteOnly": true
     }
   },
   "localIntro": {
-    "en": "PLACEHOLDER – From Swan Valley vineyards to Fremantle heritage halls and backyard marquees, we plan and run ceremonies right across Perth."
+    "en": "From Swan Valley vineyards, Kings Park pavilions and Matilda Bay foreshore reserves to Fremantle heritage warehouses, suburban council halls and private backyard marquees — Managevent plans, styles, hires and runs ceremonies right across metropolitan Perth and Western Australia."
   }
 }

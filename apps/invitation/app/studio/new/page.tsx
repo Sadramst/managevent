@@ -3,7 +3,6 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { invitationStore } from "@/lib/invitation-store";
 import type { InvitationThemeId, ExperienceMode } from "@managevent/types";
 import { INVITATION_THEMES } from "@managevent/ui/themes";
 import {
@@ -15,6 +14,7 @@ import {
   Shield,
   Palette,
   CheckCircle2,
+  Loader2,
 } from "lucide-react";
 
 const CEREMONY_OPTIONS = [
@@ -54,6 +54,8 @@ export default function NewEventWizardPage() {
   const router = useRouter();
 
   const [step, setStep] = useState<1 | 2 | 3>(1);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Form State
   const [ceremonySlug, setCeremonySlug] = useState("wedding");
@@ -84,39 +86,58 @@ export default function NewEventWizardPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
 
-    const createdEvent = invitationStore.createEvent({
-      title: title.trim() || `${coupleOrHostNames}’s Celebration`,
-      ceremonySlug,
-      experienceMode,
-      themeId,
-      templateSlug: "custom-invitation",
-      gateStyle: isMemorial ? "plain-fade" : gateStyle,
-      startsAt: new Date(startsAt).toISOString(),
-      timeZone: "Australia/Perth",
-      languages: ["en"],
-      defaultLanguage: "en",
-      venueName: venueName.trim() || "The Celebration Venue",
-      venueAddress: venueAddress.trim() || "Perth, Western Australia",
-      content: {
-        headline: headline.trim(),
-        subheadline: "An evening of memories, food, and music.",
-        coupleOrHostNames: coupleOrHostNames.trim() || "Hosts",
-        invitationStory: [
-          "We are deeply delighted to invite our closest family and friends to celebrate this unforgettable milestone with us.",
-        ],
-      },
-      parties: [
-        {
-          name: "Honoured Guest",
-          seats: 2,
+    try {
+      const payload = {
+        title: title.trim() || `${coupleOrHostNames || "Celebration"}’s Celebration`,
+        ceremonySlug,
+        experienceMode,
+        themeId,
+        templateSlug: "custom-invitation",
+        gateStyle: isMemorial ? "plain-fade" : gateStyle,
+        startsAt: new Date(startsAt).toISOString(),
+        timeZone: "Australia/Perth",
+        languages: ["en"],
+        defaultLanguage: "en",
+        venueName: venueName.trim() || "The Celebration Venue",
+        venueAddress: venueAddress.trim() || "Perth, Western Australia",
+        content: {
+          headline: headline.trim(),
+          subheadline: "An evening of memories, food, and music.",
+          coupleOrHostNames: coupleOrHostNames.trim() || "Hosts",
+          invitationStory: [
+            "We are deeply delighted to invite our closest family and friends to celebrate this unforgettable milestone with us.",
+          ],
         },
-      ],
-    });
+        parties: [
+          {
+            name: "Honoured Guest",
+            seats: 2,
+          },
+        ],
+      };
 
-    router.push(`/studio/${createdEvent.id}`);
+      const res = await fetch("/api/events", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to create invitation event.");
+      }
+
+      router.push(`/studio/${data.event.id}`);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
+      setSubmitError(msg);
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -392,20 +413,37 @@ export default function NewEventWizardPage() {
                 </div>
               )}
 
+              {submitError && (
+                <div className="rounded-card border border-red-200 bg-red-50 p-3 text-xs text-red-800">
+                  {submitError}
+                </div>
+              )}
+
               <div className="flex justify-between pt-4 border-t">
                 <button
                   type="button"
                   onClick={() => setStep(2)}
-                  className="rounded-button border px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+                  disabled={isSubmitting}
+                  className="rounded-button border px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50 disabled:opacity-50"
                 >
                   Back
                 </button>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-1.5 rounded-button bg-amber-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-amber-700 shadow-sm"
+                  disabled={isSubmitting}
+                  className="inline-flex items-center gap-1.5 rounded-button bg-amber-600 px-6 py-2.5 text-xs font-bold text-white hover:bg-amber-700 shadow-sm disabled:opacity-70"
                 >
-                  <Sparkles className="h-4 w-4" />
-                  <span>Create & Launch Studio</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span>Creating Micro-site...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="h-4 w-4" />
+                      <span>Create & Launch Studio</span>
+                    </>
+                  )}
                 </button>
               </div>
             </div>

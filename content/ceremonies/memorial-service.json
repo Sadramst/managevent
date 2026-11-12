@@ -1,0 +1,76 @@
+{
+  "slug": "memorial-service",
+  "status": "published",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": {
+    "en": "Memorial Services & Unveiling Gatherings"
+  },
+  "summary": {
+    "en": "Thoughtful coordination for memorial services, anniversary remembrances and unveiling gatherings in Perth — including venue setup, seating, PA audio, florals and refreshments."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "catering",
+    "florals",
+    "tribute-display",
+    "slideshow",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Seating layout, lectern, microphone check & floral tribute placement"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests welcomed and seated"
+      }
+    },
+    {
+      "offsetMinutes": 15,
+      "label": {
+        "en": "Eulogies, readings, music & visual tribute"
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "Light refreshments and time with family"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can you provide clear sound and screens for speeches at outdoor or hall memorials?"
+      },
+      "a": {
+        "en": "Yes. We supply discreet PA speakers, lectern microphones and high-brightness screens so every guest can hear the eulogies and view the tribute slideshow clearly."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you accommodate cultural and religious memorial observances?"
+      },
+      "a": {
+        "en": "Yes. We respectfully accommodate Christian, Islamic, Jewish, Hindu, Buddhist and secular remembrance traditions, including appropriate Halal or vegetarian catering."
+      }
+    }
+  ],
+  "relatedSlugs": ["celebration-of-life", "wake", "funeral-coordination"],
+  "seo": {
+    "title": {
+      "en": "Memorial Service Coordination, Venues & Catering Perth WA"
+    },
+    "description": {
+      "en": "Dignified memorial service and remembrance gathering coordination across Perth. Venues, seating, clear PA sound, tribute slideshows, florals and refreshments."
+    }
+  }
+}

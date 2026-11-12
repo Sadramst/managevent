@@ -1,0 +1,73 @@
+{
+  "slug": "gender-reveal",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": { "en": "Gender Reveal Celebrations" },
+  "summary": {
+    "en": "Bespoke gender reveal styling, confidential envelope handling, park-safe reveal concepts, high-tea catering, and photography across Perth, Western Australia."
+  },
+  "includes": [
+    "planning",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "hire",
+    "photo-video",
+    "invitations"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": { "en": "Arch installation, plinth styling & confidential reveal setup" }
+    },
+    {
+      "offsetMinutes": -30,
+      "label": { "en": "High-tea grazing table, patisserie & mocktail station readiness" }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": { "en": "Guest arrival, welcome drinks & prediction cards" }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": { "en": "Gather around the arch for the gender reveal moment & photography" }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": { "en": "Celebration cake cutting, afternoon tea & family portraits" }
+    },
+    {
+      "offsetMinutes": 180,
+      "label": { "en": "Farewells & full park-compliant Managevent pack-down" }
+    }
+  ],
+  "faq": [
+    {
+      "q": { "en": "Can both parents also be surprised at the gender reveal?" },
+      "a": {
+        "en": "Absolutely. Your sonographer or trusted friend can hand the sealed envelope or digital result directly to your dedicated Managevent coordinator, who prepares the reveal cake or installation in complete confidence."
+      }
+    },
+    {
+      "q": { "en": "Are confetti cannons allowed in Perth public parks?" },
+      "a": {
+        "en": "Most Perth local councils strictly prohibit plastic confetti and powder cannons on public reserves. We design council-compliant reveals for public parks—such as bespoke reveal cakes, balloon boxes, and floral installations—so your bond is protected."
+      }
+    },
+    {
+      "q": { "en": "Can we combine a Baby Shower and Gender Reveal into one Perth event?" },
+      "a": {
+        "en": "Yes. Many Perth families combine their baby shower high tea with a signature reveal moment, using our digital invitation suite to manage RSVPs, dietary needs, and registry notes."
+      }
+    }
+  ],
+  "relatedSlugs": ["baby-shower", "birthday-kids", "faith-ceremony", "anniversary"],
+  "seo": {
+    "title": { "en": "Gender Reveal Party Styling & Catering Perth | Managevent" },
+    "description": {
+      "en": "Bespoke gender reveal parties in Perth, WA. Confidential result coordination, custom arches, park-compliant reveal installations, grazing tables, and photography."
+    }
+  }
+}

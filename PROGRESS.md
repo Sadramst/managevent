@@ -1,5 +1,20 @@
 # Managevent Progress Tracker
 
+## Step 5: Complete Technical & Programmatic Local SEO Architecture (`www` & `invitation`)
+
+- **Expanded Validated Content Catalogue (`/content`):**
+  - Expanded `/content/ceremonies/*.json` to **20 complete English (`en-AU`) ceremonies** across all 4 families (`CELEBRATION`, `CULTURAL`, `CORPORATE`, `SOLEMN`), each with `includes`, `timelineTemplate`, local Perth `faq`, and `seo` metadata.
+  - Expanded `/content/packages/*.json` to **6 complete packages** (`wedding-signature-0-to-100`, `engagement-cocktail-soiree`, `milestone-birthday-essential`, `corporate-gala-turnkey`, `community-hall-transformation`, `celebration-of-life-gathering`).
+  - Enriched `content/locations/perth/city.json` (19 Perth metropolitan areas served + rich `localIntro`), `content/locations/perth/venues.json` (9 Perth venue profiles with `suitableFor` and local notes), and `content/routes.json` (9 commercial Perth search aliases with `renderWithCanonical`).
+  - Added build-time **WEBSITE.md §A7 Local SEO Thin-Content Guard** to `scripts/validate-content.mjs` (enforcing ≥ 3 local content blocks and ≥ 300 words across all 20 ceremonies and 9 commercial aliases).
+- **Full SEO Route Tree & Structured Data in `apps/marketing` (`www.managevent.com.au`):**
+  - Built `/ceremonies`, `/ceremonies/[slug]`, `/packages`, `/packages/[slug]`, `/venues`, `/venues/[slug]`, `/services`, `/invitations`, `/memorials`, `/faq`, `/how-it-works`, `/pricing`, `/about`, `/contact`, `/perth`, and `/perth/[slug]` (supporting all 20 ceremony slugs + 9 commercial aliases `/perth/weddings`, `/perth/birthday-party-packages`, `/perth/kids-party-packages`, `/perth/engagement-parties`, `/perth/corporate-events`, `/perth/community-hall-events`, `/perth/wake-catering`, `/perth/memorial-services`, `/perth/cultural-weddings`).
+  - Gated non-Perth cities per `WEBSITE.md` §A7 (`hidden` cities return HTTP 404; `waitlist` cities render with `noindex`).
+  - Implemented JSON-LD structured data builders (`apps/marketing/lib/seo-schema.ts`) for `Organization`, `LocalBusiness` + `EventPlanner`, `WebSite`, `Service`, `EventVenue`, `FAQPage`, and `BreadcrumbList`.
+  - Dynamic `app/sitemap.ts` (70+ validated indexable URLs) and `app/robots.ts` (disallowing `/admin` and `/plan/estimate/`).
+- **Invitation App SEO & English-Only Alignment (`apps/invitation`):**
+  - Added `apps/invitation/app/sitemap.ts` (indexing `/` and `/templates`), `Sitemap` directive in `public/robots.txt`, `WebApplication` JSON-LD, `en-AU` canonical/hreflang alternates, and removed leftover Persian text in `apps/invitation/app/page.tsx` while keeping `X-Robots-Tag: noindex, nofollow, noarchive` on all private guest/studio routes.
+
 ## Step 4: English-only en-AU, Awaiting replies and venue enquiry prefill
 
 - **English-only (en-AU):** the Persian locale, ceremonies and themes were removed (`deb3a5b`). The site is English-only for Australia; `packages/i18n` keeps its parity architecture so languages can be added later by a new decision.
@@ -32,7 +47,7 @@
 - A2 done: append-only encrypted-health migration applied locally; raw RSVP rows have no plaintext dietary/severity properties. Database: 8 tests; validators: 15; worker: 2; focused typechecks pass. EventHeadcount accepts numeric counts only.
 - A3 blocked: available upgrade tool does not expose the required dependency scan/install/upgrade operations. Existing Better Auth, Gemini SDK and config Tailwind versions have not been upgraded. The new marketing scaffold uses Next 16.4.2 and Tailwind/PostCSS 4.3.3.
 - Production pending: no Fly/Vercel/Supabase/Resend tooling or authenticated provider sessions available. No cloud deployment performed. DNS values must come from the actual provider account, not generic examples.
-- Contact defaults approved: `sadra.tabarestani@gmail.com`, `0452657916`; lead notification address confirmed as `m.sadra.mst@gmail.com`. All remain configurable.
+- Contact defaults updated: `appilico.au@gmail.com`, phone removed from default / made optional; lead notification address updated to `appilico.au@gmail.com`. All configurable dynamically in Admin Panel.
 
 Status key: ⬜ not started · 🟨 in progress · ✅ done
 
@@ -64,16 +79,16 @@ Status key: ⬜ not started · 🟨 in progress · ✅ done
 | MKT-01 | Scaffold `apps/marketing` (Next.js, i18n routing, metadata, fonts, layout, header, footer)              | ✅     |
 | MKT-02 | Content loader for `content/` with validation against `content/schemas` at build                        | ✅     |
 | MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, and all-events showcase                  | ✅     |
-| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (5 verticals live on home)          | 🟨     |
-| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator)                | 🟨     |
+| MKT-04 | Ceremonies hub (`/ceremonies`) and detail template (`/ceremonies/[slug]`), plus 20 ceremonies           | ✅     |
+| MKT-05 | Packages catalogue (`/packages`) and detail (`/packages/[slug]`) with 6 packages                        | ✅     |
 | MKT-06 | Instant Cost Estimator `#estimator` (event type, guest slider, tier, AUD incl. GST, logistics, prefill) | ✅     |
-| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated & rendered)         | ✅     |
+| MKT-07 | Venues showcase (`/venues` & `/venues/[slug]`) with 9 curated Perth locations                           | ✅     |
 | MKT-08 | `/invitations` product showcase & Digital RSVP-to-Catering Bridge explainer                             | ✅     |
-| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life`)                        | ✅     |
-| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, thin-content guard in CI, gated cities  | ⬜     |
+| MKT-09 | Memorial Mode applied automatically to solemn selections (`/memorials`, solemn ceremony & Perth pages)  | ✅     |
+| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, thin-content guard in CI, gated cities  | ✅     |
 | MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, estimator pre-fill              | ✅     |
-| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement            | ✅     |
-| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images (English)                                | ✅     |
+| MKT-12 | How it works, Pricing, FAQ, About, Contact, legal pages (`/privacy`, `/terms`), Accessibility statement | ✅     |
+| MKT-13 | Technical SEO: dynamic sitemaps, robots, `en-AU` hreflang/canonicals, JSON-LD schemas, OG images        | ✅     |
 | MKT-14 | Analytics with the consent banner and conversion events                                                 | ⬜     |
 | MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, axe scans)                            | ✅     |
 | MKT-16 | Admin Lite & Planner Command Centre (`apps/admin` + `/admin` in `apps/marketing`)                       | ✅     |

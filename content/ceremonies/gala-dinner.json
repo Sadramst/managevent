@@ -1,0 +1,90 @@
+{
+  "slug": "gala-dinner",
+  "status": "published",
+  "family": "CORPORATE",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Corporate Galas & Award Nights"
+  },
+  "summary": {
+    "en": "Turnkey corporate gala dinners, award nights, charity fundraisers and executive functions across Perth CBD, Elizabeth Quay, Crown and Swan Valley — with AV, staging, table styling, QR check-in and ATO tax invoicing."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -240,
+      "label": {
+        "en": "Stage, lectern, AV sound/lighting rig & branded table styling bump-in"
+      }
+    },
+    {
+      "offsetMinutes": -45,
+      "label": {
+        "en": "MC soundcheck, presentation test & QR check-in crew briefing"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "VIP & guest arrival, QR pass scanning & networking drinks"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Call to seats, Welcome to Country & keynote address"
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Plated banquet service, award presentations & live entertainment"
+      }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": {
+        "en": "Conclusion & overnight bump-out"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you provide ATO-compliant tax invoices and $20M public liability insurance for corporate events?"
+      },
+      "a": {
+        "en": "Yes. Every corporate quote and invoice clearly shows the 10% GST breakdown in AUD, and all partner suppliers are vetted for ABN and public liability compliance."
+      }
+    },
+    {
+      "q": {
+        "en": "How does guest registration and table seating work for 200+ corporate attendees?"
+      },
+      "a": {
+        "en": "Attendees RSVP online with their dietary needs and receive a personal QR entry pass showing their assigned table number for rapid door check-in."
+      }
+    }
+  ],
+  "relatedSlugs": ["product-launch", "end-of-year-party", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Corporate Event Management, Gala Dinners & Award Nights Perth WA"
+    },
+    "description": {
+      "en": "End-to-end corporate event management in Perth. Gala dinners, award nights, conferences, AV & staging, catering, table styling and QR guest registration."
+    }
+  }
+}

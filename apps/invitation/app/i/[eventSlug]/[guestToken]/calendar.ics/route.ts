@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { invitationStore } from "@/lib/invitation-store";
 import { formatCeremonyDate } from "@/lib/i18n";
-import { escapeIcsText, formatIcsDate } from "./ics-helpers";
+import { escapeIcsText, formatIcsDate, foldIcsLine } from "./ics-helpers";
 
 interface RouteContext {
   params: Promise<{
@@ -54,7 +54,7 @@ export async function GET(request: Request, context: RouteContext) {
     "END:VCALENDAR",
   ];
 
-  const icsPayload = icsLines.join("\r\n");
+  const icsPayload = icsLines.map((line) => foldIcsLine(line)).join("\r\n");
 
   return new NextResponse(icsPayload, {
     status: 200,

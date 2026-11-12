@@ -76,9 +76,9 @@ export default function StudioDashboardPage() {
                     </span>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-stone-900 group-hover:text-amber-700 transition-colors">
+                  <h2 className="font-display text-xl font-bold text-stone-900 group-hover:text-amber-700 transition-colors">
                     {event.title}
-                  </h3>
+                  </h2>
 
                   <div className="mt-3 space-y-1.5 text-xs text-stone-600">
                     <div className="flex items-center gap-2">
@@ -128,13 +128,22 @@ export default function StudioDashboardPage() {
                     <ExternalLink className="h-3 w-3" />
                   </a>
 
-                  <Link
-                    href={`/studio/${event.id}`}
-                    className="inline-flex items-center gap-1.5 rounded-button bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 transition-colors"
-                  >
-                    <span>Manage Studio</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
+                  <div className="flex items-center gap-2">
+                    <Link
+                      href={`/studio/${event.id}/awaiting`}
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-amber-800 hover:text-amber-900 px-2 py-1 rounded-sm hover:bg-amber-50"
+                    >
+                      <span>Awaiting</span>
+                    </Link>
+
+                    <Link
+                      href={`/studio/${event.id}`}
+                      className="inline-flex items-center gap-1.5 rounded-button bg-stone-900 px-3.5 py-1.5 text-xs font-semibold text-white hover:bg-stone-800 transition-colors"
+                    >
+                      <span>Manage</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
             );

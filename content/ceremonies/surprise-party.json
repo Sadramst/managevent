@@ -1,0 +1,73 @@
+{
+  "slug": "surprise-party",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": { "en": "Surprise Parties & Celebrations" },
+  "summary": {
+    "en": "Discreet 0-to-100 surprise party planning, secret venue setup, custom balloon and neon styling, catering, bar staffing, and decoy arrival coordination in Perth, WA."
+  },
+  "includes": [
+    "planning",
+    "styling",
+    "catering",
+    "hire",
+    "entertainment",
+    "photo-video",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": { "en": "Confidential venue bump-in, balloon arch & grazing station styling" }
+    },
+    {
+      "offsetMinutes": -45,
+      "label": { "en": "Strict early guest arrival window & welcome drinks" }
+    },
+    {
+      "offsetMinutes": -10,
+      "label": { "en": "Final decoy check-in, lights dimmed & photographer positioned" }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": { "en": "Guest of honour arrival & surprise reveal moment" }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": { "en": "Canapé and cocktail service, speeches & milestone cake cutting" }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": { "en": "Conclusion of celebration & full Managevent crew pack-down" }
+    }
+  ],
+  "faq": [
+    {
+      "q": { "en": "How do you keep a surprise party secret during setup and RSVP collection?" },
+      "a": {
+        "en": "All communication and digital invitations include explicit confidential arrival windows (typically 30 to 45 minutes before the guest of honour arrives), and our styling and catering crew complete bump-in behind closed doors before guests enter."
+      }
+    },
+    {
+      "q": { "en": "Can you set up a surprise party at a private Perth home in under two hours?" },
+      "a": {
+        "en": "Yes. When the guest of honour is taken out for a decoy dinner or outing, our Perth styling and hire crew can deploy pre-built balloon arches, neon signage, grazing stations, and bar setups within a tight two-hour window."
+      }
+    },
+    {
+      "q": { "en": "Do your surprise party packages include RSA bar staff and dietary catering?" },
+      "a": {
+        "en": "Yes. Every guest RSVP captures dietary and allergy requirements, and our packages can include WA RSA-certified bartenders, glassware hire, and tailored grazing or cocktail menus."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-milestone", "engagement", "anniversary", "proposal"],
+  "seo": {
+    "title": { "en": "Surprise Party Planner Perth — Secret Setup, Styling & Catering | Managevent" },
+    "description": {
+      "en": "Plan an unforgettable surprise birthday or celebration in Perth, WA. Discreet coordination, rapid venue or backyard transformation, catering, and secret RSVP management."
+    }
+  }
+}

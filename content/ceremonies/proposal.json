@@ -1,0 +1,81 @@
+{
+  "slug": "proposal",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Proposals & Romantic Setups"
+  },
+  "summary": {
+    "en": "Discreet, breathtaking marriage proposal styling and coordination across Kings Park, Matilda Bay foreshore, Cottesloe coastal lookouts, and Swan Valley private estates."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "photo-video",
+    "entertainment",
+    "hire"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -90,
+      "label": {
+        "en": "Discreet on-site styling, floral arch & candle placement"
+      }
+    },
+    {
+      "offsetMinutes": -20,
+      "label": {
+        "en": "Hidden photographer & acoustic musician in position"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Couple arrival & the proposal moment"
+      }
+    },
+    {
+      "offsetMinutes": 20,
+      "label": {
+        "en": "Portrait session & private champagne picnic"
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Optional surprise family celebration or pack-down"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "How do you keep a public park or foreshore proposal private until we arrive?"
+      },
+      "a": {
+        "en": "A dedicated Managevent coordinator stays with the setup until moments before you walk in, ensuring nothing is disturbed and signalling your hidden photographer on arrival."
+      }
+    },
+    {
+      "q": {
+        "en": "What happens if rain or strong Fremantle Doctor winds are forecast?"
+      },
+      "a": {
+        "en": "We monitor Perth weather 72 hours out and always prepare a sheltered indoor or veranda backup option so your proposal runs smoothly."
+      }
+    }
+  ],
+  "relatedSlugs": ["engagement", "wedding", "anniversary"],
+  "seo": {
+    "title": {
+      "en": "Luxury Marriage Proposal Planner & Styling Perth WA"
+    },
+    "description": {
+      "en": "Bespoke marriage proposal setups in Perth. Floral arches, sunset foreshore picnics, hidden photography and surprise engagement styling across Kings Park & Matilda Bay."
+    }
+  }
+}

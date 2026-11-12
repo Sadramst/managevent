@@ -1,13 +1,13 @@
 {
   "slug": "wedding",
-  "status": "placeholder",
+  "status": "published",
   "family": "CELEBRATION",
   "experienceMode": "CELEBRATION",
   "name": {
     "en": "Weddings"
   },
   "summary": {
-    "en": "PLACEHOLDER – Your whole wedding, from the first idea to the last dance."
+    "en": "Full-service Perth wedding planning, bespoke styling, catering coordination, furniture hire, digital invitations and on-the-day production across Swan Valley wineries, Kings Park, Fremantle heritage spaces and private estates."
   },
   "includes": [
     "planning",
@@ -21,5 +21,92 @@
     "hire",
     "invitations",
     "staffing"
-  ]
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -240,
+      "label": {
+        "en": "Venue bump-in, ceremony arch & dining reception styling"
+      }
+    },
+    {
+      "offsetMinutes": -60,
+      "label": {
+        "en": "Audio check, florist bouquet delivery & crew briefing"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guest arrival & ceremony processional"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Signing, congratulatory drinks & canapé service"
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Reception dining, speeches & cake cutting"
+      }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": {
+        "en": "First dance, live music & evening celebration"
+      }
+    },
+    {
+      "offsetMinutes": 360,
+      "label": {
+        "en": "Farewell arch & full Managevent crew pack-down"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you coordinate outdoor wedding permits for Kings Park and Matilda Bay?"
+      },
+      "a": {
+        "en": "Yes. Our Perth coordinators guide you through site bookings with the Botanic Gardens and Parks Authority or relevant local council, and supply ceremony seating, arches, acoustic PA and wet-weather contingencies."
+      }
+    },
+    {
+      "q": {
+        "en": "How do Managevent digital wedding invitations connect to our catering?"
+      },
+      "a": {
+        "en": "Every wedding includes our bespoke digital invitation suite. As guests RSVP for their household and enter dietary or allergy requirements, our logistics engine automatically updates your caterer's meal counts, seating chart and hire quantities."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you manage both a morning ceremony and an evening winery or CBD reception?"
+      },
+      "a": {
+        "en": "Absolutely. Multi-part weddings are built into our run-sheet and digital invitation timeline, allowing separate locations, schedules and transport notes for each part of the day."
+      }
+    },
+    {
+      "q": {
+        "en": "Are all wedding package estimates in AUD inclusive of GST?"
+      },
+      "a": {
+        "en": "Yes. Every estimate and proposal we issue is shown in Australian dollars inclusive of 10% GST, with transparent milestone schedules and zero hidden fees."
+      }
+    }
+  ],
+  "relatedSlugs": ["engagement", "proposal", "anniversary", "cultural-wedding"],
+  "seo": {
+    "title": {
+      "en": "Wedding Planner & Styling Perth | 0-to-100 Weddings WA"
+    },
+    "description": {
+      "en": "End-to-end Perth wedding planning, styling, venue sourcing, catering coordination, hire and digital RSVP invitations across Swan Valley, Kings Park and Fremantle."
+    }
+  }
 }

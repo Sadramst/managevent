@@ -58,7 +58,15 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, audioTitle, 
   };
 
   return (
-    <div className="fixed bottom-4 end-4 z-40">
+    <aside
+      aria-label="Audio controls"
+      className="fixed bottom-4 end-4 z-40 inline-flex items-center gap-2 rounded-full border px-3 py-1.5 shadow-lg backdrop-blur-md"
+      style={{
+        backgroundColor: colors.surface,
+        borderColor: colors.rule,
+        color: colors.accentInk,
+      }}
+    >
       <audio
         ref={audioRef}
         src={audioUrl}
@@ -68,44 +76,41 @@ export const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl, audioTitle, 
         onPause={() => setIsPlaying(false)}
       />
 
+      <div
+        className={`flex h-7 w-7 items-center justify-center rounded-full transition-transform ${
+          isPlaying && !isMuted ? "animate-spin motion-reduce:animate-none" : ""
+        }`}
+        style={{
+          backgroundColor: `${colors.accent}20`,
+          animationDuration: "6s",
+        }}
+        aria-hidden="true"
+      >
+        <Music className="h-3.5 w-3.5" style={{ color: colors.accent }} />
+      </div>
+
+      {audioTitle && (
+        <span
+          className="hidden font-serif text-xs font-medium sm:inline-block max-w-[140px] truncate"
+          title={audioTitle}
+        >
+          {audioTitle}
+        </span>
+      )}
+
       <button
         type="button"
         onClick={toggleMute}
         aria-label={isMuted ? "Unmute music" : "Mute music"}
         aria-pressed={isPlaying && !isMuted}
-        className="group relative flex items-center gap-2 rounded-full border px-3 py-2 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-105 motion-reduce:transition-none motion-reduce:hover:scale-100"
-        style={{
-          backgroundColor: colors.surface,
-          borderColor: colors.rule,
-          color: colors.accentInk,
-        }}
+        className="flex h-7 w-7 items-center justify-center rounded-full hover:bg-black/5 transition-colors focus-visible:outline focus-visible:outline-2"
       >
-        <div
-          className={`flex h-7 w-7 items-center justify-center rounded-full transition-transform ${
-            isPlaying && !isMuted ? "animate-spin motion-reduce:animate-none" : ""
-          }`}
-          style={{
-            backgroundColor: `${colors.accent}20`,
-            animationDuration: "6s",
-          }}
-        >
-          <Music className="h-3.5 w-3.5" style={{ color: colors.accent }} />
-        </div>
-
-        {audioTitle && (
-          <span className="hidden font-serif text-xs font-medium sm:inline-block max-w-[120px] truncate">
-            {audioTitle}
-          </span>
+        {isMuted ? (
+          <VolumeX className="h-4 w-4" style={{ color: colors.inkMuted }} />
+        ) : (
+          <Volume2 className="h-4 w-4" style={{ color: colors.accent }} />
         )}
-
-        <div className="flex h-5 w-5 items-center justify-center">
-          {isMuted ? (
-            <VolumeX className="h-4 w-4" style={{ color: colors.inkMuted }} />
-          ) : (
-            <Volume2 className="h-4 w-4" style={{ color: colors.accent }} />
-          )}
-        </div>
       </button>
-    </div>
+    </aside>
   );
 };

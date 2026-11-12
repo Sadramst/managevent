@@ -1,0 +1,76 @@
+{
+  "slug": "community-hall-event",
+  "status": "published",
+  "family": "CORPORATE",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Community & Council Hall Events"
+  },
+  "summary": {
+    "en": "Complete event production for Perth council halls, school auditoriums and community centres across Joondalup, Canning, Melville, Stirling and Fremantle — with $20M PLI compliance, table/chair hire, catering and pack-down."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "catering",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -150,
+      "label": {
+        "en": "Hall key collection, floor protection, furniture & AV setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guest check-in & community welcome"
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "Banquet or buffet catering service & stage program"
+      }
+    },
+    {
+      "offsetMinutes": 210,
+      "label": {
+        "en": "Curfew compliance, full pack-down & council bond inspection check"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you understand Perth local council hall curfews, bonds and insurance rules?"
+      },
+      "a": {
+        "en": "Yes. We routinely work within City of Joondalup, City of Canning, City of Melville and City of Stirling hall guidelines, ensuring strict curfew pack-downs, floor protection and $20M public liability compliance."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you transform a plain community hall so it feels warm and elevated?"
+      },
+      "a": {
+        "en": "Yes. Through architectural backdrops, premium table linen, warm ambient uplighting and floral centrepieces, we turn standard council halls into welcoming celebration spaces."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-milestone", "cultural-wedding", "wake"],
+  "seo": {
+    "title": {
+      "en": "Council & Community Hall Event Planner, Styling & Hire Perth WA"
+    },
+    "description": {
+      "en": "Transform Perth council and community halls in Joondalup, Canning, Melville & Stirling. Complete styling, table & chair hire, Halal/buffet catering and pack-down."
+    }
+  }
+}

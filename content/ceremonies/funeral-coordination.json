@@ -1,0 +1,62 @@
+{
+  "slug": "funeral-coordination",
+  "status": "published",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": {
+    "en": "Funeral Gathering Support"
+  },
+  "summary": {
+    "en": "Dedicated logistical support for the reception, seating, floral tributes, audio-visuals and guest hospitality surrounding a funeral in Perth, working in partnership with your chosen funeral director."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "catering",
+    "florals",
+    "tribute-display",
+    "slideshow",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Liaison with funeral director, reception venue setup & AV check"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guest arrival, memorial booklets & seating assistance"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Post-service gathering, catering & tribute book"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Does Managevent replace a licensed funeral director?"
+      },
+      "a": {
+        "en": "No. Managevent does not perform regulated funeral-director services or care of the deceased. We work alongside your funeral director to manage the venue, wake catering, marquee/seating hire, tribute displays and guest RSVPs."
+      }
+    }
+  ],
+  "relatedSlugs": ["celebration-of-life", "wake", "memorial-service"],
+  "seo": {
+    "title": {
+      "en": "Funeral Reception, Gathering & Hospitality Coordination Perth WA"
+    },
+    "description": {
+      "en": "Calm coordination for funeral receptions, wakes, floral tributes, seating hire and guest hospitality in Perth, working alongside your licensed funeral director."
+    }
+  }
+}

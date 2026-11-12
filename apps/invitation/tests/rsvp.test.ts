@@ -18,6 +18,11 @@ describe("RSVP Submission & Idempotency", () => {
     expect(lookup).toBeNull();
   });
 
+  it("returns null for unknown tokens even if formatted as valid token (invitation-app-2)", () => {
+    const lookup = invitationStore.findGuestPartyByToken(eventSlug, "random-guest-1a2b3c");
+    expect(lookup).toBeNull();
+  });
+
   it("records RSVP acceptance with dietary requirements and notes", () => {
     const payload: RsvpSubmissionPayload = {
       eventSlug,

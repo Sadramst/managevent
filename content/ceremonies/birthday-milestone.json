@@ -1,0 +1,98 @@
+{
+  "slug": "birthday-milestone",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Milestone Birthdays"
+  },
+  "summary": {
+    "en": "Turnkey 21st, 30th, 40th, 50th, 60th and 70th+ milestone birthday celebrations in Perth — complete with custom backdrops, tiered cakes, catering, furniture hire, DJ/AV and digital RSVPs."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -180,
+      "label": {
+        "en": "Venue styling, statement backdrop, balloon/floral install & AV setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guest arrival, welcome drinks & live photo wall open"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Catering service (cocktail grazing, buffet or seated banquet)"
+      }
+    },
+    {
+      "offsetMinutes": 105,
+      "label": {
+        "en": "Speeches, milestone slideshow & custom cake presentation"
+      }
+    },
+    {
+      "offsetMinutes": 135,
+      "label": {
+        "en": "DJ, dancing & evening celebration"
+      }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": {
+        "en": "Conclusion & full Managevent pack-down"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "What is included in your Perth milestone birthday packages?"
+      },
+      "a": {
+        "en": "Our packages cover concept styling, custom arches and signage, florals, catering and bar coordination, custom birthday cakes, furniture and glassware hire, DJ/lighting, and digital invitations with RSVP tracking."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you host a 30th, 40th or 50th birthday at a private residence or council hall?"
+      },
+      "a": {
+        "en": "Yes. Whether you are transforming your backyard in South Perth or hiring a community hall in Melville, Canning or Joondalup, we supply everything from marquees and tables to RSA bar staff."
+      }
+    },
+    {
+      "q": {
+        "en": "How do you handle mixed dietary needs like Halal, Vegan and Gluten-Free at birthday parties?"
+      },
+      "a": {
+        "en": "Your digital invitation collects dietary tags for every guest. Our logistics bridge automatically separates Halal, Vegan, Vegetarian, Gluten-Free and severe allergy counts for the caterer."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-kids", "anniversary", "engagement", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Milestone Birthday Party Planner & Packages Perth (21st, 30th, 40th, 50th)"
+    },
+    "description": {
+      "en": "All-inclusive milestone birthday party packages in Perth WA. Custom styling, catering, cakes, marquee & furniture hire, DJ and digital invitations for 21st to 70th+ parties."
+    }
+  }
+}

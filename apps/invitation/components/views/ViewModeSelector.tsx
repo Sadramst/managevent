@@ -59,10 +59,10 @@ export const ViewModeSelector: React.FC<ViewModeSelectorProps> = ({
               type="button"
               onClick={() => onChange(tab.id)}
               className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs sm:text-sm font-semibold transition-all duration-200 ${
-                isActive ? "shadow-xs" : "opacity-70 hover:opacity-100"
+                isActive ? "shadow-xs" : "hover:opacity-90"
               }`}
               style={{
-                backgroundColor: isActive ? colors.accent : "transparent",
+                backgroundColor: isActive ? colors.accentInk : "transparent",
                 color: isActive ? "#FFFFFF" : colors.accentInk,
               }}
             >

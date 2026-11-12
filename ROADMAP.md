@@ -52,16 +52,16 @@ Status key: ⬜ not started · 🟨 in progress / partial · ✅ done
 | MKT-01 | Scaffold `apps/marketing` (Next.js, English (en-AU) with i18n routing, metadata, fonts, layout, header, footer, language switch, mode provider)    | FND-05, FND-06 | ✅     |
 | MKT-02 | Content loader for `content/` with validation against `content/schemas` at build (`loadLaunchCeremonies`, `loadPerthCity`, `loadPerthVenues`)      | FND-03         | ✅     |
 | MKT-03 | Home page with Perth editorial hero, 0-to-100 services matrix, all-events showcase, and digital RSVP-to-catering bridge explainer                  | MKT-01, MKT-02 | ✅     |
-| MKT-04 | Ceremonies hub and detail template, plus 8 fully written ceremonies (English; 5 verticals live on home, standalone detail pages expanding)         | MKT-02         | 🟨     |
-| MKT-05 | Packages catalogue and detail (interactive tier selector live in Instant Cost Estimator; standalone `/packages` catalogue pending final rate card) | MKT-02         | 🟨     |
+| MKT-04 | Ceremonies hub (`/ceremonies`) and detail template (`/ceremonies/[slug]`), plus 20 fully written ceremonies in `/content/ceremonies`               | MKT-02         | ✅     |
+| MKT-05 | Packages catalogue (`/packages`) and detail (`/packages/[slug]`) with 6 packages + Instant Cost Estimator tier selector                            | MKT-02         | ✅     |
 | MKT-06 | **Instant Cost Estimator (`#estimator`)** (interactive event type, guest slider, tier & bar mode, AUD incl. GST & logistics calculation → enquiry) | FND-09, FND-11 | ✅     |
-| MKT-07 | Venues showcase with curated Perth locations (`content/venues/perth.json` validated and rendered on home; standalone map detail pages next)        | MKT-02         | ✅     |
+| MKT-07 | Venues showcase (`/venues` & `/venues/[slug]`) with 9 curated Perth locations (`content/locations/perth/venues.json`)                              | MKT-02         | ✅     |
 | MKT-08 | `/invitations` product showcase & Digital RSVP Bridge explainer (plus full `apps/invitation` app built in Phase 2)                                 | MKT-01         | ✅     |
-| MKT-09 | Memorial Mode applied automatically to solemn selections (`celebration-of-life` in Estimator, Ceremony cards, and Admin CRM)                       | MKT-04         | ✅     |
-| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, aliases, the thin-content guard in CI, gated cities                                         | MKT-04, MKT-07 | ⬜     |
+| MKT-09 | Memorial Mode applied automatically to solemn selections (`/memorials`, solemn ceremony/Perth pages, Estimator, and Admin CRM)                     | MKT-04         | ✅     |
+| MKT-10 | Programmatic local SEO: `/perth`, `/perth/[ceremony]`, 9 commercial aliases, thin-content guard in CI (`scripts/validate-content.mjs`), gated cities| MKT-04, MKT-07 | ✅     |
 | MKT-11 | Contact and Book forms → `/v1/leads`, auto-reply, planner notification, plus one-click pre-fill from Instant Cost Estimator                        | FND-11, FND-12 | ✅     |
-| MKT-12 | How it works, Pricing estimator, legal pages (`/privacy`, `/terms`), Accessibility statement (`/accessibility`)                                    | MKT-02         | ✅     |
-| MKT-13 | Technical SEO: sitemaps, robots, hreflang, generated OG images                                                                                     | MKT-04         | ✅     |
+| MKT-12 | `/how-it-works`, `/pricing`, `/faq`, `/about`, `/contact`, legal pages (`/privacy`, `/terms`), Accessibility statement (`/accessibility`)          | MKT-02         | ✅     |
+| MKT-13 | Technical SEO: dynamic sitemaps (`www` + `invitation`), robots, `en-AU` hreflang/canonicals, JSON-LD schemas, generated OG images                  | MKT-04         | ✅     |
 | MKT-14 | Analytics with the consent banner and conversion events                                                                                            | MKT-01         | ⬜     |
 | MKT-15 | Playwright suite (home, Estimator, Admin Console, enquiry → lead, axe accessibility scans), Lighthouse CI budgets                                  | MKT-06         | ✅     |
 | MKT-16 | **Admin Lite & Planner Command Centre:** `/admin` lead inbox, detail inspector, status transitions, active event run-sheets, and `apps/admin`      | FND-11         | ✅     |

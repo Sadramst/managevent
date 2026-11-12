@@ -15,15 +15,29 @@
     },
     "indoorOutdoor": "BOTH",
     "rules": {
-      "curfew": "PLACEHOLDER",
-      "byo": false
+      "curfew": "11:30 PM",
+      "byo": false,
+      "noiseNotes": {
+        "en": "Outdoor music transitions indoors after 10:00 PM per Swan Valley estate guidelines."
+      }
     },
     "accessible": true,
     "geo": {
       "lat": -31.83,
       "lng": 116.02
     },
-    "suitableFor": ["wedding", "engagement", "birthday-milestone", "anniversary", "gala-dinner"]
+    "suitableFor": [
+      "wedding",
+      "engagement",
+      "birthday-milestone",
+      "anniversary",
+      "gala-dinner",
+      "cultural-wedding",
+      "end-of-year-party"
+    ],
+    "notes": {
+      "en": "Vineyard lawn ceremony settings paired with barrel-room or veranda dining receptions, 25 minutes from Perth CBD."
+    }
   },
   {
     "slug": "kings-park-setting-placeholder",
@@ -35,13 +49,14 @@
     "area": "Perth CBD",
     "type": "PARK_RESERVE",
     "capacity": {
-      "theatre": 100
+      "theatre": 100,
+      "cocktail": 120
     },
     "indoorOutdoor": "OUTDOOR",
     "rules": {
       "permitRequired": true,
       "permitNotes": {
-        "en": "Event approval from the park's managing authority is required. Check site-specific conditions."
+        "en": "Event approval from the Botanic Gardens and Parks Authority is required. Check site-specific conditions."
       }
     },
     "accessible": true,
@@ -49,7 +64,18 @@
       "lat": -31.961,
       "lng": 115.831
     },
-    "suitableFor": ["wedding", "proposal", "engagement", "celebration-of-life"]
+    "suitableFor": [
+      "wedding",
+      "proposal",
+      "engagement",
+      "celebration-of-life",
+      "memorial-service",
+      "baby-shower",
+      "gender-reveal"
+    ],
+    "notes": {
+      "en": "Iconic Swan River and Perth city skyline lawns and pavilions, suited to outdoor wedding ceremonies and peaceful memorial gatherings."
+    }
   },
   {
     "slug": "matilda-bay-foreshore-placeholder",
@@ -66,14 +92,28 @@
     },
     "indoorOutdoor": "OUTDOOR",
     "rules": {
-      "permitRequired": true
+      "permitRequired": true,
+      "permitNotes": {
+        "en": "Foreshore reserve booking required for structured seating, arches and acoustic sound."
+      }
     },
     "accessible": true,
     "geo": {
       "lat": -31.977,
       "lng": 115.818
     },
-    "suitableFor": ["wedding", "proposal", "engagement", "anniversary"]
+    "suitableFor": [
+      "wedding",
+      "proposal",
+      "engagement",
+      "anniversary",
+      "graduation",
+      "celebration-of-life",
+      "gender-reveal"
+    ],
+    "notes": {
+      "en": "Calm riverside lawns beneath mature Peppermint trees looking across Matilda Bay towards the Perth CBD."
+    }
   },
   {
     "slug": "fremantle-heritage-hall-placeholder",
@@ -86,6 +126,7 @@
     "type": "HERITAGE",
     "capacity": {
       "banquet": 180,
+      "rounds": 150,
       "cocktail": 250
     },
     "indoorOutdoor": "INDOOR",
@@ -94,7 +135,19 @@
       "lat": -32.055,
       "lng": 115.747
     },
-    "suitableFor": ["wedding", "gala-dinner", "product-launch", "birthday-milestone"]
+    "suitableFor": [
+      "wedding",
+      "engagement",
+      "gala-dinner",
+      "product-launch",
+      "birthday-milestone",
+      "surprise-party",
+      "cultural-wedding",
+      "end-of-year-party"
+    ],
+    "notes": {
+      "en": "Limestone and timber architectural character in the heart of Fremantle, ideal for long-table banquets, brand launches and cocktail parties."
+    }
   },
   {
     "slug": "joondalup-community-hall-placeholder",
@@ -122,7 +175,21 @@
       "lat": -31.745,
       "lng": 115.766
     },
-    "suitableFor": ["community-hall-event", "birthday-kids", "baby-shower", "wake"]
+    "suitableFor": [
+      "community-hall-event",
+      "birthday-kids",
+      "birthday-milestone",
+      "surprise-party",
+      "baby-shower",
+      "gender-reveal",
+      "faith-ceremony",
+      "cultural-wedding",
+      "wake",
+      "funeral-coordination"
+    ],
+    "notes": {
+      "en": "Northern suburbs council facility with commercial kitchen access, parking and flexible banquet floorplans."
+    }
   },
   {
     "slug": "canning-community-hall-placeholder",
@@ -133,16 +200,33 @@
     },
     "area": "Canning",
     "type": "COUNCIL_HALL",
+    "capacity": {
+      "banquet": 140,
+      "cocktail": 200
+    },
     "indoorOutdoor": "INDOOR",
     "rules": {
-      "insuranceRequiredCents": 2000000000
+      "insuranceRequiredCents": 2000000000,
+      "byo": true
     },
     "accessible": true,
     "geo": {
       "lat": -32.017,
       "lng": 115.934
     },
-    "suitableFor": ["community-hall-event", "birthday-kids", "wake"]
+    "suitableFor": [
+      "community-hall-event",
+      "birthday-kids",
+      "birthday-milestone",
+      "surprise-party",
+      "faith-ceremony",
+      "cultural-wedding",
+      "wake",
+      "funeral-coordination"
+    ],
+    "notes": {
+      "en": "Spacious southern corridor hall well suited to multicultural banquets, family milestones and community gatherings."
+    }
   },
   {
     "slug": "melville-community-hall-placeholder",
@@ -153,6 +237,10 @@
     },
     "area": "Melville",
     "type": "COUNCIL_HALL",
+    "capacity": {
+      "banquet": 110,
+      "cocktail": 160
+    },
     "indoorOutdoor": "INDOOR",
     "rules": {
       "insuranceRequiredCents": 2000000000
@@ -162,7 +250,20 @@
       "lat": -32.037,
       "lng": 115.833
     },
-    "suitableFor": ["community-hall-event", "baby-shower", "graduation", "memorial-service"]
+    "suitableFor": [
+      "community-hall-event",
+      "baby-shower",
+      "gender-reveal",
+      "faith-ceremony",
+      "birthday-kids",
+      "graduation",
+      "memorial-service",
+      "celebration-of-life",
+      "wake"
+    ],
+    "notes": {
+      "en": "Light-filled suburban hall near the Swan River, popular for daytime showers, graduations and respectful memorial gatherings."
+    }
   },
   {
     "slug": "luxury-backyard-marquee",
@@ -173,14 +274,33 @@
     },
     "area": "Perth metro",
     "type": "PRIVATE_HOME",
+    "capacity": {
+      "banquet": 80,
+      "cocktail": 120
+    },
     "indoorOutdoor": "OUTDOOR",
     "rules": {
+      "byo": true,
       "noiseNotes": {
-        "en": "Neighbour notice and noise regulations apply; check marquee size and site access."
+        "en": "Neighbour notice and WA residential noise regulations apply; check marquee size and site access."
       }
     },
     "accessible": false,
-    "suitableFor": ["engagement", "birthday-milestone", "wake"]
+    "suitableFor": [
+      "engagement",
+      "birthday-milestone",
+      "surprise-party",
+      "birthday-kids",
+      "anniversary",
+      "baby-shower",
+      "gender-reveal",
+      "faith-ceremony",
+      "graduation",
+      "wake"
+    ],
+    "notes": {
+      "en": "Complete clear-span marquee, flooring, lighting, mobile bar and catering brought directly to your private residence."
+    }
   },
   {
     "slug": "riverside-function-centre-placeholder",
@@ -208,7 +328,13 @@
       "gala-dinner",
       "end-of-year-party",
       "product-launch",
-      "memorial-service"
-    ]
+      "graduation",
+      "cultural-wedding",
+      "memorial-service",
+      "funeral-coordination"
+    ],
+    "notes": {
+      "en": "Full-production waterfront ballroom in Perth CBD with integrated AV rigging, lift access and 300+ guest banquet capacity."
+    }
   }
 ]

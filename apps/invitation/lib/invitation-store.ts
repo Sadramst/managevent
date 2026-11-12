@@ -398,7 +398,7 @@ class InvitationStore {
     greetingName: string;
     isParty: boolean;
   } | null {
-    const event = this.getEventBySlug(eventSlug);
+    const event = this.getEventBySlug(eventSlug) || this.getEventById(eventSlug);
     if (!event) return null;
 
     const normalizedToken = guestToken.trim().toLowerCase();
@@ -445,51 +445,7 @@ class InvitationStore {
       }
     }
 
-    // 2. Universal fallback for any valid guest token format
-    if (isValidGuestTokenFormat(normalizedToken)) {
-      const parts = normalizedToken.split("-");
-      parts.pop(); // remove suffix
-      const rawName = parts.join(" ").trim();
-      const isParty = rawName.includes("party") || rawName.includes("family");
-
-      const cleanName =
-        rawName
-          .replace(/party|family/gi, "")
-          .trim()
-          .replace(/\b\w/g, (l) => l.toUpperCase()) || "Honored Guest";
-
-      const fallbackParty: GuestParty = {
-        id: `pty_fallback_${normalizedToken}`,
-        stableId: `stable_${normalizedToken}`,
-        displayName: cleanName,
-        token: normalizedToken,
-        maxSeats: isParty ? 2 : 1,
-        allowPlusOnes: isParty,
-        childrenAllowed: true,
-        tags: ["Auto-Imported"],
-        status: "PENDING",
-        members: [
-          {
-            id: `gst_fallback_${normalizedToken}`,
-            name: cleanName,
-            isPrimary: true,
-            isChild: false,
-            status: "PENDING",
-          },
-        ],
-      };
-
-      event.parties.push(fallbackParty);
-
-      return {
-        event,
-        party: fallbackParty,
-        guest: fallbackParty.members[0]!,
-        greetingName: cleanName,
-        isParty,
-      };
-    }
-
+    // No party matched this token or legacy slug: unknown token returns null (real 404)
     return null;
   }
 
@@ -641,7 +597,7 @@ class InvitationStore {
     const token = generateGuestToken(partyName, PEPPER, event.salt, stableId);
 
     const newParty: GuestParty = {
-      id: `pty_${Date.now()}`,
+      id: `pty_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
       stableId,
       displayName: partyName,
       token,
@@ -653,7 +609,7 @@ class InvitationStore {
       status: "PENDING",
       members: [
         {
-          id: `gst_${Date.now()}`,
+          id: `gst_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
           name: partyName,
           isPrimary: true,
           status: "PENDING",
@@ -719,6 +675,22 @@ class InvitationStore {
       messages,
     };
   }
+
+  public updateEvent(eventId: string, updates: Partial<EventModel>): EventModel | null {
+    const event = this.getEventById(eventId);
+    if (!event) return null;
+    Object.assign(event, updates, { updatedAt: new Date().toISOString() });
+    return event;
+  }
 }
 
-export const invitationStore = new InvitationStore();
+declare global {
+  var __managevent_invitation_store: InvitationStore | undefined;
+}
+
+export const invitationStore: InvitationStore =
+  globalThis.__managevent_invitation_store ?? new InvitationStore();
+
+if (typeof globalThis !== "undefined") {
+  globalThis.__managevent_invitation_store = invitationStore;
+}

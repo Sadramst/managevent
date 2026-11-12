@@ -1,0 +1,76 @@
+{
+  "slug": "baby-shower",
+  "status": "published",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Baby Showers & Gender Reveals"
+  },
+  "summary": {
+    "en": "Warm, beautifully styled baby showers, sip-and-see brunches and gender reveal celebrations in Perth — with custom arches, high-tea catering, cakes and digital invitations."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "hire",
+    "invitations"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Arch backdrop, plinths, florals & high-tea table setup"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive; non-alcoholic spritz & welcome grazing"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Brunch or high-tea service & heartfelt games"
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Cake cutting, gender reveal moment & wishing well notes"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Do you include a digital gift registry or wishing well on the invitation?"
+      },
+      "a": {
+        "en": "Yes. Guests can view your baby registry link or leave a warm note for the parents-to-be directly inside your personalised Managevent digital invitation."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you set up a baby shower at home or in a Perth park pavilion?"
+      },
+      "a": {
+        "en": "Yes. We deliver and style everything at private homes, garden venues, cafés and local community halls across Perth."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-kids", "birthday-milestone", "community-hall-event"],
+  "seo": {
+    "title": {
+      "en": "Baby Shower & Gender Reveal Styling, Catering & Hire Perth WA"
+    },
+    "description": {
+      "en": "Bespoke baby shower and gender reveal packages in Perth. Custom arches, florals, high-tea catering, cakes, furniture hire and digital RSVP invitations."
+    }
+  }
+}

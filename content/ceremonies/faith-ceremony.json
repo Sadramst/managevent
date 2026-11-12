@@ -1,0 +1,76 @@
+{
+  "slug": "faith-ceremony",
+  "status": "published",
+  "family": "CULTURAL",
+  "experienceMode": "CELEBRATION",
+  "name": { "en": "Faith Milestones, Christenings & Naming Days" },
+  "summary": {
+    "en": "Respectful 0-to-100 reception planning, floral styling, halal/kosher/vegetarian catering, and family seating coordination for Christenings, Baptisms, Naming Days, First Communions, and faith milestones in Perth."
+  },
+  "culturalNotes": {
+    "en": "Whether your family is hosting a Christening or Baptism luncheon after church, a secular Naming Day in a Perth park, an Aqiqah, a Bar or Bat Mitzvah reception, or a temple milestone blessing, we tailor catering, alcohol-free beverage stations, and multi-generational seating with care."
+  },
+  "includes": [
+    "planning",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "hire",
+    "photo-video",
+    "invitations"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -150,
+      "label": { "en": "Reception venue bump-in & styling while family attends the service" }
+    },
+    {
+      "offsetMinutes": -30,
+      "label": { "en": "Warm buffet or family-style banquet preparation & dietary labelling" }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": { "en": "Family and guests arrive from ceremony for welcome refreshments" }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": { "en": "Blessing, speeches, luncheon service & family group portraits" }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": { "en": "Christening or milestone cake cutting & coffee service" }
+    },
+    {
+      "offsetMinutes": 210,
+      "label": { "en": "Conclusion of reception & full Managevent crew pack-down" }
+    }
+  ],
+  "faq": [
+    {
+      "q": { "en": "Can you set up the reception venue while our family is at the church or temple service?" },
+      "a": {
+        "en": "Yes. That is one of the primary reasons Perth families book Managevent for faith milestones. While you attend the ceremony, our team styles the reception room, sets the tables, and prepares warm catering so everything is ready when you arrive."
+      }
+    },
+    {
+      "q": { "en": "Do you accommodate religious dietary requirements such as Halal, Vegetarian, or alcohol-free service?" },
+      "a": {
+        "en": "Yes. Every RSVP tracks individual dietary requirements, and we coordinate certified Halal, strict vegetarian, vegan, allergy-safe, and alcohol-free botanical beverage packages with clear buffet and table labelling."
+      }
+    },
+    {
+      "q": { "en": "Which Perth venues work best for Christening and Naming Day luncheons?" },
+      "a": {
+        "en": "Light-filled riverfront halls in Melville, community halls in Joondalup and Canning, Swan Valley estate verandas, and private home marquees are all popular choices depending on your guest count."
+      }
+    }
+  ],
+  "relatedSlugs": ["cultural-wedding", "baby-shower", "birthday-kids", "community-hall-event"],
+  "seo": {
+    "title": { "en": "Christening, Naming Day & Faith Milestone Event Planner Perth | Managevent" },
+    "description": {
+      "en": "Full-service Christening, Baptism, Naming Day, and faith milestone reception planning in Perth, WA. Styling, family catering, custom cakes, and seamless setup."
+    }
+  }
+}

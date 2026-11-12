@@ -7,6 +7,8 @@ import { invitationStore } from "@/lib/invitation-store";
 import { INVITATION_THEMES } from "@managevent/ui/themes";
 import { ArrowLeft, Download, QrCode as QrIcon, CheckCircle2 } from "lucide-react";
 import QRCode from "qrcode";
+import { redactForLog } from "@managevent/config/redact";
+import { t } from "@managevent/i18n";
 
 interface PassPageProps {
   params: Promise<{
@@ -47,7 +49,7 @@ export default function GuestPassPage({ params }: PassPageProps) {
       },
     })
       .then((url) => setQrDataUrl(url))
-      .catch((err) => console.error("Error creating pass QR", err));
+      .catch((err) => console.error("Error creating pass QR", redactForLog(err)));
   }, [eventSlugForQr, partyTokenForQr, colors.accentInk]);
 
   if (!event || !party) {
@@ -59,7 +61,7 @@ export default function GuestPassPage({ params }: PassPageProps) {
   };
 
   return (
-    <div
+    <main
       className="min-h-screen p-4 sm:p-8 flex flex-col items-center justify-center font-sans"
       style={{
         backgroundColor: colors.bg,
@@ -74,7 +76,7 @@ export default function GuestPassPage({ params }: PassPageProps) {
           style={{ color: colors.accentInk }}
         >
           <ArrowLeft className="h-4 w-4" />
-          <span>Back to Invitation</span>
+          <span>{t("en", "invitation.passBack")}</span>
         </Link>
       </div>
 
@@ -95,10 +97,10 @@ export default function GuestPassPage({ params }: PassPageProps) {
           }}
         >
           <span
-            className="font-mono text-[10px] uppercase tracking-widest"
-            style={{ color: colors.accent }}
+            className="font-mono text-[10px] uppercase tracking-widest font-semibold"
+            style={{ color: colors.accentInk }}
           >
-            Digital Ceremony Pass
+            {t("en", "invitation.passTitle")}
           </span>
           <h1 className="mt-1 font-display text-2xl font-bold" style={{ color: colors.accentInk }}>
             {event.content.coupleOrHostNames}
@@ -118,7 +120,7 @@ export default function GuestPassPage({ params }: PassPageProps) {
               <img src={qrDataUrl} alt="Check-in QR Code" className="h-48 w-48" />
             ) : (
               <div className="flex h-48 w-48 items-center justify-center text-xs opacity-50">
-                Generating pass...
+                {t("en", "invitation.passGenerating")}
               </div>
             )}
           </div>
@@ -130,7 +132,7 @@ export default function GuestPassPage({ params }: PassPageProps) {
           {party.status === "YES" ? (
             <div className="mt-2 inline-flex items-center gap-1 text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
               <CheckCircle2 className="h-3.5 w-3.5" />
-              <span>RSVP Confirmed</span>
+              <span>{t("en", "invitation.passRsvpConfirmed")}</span>
             </div>
           ) : (
             <div
@@ -139,10 +141,10 @@ export default function GuestPassPage({ params }: PassPageProps) {
             >
               <span>
                 {party.status === "NO"
-                  ? "RSVP declined"
+                  ? t("en", "invitation.passRsvpDeclined")
                   : party.status === "MAYBE"
-                    ? "RSVP tentative"
-                    : "RSVP pending"}
+                    ? t("en", "invitation.passRsvpTentative")
+                    : t("en", "invitation.passRsvpPending")}
               </span>
             </div>
           )}
@@ -153,15 +155,28 @@ export default function GuestPassPage({ params }: PassPageProps) {
             style={{ borderColor: colors.rule }}
           >
             <div>
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Seats</span>
-              <span className="font-semibold text-xs">{party.maxSeats} Guest(s)</span>
+              <span className="block text-[10px] font-mono uppercase text-stone-500">
+                {t("en", "invitation.passSeats", { count: "" })
+                  .replace(/[{}]/g, "")
+                  .trim()
+                  .split(" ")[1] || "Seats"}
+              </span>
+              <span className="font-semibold text-xs">
+                {party.maxSeats} {party.maxSeats === 1 ? "Guest" : "Guests"}
+              </span>
             </div>
             <div>
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Table</span>
-              <span className="font-semibold text-xs">{party.tableLabel || "Open Seating"}</span>
+              <span className="block text-[10px] font-mono uppercase text-stone-500">
+                {t("en", "invitation.passTableLabel")}
+              </span>
+              <span className="font-semibold text-xs">
+                {party.tableLabel || t("en", "invitation.passOpenSeating")}
+              </span>
             </div>
             <div className="col-span-2">
-              <span className="block text-[10px] font-mono uppercase text-stone-500">Venue</span>
+              <span className="block text-[10px] font-mono uppercase text-stone-500">
+                {t("en", "invitation.passVenue")}
+              </span>
               <span className="font-semibold text-xs truncate block">{event.venue.name}</span>
             </div>
           </div>
@@ -184,14 +199,14 @@ export default function GuestPassPage({ params }: PassPageProps) {
           <button
             type="button"
             onClick={handlePrint}
-            className="inline-flex items-center gap-2 rounded-button px-4 py-2 text-xs font-bold shadow-xs hover:brightness-105 transition-all text-white"
+            className="inline-flex items-center gap-2 rounded-button px-4 py-2 text-xs font-bold shadow-xs hover:brightness-105 transition-all text-stone-950"
             style={{ backgroundColor: colors.accent }}
           >
             <Download className="h-3.5 w-3.5" />
-            <span>Print or Save Pass</span>
+            <span>{t("en", "invitation.passPrintOrSave")}</span>
           </button>
         </div>
       </div>
-    </div>
+    </main>
   );
 }

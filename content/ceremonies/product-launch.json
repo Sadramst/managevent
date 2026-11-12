@@ -1,0 +1,70 @@
+{
+  "slug": "product-launch",
+  "status": "published",
+  "family": "CORPORATE",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Brand & Product Launches"
+  },
+  "summary": {
+    "en": "High-impact brand activations, showroom openings and product launches in Perth — combining custom architectural backdrops, AV lighting, cocktail catering and VIP digital passes."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -180,
+      "label": {
+        "en": "Branded plinths, media wall, lighting & bar installation"
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Media & VIP guest check-in via digital QR pass"
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Founder keynote & official product reveal"
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Interactive showcase, cocktail service & live content capture"
+      }
+    }
+  ],
+  "faq": [
+    {
+      "q": {
+        "en": "Can you build custom-branded arches, plinths and media walls in Perth?"
+      },
+      "a": {
+        "en": "Yes. Our styling team creates bespoke architectural backdrops, florals and signage tailored to your brand palette and product dimensions."
+      }
+    }
+  ],
+  "relatedSlugs": ["gala-dinner", "end-of-year-party"],
+  "seo": {
+    "title": {
+      "en": "Product Launch & Brand Activation Event Planner Perth WA"
+    },
+    "description": {
+      "en": "Produce memorable brand activations, showroom openings and product launches in Perth with custom media walls, AV, cocktail catering and VIP QR invitations."
+    }
+  }
+}

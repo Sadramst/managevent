@@ -37,6 +37,16 @@
       "path": "/perth/wake-catering",
       "canonical": "/perth/wake",
       "mode": "renderWithCanonical"
+    },
+    {
+      "path": "/perth/memorial-services",
+      "canonical": "/perth/memorial-service",
+      "mode": "renderWithCanonical"
+    },
+    {
+      "path": "/perth/cultural-weddings",
+      "canonical": "/perth/cultural-wedding",
+      "mode": "renderWithCanonical"
     }
   ]
 }

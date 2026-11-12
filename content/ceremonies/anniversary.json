@@ -1,0 +1,202 @@
+{
+  "slug": "anniversary",
+  "status": "draft",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Anniversaries"
+  },
+  "summary": {
+    "en": "A wedding anniversary dinner, vow renewal or family gathering in Perth, planned with care for the couple at the centre of it."
+  },
+  "audience": {
+    "en": "For couples marking ten, twenty-five or fifty years, and for the children and friends who often do the organising. Some anniversaries are a quiet dinner for twelve; others are a vow renewal with the whole family. Both deserve to be done well."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A setting that means something to the couple, or a venue close to it"
+    },
+    {
+      "en": "Styling that draws on the original wedding: flowers, colours, photographs and music"
+    },
+    {
+      "en": "A seated lunch or dinner, with catering sized from confirmed numbers"
+    },
+    {
+      "en": "A cake, and a display of photographs from across the years"
+    },
+    {
+      "en": "A celebrant for a vow renewal, if you would like one"
+    },
+    {
+      "en": "A photographer for family portraits across the generations"
+    },
+    {
+      "en": "Seating planned around family groups, mobility and hearing"
+    },
+    {
+      "en": "Coordination on the day so the family are guests, not hosts"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -150,
+      "label": {
+        "en": "Set-up"
+      },
+      "detail": {
+        "en": "Tables, florals and the photograph display are set. The room is checked for access and seating."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Welcome drinks and time to look through the photographs."
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Vow renewal or welcome"
+      },
+      "detail": {
+        "en": "A short ceremony or a few words from the family, around fifteen minutes."
+      }
+    },
+    {
+      "offsetMinutes": 50,
+      "label": {
+        "en": "Family photographs"
+      },
+      "detail": {
+        "en": "Group portraits while everyone is together and fresh."
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Lunch or dinner"
+      },
+      "detail": {
+        "en": "A seated meal served at an unhurried pace."
+      }
+    },
+    {
+      "offsetMinutes": 150,
+      "label": {
+        "en": "Speeches, toast and cake"
+      },
+      "detail": {
+        "en": "A toast to the couple, then cake and coffee."
+      }
+    },
+    {
+      "offsetMinutes": 210,
+      "label": {
+        "en": "Farewell"
+      },
+      "detail": {
+        "en": "Guests leave in their own time. We pack down and return the photographs to the family."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Settings"
+      },
+      "body": {
+        "en": "Swan Valley wineries and Perth Hills restaurants suit a long lunch. Kings Park and the Swan River foreshore are popular for a short vow renewal followed by a meal nearby. Many couples simply prefer home, with a marquee and a caterer."
+      }
+    },
+    {
+      "title": {
+        "en": "Comfort for older guests"
+      },
+      "body": {
+        "en": "We look for step-free access, parking close to the door, accessible toilets and chairs with backs. In warm months a lunch indoors, or a late-afternoon start, is kinder than the middle of a summer day."
+      }
+    },
+    {
+      "title": {
+        "en": "Vow renewals in public places"
+      },
+      "body": {
+        "en": "A vow renewal has no legal paperwork, so it can be held almost anywhere. A public park, beach or river reserve usually still needs a booking or permit from the council or managing authority once chairs or an arbour are involved."
+      }
+    },
+    {
+      "title": {
+        "en": "Light for photographs"
+      },
+      "body": {
+        "en": "The hour before sunset gives the softest light. That is around 6.30 pm in midsummer and around 4.30 pm in midwinter, so we set the timing of portraits by the season."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Twenty to eighty guests is typical. A seated meal suits anniversaries better than a standing reception, so choose the venue for its dining room. For fewer than twenty, a restaurant private room is usually the easiest and warmest option."
+  },
+  "invitationNotes": {
+    "en": "A digital invitation suits families spread across cities: each household gets a private link, replies for the people coming and notes any dietary needs. Guests can add the date to their calendar from the invitation. The confirmed numbers and dietary list go straight into the catering order and the seating plan."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Can you organise a vow renewal?"
+      },
+      "a": {
+        "en": "Yes. We can arrange a celebrant, the setting, flowers and music. A vow renewal is not a legal ceremony, so there are no forms to lodge."
+      }
+    },
+    {
+      "q": {
+        "en": "We are planning this for our parents. Can you work with us instead of them?"
+      },
+      "a": {
+        "en": "Of course. Most anniversaries are arranged by the family. We agree with you how much the couple should know."
+      }
+    },
+    {
+      "q": {
+        "en": "Some guests do not use smartphones. How do they RSVP?"
+      },
+      "a": {
+        "en": "A family member can reply on their behalf from the household's link, or you can record their reply in the guest list yourself."
+      }
+    },
+    {
+      "q": {
+        "en": "What does it cost?"
+      },
+      "a": {
+        "en": "We give a tailored quote based on numbers, setting and what you would like handled. The estimator on our home page shows an indicative range only."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "birthday-milestone", "engagement"],
+  "seo": {
+    "title": {
+      "en": "Anniversary and vow renewal planning in Perth"
+    },
+    "description": {
+      "en": "Wedding anniversaries and vow renewals in Perth: setting, styling, seated dining, cake, photography and coordination, with digital invitations for family near and far."
+    }
+  }
+}

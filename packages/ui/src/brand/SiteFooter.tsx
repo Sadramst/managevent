@@ -106,7 +106,14 @@ export function SiteFooter({
             <div className="footer-contacts">
               {contact.email && (
                 <a href={`mailto:${contact.email}`}>
-                  <bdi>{contact.email}</bdi>
+                  <bdi>
+                    {/* A break opportunity before the "@", so a long address wraps cleanly. */}
+                    {contact.email
+                      .split("@")
+                      .map((part, index) =>
+                        index === 0 ? part : [<wbr key={index} />, `@${part}`],
+                      )}
+                  </bdi>
                 </a>
               )}
               {contact.phone && (

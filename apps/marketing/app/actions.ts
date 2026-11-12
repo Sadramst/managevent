@@ -15,7 +15,9 @@ export async function submitEnquiry(
 ): Promise<EnquiryState> {
   const value = (key: string) => String(data.get(key) ?? "").trim();
   const locale = EnabledLocaleSchema.safeParse(value("preferredLanguage"));
-  const unknownDate = data.get("dateFlexible") === "true";
+  // The hidden dateFlexible field is kept in step by script; without JavaScript only the
+  // checkbox itself reports the choice, so accept either.
+  const unknownDate = data.get("dateFlexible") === "true" || data.get("dateUnknown") === "on";
   const date = value("eventDate");
   if (!unknownDate && !date) return { status: "invalid", fields: ["eventDate"] };
   const parsed = LeadCreateSchema.safeParse({

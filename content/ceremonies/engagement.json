@@ -1,0 +1,198 @@
+{
+  "slug": "engagement",
+  "status": "draft",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Engagement parties"
+  },
+  "summary": {
+    "en": "A relaxed, well-run engagement party in Perth, from a garden gathering at home to a private room in the city."
+  },
+  "audience": {
+    "en": "For couples and families who want to mark the engagement properly without taking on a second job. Engagement parties are often the first time two families meet, so we plan for conversation: good food, somewhere to sit, and a short moment for speeches."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "entertainment",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A venue shortlist, or a plan for hosting at home"
+    },
+    {
+      "en": "Styling that suits the space: florals, a welcome sign, table settings and lighting"
+    },
+    {
+      "en": "Catering and drinks matched to the time of day and your confirmed numbers"
+    },
+    {
+      "en": "Marquee, furniture, glassware and heater or fan hire for backyard parties"
+    },
+    {
+      "en": "Music, a microphone for speeches and a simple run sheet"
+    },
+    {
+      "en": "Trained bar and wait staff where you would like the family free to enjoy the evening"
+    },
+    {
+      "en": "Set-up before guests arrive and pack-down afterwards"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -180,
+      "label": {
+        "en": "Set-up"
+      },
+      "detail": {
+        "en": "Hire and styling arrive. Furniture, bar and food stations are placed."
+      }
+    },
+    {
+      "offsetMinutes": -30,
+      "label": {
+        "en": "Final checks"
+      },
+      "detail": {
+        "en": "Music and microphone are tested, candles lit, drinks chilled."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Welcome drinks and introductions. The couple are free to greet people."
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Food service begins"
+      },
+      "detail": {
+        "en": "Canapés, grazing table or a seated meal, depending on the format you choose."
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Speeches and a toast"
+      },
+      "detail": {
+        "en": "Kept short. We cue the speakers and make sure every guest has a glass."
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Cake and music"
+      },
+      "detail": {
+        "en": "The evening relaxes into music and conversation."
+      }
+    },
+    {
+      "offsetMinutes": 240,
+      "label": {
+        "en": "Farewell and pack-down"
+      },
+      "detail": {
+        "en": "We clear, pack hire for collection and leave the space as we found it."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Home, restaurant or venue"
+      },
+      "body": {
+        "en": "Backyard engagement parties are common in Perth and can be lovely with a marquee and proper lighting. If you would like no clean-up at all, a restaurant private room or a small function space in the city, Fremantle or the Swan Valley is the simpler choice."
+      }
+    },
+    {
+      "title": {
+        "en": "Heat and evenings"
+      },
+      "body": {
+        "en": "Summer evenings are warm and long, so a start around 5.30 pm works well. In winter it is dark before 6 pm and evenings are cool, so we plan cover, heaters and lighting for outdoor parties."
+      }
+    },
+    {
+      "title": {
+        "en": "Neighbours and noise"
+      },
+      "body": {
+        "en": "For a party at home we suggest telling the neighbours in advance and winding amplified music down at a reasonable hour. Council noise rules apply to private homes as well as venues."
+      }
+    },
+    {
+      "title": {
+        "en": "Alcohol at a private party"
+      },
+      "body": {
+        "en": "If you are supplying drinks free of charge to invited guests at home, a licence is generally not needed. Alcohol cannot be sold without one. Where we provide bar staff, they hold current Responsible Service of Alcohol training."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Thirty to eighty guests is typical. Under thirty suits a restaurant private room or a long table at home. Above eighty, a standing cocktail format is usually more comfortable than a seated meal, and the venue matters more than the styling."
+  },
+  "invitationNotes": {
+    "en": "A digital invitation with RSVP is a good fit for an engagement party: it is free for up to 30 guests, and guests can reply from their phone in a minute. You see who is coming and any dietary needs in one place, and if we are planning your wedding too, the same guest list can be imported for it later as a CSV file."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Can you plan a surprise engagement party?"
+      },
+      "a": {
+        "en": "Yes. We keep contact to one person, send invitations that make the surprise clear to guests, and plan the arrival so it works."
+      }
+    },
+    {
+      "q": {
+        "en": "Do we need a full planner for a small party?"
+      },
+      "a": {
+        "en": "Not always. Some couples ask us only for styling and hire, or only for coordination on the day. Tell us what you would like off your hands and we will quote for that."
+      }
+    },
+    {
+      "q": {
+        "en": "How much notice do you need?"
+      },
+      "a": {
+        "en": "Six to eight weeks is comfortable. Shorter is often possible outside the busiest months, depending on the venue."
+      }
+    },
+    {
+      "q": {
+        "en": "What does it cost?"
+      },
+      "a": {
+        "en": "We give a tailored quote once we know your guest numbers and what you would like us to handle. The estimator on our home page gives an indicative range only."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "anniversary", "cultural-celebration"],
+  "seo": {
+    "title": {
+      "en": "Engagement party planning in Perth"
+    },
+    "description": {
+      "en": "Engagement parties in Perth, at home or at a venue: styling, catering, hire, bar staff and coordination, with free digital invitations and RSVP for smaller guest lists."
+    }
+  }
+}

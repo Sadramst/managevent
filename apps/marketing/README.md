@@ -24,8 +24,8 @@ The public platform for Managevent in Perth, Western Australia. It covers all ce
    - **Active Perth Events & Run-Sheets**: Live RSVP headcount progress, logistics bridge recommendations, and **APP 3 Masked Dietary & Allergy Health Notes** (click-to-reveal with staff audit logging).
    - **Perth Partner & Venue Compliance**: ABN status, $20M Public Liability Insurance, WA Liquor & RSA, Council Health permits, and 12% Marketplace commission tracking.
    - **Finance, ATO GST & Audit Log**: Gross pipeline (incl. GST), 10% GST liability split (`splitIncGstCents`), net ex-GST agency & hire revenue, and chronological staff audit log.
-3. **Legal & Compliance Pages (`/[locale]/[document]`)**:
-   - `/privacy`, `/terms`, and `/accessibility` (WCAG 2.2 AA).
+3. **Legal & Compliance Pages (`/[locale]/[...document]`)**:
+   - `/privacy`, `/terms`, and `/accessibility` (WCAG 2.2 AA). The route is a catch-all, so every other unmatched path reaches `notFound()` inside the locale layout and gets the branded 404 page (`app/[locale]/not-found.tsx`).
 
 ## Commands
 
@@ -36,6 +36,17 @@ pnpm --filter @managevent/marketing dev       # Port 3100
 pnpm --filter @managevent/marketing build
 pnpm --filter @managevent/marketing test
 pnpm --filter @managevent/marketing test:e2e  # Playwright desktop/mobile + axe a11y suite
+PW_CHANNEL=chrome pnpm --filter @managevent/marketing test:e2e  # same, using installed Chrome
 ```
 
 Deployment and secret-entry instructions: [../../infra/DEPLOY_RUNBOOK.md](../../infra/DEPLOY_RUNBOOK.md) and [../../docs/business/PERTH_STRATEGY.md](../../docs/business/PERTH_STRATEGY.md).
+
+## Site structure (enterprise uplift)
+
+- **Routes:** `/`, `/ceremonies`, `/ceremonies/[slug]`, `/services`, `/invitations`, `/pricing`, `/how-it-works`, `/venues`, `/memorials`, `/about`, `/contact`, `/faq`, plus `/privacy`, `/terms`, `/accessibility`. The list lives in `lib/site.ts` (`routes`, `sitemapPaths`) and feeds the header, footer and `app/sitemap.ts`.
+- **Copy:** `packages/i18n/src/site-pages.ts` (`getSitePages(locale)`, `fillCopy()`). Invitation prices are never written into copy; `lib/plans.ts` reads the Premium price and Free guest limit from `packages/payments/src/plans.ts` at build time and falls back to the figures in `docs/business/PRICING_MODEL.md`.
+- **Shared page parts:** `components/page-kit.tsx` (breadcrumbs with BreadcrumbList data, JSON-LD, arch card, check list, closing call to action) and `components/plan-table.tsx`. Page styles are in `app/site-pages.css` (`sp-` prefix).
+- **Enquiry form:** one component on `/#enquiry` and `/contact`. It accepts `?venue=<slug>` and `?ceremony=<slug>` prefills and submits without JavaScript.
+- **Redirects and headers:** `next.config.ts` holds the alias redirects (`/plan`, `/book`, `/packages`, `/legal/*` ...) and the security headers. The Content-Security-Policy allows inline scripts because the App Router streams its payload inline; a nonce-based policy would force every page to render on demand.
+- **Proxy:** `proxy.ts` rewrites public URLs into `/en` and leaves `/api/*` alone.
+- **Honesty rules:** no testimonials, partner venues, agency prices or unreleased invitation features. `lib/site-pages.test.ts` guards the copy.

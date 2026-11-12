@@ -1,0 +1,200 @@
+{
+  "slug": "memorial-service",
+  "status": "draft",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": {
+    "en": "Memorial services"
+  },
+  "summary": {
+    "en": "A memorial service arranged with care, at a time and place that suits your family, with everything quietly in hand on the day."
+  },
+  "audience": {
+    "en": "For families holding a service of remembrance without a funeral on the same day: after a private cremation or burial, when relatives need time to travel, or on an anniversary. A memorial service can be religious or not, formal or simple."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "florals",
+    "tribute-display",
+    "slideshow",
+    "av-lighting",
+    "catering",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A venue suited to a service: a hall, chapel, function room or garden"
+    },
+    {
+      "en": "Seating, a lectern, microphone and sound that everyone can hear"
+    },
+    {
+      "en": "Flowers and a tribute display"
+    },
+    {
+      "en": "An order of service agreed with your celebrant, minister or family speaker"
+    },
+    {
+      "en": "Music and a slideshow, tested before guests arrive"
+    },
+    {
+      "en": "Refreshments after the service"
+    },
+    {
+      "en": "A digital invitation and tribute book, provided without charge"
+    },
+    {
+      "en": "Coordination on the day, including welcoming guests and guiding speakers"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "The venue is prepared"
+      },
+      "detail": {
+        "en": "Seating, flowers and the tribute display are set. Sound, music and slideshow are tested."
+      }
+    },
+    {
+      "offsetMinutes": -20,
+      "label": {
+        "en": "Family arrive"
+      },
+      "detail": {
+        "en": "Time for the family to settle before guests come in. We confirm the order of service with the person leading it."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests are welcomed"
+      },
+      "detail": {
+        "en": "Guests are greeted and seated. The tribute book is available near the entrance."
+      }
+    },
+    {
+      "offsetMinutes": 15,
+      "label": {
+        "en": "The service"
+      },
+      "detail": {
+        "en": "Welcome, eulogy and readings, music and a time of reflection. Usually thirty to forty-five minutes."
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "Refreshments"
+      },
+      "detail": {
+        "en": "Tea, coffee and food are served, and people have time to speak with the family."
+      }
+    },
+    {
+      "offsetMinutes": 150,
+      "label": {
+        "en": "Close"
+      },
+      "detail": {
+        "en": "Guests leave when they are ready. We pack down and return personal items to the family."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Choosing a place"
+      },
+      "body": {
+        "en": "Community and council halls, function rooms and places of worship all suit a memorial service. Gardens and the river foreshore are possible for a smaller service in mild weather. We look first at seating, sound and access."
+      }
+    },
+    {
+      "title": {
+        "en": "Outdoor services"
+      },
+      "body": {
+        "en": "A service in a public park or reserve usually needs a booking or permit from the council or managing authority, and conditions may cover chairs and amplified sound. We arrange an indoor alternative in case of heat, wind or rain."
+      }
+    },
+    {
+      "title": {
+        "en": "Guests who are travelling"
+      },
+      "body": {
+        "en": "When family are coming from interstate or overseas, a date two to six weeks ahead gives people time to arrange travel. A weekday morning is often easiest for venues, and a weekend for working guests."
+      }
+    },
+    {
+      "title": {
+        "en": "Faith and custom"
+      },
+      "body": {
+        "en": "Tell us about any religious or cultural observances and we will plan around them, including the timing, the food and how the room is arranged. We work with the minister, celebrant or elder you choose."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Fifty to two hundred people is common, and attendance can be higher than expected. We suggest a venue with some room to spare, and an RSVP on the invitation so you have a guide for seating and refreshments."
+  },
+  "invitationNotes": {
+    "en": "Memorial invitations are complimentary. Each household receives a private link with the date, time and place, and can add the service to their calendar. Guests can reply and leave a message in the tribute book, which you approve before it is shown. Replies give us a guide for seating and refreshments."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Do you provide funeral services?"
+      },
+      "a": {
+        "en": "No. We do not provide funeral director services, such as care of the person who has died, transport, burial or cremation. We arrange the memorial service and the gathering afterwards, and work alongside your funeral director where one is involved."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you arrange a celebrant or minister?"
+      },
+      "a": {
+        "en": "If you do not have someone in mind, we can suggest how to find a celebrant. Many families ask a relative or friend to lead the service, and we help them prepare."
+      }
+    },
+    {
+      "q": {
+        "en": "Can the service be held some time after the death?"
+      },
+      "a": {
+        "en": "Yes. Many memorial services are held weeks or months later, or on an anniversary. There is no time limit."
+      }
+    },
+    {
+      "q": {
+        "en": "Is there a charge for the invitation?"
+      },
+      "a": {
+        "en": "No. Memorial invitations and the tribute book are complimentary."
+      }
+    },
+    {
+      "q": {
+        "en": "What will it cost?"
+      },
+      "a": {
+        "en": "We will give you a clear written quote after we have spoken, with nothing added later."
+      }
+    }
+  ],
+  "relatedSlugs": ["celebration-of-life", "wake"],
+  "seo": {
+    "title": {
+      "en": "Memorial service coordination in Perth"
+    },
+    "description": {
+      "en": "Memorial services in Perth, arranged with care: venue, seating, sound, flowers and refreshments, with a complimentary memorial invitation and tribute book."
+    }
+  }
+}

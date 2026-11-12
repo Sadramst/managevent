@@ -1,12 +1,20 @@
 import { defineConfig, devices } from "@playwright/test";
 
+/**
+ * Browser channel override. Set `PW_CHANNEL=chrome` (or `msedge`) to run against an installed
+ * browser instead of Playwright's bundled Chromium, for example on a machine where
+ * `playwright install` has not been run.
+ */
+const channel = process.env.PW_CHANNEL?.trim();
+const browser = channel ? { channel } : {};
+
 export default defineConfig({
   testDir: "./tests",
   fullyParallel: false,
   use: { baseURL: "http://localhost:3100", trace: "retain-on-failure" },
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "mobile", use: { ...devices["Pixel 7"] } },
+    { name: "desktop", use: { ...devices["Desktop Chrome"], ...browser } },
+    { name: "mobile", use: { ...devices["Pixel 7"], ...browser } },
   ],
   webServer: [
     {

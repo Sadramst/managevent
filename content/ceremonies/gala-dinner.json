@@ -1,0 +1,221 @@
+{
+  "slug": "gala-dinner",
+  "status": "draft",
+  "family": "CORPORATE",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Corporate galas, launches and award nights"
+  },
+  "summary": {
+    "en": "Gala dinners, award nights, product launches and end-of-year events in Perth, delivered to a brief, a budget and a run sheet."
+  },
+  "audience": {
+    "en": "For executive assistants, marketing and people teams, and committees of associations and charities who are accountable for an event on top of their usual work. You bring the purpose, the guest list and the approvals. We run the production."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "catering",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "photo-video",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A venue shortlist matched to numbers, format, access and budget"
+    },
+    {
+      "en": "A written run sheet agreed with you, covering every cue from doors to close"
+    },
+    {
+      "en": "Staging, lectern, screens, sound and lighting, with a technical rehearsal"
+    },
+    {
+      "en": "Room styling and signage in line with your brand guidelines"
+    },
+    {
+      "en": "Catering and beverage packages, with dietary meals matched to seats"
+    },
+    {
+      "en": "Table plan and seating for sponsors, speakers and award recipients"
+    },
+    {
+      "en": "Registration desk with QR check-in and a live count of who has arrived"
+    },
+    {
+      "en": "MC, entertainment and photographer briefing"
+    },
+    {
+      "en": "An event manager on site from bump-in to bump-out"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -300,
+      "label": {
+        "en": "Bump-in"
+      },
+      "detail": {
+        "en": "Staging, audio-visual and hire are loaded in and built."
+      }
+    },
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Technical rehearsal"
+      },
+      "detail": {
+        "en": "Presentations, videos, walk-up music and award cues are run through with the MC and speakers."
+      }
+    },
+    {
+      "offsetMinutes": -30,
+      "label": {
+        "en": "Registration opens"
+      },
+      "detail": {
+        "en": "Check-in desk staffed and tested. Table plan on display."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Doors and pre-dinner drinks"
+      },
+      "detail": {
+        "en": "Guests arrive, are checked in by QR pass and directed to the room."
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Guests seated, welcome"
+      },
+      "detail": {
+        "en": "Welcome and an Acknowledgement of Country, then the formal program begins."
+      }
+    },
+    {
+      "offsetMinutes": 60,
+      "label": {
+        "en": "Dinner service and program"
+      },
+      "detail": {
+        "en": "Courses alternate with speeches, awards or the launch moment, to the run sheet."
+      }
+    },
+    {
+      "offsetMinutes": 180,
+      "label": {
+        "en": "Formalities close"
+      },
+      "detail": {
+        "en": "Entertainment and networking. The bar runs to the agreed finishing time."
+      }
+    },
+    {
+      "offsetMinutes": 270,
+      "label": {
+        "en": "Close and bump-out"
+      },
+      "detail": {
+        "en": "Guests depart. Equipment is packed and the room handed back to the venue."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Venues"
+      },
+      "body": {
+        "en": "City hotels and riverside function centres suit seated galas and award nights, with parking and public transport close by. Fremantle's heritage buildings and warehouse spaces work well for launches. Swan Valley wineries are popular for end-of-year lunches, where a coach from the city is worth planning."
+      }
+    },
+    {
+      "title": {
+        "en": "The end-of-year rush"
+      },
+      "body": {
+        "en": "Thursdays and Fridays from mid-November to mid-December are the busiest dates of the year for corporate venues in Perth. For those dates it helps to settle the venue several months ahead, or to consider an earlier date or a lunch."
+      }
+    },
+    {
+      "title": {
+        "en": "Alcohol and duty of care"
+      },
+      "body": {
+        "en": "Licensed venues supply and serve the alcohol under their own licence. For other spaces, the right licence must be in place before alcohol is sold or included in a ticket price. Staff serving it hold current Responsible Service of Alcohol training. We also plan food timing, water on tables and transport options, which matter for a work event."
+      }
+    },
+    {
+      "title": {
+        "en": "Accessibility"
+      },
+      "body": {
+        "en": "We check step-free access to the room and the stage, accessible toilets, and hearing support, and we ask about access needs on the RSVP so they are known in advance."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Seated dinners commonly run from 80 to 300 guests at tables of eight or ten. Cocktail-style launches hold more people in the same space and need less time. Allow for no-shows at free events and for late additions at ticketed ones; the RSVP count tells you which way it is going."
+  },
+  "invitationNotes": {
+    "en": "Import your guest list from a CSV file and send each guest or table host a private link. Replies, dietary needs and allergies arrive in one dashboard and can be exported for your records. With the Premium Event Pass, each guest receives a QR pass and the door team checks them in, so you know your attendance as it happens. The pass is included when we manage the event."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Can you work with our preferred venue and suppliers?"
+      },
+      "a": {
+        "en": "Yes. We often work alongside an in-house venue team or a nominated audio-visual supplier, and we coordinate them to one run sheet."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you provide a tax invoice?"
+      },
+      "a": {
+        "en": "Yes. We issue tax invoices showing GST, and we can quote and invoice against a purchase order if your organisation uses them."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you handle ticket sales?"
+      },
+      "a": {
+        "en": "Not at present. Our invitations manage guest lists and RSVPs for invited guests. If your event sells tickets, you can sell them through your usual provider and we will manage the event itself."
+      }
+    },
+    {
+      "q": {
+        "en": "How is guest information handled?"
+      },
+      "a": {
+        "en": "Guest details are stored on Australian-hosted systems and dietary and allergy information is encrypted. We collect only what is needed to run the event."
+      }
+    },
+    {
+      "q": {
+        "en": "How do we get a price?"
+      },
+      "a": {
+        "en": "Send us the brief and we will respond with a tailored, itemised quote. The estimator on our home page gives an indicative range if you need a starting figure for a budget request."
+      }
+    }
+  ],
+  "relatedSlugs": ["cultural-celebration", "birthday-milestone", "memorial-service"],
+  "seo": {
+    "title": {
+      "en": "Corporate gala and event management in Perth"
+    },
+    "description": {
+      "en": "Corporate galas, award nights, product launches and end-of-year events in Perth: venue, run sheet, staging, catering, guest list, QR check-in and on-site management."
+    }
+  }
+}

@@ -1,0 +1,203 @@
+{
+  "slug": "birthday-milestone",
+  "status": "draft",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Milestone birthdays"
+  },
+  "summary": {
+    "en": "An 18th, 21st, 30th, 50th or 80th in Perth, planned around the person it is for and run so the family can enjoy it too."
+  },
+  "audience": {
+    "en": "For anyone hosting a birthday that matters: parents planning a 21st, a partner arranging a 40th, or a family bringing three generations together for an 80th. The right party looks very different at each age, so we start with the guest of honour and work outwards."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A venue that suits the age group, the guest numbers and the finishing time"
+    },
+    {
+      "en": "A theme or colour palette carried through styling, florals, cake and signage"
+    },
+    {
+      "en": "Catering that suits the format, from cocktail food to a seated lunch"
+    },
+    {
+      "en": "The cake and dessert table, sized from confirmed numbers"
+    },
+    {
+      "en": "DJ, band or playlist, plus a microphone and screen for speeches and a photo slideshow"
+    },
+    {
+      "en": "Furniture, marquee, lighting and dance-floor hire"
+    },
+    {
+      "en": "Trained bar staff, wait staff and, for younger crowds, door staff where the venue requires them"
+    },
+    {
+      "en": "Coordination on the day, including any surprise arrival"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -180,
+      "label": {
+        "en": "Set-up"
+      },
+      "detail": {
+        "en": "Hire, styling and the cake arrive. Sound, screen and lighting are tested."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Welcome drinks. For a surprise, guests are in place twenty minutes before the guest of honour."
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Food service begins"
+      },
+      "detail": {
+        "en": "Canapés and grazing, or the first course of a seated meal."
+      }
+    },
+    {
+      "offsetMinutes": 90,
+      "label": {
+        "en": "Speeches and slideshow"
+      },
+      "detail": {
+        "en": "Two or three short speeches work better than six. We cue the speakers and the screen."
+      }
+    },
+    {
+      "offsetMinutes": 110,
+      "label": {
+        "en": "Cake"
+      },
+      "detail": {
+        "en": "Candles, a toast and photographs with family."
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Music and dancing"
+      },
+      "detail": {
+        "en": "The formal part is done and the evening belongs to the guests."
+      }
+    },
+    {
+      "offsetMinutes": 270,
+      "label": {
+        "en": "Last drinks and farewell"
+      },
+      "detail": {
+        "en": "We wind down in line with the venue's finishing time and pack down afterwards."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Settings that work"
+      },
+      "body": {
+        "en": "Fremantle warehouses and city function rooms suit 21sts and 30ths with dancing. Swan Valley and Perth Hills venues are a good fit for long lunches. A marquee at home is popular for 50ths and 60ths, and a restaurant private room is often the most comfortable choice for an 80th."
+      }
+    },
+    {
+      "title": {
+        "en": "Under-18 guests and alcohol"
+      },
+      "body": {
+        "en": "For 18ths and 21sts, think early about who is under 18. Licensed venues have their own conditions for minors, and alcohol must not be served to them. Our bar staff hold current Responsible Service of Alcohol training and will refuse service where the law requires it."
+      }
+    },
+    {
+      "title": {
+        "en": "Heat, shade and older guests"
+      },
+      "body": {
+        "en": "For summer daytime parties we plan shade, fans and plenty of water, and keep older guests close to seating and away from long walks or steps. A lunch often suits a multi-generation party better than a late night."
+      }
+    },
+    {
+      "title": {
+        "en": "Parks and foreshore picnics"
+      },
+      "body": {
+        "en": "A picnic-style birthday in a public park or on the foreshore usually needs a council booking once you add furniture, a marquee or larger numbers. We check the conditions and make the booking."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Forty to one hundred guests is the usual range. Cocktail-style parties take more people in the same room than a seated meal. For a family lunch of twenty to forty, a single long table is worth planning around."
+  },
+  "invitationNotes": {
+    "en": "Invite by private link, shared by WhatsApp or email, and let each household reply for the people coming. Dietary needs and allergies are captured for each person. We use the confirmed numbers to size the catering and the cake, and for larger parties the Premium Event Pass adds QR passes so the door can check guests in."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Can you keep it a surprise?"
+      },
+      "a": {
+        "en": "Yes. We deal with one organiser, word the invitation so guests know it is a surprise, and plan the timing of the arrival."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you plan children's birthday parties?"
+      },
+      "a": {
+        "en": "Our focus is milestone birthdays for adults and young adults. Ask us about a child's party and we will tell you plainly whether we can help."
+      }
+    },
+    {
+      "q": {
+        "en": "Can we bring our own drinks?"
+      },
+      "a": {
+        "en": "That depends on the venue. Some halls and private homes allow it; licensed venues usually do not. We confirm this before you choose a venue so there are no surprises."
+      }
+    },
+    {
+      "q": {
+        "en": "What does a milestone birthday cost?"
+      },
+      "a": {
+        "en": "We quote once we know the numbers, the setting and the format. The estimator on our home page gives an indicative range to help you set a budget; it is not a quote."
+      }
+    }
+  ],
+  "relatedSlugs": ["anniversary", "engagement", "baby-shower"],
+  "seo": {
+    "title": {
+      "en": "Milestone birthday party planning in Perth"
+    },
+    "description": {
+      "en": "Milestone birthdays in Perth, from 18ths and 21sts to 50ths and 80ths: venue, styling, catering, cake, music and coordination, with RSVPs that size the catering."
+    }
+  }
+}

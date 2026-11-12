@@ -1,0 +1,188 @@
+{
+  "slug": "baby-shower",
+  "status": "draft",
+  "family": "CELEBRATION",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Baby and bridal showers"
+  },
+  "summary": {
+    "en": "A daytime gathering in Perth for a parent-to-be or a bride-to-be, styled beautifully and hosted so the organiser can sit down too."
+  },
+  "audience": {
+    "en": "For the friend, sister or mother who has offered to host and would like help making it special. Showers are usually small, daytime and a few hours long, which makes them a pleasure to plan when the details are handled."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A setting that suits a small daytime group: home, garden, café room or hall"
+    },
+    {
+      "en": "Styling in your chosen palette: florals, a backdrop, table settings and signage"
+    },
+    {
+      "en": "Morning or afternoon tea, a grazing table or a light lunch"
+    },
+    {
+      "en": "A cake and sweets table"
+    },
+    {
+      "en": "Alcohol-free drinks alongside anything else you would like to serve"
+    },
+    {
+      "en": "Furniture, linen, crockery and shade hire"
+    },
+    {
+      "en": "Set-up before guests arrive and pack-down afterwards"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -120,
+      "label": {
+        "en": "Set-up"
+      },
+      "detail": {
+        "en": "Styling, tables and food stations are placed. Seating is arranged for comfort and shade."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Welcome drinks and time to settle in."
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Food is served"
+      },
+      "detail": {
+        "en": "Morning tea, grazing or lunch, with dietary plates labelled."
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Games or a quiet activity"
+      },
+      "detail": {
+        "en": "Optional, and kept short. Many hosts prefer a message book or a simple keepsake."
+      }
+    },
+    {
+      "offsetMinutes": 105,
+      "label": {
+        "en": "Gifts and cake"
+      },
+      "detail": {
+        "en": "Gift opening if the guest of honour would like it, then cake."
+      }
+    },
+    {
+      "offsetMinutes": 150,
+      "label": {
+        "en": "Farewell and pack-down"
+      },
+      "detail": {
+        "en": "Guests leave. We clear and pack while the host says goodbye."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Time of day"
+      },
+      "body": {
+        "en": "Late morning works well for most of the year. In summer, aim to finish before the heat of the afternoon, or hold the shower indoors with air conditioning. A guest of honour who is pregnant needs shade, a comfortable chair and cold water within reach."
+      }
+    },
+    {
+      "title": {
+        "en": "Parks and gardens"
+      },
+      "body": {
+        "en": "Small picnics in public parks are usually fine without a booking. Once you add furniture, a marquee or decorations, most councils ask for a booking, and some do not allow balloons or confetti. We check the rules for the park you have in mind."
+      }
+    },
+    {
+      "title": {
+        "en": "At home"
+      },
+      "body": {
+        "en": "Home is the most common setting. We bring what the house does not have, such as extra seating, a long table or an umbrella for the garden, and take it away again."
+      }
+    },
+    {
+      "title": {
+        "en": "Food for pregnancy and allergies"
+      },
+      "body": {
+        "en": "For a baby shower we ask the caterer for a menu the guest of honour can enjoy fully, and we label anything containing common allergens."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Fifteen to forty guests is typical. Under thirty, everyone can sit at one or two long tables and the invitation is free to send. For larger groups, a relaxed standing format with plenty of chairs works better than a formal seated meal."
+  },
+  "invitationNotes": {
+    "en": "A digital invitation is free for up to 30 guests, which covers most showers. Share the link by WhatsApp, collect replies and dietary needs for each person, and add wishing well details to the invitation if you would like to. The reply count tells the caterer and the cake maker exactly how many to prepare for."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Can you style the shower without planning the whole thing?"
+      },
+      "a": {
+        "en": "Yes. Styling and hire only, with set-up and pack-down, is a common request."
+      }
+    },
+    {
+      "q": {
+        "en": "Can it be a surprise?"
+      },
+      "a": {
+        "en": "Yes, though for a baby shower we suggest the guest of honour at least knows the date, so she can rest beforehand and feel comfortable."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you plan showers for all genders and mixed groups?"
+      },
+      "a": {
+        "en": "Of course. We plan the gathering you describe, whoever it is for and whoever is invited."
+      }
+    },
+    {
+      "q": {
+        "en": "What does it cost?"
+      },
+      "a": {
+        "en": "We quote once we know the numbers, the setting and what you would like us to bring. The estimator on our home page shows an indicative range only."
+      }
+    }
+  ],
+  "relatedSlugs": ["birthday-milestone", "engagement", "wedding"],
+  "seo": {
+    "title": {
+      "en": "Baby shower and bridal shower planning in Perth"
+    },
+    "description": {
+      "en": "Baby showers and bridal showers in Perth: styling, grazing tables, cake, hire, set-up and pack-down, with a free digital invitation and RSVP for up to 30 guests."
+    }
+  }
+}

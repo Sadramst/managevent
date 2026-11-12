@@ -1,203 +1,248 @@
 [
   {
-    "slug": "swan-valley-winery-placeholder",
+    "slug": "swan-valley-winery",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Swan Valley winery (partner TBC)"
+      "en": "Swan Valley winery or vineyard estate"
     },
     "area": "Swan Valley",
     "type": "WINERY",
+    "indoorOutdoor": "BOTH",
     "capacity": {
       "banquet": 150,
-      "rounds": 120,
       "cocktail": 200
-    },
-    "indoorOutdoor": "BOTH",
-    "rules": {
-      "curfew": "PLACEHOLDER",
-      "byo": false
     },
     "accessible": true,
     "geo": {
       "lat": -31.83,
       "lng": 116.02
     },
-    "suitableFor": ["wedding", "engagement", "birthday-milestone", "anniversary", "gala-dinner"]
+    "suitableFor": [
+      "wedding",
+      "engagement",
+      "birthday-milestone",
+      "anniversary",
+      "gala-dinner",
+      "celebration-of-life"
+    ],
+    "notes": {
+      "en": "Vines, lawns and a cellar-door restaurant in one place, a short drive from the city. Good for a ceremony and reception without moving guests, and for long lunches. Most wineries supply their own wine and bar staff under their licence, and many have a set finishing time."
+    }
   },
   {
-    "slug": "kings-park-setting-placeholder",
+    "slug": "kings-park-setting",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Kings Park outdoor ceremony setting"
+      "en": "Kings Park garden ceremony setting"
     },
-    "area": "Perth CBD",
+    "area": "Kings Park",
     "type": "PARK_RESERVE",
+    "indoorOutdoor": "OUTDOOR",
     "capacity": {
       "theatre": 100
-    },
-    "indoorOutdoor": "OUTDOOR",
-    "rules": {
-      "permitRequired": true,
-      "permitNotes": {
-        "en": "Event approval from the park's managing authority is required. Check site-specific conditions."
-      }
     },
     "accessible": true,
     "geo": {
       "lat": -31.961,
       "lng": 115.831
     },
-    "suitableFor": ["wedding", "proposal", "engagement", "celebration-of-life"]
+    "rules": {
+      "permitRequired": true,
+      "permitNotes": {
+        "en": "Ceremony sites are booked through the park's managing authority, and each site has its own conditions on numbers, furniture and amplified sound."
+      }
+    },
+    "suitableFor": [
+      "wedding",
+      "engagement",
+      "anniversary",
+      "cultural-celebration",
+      "celebration-of-life"
+    ],
+    "notes": {
+      "en": "Lawns and gardens above the city and the river, best for a ceremony or photographs with a reception held elsewhere. Sites are booked through the park authority and popular ones fill early in spring and autumn."
+    }
   },
   {
-    "slug": "matilda-bay-foreshore-placeholder",
+    "slug": "matilda-bay-foreshore",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Matilda Bay foreshore sunset setup"
+      "en": "Matilda Bay and the Swan River foreshore"
     },
     "area": "Crawley",
     "type": "PARK_RESERVE",
+    "indoorOutdoor": "OUTDOOR",
     "capacity": {
       "theatre": 80,
       "cocktail": 100
-    },
-    "indoorOutdoor": "OUTDOOR",
-    "rules": {
-      "permitRequired": true
     },
     "accessible": true,
     "geo": {
       "lat": -31.977,
       "lng": 115.818
     },
-    "suitableFor": ["wedding", "proposal", "engagement", "anniversary"]
+    "rules": {
+      "permitRequired": true,
+      "permitNotes": {
+        "en": "River reserves usually need a booking or permit from the local council or the managing authority once furniture, structures or larger groups are involved."
+      }
+    },
+    "suitableFor": ["wedding", "engagement", "anniversary", "baby-shower", "celebration-of-life"],
+    "notes": {
+      "en": "Grassed river reserves with the water and the city skyline behind you. Suited to a short ceremony, a picnic-style gathering or sunset drinks. Expect an afternoon breeze, and plan shade in summer."
+    }
   },
   {
-    "slug": "fremantle-heritage-hall-placeholder",
+    "slug": "perth-coast-beach",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Fremantle heritage warehouse or hall"
+      "en": "Beach or coastal reserve"
+    },
+    "area": "Perth coast",
+    "type": "PARK_RESERVE",
+    "indoorOutdoor": "OUTDOOR",
+    "accessible": false,
+    "rules": {
+      "permitRequired": true,
+      "permitNotes": {
+        "en": "Beach and coastal reserve ceremonies usually need a permit from the local council, with conditions on numbers, structures and access."
+      }
+    },
+    "suitableFor": ["wedding", "engagement", "anniversary", "celebration-of-life"],
+    "notes": {
+      "en": "Sand, dunes and an Indian Ocean sunset, from the northern beaches to Fremantle. Best for small ceremonies kept short, with a reception nearby. The sea breeze is usually strongest in the afternoon, so mornings and the hour before sunset are calmer."
+    }
+  },
+  {
+    "slug": "fremantle-heritage-hall",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "Fremantle heritage hall or warehouse"
     },
     "area": "Fremantle",
     "type": "HERITAGE",
+    "indoorOutdoor": "INDOOR",
     "capacity": {
       "banquet": 180,
       "cocktail": 250
     },
-    "indoorOutdoor": "INDOOR",
     "accessible": true,
     "geo": {
       "lat": -32.055,
       "lng": 115.747
     },
-    "suitableFor": ["wedding", "gala-dinner", "product-launch", "birthday-milestone"]
+    "suitableFor": [
+      "wedding",
+      "birthday-milestone",
+      "gala-dinner",
+      "cultural-celebration",
+      "engagement"
+    ],
+    "notes": {
+      "en": "Limestone walls, timber floors and high ceilings, close to the harbour. A blank canvas for styled dinners, launches and parties with dancing. Heritage buildings often have rules about fixings, candles and noise, which we check before designing the room."
+    }
   },
   {
-    "slug": "joondalup-community-hall-placeholder",
+    "slug": "perth-hills-garden",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "City of Joondalup community hall"
+      "en": "Perth Hills garden or orchard property"
     },
-    "area": "Joondalup",
+    "area": "Perth Hills",
+    "type": "OTHER",
+    "indoorOutdoor": "BOTH",
+    "capacity": {
+      "banquet": 120,
+      "cocktail": 150
+    },
+    "accessible": false,
+    "suitableFor": ["wedding", "engagement", "anniversary", "birthday-milestone", "baby-shower"],
+    "notes": {
+      "en": "Established gardens, orchards and bushland views around Kalamunda and Mundaring. Cooler than the coastal plain in the evening, and quiet. Allow for the drive from the city, and for fire restrictions on open flames in the warmer months."
+    }
+  },
+  {
+    "slug": "joondalup-community-hall",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "Council community hall"
+    },
+    "area": "Perth metro",
     "type": "COUNCIL_HALL",
+    "indoorOutdoor": "INDOOR",
     "capacity": {
       "banquet": 120,
       "cocktail": 180
     },
-    "indoorOutdoor": "INDOOR",
+    "accessible": true,
     "rules": {
-      "insuranceRequiredCents": 2000000000,
       "byo": true,
       "noiseNotes": {
-        "en": "Council curfew and bond conditions apply."
+        "en": "Council hire conditions apply, usually including a bond and a finishing time."
       }
     },
-    "accessible": true,
-    "geo": {
-      "lat": -31.745,
-      "lng": 115.766
-    },
-    "suitableFor": ["community-hall-event", "birthday-kids", "baby-shower", "wake"]
-  },
-  {
-    "slug": "canning-community-hall-placeholder",
-    "status": "placeholder",
-    "partnerStatus": "placeholder",
-    "name": {
-      "en": "City of Canning community hall"
-    },
-    "area": "Canning",
-    "type": "COUNCIL_HALL",
-    "indoorOutdoor": "INDOOR",
-    "rules": {
-      "insuranceRequiredCents": 2000000000
-    },
-    "accessible": true,
-    "geo": {
-      "lat": -32.017,
-      "lng": 115.934
-    },
-    "suitableFor": ["community-hall-event", "birthday-kids", "wake"]
-  },
-  {
-    "slug": "melville-community-hall-placeholder",
-    "status": "placeholder",
-    "partnerStatus": "placeholder",
-    "name": {
-      "en": "City of Melville community hall"
-    },
-    "area": "Melville",
-    "type": "COUNCIL_HALL",
-    "indoorOutdoor": "INDOOR",
-    "rules": {
-      "insuranceRequiredCents": 2000000000
-    },
-    "accessible": true,
-    "geo": {
-      "lat": -32.037,
-      "lng": 115.833
-    },
-    "suitableFor": ["community-hall-event", "baby-shower", "graduation", "memorial-service"]
+    "suitableFor": [
+      "cultural-celebration",
+      "birthday-milestone",
+      "baby-shower",
+      "memorial-service",
+      "wake",
+      "engagement"
+    ],
+    "notes": {
+      "en": "Practical, affordable rooms in most suburbs, usually with a kitchen and parking. A sound choice for large family events, memorial services and wakes. Councils set the hire conditions, which commonly include a bond, a finishing time and rules on alcohol."
+    }
   },
   {
     "slug": "luxury-backyard-marquee",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Luxury backyard marquee (your home)"
+      "en": "Marquee at your home"
     },
     "area": "Perth metro",
     "type": "PRIVATE_HOME",
     "indoorOutdoor": "OUTDOOR",
+    "accessible": false,
     "rules": {
       "noiseNotes": {
-        "en": "Neighbour notice and noise regulations apply; check marquee size and site access."
+        "en": "Let neighbours know in advance. Council noise rules apply to private homes."
       }
     },
-    "accessible": false,
-    "suitableFor": ["engagement", "birthday-milestone", "wake"]
+    "suitableFor": [
+      "engagement",
+      "birthday-milestone",
+      "anniversary",
+      "baby-shower",
+      "wake",
+      "celebration-of-life"
+    ],
+    "notes": {
+      "en": "Your own garden, with a marquee, flooring, lighting and furniture brought in and taken away. The most personal setting, and the most flexible on timing. We check access, level ground and power on a site visit before recommending a marquee size."
+    }
   },
   {
-    "slug": "riverside-function-centre-placeholder",
+    "slug": "riverside-function-centre",
     "status": "placeholder",
     "partnerStatus": "placeholder",
     "name": {
-      "en": "Riverside function centre (CBD)"
+      "en": "Riverside or city function centre"
     },
     "area": "Perth CBD",
     "type": "FUNCTION_CENTRE",
+    "indoorOutdoor": "INDOOR",
     "capacity": {
       "banquet": 300,
-      "rounds": 250,
       "cocktail": 400,
       "theatre": 350
     },
-    "indoorOutdoor": "INDOOR",
     "accessible": true,
     "geo": {
       "lat": -31.958,
@@ -206,9 +251,51 @@
     "suitableFor": [
       "wedding",
       "gala-dinner",
-      "end-of-year-party",
-      "product-launch",
-      "memorial-service"
-    ]
+      "cultural-celebration",
+      "memorial-service",
+      "birthday-milestone"
+    ],
+    "notes": {
+      "en": "Purpose-built rooms with in-house catering, staging and parking. The practical choice for larger seated dinners, award nights and big family receptions, and reliable in any weather."
+    }
+  },
+  {
+    "slug": "city-hotel-ballroom",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "City hotel ballroom"
+    },
+    "area": "Perth CBD",
+    "type": "HOTEL",
+    "indoorOutdoor": "INDOOR",
+    "capacity": {
+      "banquet": 250,
+      "cocktail": 350
+    },
+    "accessible": true,
+    "suitableFor": ["gala-dinner", "wedding", "cultural-celebration", "anniversary"],
+    "notes": {
+      "en": "Ballrooms and private rooms with accommodation upstairs, which helps when guests are travelling. Hotels cater and serve drinks in-house under their own licence."
+    }
+  },
+  {
+    "slug": "restaurant-private-room",
+    "status": "placeholder",
+    "partnerStatus": "placeholder",
+    "name": {
+      "en": "Restaurant private dining room"
+    },
+    "area": "Perth metro",
+    "type": "RESTAURANT",
+    "indoorOutdoor": "INDOOR",
+    "capacity": {
+      "banquet": 40
+    },
+    "accessible": true,
+    "suitableFor": ["anniversary", "engagement", "birthday-milestone", "baby-shower", "wake"],
+    "notes": {
+      "en": "A room of your own in a restaurant, for a long table and a set menu. The easiest option for smaller groups: no hire, no clean-up, and the kitchen is already there."
+    }
   }
 ]

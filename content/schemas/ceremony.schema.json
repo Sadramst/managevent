@@ -5,24 +5,81 @@
   "type": "object",
   "required": ["slug", "status", "family", "experienceMode", "name", "summary", "includes"],
   "properties": {
-    "slug": { "type": "string", "pattern": "^[a-z0-9-]+$" },
-    "status": { "enum": ["placeholder", "draft", "published"] },
-    "family": { "enum": ["CELEBRATION", "CULTURAL", "CORPORATE", "SOLEMN"] },
-    "experienceMode": { "enum": ["CELEBRATION", "MEMORIAL"] },
-    "name": { "$ref": "localized.schema.json" },
-    "summary": { "$ref": "localized.schema.json" },
-    "culturalNotes": { "$ref": "localized.schema.json" },
-    "includes": { "type": "array", "items": { "type": "string" } },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "status": {
+      "enum": ["placeholder", "draft", "published"]
+    },
+    "family": {
+      "enum": ["CELEBRATION", "CULTURAL", "CORPORATE", "SOLEMN"]
+    },
+    "experienceMode": {
+      "enum": ["CELEBRATION", "MEMORIAL"]
+    },
+    "name": {
+      "$ref": "localized.schema.json"
+    },
+    "summary": {
+      "$ref": "localized.schema.json"
+    },
+    "audience": {
+      "$ref": "localized.schema.json"
+    },
+    "culturalNotes": {
+      "$ref": "localized.schema.json"
+    },
+    "includes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "handles": {
+      "type": "array",
+      "items": {
+        "$ref": "localized.schema.json"
+      }
+    },
     "timelineTemplate": {
       "type": "array",
       "items": {
         "type": "object",
         "required": ["offsetMinutes", "label"],
         "properties": {
-          "offsetMinutes": { "type": "integer" },
-          "label": { "$ref": "localized.schema.json" }
+          "offsetMinutes": {
+            "type": "integer"
+          },
+          "label": {
+            "$ref": "localized.schema.json"
+          },
+          "detail": {
+            "$ref": "localized.schema.json"
+          }
         }
       }
+    },
+    "localNotes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["title", "body"],
+        "properties": {
+          "title": {
+            "$ref": "localized.schema.json"
+          },
+          "body": {
+            "$ref": "localized.schema.json"
+          }
+        }
+      }
+    },
+    "guestGuidance": {
+      "$ref": "localized.schema.json"
+    },
+    "invitationNotes": {
+      "$ref": "localized.schema.json"
     },
     "faq": {
       "type": "array",
@@ -30,17 +87,30 @@
         "type": "object",
         "required": ["q", "a"],
         "properties": {
-          "q": { "$ref": "localized.schema.json" },
-          "a": { "$ref": "localized.schema.json" }
+          "q": {
+            "$ref": "localized.schema.json"
+          },
+          "a": {
+            "$ref": "localized.schema.json"
+          }
         }
       }
     },
-    "relatedSlugs": { "type": "array", "items": { "type": "string" } },
+    "relatedSlugs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "seo": {
       "type": "object",
       "properties": {
-        "title": { "$ref": "localized.schema.json" },
-        "description": { "$ref": "localized.schema.json" }
+        "title": {
+          "$ref": "localized.schema.json"
+        },
+        "description": {
+          "$ref": "localized.schema.json"
+        }
       }
     }
   }

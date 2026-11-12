@@ -36,6 +36,10 @@ export {
   MEMORIAL_CEREMONY_SLUGS,
 } from "./experience-mode.js";
 
+export { ceremonyPagesEn, type CeremonyPagesCopy, getCeremonyPages } from "./ceremony-pages.js";
+
+export { fillCopy, getSitePages, sitePagesEn, type SitePagesCopy } from "./site-pages.js";
+
 export const ENABLED_LOCALES: readonly EnabledLocale[] = ["en"] as const;
 export const CONFIGURED_LOCALES: readonly Locale[] = ["en", "ar", "zh", "hi"] as const;
 

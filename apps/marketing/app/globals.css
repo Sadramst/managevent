@@ -201,7 +201,7 @@
 .estimator-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
-  gap: 2.5rem;
+  gap: 2rem 2.5rem;
   padding: 2.25rem;
   border-radius: 24px;
   background: var(--me-surface-raised);
@@ -210,6 +210,18 @@
 }
 .estimator-field {
   margin-block-end: 1.25rem;
+}
+.estimator-field:last-child {
+  margin-block-end: 0;
+}
+.estimator-field select {
+  margin-block-start: 0.4rem;
+}
+.estimator-hint {
+  margin-block: 0.45rem 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--me-ink-muted);
 }
 .estimator-range-header {
   display: flex;
@@ -270,33 +282,49 @@
   font-size: 0.9rem;
   color: var(--me-ink);
 }
+.estimator-output-foot {
+  margin-block-start: 1.5rem;
+}
+/* Full-width strip under the controls and the result */
 .estimator-logistics {
-  margin-block: 1.25rem;
-  padding-block: 1.15rem;
-  border-block: 1px solid color-mix(in srgb, var(--me-accent) 45%, transparent);
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2.2fr);
+  gap: 1rem 2.5rem;
+  align-items: center;
+  padding-block-start: 1.75rem;
+  border-block-start: 1px solid var(--me-rule);
+}
+.estimator-logistics h4 {
+  margin: 0;
+  font-size: 1.35rem;
 }
 .estimator-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.75rem;
-  margin-block-start: 0.5rem;
+  gap: 1.5rem;
+  margin: 0;
 }
 .estimator-metrics > div {
-  padding: 0.65rem;
-  border-radius: 8px;
-  background: var(--me-surface-raised);
-  border: 1px solid color-mix(in srgb, var(--me-accent) 35%, transparent);
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: flex-end;
+  padding-inline-start: 1rem;
+  border-inline-start: 2px solid var(--me-accent);
 }
-.estimator-metrics strong {
-  display: block;
-  font-size: 1.3rem;
+.estimator-metrics dd {
+  margin: 0;
+  font-family: var(--me-font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
   color: var(--me-primary);
+  font-variant-numeric: lining-nums;
 }
-.estimator-metrics span {
-  display: block;
-  font-size: 0.75rem;
+.estimator-metrics dt {
+  font-size: 0.85rem;
   color: var(--me-ink-muted);
-  line-height: 1.3;
+  line-height: 1.4;
 }
 .estimator-cta {
   inline-size: 100%;
@@ -452,22 +480,6 @@ form {
 /* This app wraps each control in its label, so the control carries the field rhythm. */
 label:not(.check) > :is(input, select, textarea) {
   margin-block: 0.4rem 1.15rem;
-}
-
-/* Legal Pages */
-.legal {
-  max-inline-size: 880px;
-  min-block-size: 65vh;
-}
-.legal h1 {
-  font-size: 3.2rem;
-}
-.legal p {
-  margin-block: 1.5rem;
-}
-.draft {
-  color: var(--me-primary);
-  font-weight: 600;
 }
 
 /* ==========================================================================
@@ -871,6 +883,7 @@ label:not(.check) > :is(input, select, textarea) {
 @media (max-width: 960px) {
   .hero-grid,
   .estimator-grid,
+  .estimator-logistics,
   .enquiry,
   .finance-grid {
     grid-template-columns: 1fr;
@@ -896,9 +909,23 @@ label:not(.check) > :is(input, select, textarea) {
   .admin-kpis,
   .admin-toolbar,
   .intake-grid,
-  .event-bridge-metrics,
-  .estimator-metrics {
+  .event-bridge-metrics {
     grid-template-columns: 1fr;
+  }
+  .estimator-metrics {
+    gap: 1rem;
+  }
+  .estimator-metrics > div {
+    padding-inline-start: 0.75rem;
+  }
+  .estimator-metrics dd {
+    font-size: 1.6rem;
+  }
+  .estimator-output {
+    padding: 1.25rem;
+  }
+  .hero-actions .button {
+    flex: 1 1 100%;
   }
   .estimator-grid,
   .enquiry-form-card,

@@ -19,5 +19,9 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/((?!_next|favicon.ico|icon.svg|sitemap.xml|robots.txt|opengraph-image|hero.webp).*)"],
+  // `/api/*` is left alone so route handlers (and the auth proxy to come) are never rewritten
+  // into the locale tree. Static files in /public are excluded for the same reason.
+  matcher: [
+    "/((?!api/|_next|favicon.ico|icon.svg|sitemap.xml|robots.txt|opengraph-image|hero.webp|brand/).*)",
+  ],
 };

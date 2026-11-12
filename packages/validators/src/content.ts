@@ -34,16 +34,33 @@ export const ContentCeremonySchema = z.object({
   experienceMode: ExperienceModeEnum,
   name: LocalizedTextSchema,
   summary: LocalizedTextSchema,
+  /** Who the ceremony is for (one short paragraph). */
+  audience: LocalizedTextSchema.optional(),
   culturalNotes: LocalizedTextSchema.optional(),
   includes: z.array(z.string().min(1)).min(1),
+  /** Plain-language checklist of what the agency handles. */
+  handles: z.array(LocalizedTextSchema).optional(),
   timelineTemplate: z
     .array(
       z.object({
         offsetMinutes: z.number().int(),
         label: LocalizedTextSchema,
+        detail: LocalizedTextSchema.optional(),
       }),
     )
     .optional(),
+  /** Local (Perth) planning considerations: settings, seasons, permits, liquor. */
+  localNotes: z
+    .array(
+      z.object({
+        title: LocalizedTextSchema,
+        body: LocalizedTextSchema,
+      }),
+    )
+    .optional(),
+  guestGuidance: LocalizedTextSchema.optional(),
+  /** How digital invitations and RSVP feed catering and seating for this ceremony. */
+  invitationNotes: LocalizedTextSchema.optional(),
   faq: z
     .array(
       z.object({

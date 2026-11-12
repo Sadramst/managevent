@@ -1,0 +1,214 @@
+{
+  "slug": "cultural-celebration",
+  "status": "draft",
+  "family": "CULTURAL",
+  "experienceMode": "CELEBRATION",
+  "name": {
+    "en": "Cultural and traditional celebrations"
+  },
+  "summary": {
+    "en": "Weddings, engagements and family ceremonies in Perth that follow your traditions, planned by a team that listens first."
+  },
+  "audience": {
+    "en": "For families holding a ceremony shaped by culture or faith: a multi-day wedding, a henna night, a tea ceremony, a blessing, a naming or a festival gathering. You and your elders know the tradition. Our part is the logistics around it, done the way you ask."
+  },
+  "culturalNotes": {
+    "en": "Every family keeps its traditions a little differently, so we do not work from a template. We ask who leads each part of the ceremony, what must happen and in what order, what food and drink are appropriate, and how guests should be seated, and we write the plan from your answers. If something is outside our experience we will say so, and learn it from you or the person you nominate."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "styling",
+    "florals",
+    "catering",
+    "cake-sweets",
+    "photo-video",
+    "entertainment",
+    "hire",
+    "av-lighting",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A plan for each event, when a celebration runs across several days or venues"
+    },
+    {
+      "en": "Venues with the capacity, kitchen access and finishing times large family events need"
+    },
+    {
+      "en": "Styling and staging built to your brief: a ceremonial table, stage, canopy or backdrop"
+    },
+    {
+      "en": "Caterers briefed on your requirements, such as halal, vegetarian or alcohol-free service"
+    },
+    {
+      "en": "Seating and room layouts that follow your customs"
+    },
+    {
+      "en": "Sound, lighting and a schedule agreed with your musicians, MC or officiant"
+    },
+    {
+      "en": "Hire of furniture, tableware, marquees and dance floors at scale"
+    },
+    {
+      "en": "On-the-day coordination that works with family elders, not around them"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -300,
+      "label": {
+        "en": "Set-up and staging"
+      },
+      "detail": {
+        "en": "Stage, ceremonial pieces, tables and lighting are built and checked against your brief."
+      }
+    },
+    {
+      "offsetMinutes": -60,
+      "label": {
+        "en": "Family arrival and preparation"
+      },
+      "detail": {
+        "en": "Close family arrive early. We confirm the order of events with whoever is leading the ceremony."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Guests are welcomed and shown to their seats. Arrival often runs over a longer window at large events, and we plan for it."
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "Ceremony or formal entrance"
+      },
+      "detail": {
+        "en": "The traditional ceremony, blessing or entrance, at the pace the tradition calls for."
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "Meal service"
+      },
+      "detail": {
+        "en": "Banquet, buffet or shared plates, with dietary meals identified from the RSVPs."
+      }
+    },
+    {
+      "offsetMinutes": 210,
+      "label": {
+        "en": "Music, dancing and customs"
+      },
+      "detail": {
+        "en": "Performances, dancing and the customs that belong to the evening."
+      }
+    },
+    {
+      "offsetMinutes": 330,
+      "label": {
+        "en": "Farewell and pack-down"
+      },
+      "detail": {
+        "en": "A formal send-off if there is one, then pack-down within the venue's finishing time."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Venues for large family events"
+      },
+      "body": {
+        "en": "Guest lists of two hundred or more are common, which points to larger function centres, hotel ballrooms and some council halls. If your caterer needs to cook on site, kitchen access becomes the deciding factor, so we check it before anything else."
+      }
+    },
+    {
+      "title": {
+        "en": "Outdoor ceremonies"
+      },
+      "body": {
+        "en": "Kings Park, the river foreshore and Swan Valley gardens are popular for a ceremony or photographs before an indoor reception. Public parks and reserves usually need a booking or permit, and conditions can limit structures, amplified music and open flames."
+      }
+    },
+    {
+      "title": {
+        "en": "Fire, candles and heat"
+      },
+      "body": {
+        "en": "If your ceremony uses a flame, candles or incense, we confirm the venue's rules in advance. Outdoors in the warmer months, fire restrictions and total fire bans can apply, and we plan an alternative so the ceremony can still go ahead."
+      }
+    },
+    {
+      "title": {
+        "en": "Alcohol-free and licensed events"
+      },
+      "body": {
+        "en": "Many celebrations are alcohol-free, and we plan drinks service accordingly. Where alcohol is served, the venue's licence or the right permit must be in place and serving staff hold Responsible Service of Alcohol training."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Plan the venue around your largest event. Between 150 and 400 guests is common for a wedding reception, with smaller numbers for a henna night, tea ceremony or blessing. Extended families often confirm late, so we set an RSVP date well ahead of the caterer's deadline."
+  },
+  "invitationNotes": {
+    "en": "For large family guest lists, import the list from a CSV file and send each household a private link by WhatsApp or email. One person can reply for the whole household, including children, and record dietary needs for each person. You can watch replies arrive in the dashboard, and the confirmed count is what we give the caterer."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Do you have experience with our tradition?"
+      },
+      "a": {
+        "en": "Tell us about your ceremony and we will answer honestly. Where we have not planned that tradition before, we will say so and take our lead from you and your family."
+      }
+    },
+    {
+      "q": {
+        "en": "Can we bring our own caterer?"
+      },
+      "a": {
+        "en": "Usually, yes, if the venue permits outside caterers and the caterer is a registered food business. We check both before you commit to the venue."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you plan several events over a week?"
+      },
+      "a": {
+        "en": "Yes. We plan them as one program with a run sheet for each event, so suppliers, hire and family know where to be each day."
+      }
+    },
+    {
+      "q": {
+        "en": "Can the invitation be in our language?"
+      },
+      "a": {
+        "en": "The invitation text is yours to write, so you can include wording in your own language alongside English. The guest pages and RSVP form are in English at present."
+      }
+    },
+    {
+      "q": {
+        "en": "What does it cost?"
+      },
+      "a": {
+        "en": "We provide a tailored quote for each event in your program. The estimator on our home page gives an indicative range only."
+      }
+    }
+  ],
+  "relatedSlugs": ["wedding", "engagement", "gala-dinner"],
+  "seo": {
+    "title": {
+      "en": "Cultural and traditional celebrations in Perth"
+    },
+    "description": {
+      "en": "Cultural weddings and family ceremonies in Perth, planned to your traditions: larger venues, staging, briefed caterers, household RSVPs and coordination on the day."
+    }
+  }
+}

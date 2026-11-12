@@ -1,10 +1,34 @@
-import type { ReactNode, CSSProperties } from "react";
+import type { ReactNode } from "react";
 import { notFound } from "next/navigation";
-import { getDir, t } from "@managevent/i18n";
+import { getDir, getSitePages, t } from "@managevent/i18n";
 import { SiteFooter, SiteHeader } from "@managevent/ui/brand";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
-import { contact, invitationUrl, localePath } from "../../lib/site";
+import type { Metadata } from "next";
+import { CurrentNav } from "../../components/current-nav";
+import { contact, invitationLinks, localePath, routes, siteUrl } from "../../lib/site";
 import "../globals.css";
+import "../site-pages.css";
+
+/** Resolves relative Open Graph and canonical URLs for every page under this layout. */
+export const metadata: Metadata = { metadataBase: new URL(siteUrl) };
+
+/**
+ * Memorial Mode for the whole page. A page opts in by rendering its `<main>` in Memorial Mode
+ * (through `getExperienceMode()`, see `ModeMain`); this rule then gives the header and footer
+ * the same palette, so no celebration colour frames a memorial page. The values come from the
+ * shared tokens, and the layout stays static because the rule is plain CSS. Celebration is the
+ * `:root` default in the token stylesheet.
+ */
+const memorialPageCss = `body:has(> main[data-experience-mode="memorial"]){${Object.entries(
+  getCssVariablesForMode("MEMORIAL"),
+)
+  .map(([name, value]) => `${name}:${value}`)
+  .join(";")}}`;
+
+/** English is the only enabled locale, so every page under it can be prerendered. */
+export function generateStaticParams() {
+  return [{ locale: "en" }];
+}
 
 export default async function LocaleLayout({
   children,
@@ -16,20 +40,23 @@ export default async function LocaleLayout({
   const { locale } = await params;
   if (locale !== "en") notFound();
 
+  const nav = getSitePages(locale).nav;
+  const link = (label: string, path: string) => ({ label, href: localePath(locale, path) });
   const home = localePath(locale);
-  const services = {
-    label: t(locale, "marketing.launchServicesNav"),
-    href: localePath(locale, "/#services"),
-  };
-  const estimator = {
-    label: t(locale, "marketing.launchEstimatorNav"),
-    href: localePath(locale, "/#estimator"),
-  };
-  const enquiry = { label: t(locale, "common.talkToUs"), href: localePath(locale, "/#enquiry") };
+
+  const ceremonies = link(nav.ceremonies, routes.ceremonies);
+  const services = link(nav.services, routes.services);
+  const invitations = link(nav.invitations, routes.invitations);
+  const pricing = link(nav.pricing, routes.pricing);
+  const about = link(nav.about, routes.about);
+  const talkToUs = link(t(locale, "common.talkToUs"), routes.contact);
 
   return (
-    <html lang={locale} dir={getDir(locale)}>
-      <body style={getCssVariablesForMode("CELEBRATION") as CSSProperties}>
+    <html lang={locale === "en" ? "en-AU" : locale} dir={getDir(locale)}>
+      <head>
+        <style dangerouslySetInnerHTML={{ __html: memorialPageCss }} />
+      </head>
+      <body>
         <a className="skip" href="#main">
           {t(locale, "marketing.launchSkip")}
         </a>
@@ -39,54 +66,43 @@ export default async function LocaleLayout({
           homeHref={home}
           navLabel={t(locale, "marketing.launchNavLabel")}
           menuLabel={t(locale, "marketing.launchMenu")}
-          navItems={[
-            services,
-            estimator,
-            {
-              label: t(locale, "marketing.launchVenuesNavShort"),
-              href: localePath(locale, "/#venues"),
-            },
-          ]}
-          crossLink={{
-            label: t(locale, "marketing.launchInvitationsNavShort"),
-            href: invitationUrl,
-            index: 1,
-          }}
-          cta={enquiry}
+          navItems={[ceremonies, services, invitations, pricing, about]}
+          cta={talkToUs}
         />
+        <CurrentNav />
         {children}
         <SiteFooter
           product="events"
           productLabel={t(locale, "marketing.launchProductEvents")}
           homeHref={home}
-          tagline={t(locale, "marketing.launchLocation")}
+          tagline={nav.footerTagline}
           columns={[
             {
-              title: t(locale, "marketing.launchFooterExplore"),
+              title: nav.footerPlan,
               links: [
-                {
-                  label: t(locale, "marketing.launchOccasionsNav"),
-                  href: localePath(locale, "/#occasions"),
-                },
+                ceremonies,
                 services,
-                estimator,
-                {
-                  label: t(locale, "marketing.launchVenuesNav"),
-                  href: localePath(locale, "/#venues"),
-                },
-                enquiry,
+                link(nav.venues, routes.venues),
+                link(nav.memorials, routes.memorials),
+                link(nav.howItWorks, routes.howItWorks),
+                pricing,
+              ],
+            },
+            {
+              title: nav.footerCompany,
+              links: [
+                about,
+                invitations,
+                link(nav.faq, routes.faq),
+                link(nav.contact, routes.contact),
               ],
             },
           ]}
           crossLinks={{
-            title: t(locale, "marketing.launchFooterSites"),
+            title: t(locale, "marketing.launchInvitationsNav"),
             links: [
-              { label: t(locale, "marketing.launchFooterEventsSite"), href: home },
-              {
-                label: t(locale, "marketing.launchFooterInvitationsSite"),
-                href: invitationUrl,
-                external: true,
-              },
+              { label: nav.invitationSite, href: invitationLinks.home, external: true },
+              { label: nav.invitationTemplates, href: invitationLinks.templates, external: true },
             ],
           }}
           contact={{
@@ -96,12 +112,9 @@ export default async function LocaleLayout({
           }}
           legalLabel={t(locale, "marketing.launchFooterLegal")}
           legalLinks={[
-            { label: t(locale, "marketing.launchPrivacy"), href: localePath(locale, "/privacy") },
-            { label: t(locale, "marketing.launchTerms"), href: localePath(locale, "/terms") },
-            {
-              label: t(locale, "marketing.launchAccessibility"),
-              href: localePath(locale, "/accessibility"),
-            },
+            link(t(locale, "marketing.launchPrivacy"), routes.privacy),
+            link(t(locale, "marketing.launchTerms"), routes.terms),
+            link(t(locale, "marketing.launchAccessibility"), routes.accessibility),
           ]}
           acknowledgement={t(locale, "legal.acknowledgementOfCountry")}
           byline={t(locale, "common.byAppilico")}

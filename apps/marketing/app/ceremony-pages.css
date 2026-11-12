@@ -1,0 +1,241 @@
+/* ==========================================================================
+   Ceremonies hub, ceremony detail, /venues and /memorials: page-specific styles.
+   Shared pieces (breadcrumbs, check lists, steps, timeline, FAQ, closing band)
+   come from site-pages.css and @managevent/ui/brand.css; only what is unique to
+   these pages lives here. Colours are tokens only and properties are logical,
+   so Memorial Mode and a right-to-left locale need no extra rules.
+   ========================================================================== */
+
+/* A page or section that sets its own experience mode repaints from the swapped tokens. */
+.cp-main {
+  background: var(--me-surface);
+  color: var(--me-ink);
+}
+
+/* Whole-card link: the heading link stretches over the card, the text stays selectable. */
+.cp-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  transition: border-color var(--me-duration-ui) var(--me-ease);
+}
+.cp-card:hover,
+.cp-card:focus-within {
+  border-color: var(--me-primary);
+}
+.cp-card .card-title a {
+  color: inherit;
+  text-decoration: none;
+}
+.cp-card .card-title a::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.cp-card .card-body {
+  flex: 1;
+}
+.cp-card-more {
+  margin-block: 1rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--me-primary);
+}
+.cp-card-tag {
+  align-self: flex-start;
+  margin-block-end: 0.75rem;
+}
+
+/* Prose beside the "what we handle" sheet */
+.cp-prose > h2 {
+  margin-block-start: 0;
+}
+.cp-prose > h3 {
+  margin-block: 2rem 0.5rem;
+}
+.cp-prose > p {
+  color: var(--me-ink-muted);
+}
+.cp-note {
+  margin-block: 1.5rem 0;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid var(--me-rule);
+  color: var(--me-ink-muted);
+  font-size: 0.94rem;
+}
+
+/* Run sheet: the shared timeline, with a step title above each description */
+.cp-timeline {
+  max-inline-size: 960px;
+}
+.cp-timeline > li {
+  grid-template-columns: minmax(0, 11rem) minmax(0, 1fr);
+}
+.cp-timeline h3 {
+  margin-block: 0 0.2rem;
+  font-size: 1.3rem;
+  line-height: 1.2;
+}
+.cp-timeline p {
+  color: var(--me-ink-muted);
+}
+.cp-timeline .sp-timeline-when {
+  font-family: var(--me-font-body);
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--me-accent-strong);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Short titled notes (Perth considerations, guides, what we arrange) */
+.cp-notes h3 {
+  margin-block: 0 0.5rem;
+  font-size: 1.4rem;
+}
+.cp-notes p {
+  margin-block: 0;
+  color: var(--me-ink-muted);
+  font-size: 0.96rem;
+}
+
+/* Settings */
+.cp-setting {
+  display: flex;
+  flex-direction: column;
+  scroll-margin-block-start: calc(var(--me-header-block) + 1rem);
+}
+.cp-setting:target {
+  border-color: var(--me-primary);
+  box-shadow: var(--me-shadow-raised);
+}
+.cp-setting .pills {
+  margin-block-end: 1rem;
+}
+.cp-setting-meta {
+  margin-block: 0 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--me-accent-strong);
+}
+.cp-setting h3 {
+  margin-block: 0 0.6rem;
+}
+.cp-setting-body {
+  color: var(--me-ink-muted);
+  font-size: 0.96rem;
+}
+.cp-setting-permit {
+  margin-block: 0.5rem 1rem;
+  padding-inline-start: 1rem;
+  border-inline-start: 3px solid var(--me-accent);
+  font-size: 0.9rem;
+}
+.cp-setting-permit strong {
+  display: block;
+}
+.cp-setting-permit span {
+  color: var(--me-ink-muted);
+}
+.cp-suits {
+  margin-block: auto 0;
+  padding-block-start: 1rem;
+  border-block-start: 1px solid var(--me-rule-soft);
+  font-size: 0.9rem;
+  color: var(--me-ink-muted);
+}
+.cp-suits a {
+  color: var(--me-primary);
+  text-decoration: underline;
+  text-decoration-color: var(--me-rule-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+.cp-suits a:hover {
+  text-decoration-color: currentColor;
+}
+/* Link styling (weight, colour, arrow) is shared with .sp-more in site-pages.css. */
+.cp-setting-ask {
+  align-self: flex-start;
+  margin-block-start: 0.5rem;
+}
+
+/* Invitation tie-in */
+.cp-invite {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 3rem;
+  align-items: start;
+}
+.cp-invite h2 {
+  margin-block-start: 0;
+}
+.cp-invite-plan {
+  font-size: 0.94rem;
+  color: var(--me-ink-muted);
+}
+.cp-invite-side {
+  padding-inline-start: 2rem;
+  border-inline-start: 1px solid var(--me-rule-strong);
+}
+
+/* Memorials: scope ("what we do, and what we do not") */
+.cp-scope h3 {
+  margin-block: 0 0.75rem;
+}
+.cp-plain-list {
+  margin: 0;
+  padding-inline-start: 1.1rem;
+  color: var(--me-ink-muted);
+}
+.cp-plain-list li {
+  margin-block-end: 0.4rem;
+}
+
+/* Contact card in the memorials hero */
+.cp-reach {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.cp-reach h2 {
+  margin: 0;
+  font-size: 1.6rem;
+}
+.cp-reach p {
+  margin: 0;
+  color: var(--me-ink-muted);
+}
+.cp-reach a {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  font-weight: 600;
+  color: var(--me-primary);
+  text-underline-offset: 0.25em;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 960px) {
+  .cp-invite {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .cp-invite-side {
+    padding-inline-start: 0;
+    padding-block-start: 2rem;
+    border-inline-start: 0;
+    border-block-start: 1px solid var(--me-rule-strong);
+  }
+}
+
+@media (max-width: 680px) {
+  .cp-timeline > li {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Memorial Mode has no arch motif: the hero card keeps its title and drops the arch mark. */
+[data-experience-mode="memorial"] .sp-arch-mark {
+  display: none;
+}

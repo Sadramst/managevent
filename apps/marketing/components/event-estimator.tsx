@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type CSSProperties } from "react";
-import { getExperienceMode, t } from "@managevent/i18n";
+import { getExperienceMode, t, type TranslationKey } from "@managevent/i18n";
 import type { EnabledLocale } from "@managevent/types";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
 
@@ -11,9 +11,14 @@ export interface EstimateTransferPayload {
   summaryText: string;
 }
 
+type Tier = "ESSENTIAL" | "SIGNATURE" | "LUXE";
+type Zone = "METRO" | "OUTER" | "REGIONAL";
+
+// DECISION-NEEDED(pricing): these rates are working assumptions, not founder-approved prices
+// (docs/business/PRICING_MODEL.md). The estimator is labelled indicative everywhere it appears.
 const CATEGORY_RATES_CENTS: Record<
   string,
-  { baseFixedCents: number; perGuestCents: Record<"ESSENTIAL" | "SIGNATURE" | "LUXE", number> }
+  { baseFixedCents: number; perGuestCents: Record<Tier, number> }
 > = {
   wedding: {
     baseFixedCents: 280000,
@@ -33,22 +38,77 @@ const CATEGORY_RATES_CENTS: Record<
   },
 };
 
-const ZONE_SURCHARGE_CENTS: Record<"METRO" | "OUTER" | "REGIONAL", number> = {
+const ZONE_SURCHARGE_CENTS: Record<Zone, number> = {
   METRO: 0,
   OUTER: 35000,
   REGIONAL: 85000,
 };
 
-function formatAudFromCents(cents: number): string {
-  const dollars = Math.round(cents / 100);
-  return `$${dollars.toLocaleString("en-AU")} AUD`;
+const CATEGORIES: readonly { slug: string; label: TranslationKey }[] = [
+  { slug: "wedding", label: "marketing.launchEstCatWedding" },
+  { slug: "birthday-milestone", label: "marketing.launchEstCatBirthday" },
+  { slug: "gala-dinner", label: "marketing.launchEstCatCorporate" },
+  { slug: "celebration-of-life", label: "marketing.launchEstCatMemorial" },
+];
+
+const TIERS: readonly { value: Tier; label: TranslationKey; hint: TranslationKey }[] = [
+  {
+    value: "ESSENTIAL",
+    label: "marketing.launchEstTierEssential",
+    hint: "marketing.launchEstTierEssentialHint",
+  },
+  {
+    value: "SIGNATURE",
+    label: "marketing.launchEstTierSignature",
+    hint: "marketing.launchEstTierSignatureHint",
+  },
+  { value: "LUXE", label: "marketing.launchEstTierLuxe", hint: "marketing.launchEstTierLuxeHint" },
+];
+
+const ZONES: readonly { value: Zone; label: TranslationKey; hint: TranslationKey }[] = [
+  {
+    value: "METRO",
+    label: "marketing.launchEstZoneMetro",
+    hint: "marketing.launchEstZoneMetroHint",
+  },
+  {
+    value: "OUTER",
+    label: "marketing.launchEstZoneOuter",
+    hint: "marketing.launchEstZoneOuterHint",
+  },
+  {
+    value: "REGIONAL",
+    label: "marketing.launchEstZoneRegional",
+    hint: "marketing.launchEstZoneRegionalHint",
+  },
+];
+
+/** Whole Australian dollars, e.g. 2370000 cents -> "$23,700". The label carries "AUD". */
+function formatDollarsFromCents(cents: number): string {
+  return `$${Math.round(cents / 100).toLocaleString("en-AU")}`;
 }
 
-export function EventEstimator({ locale }: { locale: EnabledLocale }) {
+/** Page-supplied wording. Each label falls back to the launch copy when omitted. */
+export interface EstimatorLabels {
+  badge?: string;
+  memorialBadge?: string;
+  /** Uses a `{count}` placeholder, e.g. "{count} guests". */
+  guestsUnit?: string;
+  logisticsTitle?: string;
+  disclaimer?: string;
+}
+
+export function EventEstimator({
+  locale,
+  labels = {},
+}: {
+  locale: EnabledLocale;
+  labels?: EstimatorLabels;
+}) {
   const [ceremonySlug, setCeremonySlug] = useState<string>("wedding");
   const [guests, setGuests] = useState<number>(100);
-  const [tier, setTier] = useState<"ESSENTIAL" | "SIGNATURE" | "LUXE">("SIGNATURE");
-  const [zone, setZone] = useState<"METRO" | "OUTER" | "REGIONAL">("METRO");
+  const [tier, setTier] = useState<Tier>("SIGNATURE");
+  const [zone, setZone] = useState<Zone>("METRO");
 
   const mode = getExperienceMode(ceremonySlug);
   const rates = CATEGORY_RATES_CENTS[ceremonySlug] ?? CATEGORY_RATES_CENTS.wedding!;
@@ -61,21 +121,24 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
   const highTotalCents = Math.round((midTotalCents * 1.12) / 10000) * 10000;
   const avgPerGuestCents = Math.round(midTotalCents / safeGuests);
 
-  // Logistics bridge calculations
+  // What the guest count usually means for tables, staff and dessert.
   const recommendedTables = Math.ceil(safeGuests / 10);
   const recommendedCrew = Math.max(2, Math.ceil(safeGuests / 22));
   const recommendedPortions = mode === "MEMORIAL" ? safeGuests : Math.ceil(safeGuests * 1.08);
 
+  const tierOption = TIERS.find((option) => option.value === tier) ?? TIERS[1]!;
+  const zoneOption = ZONES.find((option) => option.value === zone) ?? ZONES[0]!;
+
   const handleApplyToEnquiry = () => {
-    const tierName =
-      tier === "ESSENTIAL" ? "Essential" : tier === "SIGNATURE" ? "Signature" : "Luxe 0-to-100";
-    const zoneName =
-      zone === "METRO"
-        ? "Perth Metro"
-        : zone === "OUTER"
-          ? "Swan Valley / Perth Hills"
-          : "Regional WA";
-    const summaryText = `Estimator Summary: ${safeGuests} guests · ${tierName} tier · ${zoneName} · Est. ${formatAudFromCents(lowTotalCents)} – ${formatAudFromCents(highTotalCents)} (incl. GST). Logistics: ${recommendedTables} tables, ${recommendedCrew} crew.`;
+    const summaryText = t(locale, "marketing.launchEstSummary", {
+      guests: safeGuests,
+      tier: t(locale, tierOption.label),
+      zone: t(locale, zoneOption.label),
+      low: formatDollarsFromCents(lowTotalCents),
+      high: formatDollarsFromCents(highTotalCents),
+      tables: recommendedTables,
+      crew: recommendedCrew,
+    });
 
     window.dispatchEvent(
       new CustomEvent<EstimateTransferPayload>("managevent:apply-estimate", {
@@ -109,14 +172,11 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
             value={ceremonySlug}
             onChange={(e) => setCeremonySlug(e.target.value)}
           >
-            <option value="wedding">{t(locale, "marketing.launchEstCatWedding")}</option>
-            <option value="birthday-milestone">
-              {t(locale, "marketing.launchEstCatBirthday")}
-            </option>
-            <option value="gala-dinner">{t(locale, "marketing.launchEstCatCorporate")}</option>
-            <option value="celebration-of-life">
-              {t(locale, "marketing.launchEstCatMemorial")}
-            </option>
+            {CATEGORIES.map((option) => (
+              <option key={option.slug} value={option.slug}>
+                {t(locale, option.label)}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -124,7 +184,7 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
           <div className="estimator-range-header">
             <label htmlFor="est-guests">{t(locale, "marketing.launchEstGuestsLabel")}</label>
             <strong className="estimator-guest-badge" dir="ltr">
-              {safeGuests} guests
+              {(labels.guestsUnit ?? "{count} guests").replace("{count}", String(safeGuests))}
             </strong>
           </div>
           <input
@@ -151,12 +211,18 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
           <select
             id="est-tier"
             value={tier}
-            onChange={(e) => setTier(e.target.value as "ESSENTIAL" | "SIGNATURE" | "LUXE")}
+            aria-describedby="est-tier-hint"
+            onChange={(e) => setTier(e.target.value as Tier)}
           >
-            <option value="ESSENTIAL">{t(locale, "marketing.launchEstTierEssential")}</option>
-            <option value="SIGNATURE">{t(locale, "marketing.launchEstTierSignature")}</option>
-            <option value="LUXE">{t(locale, "marketing.launchEstTierLuxe")}</option>
+            {TIERS.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t(locale, option.label)}
+              </option>
+            ))}
           </select>
+          <p className="estimator-hint" id="est-tier-hint">
+            {t(locale, tierOption.hint)}
+          </p>
         </div>
 
         <div className="estimator-field">
@@ -164,56 +230,69 @@ export function EventEstimator({ locale }: { locale: EnabledLocale }) {
           <select
             id="est-zone"
             value={zone}
-            onChange={(e) => setZone(e.target.value as "METRO" | "OUTER" | "REGIONAL")}
+            aria-describedby="est-zone-hint"
+            onChange={(e) => setZone(e.target.value as Zone)}
           >
-            <option value="METRO">{t(locale, "marketing.launchEstZoneMetro")}</option>
-            <option value="OUTER">{t(locale, "marketing.launchEstZoneOuter")}</option>
-            <option value="REGIONAL">{t(locale, "marketing.launchEstZoneRegional")}</option>
+            {ZONES.map((option) => (
+              <option key={option.value} value={option.value}>
+                {t(locale, option.label)}
+              </option>
+            ))}
           </select>
+          <p className="estimator-hint" id="est-zone-hint">
+            {t(locale, zoneOption.hint)}
+          </p>
         </div>
       </div>
 
       <div className="estimator-output">
         <div className="estimator-output-top">
           <span className="estimator-badge">
-            {mode === "MEMORIAL"
-              ? "Memorial Mode · Respectful Coordination"
-              : "0-to-100 Full Service · Perth WA"}
+            {(mode === "MEMORIAL" ? labels.memorialBadge : undefined) ??
+              labels.badge ??
+              t(locale, "marketing.launchEstimatorKicker")}
           </span>
           <h3>{t(locale, "marketing.launchEstResultTitle")}</h3>
           <p className="estimator-label">{t(locale, "marketing.launchEstRangeLabel")}</p>
-          <p className="estimator-price" dir="ltr">
-            {formatAudFromCents(lowTotalCents)} – {formatAudFromCents(highTotalCents)}
+          <p className="estimator-price" dir="ltr" aria-live="polite">
+            <span>{formatDollarsFromCents(lowTotalCents)}</span>
+            <span aria-hidden="true"> – </span>
+            <span className="sr-only"> to </span>
+            <span>{formatDollarsFromCents(highTotalCents)}</span>
           </p>
           <p className="estimator-subprice">
             {t(locale, "marketing.launchEstPerGuestLabel")}:{" "}
-            <strong dir="ltr">{formatAudFromCents(avgPerGuestCents)}</strong> (
+            <strong dir="ltr">{formatDollarsFromCents(avgPerGuestCents)}</strong> (
             {t(locale, "common.inclGst")})
           </p>
         </div>
 
-        <div className="estimator-logistics">
-          <h4>{t(locale, "marketing.launchEstLogisticsTitle")}</h4>
-          <div className="estimator-metrics">
-            <div>
-              <strong dir="ltr">{recommendedTables}</strong>
-              <span>{t(locale, "marketing.launchEstTablesLabel")}</span>
-            </div>
-            <div>
-              <strong dir="ltr">{recommendedCrew}</strong>
-              <span>{t(locale, "marketing.launchEstStaffLabel")}</span>
-            </div>
-            <div>
-              <strong dir="ltr">{recommendedPortions}</strong>
-              <span>{t(locale, "marketing.launchEstCakeLabel")}</span>
-            </div>
-          </div>
+        <div className="estimator-output-foot">
+          <button type="button" className="button estimator-cta" onClick={handleApplyToEnquiry}>
+            {t(locale, "marketing.launchEstApplyBtn")}
+          </button>
+          <p className="estimator-disclaimer">
+            {labels.disclaimer ?? t(locale, "marketing.launchEstDisclaimer")}
+          </p>
         </div>
+      </div>
 
-        <button type="button" className="button estimator-cta" onClick={handleApplyToEnquiry}>
-          {t(locale, "marketing.launchEstApplyBtn")}
-        </button>
-        <p className="estimator-disclaimer">{t(locale, "marketing.launchEstDisclaimer")}</p>
+      <div className="estimator-logistics">
+        <h4>{labels.logisticsTitle ?? t(locale, "marketing.launchEstLogisticsTitle")}</h4>
+        <dl className="estimator-metrics">
+          <div>
+            <dt>{t(locale, "marketing.launchEstTablesLabel")}</dt>
+            <dd dir="ltr">{recommendedTables}</dd>
+          </div>
+          <div>
+            <dt>{t(locale, "marketing.launchEstStaffLabel")}</dt>
+            <dd dir="ltr">{recommendedCrew}</dd>
+          </div>
+          <div>
+            <dt>{t(locale, "marketing.launchEstCakeLabel")}</dt>
+            <dd dir="ltr">{recommendedPortions}</dd>
+          </div>
+        </dl>
       </div>
     </div>
   );

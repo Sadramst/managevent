@@ -1,13 +1,16 @@
 {
   "slug": "wedding",
-  "status": "placeholder",
+  "status": "draft",
   "family": "CELEBRATION",
   "experienceMode": "CELEBRATION",
   "name": {
     "en": "Weddings"
   },
   "summary": {
-    "en": "PLACEHOLDER – Your whole wedding, from the first idea to the last dance."
+    "en": "Your whole wedding in Perth, planned and delivered by one team: the setting, the styling, the food, the guest list and the day itself."
+  },
+  "audience": {
+    "en": "For couples who want one planner to hold the whole day together, whether that is forty guests under the trees in the Perth Hills or a long-table dinner for two hundred in the Swan Valley. We also step in part-way, if you have a venue booked and need the rest brought together."
   },
   "includes": [
     "planning",
@@ -19,7 +22,199 @@
     "photo-video",
     "entertainment",
     "hire",
+    "av-lighting",
     "invitations",
     "staffing"
-  ]
+  ],
+  "handles": [
+    {
+      "en": "A planning timeline and budget you can see, with one planner as your contact"
+    },
+    {
+      "en": "Venue shortlist and site visits, including a wet-weather plan for outdoor ceremonies"
+    },
+    {
+      "en": "Park, beach or foreshore bookings and permits where the setting needs them"
+    },
+    {
+      "en": "Styling for the ceremony and reception: arbour, aisle, tables, linen, signage and lighting"
+    },
+    {
+      "en": "Catering, cake and bar coordination, sized from your confirmed RSVPs"
+    },
+    {
+      "en": "Furniture, tableware, marquee and dance-floor hire, delivered and collected"
+    },
+    {
+      "en": "Briefing and scheduling your celebrant, photographer, musicians and MC"
+    },
+    {
+      "en": "On-the-day coordination from first delivery to final pack-down"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -240,
+      "label": {
+        "en": "Set-up begins"
+      },
+      "detail": {
+        "en": "Hire, florals and styling arrive. We check the ceremony site and the reception room against the floor plan."
+      }
+    },
+    {
+      "offsetMinutes": -60,
+      "label": {
+        "en": "Suppliers in place"
+      },
+      "detail": {
+        "en": "Celebrant, musicians and photographer are briefed. Sound is tested and reserved seats are marked."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive"
+      },
+      "detail": {
+        "en": "Guests are welcomed and seated. With door check-in, we know who has arrived before the ceremony starts."
+      }
+    },
+    {
+      "offsetMinutes": 30,
+      "label": {
+        "en": "Ceremony"
+      },
+      "detail": {
+        "en": "Around twenty to thirty minutes, timed so the light is kind for photographs afterwards."
+      }
+    },
+    {
+      "offsetMinutes": 75,
+      "label": {
+        "en": "Drinks and photographs"
+      },
+      "detail": {
+        "en": "Canapés and drinks for guests while you have family and couple portraits taken."
+      }
+    },
+    {
+      "offsetMinutes": 165,
+      "label": {
+        "en": "Reception dinner"
+      },
+      "detail": {
+        "en": "Entrance, meal service and speeches, with each dietary meal sent to the right seat."
+      }
+    },
+    {
+      "offsetMinutes": 300,
+      "label": {
+        "en": "Cake, first dance and dancing"
+      },
+      "detail": {
+        "en": "The evening opens up. We keep the run sheet moving and watch the venue's finishing time."
+      }
+    },
+    {
+      "offsetMinutes": 420,
+      "label": {
+        "en": "Farewell and pack-down"
+      },
+      "detail": {
+        "en": "Guests leave, gifts and personal items are gathered, and hire is collected."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Choosing the setting"
+      },
+      "body": {
+        "en": "Swan Valley wineries suit a ceremony and reception in one place. Kings Park and the Swan River foreshore give you a city backdrop with a reception elsewhere. Fremantle's heritage halls work well for larger dinners, and Perth Hills gardens are cooler and quieter. We will talk you through the travel time between ceremony and reception before you commit."
+      }
+    },
+    {
+      "title": {
+        "en": "Season, heat and light"
+      },
+      "body": {
+        "en": "March to May and September to November are the most comfortable months for outdoor weddings. In summer we plan ceremonies for late afternoon, with shade, cold water and a short running time. Perth has no daylight saving: the sun sets at about 7.20 pm in late December and about 5.20 pm in June, so the ceremony time moves with the season. The afternoon sea breeze can be strong near the coast, which affects arbours, candles and veils."
+      }
+    },
+    {
+      "title": {
+        "en": "Permits for parks and beaches"
+      },
+      "body": {
+        "en": "Public parks, beaches and river reserves usually need a booking or permit from the local council or the managing authority, and popular sites book out early for spring and autumn Saturdays. Conditions often cover guest numbers, furniture, amplified music and confetti. We make the booking and work within the conditions."
+      }
+    },
+    {
+      "title": {
+        "en": "Bars and alcohol"
+      },
+      "body": {
+        "en": "Licensed venues run their own bar. Elsewhere, alcohol can only be sold under the right licence, and the people serving it need current Responsible Service of Alcohol training. We arrange trained bar staff and confirm the licence position for your venue before anything is ordered."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Sixty to one hundred and fifty guests is the usual range for a Perth wedding. Under 40, a restaurant private room, a garden or your own home opens up. Over 150, the choice narrows to larger function rooms, wineries with a marquee lawn and heritage halls, and it is worth settling the venue before the guest list is final."
+  },
+  "invitationNotes": {
+    "en": "Send a digital invitation with a private link for each household. Guests reply for each person and add dietary needs and allergies, which are stored encrypted and collected with their consent. As replies come in, we size the catering order, the cake and the seating plan from real numbers instead of a guess, and each special meal is matched to a seat."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "How far ahead should we start planning?"
+      },
+      "a": {
+        "en": "Twelve months gives the widest choice of venues and dates, especially for Saturdays in spring and autumn. We can work to a shorter timeline; the choice of settings is simply smaller. Tell us your date range and we will be honest about what is realistic."
+      }
+    },
+    {
+      "q": {
+        "en": "Do you handle the legal side of getting married?"
+      },
+      "a": {
+        "en": "Your authorised celebrant does. They lodge the Notice of Intended Marriage, which must be given at least one month before the wedding, and they register the marriage afterwards. We coordinate with your celebrant so the ceremony runs to time."
+      }
+    },
+    {
+      "q": {
+        "en": "Can you work with a venue or suppliers we have already booked?"
+      },
+      "a": {
+        "en": "Yes. Tell us what is in place and we will plan around it, then coordinate those suppliers alongside ours on the day."
+      }
+    },
+    {
+      "q": {
+        "en": "What does a wedding cost?"
+      },
+      "a": {
+        "en": "It depends on guest numbers, the setting and how much you would like us to handle, so we give a tailored quote after a conversation. The estimator on our home page gives an indicative range to start from. It is a guide, not a quote."
+      }
+    },
+    {
+      "q": {
+        "en": "What happens if it rains?"
+      },
+      "a": {
+        "en": "Every outdoor ceremony we plan has a wet-weather option agreed in advance: a covered area at the venue, a marquee, or a nearby indoor space. We make the call with you on the day, early enough to move things calmly."
+      }
+    }
+  ],
+  "relatedSlugs": ["engagement", "cultural-celebration", "anniversary"],
+  "seo": {
+    "title": {
+      "en": "Wedding planning in Perth"
+    },
+    "description": {
+      "en": "Full-service wedding planning in Perth: venue, permits, styling, catering, hire and on-the-day coordination, with digital invitations and RSVPs that size the catering."
+    }
+  }
 }

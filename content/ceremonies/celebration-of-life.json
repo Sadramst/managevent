@@ -9,6 +9,9 @@
   "summary": {
     "en": "A gathering that honours their life, arranged gently and completely, so your family can be together."
   },
+  "audience": {
+    "en": "For families who would like to remember someone with warmth: their stories, their music, the people they loved. A celebration of life may follow a funeral, or be held weeks or months later when family can travel. There is no set form, and we will follow yours."
+  },
   "includes": [
     "planning",
     "venue",
@@ -16,34 +19,182 @@
     "florals",
     "tribute-display",
     "slideshow",
+    "av-lighting",
+    "hire",
     "invitations",
     "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A calm conversation about what you would like, at a pace that suits you"
+    },
+    {
+      "en": "A venue or setting that meant something to them, or one close to family"
+    },
+    {
+      "en": "Catering for the gathering, from afternoon tea to a shared meal"
+    },
+    {
+      "en": "Flowers, and a display of photographs and belongings"
+    },
+    {
+      "en": "A slideshow, their music, and a microphone for those who wish to speak"
+    },
+    {
+      "en": "Seating, shade and access arranged for older guests"
+    },
+    {
+      "en": "A digital invitation and tribute book, provided without charge"
+    },
+    {
+      "en": "Quiet coordination on the day, so no one in the family has to manage it"
+    }
   ],
   "timelineTemplate": [
     {
       "offsetMinutes": -120,
       "label": {
-        "en": "Venue preparation & tribute display"
+        "en": "The room is prepared"
+      },
+      "detail": {
+        "en": "The venue, tribute display and seating are set. Sound and slideshow are checked."
       }
     },
     {
       "offsetMinutes": 0,
       "label": {
         "en": "Guests gather"
+      },
+      "detail": {
+        "en": "Guests are welcomed quietly and shown to the tribute display and the tribute book."
       }
     },
     {
       "offsetMinutes": 20,
       "label": {
-        "en": "Words of remembrance"
+        "en": "Welcome and words of remembrance"
+      },
+      "detail": {
+        "en": "A family member, friend or celebrant opens. Speakers follow in the order you have chosen."
+      }
+    },
+    {
+      "offsetMinutes": 50,
+      "label": {
+        "en": "Music and photographs"
+      },
+      "detail": {
+        "en": "A piece of their music, with the slideshow."
       }
     },
     {
       "offsetMinutes": 60,
       "label": {
-        "en": "Refreshments & time together"
+        "en": "Refreshments and time together"
+      },
+      "detail": {
+        "en": "Food and drinks are served. People talk, and share stories in their own time."
+      }
+    },
+    {
+      "offsetMinutes": 180,
+      "label": {
+        "en": "The gathering closes"
+      },
+      "detail": {
+        "en": "Guests leave when they are ready. We pack down and return photographs and belongings to the family."
       }
     }
   ],
-  "relatedSlugs": ["memorial-service", "wake"]
+  "localNotes": [
+    {
+      "title": {
+        "en": "Settings"
+      },
+      "body": {
+        "en": "Families often choose a place the person loved: a garden, the river foreshore, a bowling or surf club, a winery, or home. Community halls and function rooms are a practical choice when many people are expected."
+      }
+    },
+    {
+      "title": {
+        "en": "Public parks, beaches and the river"
+      },
+      "body": {
+        "en": "A gathering in a public park, on a beach or beside the river usually needs a booking or permit from the local council or the managing authority once there is furniture or a larger group. We make the arrangements."
+      }
+    },
+    {
+      "title": {
+        "en": "Heat and comfort"
+      },
+      "body": {
+        "en": "In the warmer months we suggest a morning or late-afternoon gathering, with shade, seating and water. In winter, an indoor space or a covered area is kinder for older guests."
+      }
+    },
+    {
+      "title": {
+        "en": "Working with your funeral director"
+      },
+      "body": {
+        "en": "If a funeral director is involved, we fit our timing around the service they are conducting. Their role and ours are separate: we arrange the gathering, and they provide all funeral services."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Numbers are often hard to know. Thirty to one hundred and fifty people is usual, and more may come than you expect when a notice is shared widely. An invitation with RSVP gives you a guide, and we plan catering with a sensible margin."
+  },
+  "invitationNotes": {
+    "en": "Memorial invitations are complimentary. The invitation uses a calm memorial design, with the date, time and place set out plainly. Guests can reply, note dietary needs, and leave a message in the tribute book. Every message is held for your approval before anyone else sees it. The number of replies guides the catering."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Do you provide funeral services?"
+      },
+      "a": {
+        "en": "No. We do not provide funeral director services, such as care of the person who has died, transport, burial or cremation. We arrange the gathering, and we are glad to work alongside the funeral director you choose."
+      }
+    },
+    {
+      "q": {
+        "en": "How soon can a gathering be arranged?"
+      },
+      "a": {
+        "en": "Often within a few days, depending on the venue. If you are planning for a later date, there is no need to hurry. Call us and we will talk it through."
+      }
+    },
+    {
+      "q": {
+        "en": "Is there a charge for the invitation?"
+      },
+      "a": {
+        "en": "No. Memorial invitations and the tribute book are complimentary, whether or not we arrange the gathering."
+      }
+    },
+    {
+      "q": {
+        "en": "Who can see the tribute messages?"
+      },
+      "a": {
+        "en": "Only messages you approve are shown to other guests. You can read every message first, and keep any of them private."
+      }
+    },
+    {
+      "q": {
+        "en": "What will it cost?"
+      },
+      "a": {
+        "en": "We will give you a clear written quote for the gathering after we have spoken, with nothing added later."
+      }
+    }
+  ],
+  "relatedSlugs": ["memorial-service", "wake"],
+  "seo": {
+    "title": {
+      "en": "Celebration of life gatherings in Perth"
+    },
+    "description": {
+      "en": "Celebration of life gatherings in Perth, arranged gently: venue, catering, flowers and tribute display, with a complimentary memorial invitation and tribute book."
+    }
+  }
 }

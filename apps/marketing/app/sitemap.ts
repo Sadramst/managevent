@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
-import { siteUrl } from "../lib/site";
+import { loadCeremonies } from "../lib/content";
+import { absoluteUrl, routes, sitemapPaths } from "../lib/site";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   if (process.env.VERCEL_ENV === "preview") return [];
-  return ["", "/privacy", "/terms", "/accessibility"].map((path) => ({
-    url: `${siteUrl}${path}`,
-  }));
+  const ceremonyPaths = loadCeremonies()
+    .map((ceremony) => `${routes.ceremonies}/${ceremony.slug}`)
+    .sort();
+  return [...sitemapPaths, ...ceremonyPaths].map((path) => ({ url: absoluteUrl(path) }));
 }

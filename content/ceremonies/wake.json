@@ -1,0 +1,190 @@
+{
+  "slug": "wake",
+  "status": "draft",
+  "family": "SOLEMN",
+  "experienceMode": "MEMORIAL",
+  "name": {
+    "en": "Wakes and gatherings after a funeral"
+  },
+  "summary": {
+    "en": "Refreshments and a place to be together after the funeral, arranged at short notice so the family has one less thing to carry."
+  },
+  "audience": {
+    "en": "For families who need somewhere for people to gather after a funeral service: at home, in a hall, or at a venue near the chapel or cemetery. A wake is usually arranged within days, so we keep the decisions few and simple."
+  },
+  "includes": [
+    "planning",
+    "venue",
+    "catering",
+    "florals",
+    "tribute-display",
+    "hire",
+    "invitations",
+    "staffing"
+  ],
+  "handles": [
+    {
+      "en": "A venue close to the service, or everything needed to host at home"
+    },
+    {
+      "en": "Catering suited to the time of day: tea and sandwiches, finger food or a meal"
+    },
+    {
+      "en": "Tea, coffee and cold drinks, with staff to serve and clear"
+    },
+    {
+      "en": "Tables, chairs, crockery and shade hire"
+    },
+    {
+      "en": "Flowers and a small display of photographs"
+    },
+    {
+      "en": "Timing agreed with your funeral director, so the room is ready when guests arrive"
+    },
+    {
+      "en": "A digital invitation with the details, provided without charge"
+    },
+    {
+      "en": "Set-up, service and pack-down, so the family does not have to host"
+    }
+  ],
+  "timelineTemplate": [
+    {
+      "offsetMinutes": -90,
+      "label": {
+        "en": "The room is prepared"
+      },
+      "detail": {
+        "en": "Tables, seating, photographs and flowers are set while the funeral service is under way."
+      }
+    },
+    {
+      "offsetMinutes": -15,
+      "label": {
+        "en": "Ready"
+      },
+      "detail": {
+        "en": "Tea and coffee are made and food is ready to serve."
+      }
+    },
+    {
+      "offsetMinutes": 0,
+      "label": {
+        "en": "Guests arrive from the service"
+      },
+      "detail": {
+        "en": "Guests are welcomed and offered a drink. Seats are kept for the family."
+      }
+    },
+    {
+      "offsetMinutes": 15,
+      "label": {
+        "en": "Refreshments"
+      },
+      "detail": {
+        "en": "Food is served and replenished quietly."
+      }
+    },
+    {
+      "offsetMinutes": 45,
+      "label": {
+        "en": "A few words, if wished"
+      },
+      "detail": {
+        "en": "Some families invite a toast or a few informal memories. It is entirely optional."
+      }
+    },
+    {
+      "offsetMinutes": 120,
+      "label": {
+        "en": "The gathering closes"
+      },
+      "detail": {
+        "en": "Guests leave in their own time. We clear and pack down, and leave any remaining food with the family if they would like it."
+      }
+    }
+  ],
+  "localNotes": [
+    {
+      "title": {
+        "en": "Close to the service"
+      },
+      "body": {
+        "en": "A short drive from the chapel, church or cemetery matters more than anything else. We look for a hall, club, function room or café near the service, with parking and step-free access."
+      }
+    },
+    {
+      "title": {
+        "en": "At home"
+      },
+      "body": {
+        "en": "Many families prefer to gather at home. We bring the catering, seating and staff, and take everything away afterwards."
+      }
+    },
+    {
+      "title": {
+        "en": "Short notice"
+      },
+      "body": {
+        "en": "Wakes are often arranged in two to five days. Tell us the date, the place of the service and a rough number, and we will come back to you with a simple plan."
+      }
+    },
+    {
+      "title": {
+        "en": "Alcohol"
+      },
+      "body": {
+        "en": "If you would like to offer a drink, a licensed venue will serve it under its own licence. At home, drinks you provide to your guests can be served by our trained staff."
+      }
+    }
+  ],
+  "guestGuidance": {
+    "en": "Numbers are uncertain by nature. Not everyone at the service will come on to the wake, and some will come only for a short while. We suggest a number with you, cater with a margin and choose food that keeps well."
+  },
+  "invitationNotes": {
+    "en": "Memorial invitations are complimentary. When time is short, a single link shared by WhatsApp or email gives everyone the time and address of both the service and the wake. Guests can reply if you would like a guide to numbers, and can leave a message for the family in the tribute book."
+  },
+  "faq": [
+    {
+      "q": {
+        "en": "Do you provide funeral services?"
+      },
+      "a": {
+        "en": "No. We do not provide funeral director services, such as care of the person who has died, transport, burial or cremation. We arrange the gathering after the service and coordinate our timing with your funeral director."
+      }
+    },
+    {
+      "q": {
+        "en": "How quickly can you arrange a wake?"
+      },
+      "a": {
+        "en": "Usually within a few days. Please call us, as that is the quickest way to get started."
+      }
+    },
+    {
+      "q": {
+        "en": "We do not know how many people will come. What should we do?"
+      },
+      "a": {
+        "en": "That is normal. We will suggest a number based on the service and plan the catering so it can stretch."
+      }
+    },
+    {
+      "q": {
+        "en": "What will it cost?"
+      },
+      "a": {
+        "en": "We will give you a clear written quote after we have spoken, with nothing added later."
+      }
+    }
+  ],
+  "relatedSlugs": ["celebration-of-life", "memorial-service"],
+  "seo": {
+    "title": {
+      "en": "Wake catering and coordination in Perth"
+    },
+    "description": {
+      "en": "Wakes and gatherings after a funeral in Perth, arranged at short notice: a venue near the service or at home, catering, staff, seating and a complimentary invitation."
+    }
+  }
+}

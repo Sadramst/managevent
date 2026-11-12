@@ -1,20 +1,54 @@
 "use client";
 
-import { useActionState, useEffect, useState } from "react";
-import { getExperienceMode, t } from "@managevent/i18n";
+import { useActionState, useEffect, useMemo, useState } from "react";
+import { getExperienceMode, t, type TranslationKey } from "@managevent/i18n";
 import type { EnabledLocale } from "@managevent/types";
 import { submitEnquiry } from "../app/actions";
 import { localePath } from "../lib/site";
 import { resolveVenueName, type VenueRef } from "../lib/venue-prefill";
 import type { EstimateTransferPayload } from "./event-estimator";
 
+export interface CeremonyOption {
+  slug: string;
+  label: string;
+}
+
+/** Used only when a page does not pass the ceremony catalogue from `/content`. */
+const FALLBACK_CEREMONIES: readonly { slug: string; label: TranslationKey }[] = [
+  { slug: "wedding", label: "ceremonies.wedding" },
+  { slug: "birthday-milestone", label: "ceremonies.birthdayMilestone" },
+  { slug: "gala-dinner", label: "ceremonies.galaDinner" },
+  { slug: "celebration-of-life", label: "ceremonies.celebrationOfLife" },
+  { slug: "memorial-service", label: "ceremonies.memorialService" },
+  { slug: "wake", label: "ceremonies.wake" },
+];
+const OTHER_OCCASION = "other-occasion";
+
+/**
+ * The enquiry form used on the home page (#enquiry) and on /contact. It posts through a server
+ * action, so it submits without JavaScript; the prefill effects below are enhancements only.
+ */
 export function EnquiryForm({
   locale,
+  ceremonies,
   venues = [],
 }: {
   locale: EnabledLocale;
+  /** The occasions offered in the select, normally every ceremony that has a page. */
+  ceremonies?: readonly CeremonyOption[];
   venues?: readonly VenueRef[];
 }) {
+  const options = useMemo<CeremonyOption[]>(
+    () => [
+      ...(ceremonies ??
+        FALLBACK_CEREMONIES.map((option) => ({
+          slug: option.slug,
+          label: t(locale, option.label),
+        }))),
+      { slug: OTHER_OCCASION, label: t(locale, "marketing.launchOther") },
+    ],
+    [ceremonies, locale],
+  );
   const [state, action, pending] = useActionState(submitEnquiry, { status: "idle" });
   const [ceremony, setCeremony] = useState("");
   const [unknownDate, setUnknownDate] = useState(false);
@@ -23,6 +57,15 @@ export function EnquiryForm({
   const [venueName, setVenueName] = useState<string | undefined>();
   const mode = getExperienceMode(ceremony);
   const invalid = (name: string) => state.fields?.includes(name) || undefined;
+
+  useEffect(() => {
+    // Ceremony pages link here with ?ceremony=<slug>; only known options are accepted.
+    const requested = new URLSearchParams(window.location.search).getAll("ceremony");
+    const slug = requested.length === 1 ? requested[0] : undefined;
+    if (slug && options.some((option) => option.slug === slug)) {
+      setCeremony((current) => current || slug);
+    }
+  }, [options]);
 
   useEffect(() => {
     const name = resolveVenueName(
@@ -111,13 +154,11 @@ export function EnquiryForm({
             onChange={(event) => setCeremony(event.target.value)}
           >
             <option value="">{t(locale, "marketing.launchChoose")}</option>
-            <option value="wedding">{t(locale, "ceremonies.wedding")}</option>
-            <option value="birthday-milestone">{t(locale, "ceremonies.birthdayMilestone")}</option>
-            <option value="gala-dinner">{t(locale, "ceremonies.galaDinner")}</option>
-            <option value="celebration-of-life">{t(locale, "ceremonies.celebrationOfLife")}</option>
-            <option value="memorial-service">{t(locale, "ceremonies.memorialService")}</option>
-            <option value="wake">{t(locale, "ceremonies.wake")}</option>
-            <option value="other-occasion">{t(locale, "marketing.launchOther")}</option>
+            {options.map((option) => (
+              <option key={option.slug} value={option.slug}>
+                {option.label}
+              </option>
+            ))}
           </select>
         </label>
         <label>

@@ -48,7 +48,7 @@ jobs:
       STRIPE_SECRET_KEY: sk_test_ci_mock_only
       STRIPE_WEBHOOK_SECRET: whsec_ci_mock_only
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 2
       - uses: pnpm/action-setup@v4 # reads "packageManager" from package.json
@@ -88,7 +88,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Shell syntax and ShellCheck
         run: |
           for script in infra/vps/*.sh; do bash -n "$script"; done
@@ -130,7 +130,7 @@ jobs:
           - app: invitation
             smoke: test -f .next/BUILD_ID
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: docker/setup-buildx-action@v3
       # Verifies the Dockerfile only: the image is built and loaded locally, never pushed.
       - name: Build image (no push)
@@ -223,7 +223,7 @@ jobs:
     permissions:
       contents: read
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - uses: gitleaks/gitleaks-action@v2

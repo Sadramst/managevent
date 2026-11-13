@@ -131,7 +131,7 @@ jobs:
             smoke: test -f .next/BUILD_ID
     steps:
       - uses: actions/checkout@v4
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@v4
       # Verifies the Dockerfile only: the image is built and loaded locally, never pushed.
       - name: Build image (no push)
         uses: docker/build-push-action@v6

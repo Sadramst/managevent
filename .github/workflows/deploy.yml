@@ -58,7 +58,7 @@ jobs:
       sha: ${{ steps.pick.outputs.sha }}
       prefix: ${{ steps.pick.outputs.prefix }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           fetch-depth: 0
@@ -109,7 +109,7 @@ jobs:
       matrix:
         app: [api, worker, marketing, invitation]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: ${{ needs.resolve.outputs.sha }}
       - uses: docker/setup-buildx-action@v3

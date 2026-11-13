@@ -55,6 +55,7 @@ export function EnquiryForm({
   const [guestEstimate, setGuestEstimate] = useState("");
   const [message, setMessage] = useState("");
   const [venueName, setVenueName] = useState<string | undefined>();
+  const [estimateApplied, setEstimateApplied] = useState(false);
   const mode = getExperienceMode(ceremony);
   const invalid = (name: string) => state.fields?.includes(name) || undefined;
 
@@ -85,6 +86,7 @@ export function EnquiryForm({
       if (!customEvent.detail) return;
       setCeremony(customEvent.detail.ceremonySlug);
       setGuestEstimate(String(customEvent.detail.guests));
+      setEstimateApplied(true);
       setMessage((prev) =>
         prev ? `${customEvent.detail.summaryText}\n\n${prev}` : customEvent.detail.summaryText,
       );
@@ -95,21 +97,31 @@ export function EnquiryForm({
 
   if (state.status === "sent")
     return (
-      <p role="status" className="success">
-        {t(locale, "marketing.launchSuccess")}
-      </p>
+      <div role="status" className="success enquiry-confirmation">
+        <span className="badge badge-success">Enquiry received</span>
+        <p>{t(locale, "marketing.launchSuccess")}</p>
+      </div>
     );
   return (
     <form action={action} noValidate data-experience-mode={mode.toLowerCase()}>
       {state.status === "invalid" && (
-        <p role="alert" id="form-errors">
+        <p role="alert" id="form-errors" className="alert alert-danger enquiry-alert">
           {t(locale, "marketing.launchInvalid")}
         </p>
       )}
-      {state.status === "failed" && <p role="alert">{t(locale, "marketing.launchFailure")}</p>}
+      {state.status === "failed" && (
+        <p role="alert" className="alert alert-danger enquiry-alert">
+          {t(locale, "marketing.launchFailure")}
+        </p>
+      )}
       {venueName && (
-        <p role="status" className="venue-note">
+        <p role="status" className="alert venue-note">
           {t(locale, "marketing.launchVenueNote", { venue: venueName })}
+        </p>
+      )}
+      {estimateApplied && (
+        <p aria-live="polite" className="alert estimate-note">
+          Estimate attached from the guide above — adjust any details below if needed.
         </p>
       )}
       <div className="fields">

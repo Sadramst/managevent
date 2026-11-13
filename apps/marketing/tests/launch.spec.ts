@@ -276,7 +276,7 @@ test("unknown pages return a real 404 with the branded page", async ({ page }) =
     await expect(page.locator("h1")).toContainText("This page could not be found");
     await expect(page).toHaveTitle(/Page not found/);
     await expect(page.locator(".site-header-bar")).toBeVisible();
-    await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
+    await expect(page.locator('meta[name="robots"]').first()).toHaveAttribute("content", /noindex/);
     expect(await fitsViewport(page)).toBe(true);
     expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   }

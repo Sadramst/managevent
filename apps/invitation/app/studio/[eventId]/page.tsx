@@ -121,6 +121,12 @@ export default async function EventOverviewPage({
                   {fillCopy(text.checklist.progress, { done: doneCount, total: steps.length })}
                 </p>
               </div>
+              <progress
+                className="es-meter es-checklist-meter"
+                max={steps.length}
+                value={doneCount}
+                aria-label={text.checklist.title}
+              />
               <ol className="es-checklist">
                 {steps.map((step) => (
                   <li key={step.key} data-done={step.done ? true : undefined}>

@@ -167,6 +167,9 @@
   font-size: 0.9rem;
   color: var(--me-ink-muted);
 }
+.console-inbox tbody tr > * {
+  transition: background-color var(--me-duration-micro) var(--me-ease);
+}
 .console-inbox .console-row-link {
   color: var(--me-primary);
   font-weight: 600;

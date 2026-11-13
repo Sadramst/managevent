@@ -58,6 +58,12 @@ export function BrandLogo({
         <path className="brand-mark-line" strokeWidth="1" d="M8.5 49V24a15.5 15.5 0 0 1 31 0v25" />
         <path
           className="brand-mark-line"
+          strokeWidth="1"
+          strokeLinecap="round"
+          d="M12 51.5c4-2 16-2 24 0"
+        />
+        <path
+          className="brand-mark-line"
           strokeWidth="2.4"
           strokeLinejoin="round"
           strokeLinecap="round"

@@ -93,8 +93,11 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
         </div>
       </section>
 
-      <section className="sp-perth-band" aria-label={copy.perthPillarsTitle}>
+      <section className="sp-perth-band" aria-labelledby="perth-pillars-heading">
         <div className="wrap sp-perth-grid">
+          <h2 id="perth-pillars-heading" className="sr-only">
+            {copy.perthPillarsTitle}
+          </h2>
           {copy.perthPillars.map((pillar, index) => (
             <div key={pillar.title} className="sp-perth-col">
               <span className="sp-perth-num" aria-hidden="true">

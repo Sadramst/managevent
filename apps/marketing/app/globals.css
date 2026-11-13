@@ -71,6 +71,7 @@
   margin-block-start: 1.6rem;
 }
 .hero-arch-card {
+  position: relative;
   border: 1.5px solid var(--me-accent);
   border-start-start-radius: 180px;
   border-start-end-radius: 180px;
@@ -79,6 +80,15 @@
   padding: 2.75rem 1.75rem 1.75rem;
   background: color-mix(in srgb, var(--me-ink) 76%, transparent);
   backdrop-filter: blur(8px);
+  box-shadow: var(--me-shadow-raised);
+}
+.hero-arch-card::before {
+  content: "";
+  position: absolute;
+  inset: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--me-accent) 40%, transparent);
+  border-radius: inherit;
+  pointer-events: none;
 }
 .hero-arch-kicker {
   text-align: center;
@@ -148,15 +158,17 @@
 .hero-quick-pill {
   display: inline-flex;
   align-items: center;
-  padding: 0.35rem 0.85rem;
+  min-block-size: 44px;
+  padding: 0.5rem 1rem;
   border-radius: 999px;
-  font-size: 0.82rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 600;
   text-decoration: none;
   background: color-mix(in srgb, var(--me-ink) 55%, transparent);
   border: 1px solid color-mix(in srgb, var(--me-accent) 45%, transparent);
   color: var(--me-on-primary);
-  transition: background var(--me-duration-micro) var(--me-ease),
+  transition:
+    background var(--me-duration-micro) var(--me-ease),
     border-color var(--me-duration-micro) var(--me-ease),
     transform var(--me-duration-micro) var(--me-ease);
 }
@@ -189,7 +201,7 @@
   font-family: var(--me-font-display);
   font-size: 1.35rem;
   font-weight: 600;
-  color: var(--me-accent);
+  color: var(--me-accent-strong);
   margin-block-end: 0.35rem;
   line-height: 1;
 }
@@ -297,7 +309,11 @@
   border-radius: 24px;
   background: var(--me-surface-raised);
   border: 1.5px solid var(--me-accent);
+  box-shadow: var(--me-shadow-soft);
   color: var(--me-ink);
+}
+.estimator-grid[data-experience-mode="memorial"] {
+  box-shadow: none;
 }
 .estimator-field {
   margin-block-end: 1.25rem;
@@ -340,6 +356,41 @@
   font-size: 0.78rem;
   color: var(--me-ink-muted);
 }
+.estimator-presets {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-block-start: 0.65rem;
+}
+.estimator-preset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-block-size: 44px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface);
+  color: var(--me-ink);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--me-duration-micro) var(--me-ease),
+    border-color var(--me-duration-micro) var(--me-ease),
+    color var(--me-duration-micro) var(--me-ease);
+}
+.estimator-preset:hover {
+  border-color: var(--me-primary);
+  background: var(--me-tint);
+}
+.estimator-preset[aria-pressed="true"] {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+}
 .estimator-output {
   display: flex;
   flex-direction: column;
@@ -355,6 +406,9 @@
   font-weight: 600;
   color: var(--me-primary);
   margin-block-end: 0.35rem;
+}
+.estimator-summary-chips {
+  margin-block: 0.25rem 0.9rem;
 }
 .estimator-label {
   font-size: 0.85rem;
@@ -419,6 +473,16 @@
 }
 .estimator-cta {
   inline-size: 100%;
+}
+.estimator-applied {
+  margin-block: 0.75rem 0;
+  padding: 0.6rem 0.85rem;
+  border-radius: var(--me-radius-control);
+  border-inline-start: 3px solid var(--me-success);
+  background: var(--me-surface-raised);
+  font-size: 0.86rem;
+  font-weight: 600;
+  color: var(--me-success);
 }
 .estimator-disclaimer {
   font-size: 0.76rem;
@@ -561,6 +625,23 @@
   border-radius: 24px;
   background: var(--me-surface-raised);
   border: 1px solid color-mix(in srgb, var(--me-accent) 55%, transparent);
+  box-shadow: var(--me-shadow-soft);
+}
+[data-experience-mode="memorial"] .enquiry-form-card {
+  box-shadow: none;
+}
+.enquiry-alert,
+.estimate-note {
+  margin-block: 0 1.25rem;
+}
+.enquiry-confirmation {
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+}
+.enquiry-confirmation p {
+  margin: 0;
+  font-weight: 600;
 }
 
 /* Forms */

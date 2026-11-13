@@ -83,6 +83,8 @@ const ZONES: readonly { value: Zone; label: TranslationKey; hint: TranslationKey
   },
 ];
 
+const GUEST_PRESETS = [50, 100, 150, 250] as const;
+
 /** Whole Australian dollars, e.g. 2370000 cents -> "$23,700". The label carries "AUD". */
 function formatDollarsFromCents(cents: number): string {
   return `$${Math.round(cents / 100).toLocaleString("en-AU")}`;
@@ -109,6 +111,7 @@ export function EventEstimator({
   const [guests, setGuests] = useState<number>(100);
   const [tier, setTier] = useState<Tier>("SIGNATURE");
   const [zone, setZone] = useState<Zone>("METRO");
+  const [applied, setApplied] = useState<boolean>(false);
 
   const mode = getExperienceMode(ceremonySlug);
   const rates = CATEGORY_RATES_CENTS[ceremonySlug] ?? CATEGORY_RATES_CENTS.wedding!;
@@ -149,6 +152,7 @@ export function EventEstimator({
         },
       }),
     );
+    setApplied(true);
 
     const enquirySection = document.getElementById("enquiry");
     if (enquirySection) {
@@ -170,7 +174,10 @@ export function EventEstimator({
           <select
             id="est-ceremony"
             value={ceremonySlug}
-            onChange={(e) => setCeremonySlug(e.target.value)}
+            onChange={(e) => {
+              setCeremonySlug(e.target.value);
+              setApplied(false);
+            }}
           >
             {CATEGORIES.map((option) => (
               <option key={option.slug} value={option.slug}>
@@ -194,7 +201,10 @@ export function EventEstimator({
             max={400}
             step={10}
             value={safeGuests}
-            onChange={(e) => setGuests(Number(e.target.value))}
+            onChange={(e) => {
+              setGuests(Number(e.target.value));
+              setApplied(false);
+            }}
             className="estimator-slider"
           />
           <div className="estimator-scale" dir="ltr" aria-hidden="true">
@@ -204,6 +214,30 @@ export function EventEstimator({
             <span>300</span>
             <span>400+</span>
           </div>
+          <div
+            className="estimator-presets"
+            role="group"
+            aria-label={t(locale, "marketing.launchEstGuestsLabel")}
+          >
+            {GUEST_PRESETS.map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className="estimator-preset"
+                aria-pressed={safeGuests === preset}
+                aria-label={(labels.guestsUnit ?? "{count} guests").replace(
+                  "{count}",
+                  String(preset),
+                )}
+                onClick={() => {
+                  setGuests(preset);
+                  setApplied(false);
+                }}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="estimator-field">
@@ -212,7 +246,10 @@ export function EventEstimator({
             id="est-tier"
             value={tier}
             aria-describedby="est-tier-hint"
-            onChange={(e) => setTier(e.target.value as Tier)}
+            onChange={(e) => {
+              setTier(e.target.value as Tier);
+              setApplied(false);
+            }}
           >
             {TIERS.map((option) => (
               <option key={option.value} value={option.value}>
@@ -231,7 +268,10 @@ export function EventEstimator({
             id="est-zone"
             value={zone}
             aria-describedby="est-zone-hint"
-            onChange={(e) => setZone(e.target.value as Zone)}
+            onChange={(e) => {
+              setZone(e.target.value as Zone);
+              setApplied(false);
+            }}
           >
             {ZONES.map((option) => (
               <option key={option.value} value={option.value}>
@@ -253,6 +293,10 @@ export function EventEstimator({
               t(locale, "marketing.launchEstimatorKicker")}
           </span>
           <h3>{t(locale, "marketing.launchEstResultTitle")}</h3>
+          <div className="pills estimator-summary-chips" aria-label="Selected options">
+            <span className="pill">{t(locale, tierOption.label)}</span>
+            <span className="pill">{t(locale, zoneOption.label)}</span>
+          </div>
           <p className="estimator-label">{t(locale, "marketing.launchEstRangeLabel")}</p>
           <p className="estimator-price" dir="ltr" aria-live="polite">
             <span>{formatDollarsFromCents(lowTotalCents)}</span>
@@ -271,6 +315,11 @@ export function EventEstimator({
           <button type="button" className="button estimator-cta" onClick={handleApplyToEnquiry}>
             {t(locale, "marketing.launchEstApplyBtn")}
           </button>
+          {applied && (
+            <p className="estimator-applied" aria-live="polite">
+              Estimate attached to your enquiry below.
+            </p>
+          )}
           <p className="estimator-disclaimer">
             {labels.disclaimer ?? t(locale, "marketing.launchEstDisclaimer")}
           </p>

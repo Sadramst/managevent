@@ -145,6 +145,8 @@ describe("brand.css rules", () => {
     expect(code).toContain("prefers-reduced-motion: reduce");
     expect(code).toContain(":focus-visible");
     expect(code).toContain('[data-experience-mode="memorial"]');
+    expect(code).toContain("--me-shadow-soft:");
+    expect(code).toMatch(/\[data-experience-mode="memorial"\][\s\S]*box-shadow:\s*none/);
   });
 });
 

@@ -1706,7 +1706,9 @@ dialog.dialog:not(.drawer) {
 .es-swatch[data-selected],
 .es-gate[data-selected] {
   border-color: var(--me-primary);
-  box-shadow: 0 0 0 1px var(--me-primary);
+  box-shadow:
+    0 0 0 1px var(--me-primary),
+    var(--me-shadow-soft);
   background: var(--me-tint);
 }
 /* On the tinted selected card the muted grey falls under 4.5:1 in Memorial Mode. */
@@ -2146,6 +2148,7 @@ button.es-step:hover {
 .es-publish {
   padding: 1.5rem;
   border-inline-start: 4px solid var(--me-accent);
+  box-shadow: var(--me-shadow-soft);
   scroll-margin-block-start: calc(var(--me-header-block) + 5rem);
 }
 .es-publish[data-state="live"] {
@@ -2216,6 +2219,9 @@ button.es-step:hover {
 .es-block-head p {
   margin: 0;
 }
+.es-checklist-meter {
+  margin-block-end: 0.9rem;
+}
 .es-checklist {
   margin: 0;
   padding: 0;
@@ -2223,6 +2229,8 @@ button.es-step:hover {
   border: 1px solid var(--me-rule);
   border-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
+  overflow: hidden;
 }
 .es-checklist li {
   display: flex;
@@ -2230,6 +2238,10 @@ button.es-step:hover {
   gap: 1rem;
   padding: 0.9rem 1.25rem;
   border-block-end: 1px solid var(--me-rule-soft);
+  transition: background-color var(--me-duration-micro) var(--me-ease);
+}
+.es-checklist li:hover {
+  background: var(--me-tint);
 }
 .es-checklist li:last-child {
   border-block-end: 0;
@@ -2426,7 +2438,8 @@ button.es-step:hover {
   border-block-end: 0;
   border-start-start-radius: var(--me-radius-panel);
   border-start-end-radius: var(--me-radius-panel);
-  background: var(--me-surface-raised);
+  background: color-mix(in srgb, var(--me-surface-raised) 94%, transparent);
+  backdrop-filter: blur(8px);
   box-shadow: 0 -8px 24px -18px color-mix(in srgb, var(--me-ink) 35%, transparent);
 }
 .es-savebar-inner {
@@ -2984,6 +2997,11 @@ form > .es-toggle:first-child {
   border: 1px solid var(--me-rule);
   border-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
+  transition: border-color var(--me-duration-micro) var(--me-ease);
+}
+.sb-party:hover {
+  border-color: var(--me-rule-strong);
 }
 .sb-party-main {
   display: grid;
@@ -3589,6 +3607,7 @@ form > .es-toggle:first-child {
   border: 1px solid var(--me-rule);
   border-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
 }
 .sb-wish-head {
   display: flex;
@@ -3771,6 +3790,9 @@ form > .es-toggle:first-child {
   font-size: 1.15rem;
   border-width: 1.5px;
 }
+.sb-door-search > input:focus-visible {
+  border-color: var(--me-primary);
+}
 .sb-door-search > .icon-button {
   position: absolute;
   inset-block-start: 8px;
@@ -3860,6 +3882,7 @@ form > .es-toggle:first-child {
   border: 1px solid var(--me-rule);
   border-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
   overflow: hidden;
 }
 .sb-door-row {
@@ -3869,6 +3892,10 @@ form > .es-toggle:first-child {
   gap: 0.75rem 1rem;
   padding: 0.85rem 1.15rem;
   border-block-end: 1px solid var(--me-rule-soft);
+  transition: background-color var(--me-duration-micro) var(--me-ease);
+}
+.sb-door-row:hover {
+  background: var(--me-tint);
 }
 .sb-door-row:last-child {
   border-block-end: 0;
@@ -4426,4 +4453,10 @@ form > .es-toggle:first-child {
 .sb-qr-link > input {
   inline-size: 100%;
   font-size: 0.9rem;
+}
+
+/* Memorial Mode stays calm and flat inside Studio and Door Check-In. */
+:is(.es-scope, .sb-door-page)[data-experience-mode="memorial"]
+  :is(.es-publish, .es-checklist, .sb-party, .sb-wish, .sb-door-list) {
+  box-shadow: none;
 }

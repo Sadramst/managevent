@@ -34,9 +34,12 @@
     --me-tint: color-mix(in srgb, var(--me-primary) 6%, var(--me-surface-raised));
     --me-primary-hover: color-mix(in srgb, var(--me-primary) 88%, var(--me-ink));
     --me-scrim: color-mix(in srgb, var(--me-ink) 55%, transparent);
+    --me-shadow-soft:
+      0 1px 2px color-mix(in srgb, var(--me-ink) 4%, transparent),
+      0 6px 18px -12px color-mix(in srgb, var(--me-ink) 14%, transparent);
     --me-shadow-raised:
-      0 1px 2px color-mix(in srgb, var(--me-ink) 6%, transparent),
-      0 12px 32px -16px color-mix(in srgb, var(--me-ink) 22%, transparent);
+      0 2px 4px color-mix(in srgb, var(--me-ink) 5%, transparent),
+      0 16px 36px -16px color-mix(in srgb, var(--me-ink) 20%, transparent);
 
     --me-font-display: var(--font-display, "Cormorant Garamond", Georgia, serif);
     --me-font-body: var(--font-sans, "Plus Jakarta Sans", system-ui, sans-serif);
@@ -142,6 +145,21 @@
     color: var(--me-ink);
     font: inherit;
     font-weight: 400;
+    transition:
+      border-color var(--me-duration-micro) var(--me-ease),
+      box-shadow var(--me-duration-micro) var(--me-ease),
+      background-color var(--me-duration-micro) var(--me-ease);
+  }
+  input:not(
+      [type="checkbox"],
+      [type="radio"],
+      [type="range"],
+      [type="file"],
+      [type="hidden"]
+    ):hover:not(:disabled),
+  select:hover:not(:disabled),
+  textarea:hover:not(:disabled) {
+    border-color: var(--me-primary);
   }
   textarea {
     min-block-size: 7.5rem;
@@ -331,14 +349,18 @@
     cursor: pointer;
     text-decoration: none;
     transition:
-      background-color var(--me-duration-micro) ease,
-      border-color var(--me-duration-micro) ease,
+      background-color var(--me-duration-micro) var(--me-ease),
+      border-color var(--me-duration-micro) var(--me-ease),
+      box-shadow var(--me-duration-micro) var(--me-ease),
+      transform var(--me-duration-micro) var(--me-ease),
       opacity var(--me-duration-micro) ease;
   }
-  .button:hover {
+  .button:hover:not(:disabled, [aria-disabled="true"]) {
     background: var(--me-primary-hover);
+    transform: translateY(-1px);
   }
-  .button:active {
+  .button:active:not(:disabled, [aria-disabled="true"]) {
+    transform: translateY(0);
     opacity: 0.92;
   }
   .button:disabled,
@@ -355,14 +377,14 @@
     color: var(--me-primary);
     border-color: var(--me-primary);
   }
-  .button-secondary:hover {
+  .button-secondary:hover:not(:disabled, [aria-disabled="true"]) {
     background: var(--me-tint);
   }
   .button-ghost {
     background: transparent;
     color: var(--me-primary);
   }
-  .button-ghost:hover {
+  .button-ghost:hover:not(:disabled, [aria-disabled="true"]) {
     background: var(--me-tint);
   }
   .button-danger {
@@ -370,14 +392,14 @@
     color: var(--me-danger);
     border-color: var(--me-danger);
   }
-  .button-danger:hover {
+  .button-danger:hover:not(:disabled, [aria-disabled="true"]) {
     background: color-mix(in srgb, var(--me-danger) 8%, var(--me-surface-raised));
   }
   .button-inverse {
     background: var(--me-on-primary);
     color: var(--me-primary);
   }
-  .button-inverse:hover {
+  .button-inverse:hover:not(:disabled, [aria-disabled="true"]) {
     background: color-mix(in srgb, var(--me-on-primary) 90%, var(--me-accent));
   }
   .button-outline-inverse {
@@ -385,7 +407,7 @@
     color: var(--me-on-primary);
     border-color: var(--me-accent);
   }
-  .button-outline-inverse:hover {
+  .button-outline-inverse:hover:not(:disabled, [aria-disabled="true"]) {
     background: color-mix(in srgb, var(--me-on-primary) 12%, transparent);
   }
   .button-small {
@@ -409,12 +431,14 @@
     background: var(--me-surface-raised);
     border: 1px solid var(--me-rule);
     color: var(--me-ink);
+    box-shadow: var(--me-shadow-soft);
   }
   .card > :last-child {
     margin-block-end: 0;
   }
   .card-quiet {
     background: var(--me-surface);
+    box-shadow: none;
   }
   .card-accent {
     border-block-start: 3px solid var(--me-primary);
@@ -423,17 +447,20 @@
     border: 0;
     border-inline-start: 3px solid var(--me-primary);
     background: var(--me-surface);
+    box-shadow: none;
   }
   .card-link {
     display: block;
     text-decoration: none;
     transition:
       border-color var(--me-duration-ui) var(--me-ease),
-      box-shadow var(--me-duration-ui) var(--me-ease);
+      box-shadow var(--me-duration-ui) var(--me-ease),
+      transform var(--me-duration-ui) var(--me-ease);
   }
   .card-link:hover {
     border-color: var(--me-primary);
     box-shadow: var(--me-shadow-raised);
+    transform: translateY(-2px);
   }
   .card-title {
     font-family: var(--me-font-display);
@@ -452,6 +479,7 @@
     background: var(--me-surface-raised);
     border: 1px solid var(--me-rule-strong);
     color: var(--me-ink);
+    box-shadow: var(--me-shadow-soft);
   }
 
   /* ---- Forms ------------------------------------------------------------- */
@@ -666,6 +694,7 @@
     font-weight: 600;
     text-decoration: none;
     cursor: pointer;
+    transition: color var(--me-duration-micro) var(--me-ease);
   }
   .tab:hover {
     color: var(--me-ink);
@@ -695,6 +724,7 @@
     border-radius: var(--me-radius-panel);
     background: var(--me-surface-raised);
     border: 1px solid var(--me-rule);
+    box-shadow: var(--me-shadow-soft);
   }
   .stat-label {
     display: block;
@@ -941,12 +971,21 @@
 
   /* ---- Arch motif (the brand's structural signature) ---------------------- */
   .arch-frame {
+    position: relative;
     border: 1.5px solid var(--me-accent);
     border-start-start-radius: 999px;
     border-start-end-radius: 999px;
     border-end-start-radius: 16px;
     border-end-end-radius: 16px;
     padding: 2.75rem 1.75rem 1.75rem;
+  }
+  .arch-frame::before {
+    content: "";
+    position: absolute;
+    inset: 0.45rem;
+    border: 1px solid var(--me-rule-soft);
+    border-radius: inherit;
+    pointer-events: none;
   }
   .arch-media {
     display: block;
@@ -1404,8 +1443,18 @@
     border-width: 1px;
     padding-block-start: 1.75rem;
   }
+  [data-experience-mode="memorial"] .arch-frame::before,
+  .arch-frame[data-experience-mode="memorial"]::before {
+    content: none;
+  }
+  [data-experience-mode="memorial"] :is(.card, .panel, .stat),
+  :is(.card, .panel, .stat)[data-experience-mode="memorial"],
   [data-experience-mode="memorial"] .card-link:hover {
     box-shadow: none;
+    transform: none;
+  }
+  [data-experience-mode="memorial"] .button:hover:not(:disabled, [aria-disabled="true"]) {
+    transform: none;
   }
 
   /* ---- Reduced motion ---------------------------------------------------- */

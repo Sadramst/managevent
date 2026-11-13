@@ -5,6 +5,7 @@
   <g transform="translate(8 4)">
     <path d="M3 53.5V24a21 21 0 0 1 42 0v29.5Z" fill="#5C1A24" />
     <path d="M8.5 49V24a15.5 15.5 0 0 1 31 0v25" fill="none" stroke="#C5A059" stroke-width="1.2" />
+    <path d="M12 51.5c4-2 16-2 24 0" fill="none" stroke="#C5A059" stroke-width="1" stroke-linecap="round" />
     <path d="M16 43.5V27l8 10.5L32 27v16.5" fill="none" stroke="#C5A059" stroke-width="2.8" stroke-linejoin="round" stroke-linecap="round" />
   </g>
 </svg>

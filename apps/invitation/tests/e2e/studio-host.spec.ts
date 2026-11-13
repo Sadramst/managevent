@@ -130,6 +130,7 @@ test.describe("a host's events", () => {
     expect(weddingId).toMatch(/^evt_/);
     await expect(page.getByText("Your invitation is saved as a draft")).toBeVisible();
     await expect(page.getByRole("heading", { name: "This invitation is a draft" })).toBeVisible();
+    await expect(page.locator(".es-checklist-meter")).toHaveAttribute("max", "4");
     // Three guests in two households, from the wizard.
     const invited = page.locator(".stat", { hasText: "Guests invited" });
     await expect(invited.locator(".stat-value")).toHaveText("3");

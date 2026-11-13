@@ -76,3 +76,46 @@ test("the sitemap lists the new routes and ceremony pages", async ({ request }) 
     expect(xml).toContain(`<loc>https://www.managevent.com.au${path}</loc>`);
   }
 });
+
+test("hero quick-select pills meet 44px touch targets and open ceremony pages", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const pills = page.locator(".hero-quick-pill");
+  await expect(pills.first()).toBeVisible();
+  const count = await pills.count();
+  expect(count).toBeGreaterThanOrEqual(3);
+  for (let i = 0; i < count; i += 1) {
+    const box = await pills.nth(i).boundingBox();
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  }
+  await pills.first().click();
+  await expect(page).toHaveURL(/\/ceremonies\//);
+  await expect(page.locator("h1")).toBeVisible();
+});
+
+test("estimator guest presets, summary chips and enquiry attachment confirmation work together", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const preset150 = page.locator(".estimator-preset", { hasText: /^150$/ });
+  await preset150.click();
+  await expect(preset150).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".estimator-guest-badge")).toContainText("150");
+  await page.locator("#est-tier").selectOption("LUXE");
+  await expect(page.locator(".estimator-summary-chips")).toContainText("Luxe");
+  await page.locator(".estimator-cta").click();
+  await expect(page.locator(".estimator-applied")).toBeVisible();
+  await expect(page.locator(".estimate-note")).toBeVisible();
+  await expect(page.locator('input[name="guestEstimate"]')).toHaveValue("150");
+});
+
+test("brand icon and Open Graph share image return 200", async ({ request }) => {
+  const icon = await request.get("/icon.svg");
+  expect(icon.status()).toBe(200);
+  expect(icon.headers()["content-type"]).toContain("image/svg+xml");
+
+  const og = await request.get("/opengraph-image");
+  expect(og.status()).toBe(200);
+  expect(og.headers()["content-type"]).toContain("image/png");
+});

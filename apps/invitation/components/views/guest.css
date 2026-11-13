@@ -105,6 +105,7 @@
   border-end-start-radius: var(--me-radius-panel);
   border-end-end-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-raised);
 }
 /* The second, inner line of the arch. */
 .inv-frame::before {
@@ -221,6 +222,7 @@
   border-inline: 0;
   border-radius: 0;
   background: transparent;
+  box-shadow: none;
 }
 .inv[data-theme="alabaster-platinum"] .inv-frame::before {
   content: none;
@@ -285,6 +287,7 @@
 .inv[data-experience-mode="memorial"] .inv-frame {
   padding-block-start: clamp(2.25rem, 7vw, 3.5rem);
   border-radius: var(--me-radius-panel);
+  box-shadow: none;
 }
 .inv[data-experience-mode="memorial"] .inv-frame::before {
   content: none;
@@ -379,6 +382,7 @@
   border: 1px solid var(--me-rule);
   border-radius: var(--me-radius-panel);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
 }
 .inv-detail[data-span="full"] {
   grid-column: 1 / -1;
@@ -618,6 +622,7 @@
   border: 1px solid var(--me-rule-strong);
   border-radius: var(--me-radius-sheet);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
 }
 .inv-form {
   display: grid;
@@ -699,6 +704,7 @@
     color var(--me-duration-micro) ease;
 }
 .inv-choice-option:hover {
+  border-color: var(--me-primary);
   background: var(--me-tint);
 }
 .inv-choice-option input,
@@ -787,6 +793,7 @@
     border-color var(--me-duration-micro) ease;
 }
 .inv-tag:hover {
+  border-color: var(--me-primary);
   background: var(--me-tint);
 }
 .inv-tag[data-checked="true"] {
@@ -900,8 +907,10 @@
   gap: 0.35rem;
   padding: 1.5rem 1.25rem;
   border: 1px solid var(--me-rule);
+  border-block-start: 3px solid var(--me-primary);
   border-radius: var(--me-radius-panel);
   background: var(--me-tint);
+  box-shadow: var(--me-shadow-soft);
   text-align: center;
 }
 .inv-confirm:focus {
@@ -1432,6 +1441,7 @@
   border: 1px solid var(--me-rule-strong);
   border-radius: var(--me-radius-sheet);
   background: var(--me-surface-raised);
+  box-shadow: var(--me-shadow-soft);
   text-align: center;
   overflow: hidden;
   break-inside: avoid;
@@ -1564,4 +1574,10 @@
   color: var(--me-ink);
   overflow-wrap: anywhere;
   user-select: all;
+}
+
+/* Memorial Mode stays calm and flat without celebratory card elevation. */
+.inv[data-experience-mode="memorial"]
+  :is(.inv-frame, .inv-detail, .inv-sheet, .inv-confirm, .inv-pass, .inv-gate-card) {
+  box-shadow: none;
 }

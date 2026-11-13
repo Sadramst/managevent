@@ -70,7 +70,7 @@ importers:
         version: 1.14.1(hono@4.13.13)
       '@hono/zod-openapi':
         specifier: 0.19.10
-        version: 0.19.10(hono@4.13.13)(zod@3.24.4)
+        version: 0.19.10(hono@4.13.13)(zod@4.6.7)
       '@managevent/auth':
         specifier: workspace:*
         version: link:../../packages/auth
@@ -99,8 +99,8 @@ importers:
         specifier: 10.4.2
         version: 10.4.2
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@types/node':
         specifier: 22.20.5
@@ -171,8 +171,8 @@ importers:
         specifier: 0.0.1
         version: 0.0.1
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@axe-core/playwright':
         specifier: 4.14.0
@@ -302,8 +302,8 @@ importers:
         specifier: 10.4.2
         version: 10.4.2
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@types/node':
         specifier: 22.20.5
@@ -336,8 +336,8 @@ importers:
         specifier: workspace:*
         version: link:../validators
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@managevent/config':
         specifier: workspace:*
@@ -367,8 +367,8 @@ importers:
         specifier: workspace:*
         version: link:../validators
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@managevent/config':
         specifier: workspace:*
@@ -643,8 +643,8 @@ importers:
         specifier: workspace:*
         version: link:../validators
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@managevent/config':
         specifier: workspace:*
@@ -704,8 +704,8 @@ importers:
   packages/validators:
     dependencies:
       zod:
-        specifier: 3.24.4
-        version: 3.24.4
+        specifier: 4.6.7
+        version: 4.6.7
     devDependencies:
       '@managevent/config':
         specifier: workspace:*
@@ -2265,8 +2265,8 @@ packages:
     resolution: {integrity: sha512-i6UzDscO/XfAcNYD75CfICkmfLedpyPDdozrLMmQc5ORaQcdMoc21OnlEylMIqI7U8eniKrPMxxtj8k0vhmJhA==}
     engines: {node: '>=14'}
 
-  encodeurl@2.0.0:
-    resolution: {integrity: sha512-Q0n9HRi4m6JuGIV1eFlmvJB7ZEVxu93IrMyiMsGC0lrMJMWzRgx6WGquyfQgZVb31vhGgXnfmPNNXmxnOkRBrg==}
+  encodeurl@2.0.1:
+    resolution: {integrity: sha512-Ev/hIyePLZtpL98x562lvPtenrUfGr0lfaf44HFZ+hDEwso7ccV9QAZrEVLg0hxNAzygaAFxy2dYaAKKM0G06A==}
     engines: {node: '>= 0.8'}
 
   enhanced-resolve@5.26.0:
@@ -3075,8 +3075,8 @@ packages:
     engines: {node: '>=10.13.0'}
     hasBin: true
 
-  qs@6.16.1:
-    resolution: {integrity: sha512-5Px6J7rfHBAGUhNQ3es4YzcOdBBw0SDcVtThJml4RdnKw4tKs2epA0kPZ+K8X+WiHktT93RHVcQ/3ym5aTCgtg==}
+  qs@6.17.1:
+    resolution: {integrity: sha512-jd3COkaKVgGUW+ZHyEHCG9bH7RoaaiWuMgzsIBjUMVjLAaWGWpoUAVwljVvBHxRu/2qEHnadLGZrkutYUBPQJA==}
     engines: {node: '>=0.6'}
 
   range-parser@1.3.0:
@@ -3545,8 +3545,11 @@ packages:
     peerDependencies:
       zod: ^3.25.28 || ^4
 
-  zod@3.24.4:
-    resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
+  zod@3.25.76:
+    resolution: {integrity: sha512-gzUt/qt81nXsFGKIFcC3YnfEAx5NkunCfnDlvuBSSFS02bcXu4Lmea0AFIUwbLWxWPx3d9p8S5QoaujKcNQxcQ==}
+
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
 snapshots:
 
@@ -3557,10 +3560,10 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.13
       '@jridgewell/trace-mapping': 0.3.31
 
-  '@asteasolutions/zod-to-openapi@7.3.4(zod@3.24.4)':
+  '@asteasolutions/zod-to-openapi@7.3.4(zod@4.6.7)':
     dependencies:
       openapi3-ts: 4.6.2
-      zod: 3.24.4
+      zod: 4.6.7
 
   '@axe-core/playwright@4.14.0(playwright-core@1.64.1)':
     dependencies:
@@ -3829,8 +3832,8 @@ snapshots:
       '@modelcontextprotocol/sdk': 1.11.4
       google-auth-library: 9.15.1
       ws: 8.22.0
-      zod: 3.24.4
-      zod-to-json-schema: 3.25.2(zod@3.24.4)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.2(zod@3.25.76)
     transitivePeerDependencies:
       - bufferutil
       - encoding
@@ -3843,18 +3846,18 @@ snapshots:
     dependencies:
       hono: 4.13.13
 
-  '@hono/zod-openapi@0.19.10(hono@4.13.13)(zod@3.24.4)':
+  '@hono/zod-openapi@0.19.10(hono@4.13.13)(zod@4.6.7)':
     dependencies:
-      '@asteasolutions/zod-to-openapi': 7.3.4(zod@3.24.4)
-      '@hono/zod-validator': 0.4.3(hono@4.13.13)(zod@3.24.4)
+      '@asteasolutions/zod-to-openapi': 7.3.4(zod@4.6.7)
+      '@hono/zod-validator': 0.4.3(hono@4.13.13)(zod@4.6.7)
       hono: 4.13.13
       openapi3-ts: 4.6.2
-      zod: 3.24.4
+      zod: 4.6.7
 
-  '@hono/zod-validator@0.4.3(hono@4.13.13)(zod@3.24.4)':
+  '@hono/zod-validator@0.4.3(hono@4.13.13)(zod@4.6.7)':
     dependencies:
       hono: 4.13.13
-      zod: 3.24.4
+      zod: 4.6.7
 
   '@humanfs/core@0.19.2':
     dependencies:
@@ -4022,8 +4025,8 @@ snapshots:
       express-rate-limit: 7.5.1(express@5.3.0)
       pkce-challenge: 5.0.1
       raw-body: 3.0.2
-      zod: 3.24.4
-      zod-to-json-schema: 3.25.2(zod@3.24.4)
+      zod: 3.25.76
+      zod-to-json-schema: 3.25.2(zod@3.25.76)
     transitivePeerDependencies:
       - supports-color
 
@@ -4629,7 +4632,7 @@ snapshots:
       jose: 6.2.13
       kysely: 0.28.18
       nanostores: 0.11.4
-      zod: 3.24.4
+      zod: 3.25.76
 
   better-call@1.0.8:
     dependencies:
@@ -4648,7 +4651,7 @@ snapshots:
       http-errors: 2.0.1
       iconv-lite: 0.7.3
       on-finished: 2.4.2
-      qs: 6.16.1
+      qs: 6.17.1
       raw-body: 3.0.2
       type-is: 2.1.0
     transitivePeerDependencies:
@@ -4845,7 +4848,7 @@ snapshots:
 
   empathic@2.0.0: {}
 
-  encodeurl@2.0.0: {}
+  encodeurl@2.0.1: {}
 
   enhanced-resolve@5.26.0:
     dependencies:
@@ -5024,7 +5027,7 @@ snapshots:
       cookie-signature: 1.2.2
       debug: 4.4.3
       depd: 2.0.0
-      encodeurl: 2.0.0
+      encodeurl: 2.0.1
       escape-html: 1.0.3
       etag: 1.8.1
       finalhandler: 2.1.1
@@ -5036,7 +5039,7 @@ snapshots:
       once: 1.4.0
       parseurl: 1.3.3
       proxy-addr: 2.0.8
-      qs: 6.16.1
+      qs: 6.17.1
       range-parser: 1.3.0
       router: 2.2.0
       send: 1.2.1
@@ -5074,7 +5077,7 @@ snapshots:
   finalhandler@2.1.1:
     dependencies:
       debug: 4.4.3
-      encodeurl: 2.0.0
+      encodeurl: 2.0.1
       escape-html: 1.0.3
       on-finished: 2.4.2
       parseurl: 1.3.3
@@ -5685,7 +5688,7 @@ snapshots:
       pngjs: 5.0.0
       yargs: 15.4.1
 
-  qs@6.16.1:
+  qs@6.17.1:
     dependencies:
       es-define-property: 1.0.1
       side-channel: 1.1.1
@@ -5778,7 +5781,7 @@ snapshots:
   send@1.2.1:
     dependencies:
       debug: 4.4.3
-      encodeurl: 2.0.0
+      encodeurl: 2.0.1
       escape-html: 1.0.3
       etag: 1.8.1
       fresh: 2.0.0
@@ -5797,7 +5800,7 @@ snapshots:
 
   serve-static@2.2.1:
     dependencies:
-      encodeurl: 2.0.0
+      encodeurl: 2.0.1
       escape-html: 1.0.3
       parseurl: 1.3.3
       send: 1.2.1
@@ -6172,8 +6175,10 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-  zod-to-json-schema@3.25.2(zod@3.24.4):
+  zod-to-json-schema@3.25.2(zod@3.25.76):
     dependencies:
-      zod: 3.24.4
+      zod: 3.25.76
 
-  zod@3.24.4: {}
+  zod@3.25.76: {}
+
+  zod@4.6.7: {}

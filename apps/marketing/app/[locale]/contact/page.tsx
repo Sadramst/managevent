@@ -6,7 +6,8 @@ import type { CSSProperties } from "react";
 import { EnquiryForm } from "../../../components/enquiry-form";
 import { Breadcrumbs, JsonLd } from "../../../components/page-kit";
 import { loadCeremonies, loadPerthVenues } from "../../../lib/content";
-import { contact, invitationLinks, localePath, pageMetadata, routes } from "../../../lib/site";
+import { getContact } from "../../../lib/contact";
+import { invitationLinks, localePath, pageMetadata, routes } from "../../../lib/site";
 import { organizationJsonLd } from "../../../lib/structured-data";
 
 export async function generateMetadata() {
@@ -15,6 +16,7 @@ export async function generateMetadata() {
 }
 
 export default async function ContactPage({ params }: { params: Promise<{ locale: string }> }) {
+  const contact = await getContact();
   const { locale } = await params;
   if (locale !== "en") notFound();
 
@@ -36,7 +38,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   return (
     <main id="main">
       <Breadcrumbs locale={locale} trail={[{ name: site.nav.contact, path: routes.contact }]} />
-      <JsonLd data={organizationJsonLd(site.home.metaDescription)} />
+      <JsonLd data={organizationJsonLd(site.home.metaDescription, contact)} />
       <PageHero
         eyebrow={copy.eyebrow}
         title={copy.title}

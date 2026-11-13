@@ -1,4 +1,5 @@
-import { absoluteUrl, contact, siteUrl } from "./site";
+import type { PublicContact } from "./contact";
+import { absoluteUrl, siteUrl } from "./site";
 
 export type JsonLdData = Record<string, unknown>;
 
@@ -8,7 +9,7 @@ const organizationId = `${siteUrl}/#organization`;
  * Organization data for the home and contact pages. Only fields we can stand behind are
  * included: there is deliberately no street address, ABN, rating or opening hours.
  */
-export function organizationJsonLd(description: string): JsonLdData {
+export function organizationJsonLd(description: string, contact: PublicContact): JsonLdData {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",

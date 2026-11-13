@@ -40,6 +40,7 @@ import { createLeadsResource } from "./resources/leads.js";
 import { createMeResource } from "./resources/me.js";
 import { createMessagingResource } from "./resources/messaging.js";
 import { createResponsesResource } from "./resources/responses.js";
+import { createSiteSettingsResource } from "./resources/site-settings.js";
 import { createWellResource } from "./resources/well.js";
 
 export {
@@ -56,6 +57,7 @@ export {
   createMeResource,
   createMessagingResource,
   createResponsesResource,
+  createSiteSettingsResource,
   createWellResource,
   type ExtractedOperation,
   extractOpenApiOperations,
@@ -98,6 +100,8 @@ export class ManageventApiClient {
   readonly messaging: ReturnType<typeof createMessagingResource>;
   /** Staff CRM inbox. */
   readonly leads: ReturnType<typeof createLeadsResource>;
+  /** Public contact details and the staff settings form. */
+  readonly siteSettings: ReturnType<typeof createSiteSettingsResource>;
 
   constructor(options: ApiClientOptions = {}) {
     this.http = createHttpClient(options);
@@ -111,6 +115,7 @@ export class ManageventApiClient {
     this.responses = createResponsesResource(this.http);
     this.messaging = createMessagingResource(this.http);
     this.leads = createLeadsResource(this.http);
+    this.siteSettings = createSiteSettingsResource(this.http);
   }
 
   /**

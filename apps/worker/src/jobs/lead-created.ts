@@ -1,7 +1,9 @@
 /**
  * `lead.created` job: sends the auto-reply to the person who enquired and an alert with the
- * enquiry details to the planner inbox (`LEAD_NOTIFICATION_EMAIL`), and records each send as a
- * `Message` row.
+ * enquiry details to the planner inbox, and records each send as a `Message` row. The planner inbox
+ * is the alert address staff set in the console (`SiteSetting.notificationEmail`), else
+ * `LEAD_NOTIFICATION_EMAIL`, else the public contact email (`CONTACT_EMAIL`, else
+ * `appilico.au@gmail.com`), so a new enquiry always reaches someone.
  *
  * - The payload is the lead id only. The lead is loaded here, so no personal information sits in
  *   the queue tables.
@@ -9,12 +11,10 @@
  *   the `Idempotency-Key`, so a retry never sends twice.
  * - When email is not configured nothing is sent and a `Message` row with status
  *   `NOT_CONFIGURED` records that. Nothing is ever reported as sent that was not.
- * - There is no default planner address: without `LEAD_NOTIFICATION_EMAIL` only the auto-reply
- *   goes out.
  */
 import { db, type ExtendedDbClient, generateId } from "@managevent/db";
 import { t } from "@managevent/i18n";
-import { EnabledLocaleSchema, LeadIdSchema } from "@managevent/validators";
+import { EnabledLocaleSchema, LeadIdSchema, resolveSiteSettings } from "@managevent/validators";
 import { z } from "zod";
 import { formatDayMonthYear } from "../lib/format.js";
 import {
@@ -54,11 +54,20 @@ function adminLeadUrl(leadId: string): string {
   return `${base}/leads/${leadId}`;
 }
 
+/** Staff-set alert address, else the environment, else the public contact email. */
+async function resolvePlannerInbox(client: ExtendedDbClient): Promise<string> {
+  const row = await client.siteSetting.findUnique({
+    where: { id: "site" },
+    select: { contactEmail: true, contactPhone: true, notificationEmail: true, updatedAt: true },
+  });
+  return resolveSiteSettings(row, process.env).notificationEmail;
+}
+
 export function createLeadCreatedJob(options?: {
   dbClient?: ExtendedDbClient;
   /** Overrides the Resend adapter (tests). Without it, `RESEND_API_KEY` decides. */
   emailAdapter?: ResendEmailAdapter;
-  /** Overrides `LEAD_NOTIFICATION_EMAIL` (tests). */
+  /** Overrides the planner inbox from settings and the environment (tests). */
   plannerInboxEmail?: string;
 }): JobDefinition<typeof LeadCreatedJobSchema, LeadCreatedJobResult> {
   const client = options?.dbClient ?? db;
@@ -126,9 +135,7 @@ export function createLeadCreatedJob(options?: {
       }
 
       const plannerEmail = (
-        options?.plannerInboxEmail ??
-        process.env.LEAD_NOTIFICATION_EMAIL ??
-        ""
+        options?.plannerInboxEmail ?? (await resolvePlannerInbox(client))
       ).trim();
       const alertWanted = plannerEmail.length > 0 && !alertDone;
       if (replyDone && !alertWanted) {

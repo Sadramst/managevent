@@ -11,7 +11,11 @@ export default async function ConsoleLayout({ children }: { children: ReactNode 
   const path = ((await headers()).get(ADMIN_PATH_HEADER) ?? "").split("?")[0];
   return (
     <>
-      <AdminHeader copy={getAdminPages("en")} user={user} onInbox={path === "/admin"} />
+      <AdminHeader
+        copy={getAdminPages("en")}
+        user={user}
+        current={path === "/admin" ? "inbox" : path === "/admin/settings" ? "settings" : null}
+      />
       {children}
     </>
   );

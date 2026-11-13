@@ -8,7 +8,7 @@ import { randomBytes } from "node:crypto";
 import { mkdirSync } from "node:fs";
 import path from "node:path";
 import AxeBuilder from "@axe-core/playwright";
-import { expect, type Page, test } from "@playwright/test";
+import { type Browser, expect, type Page, test } from "@playwright/test";
 import { e2eAccounts, E2E_EMAIL_DOMAIN } from "./support/real-api";
 import { freshTotpCode } from "./support/totp";
 
@@ -82,6 +82,7 @@ test("signed out, every console address leads to sign-in and nothing is indexabl
     ["/admin?stage=NEW", "/admin/sign-in?next=%2Fadmin%3Fstage%3DNEW"],
     [leadPath, `/admin/sign-in?next=${encodeURIComponent(leadPath)}`],
     ["/admin/anything-else", "/admin/sign-in?next=%2Fadmin%2Fanything-else"],
+    ["/admin/settings", "/admin/sign-in?next=%2Fadmin%2Fsettings"],
   ] as const) {
     const response = await request.get(target, { maxRedirects: 0 });
     expect(response.status(), target).toBe(307);
@@ -207,8 +208,9 @@ test("a live host session, however it was obtained, never reaches the console", 
   expect(closed.headers().location).toBe("/admin/sign-in");
 });
 
-test("staff sign in with two-factor, find a real enquiry, move it on and add a note", async ({
+test("staff sign in with two-factor, find a real enquiry, move it on, add a note and edit the contact details", async ({
   page,
+  browser,
 }) => {
   test.setTimeout(120_000);
   const errors = trackErrors(page);
@@ -369,10 +371,104 @@ test("staff sign in with two-factor, find a real enquiry, move it on and add a n
   await expect(page.locator("h1")).toHaveText("Page not found");
   await expectNoAxeViolations(page);
 
-  // 7. Sign out: the session is gone and the console is closed again.
+  // 7. Settings: change the public contact details, see them on the public site, put them back.
+  await changeContactDetails(page, browser);
+
+  // 8. Sign out: the session is gone and the console is closed again.
   await page.getByRole("button", { name: "Sign out" }).click();
   await expect(page).toHaveURL(/\/admin\/sign-in\?reason=signed-out$/);
   await expect(page.getByRole("status")).toContainText("You have signed out");
   await page.goto(leadUrl);
   await expect(page).toHaveURL(/\/admin\/sign-in\?next=/);
 });
+
+/**
+ * Staff change the public contact details and every visitor sees them. It runs inside the
+ * signed-in staff test, so the run signs in once (the API allows 10 sign-in attempts a minute).
+ */
+async function changeContactDetails(page: Page, browser: Browser): Promise<void> {
+  const errors = trackErrors(page);
+  const run = randomBytes(4).toString("hex");
+  const newEmail = `contact-${run}@${E2E_EMAIL_DOMAIN}`;
+  const newPhone = "08 9123 4567";
+  const alertEmail = `alerts-${run}@${E2E_EMAIL_DOMAIN}`;
+
+  await page.goto("/admin/settings");
+  await expect(page).toHaveURL(/\/admin\/settings$/);
+  await expect(page.locator("h1")).toHaveText("Contact details");
+  await expect(page.getByRole("link", { name: "Settings" })).toHaveAttribute(
+    "aria-current",
+    "page",
+  );
+  await expectNoAxeViolations(page);
+  await snap(page, "settings");
+
+  // What the website shows now, so the test can put it back.
+  const emailBox = page.getByLabel("Contact email");
+  const phoneBox = page.getByLabel("Contact phone");
+  const alertBox = page.getByLabel("Send enquiry alerts to");
+  const originalEmail = await emailBox.inputValue();
+  const originalPhone = await phoneBox.inputValue();
+  expect(originalEmail).toMatch(/@/);
+
+  try {
+    // A bad address is refused with a message on the field, and nothing is saved.
+    await emailBox.fill("not-an-email");
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.locator("#settings-contactEmail-error")).toContainText("valid email");
+    await expect(emailBox).toHaveAttribute("aria-invalid", "true");
+    await expect(emailBox).toHaveValue("not-an-email");
+    await phoneBox.fill("call me");
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.locator("#settings-contactPhone-error")).toContainText("phone number");
+    await expectNoAxeViolations(page);
+
+    // A real change.
+    await emailBox.fill(newEmail);
+    await phoneBox.fill(newPhone);
+    await alertBox.fill(alertEmail);
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.locator("#settings-outcome")).toContainText("Saved.");
+    await expect(page.getByTestId("settings-alert-target")).toContainText(alertEmail);
+
+    // It is in the database: a reload shows it, with a last-saved time.
+    await page.reload();
+    await expect(emailBox).toHaveValue(newEmail);
+    await expect(phoneBox).toHaveValue(newPhone);
+    await expect(alertBox).toHaveValue(alertEmail);
+    await expect(page.getByTestId("settings-updated")).toContainText("Last saved");
+
+    // A visitor with no session sees it on the public pages.
+    const visitor = await (await browser.newContext()).newPage();
+    await expect(async () => {
+      await visitor.goto("/contact");
+      await expect(visitor.locator(`main a[href="mailto:${newEmail}"]`).first()).toBeVisible();
+      await expect(visitor.locator("footer").getByText(newEmail)).toBeVisible();
+      await expect(visitor.locator(`footer a[href^="tel:"]`).first()).toBeVisible();
+    }).toPass({ timeout: 20_000 });
+    await visitor.context().close();
+
+    // Clearing the phone removes it from the website; the alert address can follow the contact
+    // email again.
+    await phoneBox.fill("");
+    await alertBox.fill("");
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.locator("#settings-outcome")).toContainText("Saved.");
+    await expect(page.getByTestId("settings-alert-target")).toContainText(newEmail);
+    const visitor2 = await (await browser.newContext()).newPage();
+    await expect(async () => {
+      await visitor2.goto("/contact");
+      await expect(visitor2.locator('a[href^="tel:"]')).toHaveCount(0);
+    }).toPass({ timeout: 20_000 });
+    await visitor2.context().close();
+  } finally {
+    // Put the website's contact details back, whatever happened above.
+    await page.goto("/admin/settings");
+    await emailBox.fill(originalEmail);
+    await phoneBox.fill(originalPhone);
+    await alertBox.fill("");
+    await page.getByRole("button", { name: "Save changes" }).click();
+    await expect(page.locator("#settings-outcome")).toContainText("Saved.");
+  }
+  expect(errors.filter((message) => !/422|400|Failed to load resource/.test(message))).toEqual([]);
+}

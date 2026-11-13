@@ -181,6 +181,7 @@ All planned except `CrewRoster` and `ScanEvent`.
 - **WebhookEvent:** `id`, `provider`, `providerEventId`, `type`, `payloadJson`, `receivedAt`, `processedAt?`. Unique on (`provider`, `providerEventId`), which makes webhook handling idempotent. Two providers write it:
   - `stripe`: the raw verified Stripe event.
   - `guest-rsvp`: the API's RSVP submission ledger. `providerEventId = "{partyId}:{Idempotency-Key}"`, `type = "rsvp.submit"`, payload `{ bodyHash, headcountId }` only (a keyed hash of the request, never the answers). A repeated RSVP request is recognised from this row, because the key on the `Rsvp` rows is overwritten by every later submission.
+- **SiteSetting:** `id` (always `"site"`: one row), `contactEmail?`, `contactPhone?`, `notificationEmail?`, `updatedByUserId?`. Staff edit these in the console. `null` means "not set": the API answers with the first-run default (`CONTACT_EMAIL`, else `appilico.au@gmail.com`; `CONTACT_PHONE`, else blank). An empty string means "deliberately blank" (no public phone number). `notificationEmail` is where new-enquiry alerts go; unset, it follows `contactEmail`. Every change writes a `site_settings.update` AuditLog row that records which fields changed, never their values.
 
 ## Retention schedule
 

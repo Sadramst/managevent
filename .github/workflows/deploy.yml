@@ -14,11 +14,8 @@ name: Deploy
 #     VPS_USER          SSH user that can run docker and write /opt/managevent
 #     VPS_SSH_KEY       private key of a deploy-only key pair (public half in authorized_keys)
 #     VPS_KNOWN_HOSTS   output of `ssh-keyscan -t ed25519 <VPS_HOST>`, checked out of band
-#   Repository variables (Settings > Secrets and variables > Actions > Variables; public values):
-#     CONTACT_EMAIL     the public contact address shown on www
-#     CONTACT_PHONE     the public contact number shown on www
-#   The marketing image prerenders the public pages with them, so they are build arguments. Keep
-#   them equal to the two lines of the same name in infra/vps/.env on the server.
+#   No repository variables are needed: the public contact details are edited in the staff
+#   console (www /admin/settings), not built into the image.
 #   GHCR needs no secret: images are pushed, and pulled on the server, with this run's
 #   GITHUB_TOKEN, which stops working when the run ends.
 
@@ -121,29 +118,6 @@ jobs:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      # The marketing image bakes the public contact details into its prerendered pages. The
-      # build stops here, before anything is pushed or deployed, when they are not configured.
-      - name: Build arguments
-        id: args
-        env:
-          APP: ${{ matrix.app }}
-          CONTACT_EMAIL: ${{ vars.CONTACT_EMAIL }}
-          CONTACT_PHONE: ${{ vars.CONTACT_PHONE }}
-        run: |
-          set -euo pipefail
-          if [ "$APP" != "marketing" ]; then
-            exit 0
-          fi
-          if [ -z "$CONTACT_EMAIL" ] || [ -z "$CONTACT_PHONE" ]; then
-            echo "::error::Set the repository variables CONTACT_EMAIL and CONTACT_PHONE (DEPLOYMENT.md, Continuous deployment)"
-            exit 1
-          fi
-          {
-            echo "list<<MANAGEVENT_BUILD_ARGS"
-            echo "CONTACT_EMAIL=$CONTACT_EMAIL"
-            echo "CONTACT_PHONE=$CONTACT_PHONE"
-            echo "MANAGEVENT_BUILD_ARGS"
-          } >> "$GITHUB_OUTPUT"
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
@@ -151,7 +125,6 @@ jobs:
           file: apps/${{ matrix.app }}/Dockerfile
           platforms: linux/amd64
           push: true
-          build-args: ${{ steps.args.outputs.list }}
           tags: ${{ needs.resolve.outputs.prefix }}${{ matrix.app }}:${{ needs.resolve.outputs.sha }}
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}

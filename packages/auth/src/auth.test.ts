@@ -408,6 +408,13 @@ describe("@managevent/auth", () => {
         deniedResource: { organisationId: "org_1" },
       },
       {
+        permission: "site_settings:manage",
+        allowedActor: { userId: "usr_staff", roles: ["PLANNER_STAFF"] },
+        allowedResource: {},
+        deniedActor: { userId: "usr_host", roles: ["CUSTOMER_HOST"] },
+        deniedResource: {},
+      },
+      {
         permission: "user:manage_roles",
         allowedActor: { organisationId: "org_1", roles: ["VENDOR"] },
         allowedResource: { organisationId: "org_1" },
@@ -423,7 +430,7 @@ describe("@managevent/auth", () => {
       },
     ];
 
-    it("covers all 22 permissions defined in PERMISSIONS", () => {
+    it("covers all 23 permissions defined in PERMISSIONS", () => {
       expect(cases.map((c) => c.permission)).toEqual([...PERMISSIONS]);
     });
 

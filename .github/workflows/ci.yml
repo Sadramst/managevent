@@ -97,7 +97,6 @@ jobs:
         working-directory: infra/vps
         run: |
           node ../../scripts/generate-deployment-secrets.mjs --out "$RUNNER_TEMP/ci.env"
-          printf 'CONTACT_EMAIL=ci@example.org\nCONTACT_PHONE=0400000000\n' >> "$RUNNER_TEMP/ci.env"
           docker compose --env-file "$RUNNER_TEMP/ci.env" -f docker-compose.yml -f docker-compose.build.yml --profile tools config --quiet
       - name: Compose refuses to start without the required secrets
         working-directory: infra/vps
@@ -127,13 +126,7 @@ jobs:
           - app: worker
             smoke: node --import tsx -e "import('./src/index.ts').then(()=>process.exit(0),(e)=>{console.error(e);process.exit(1)})"
           - app: marketing
-            # The placeholder must be in a prerendered page: that proves the build arguments
-            # reach `next build` (a value set only on the running container would not).
-            smoke: test -f .next/BUILD_ID && grep -q "ci@example.org" .next/server/app/en/contact.html
-            # Required by the image (the public pages are prerendered with them). Placeholders.
-            build_args: |
-              CONTACT_EMAIL=ci@example.org
-              CONTACT_PHONE=0400000000
+            smoke: test -f .next/BUILD_ID
           - app: invitation
             smoke: test -f .next/BUILD_ID
     steps:
@@ -147,7 +140,6 @@ jobs:
           file: apps/${{ matrix.app }}/Dockerfile
           push: false
           load: true
-          build-args: ${{ matrix.build_args }}
           tags: managevent-${{ matrix.app }}:ci
           cache-from: type=gha,scope=image-${{ matrix.app }}
           cache-to: type=gha,scope=image-${{ matrix.app }},mode=max

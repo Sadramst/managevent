@@ -14,10 +14,6 @@ export const invitationLinks = {
   /** Starts a new invitation in the host studio (WEBSITE.md B: `/studio/new`). */
   create: `${invitationUrl}/studio/new`,
 } as const;
-export const contact = {
-  email: process.env.CONTACT_EMAIL || "appilico.au@gmail.com",
-  phone: process.env.CONTACT_PHONE ?? "",
-};
 
 /** Every public route on www, in one place for the nav, footer, sitemap and internal links. */
 export const routes = {

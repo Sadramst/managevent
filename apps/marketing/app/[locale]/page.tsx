@@ -10,7 +10,8 @@ import { JsonLd } from "../../components/page-kit";
 import { loadCeremonies, loadPerthVenues } from "../../lib/content";
 import { planCopyParams } from "../../lib/plans";
 import { perthSettings } from "../../lib/settings";
-import { contact, invitationLinks, localePath, pageMetadata, routes } from "../../lib/site";
+import { getContact } from "../../lib/contact";
+import { invitationLinks, localePath, pageMetadata, routes } from "../../lib/site";
 import { organizationJsonLd } from "../../lib/structured-data";
 
 export async function generateMetadata() {
@@ -22,6 +23,7 @@ export async function generateMetadata() {
 }
 
 export default async function Home({ params }: { params: Promise<{ locale: string }> }) {
+  const contact = await getContact();
   const { locale } = await params;
   if (locale !== "en") notFound();
   // Validates the ceremony catalogue at build time; a broken content file fails the build.
@@ -40,7 +42,7 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
 
   return (
     <main id="main">
-      <JsonLd data={organizationJsonLd(copy.metaDescription)} />
+      <JsonLd data={organizationJsonLd(copy.metaDescription, contact)} />
 
       <section className="hero">
         <Image

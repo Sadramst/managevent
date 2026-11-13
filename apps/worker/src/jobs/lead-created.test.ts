@@ -3,7 +3,7 @@
  * Each test creates its own lead and removes it (and its `Message` rows) afterwards.
  */
 import { db, generateId } from "@managevent/db";
-import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { hashEmailAddress } from "../lib/unsubscribe-token.js";
 import { WorkerJobRegistry } from "../registry.js";
 import { createRecordingAdapter, dbAvailable, uniqueTestSuffix } from "../test/db.js";
@@ -74,11 +74,24 @@ describe.skipIf(!dbAvailable)("lead.created job (database)", () => {
       .then((outcome) => outcome.result as LeadCreatedJobResult);
   }
 
+  // `SiteSetting` is one shared row; put back whatever a developer had saved.
+  let savedSiteSetting: Awaited<ReturnType<typeof db.siteSetting.findUnique>> = null;
+
+  beforeAll(async () => {
+    savedSiteSetting = await db.siteSetting.findUnique({ where: { id: "site" } });
+  });
+
+  beforeEach(async () => {
+    await db.siteSetting.deleteMany({ where: { id: "site" } });
+  });
+
   afterEach(() => {
     vi.unstubAllEnvs();
   });
 
   afterAll(async () => {
+    await db.siteSetting.deleteMany({ where: { id: "site" } });
+    if (savedSiteSetting) await db.siteSetting.create({ data: savedSiteSetting });
     await db.message.deleteMany({
       where: {
         providerId: {
@@ -140,8 +153,8 @@ describe.skipIf(!dbAvailable)("lead.created job (database)", () => {
     expect(await messagesFor(lead.id)).toHaveLength(2);
   });
 
-  it("fills in what the enquirer left blank and sends only the auto-reply without a planner address", async () => {
-    vi.stubEnv("LEAD_NOTIFICATION_EMAIL", "");
+  it("fills in what the enquirer left blank in the planner alert", async () => {
+    vi.stubEnv("LEAD_NOTIFICATION_EMAIL", planner);
     const lead = await createLead({
       phone: null,
       ceremonySlug: null,
@@ -152,19 +165,11 @@ describe.skipIf(!dbAvailable)("lead.created job (database)", () => {
       message: null,
     });
 
-    // No planner address anywhere: there is no built-in fallback inbox.
-    const noInbox = createRecordingAdapter();
-    const first = await run(lead.id, { emailAdapter: noInbox.adapter });
-    expect(first).toMatchObject({ status: "SENT", autoReplySent: true, plannerAlertSent: false });
-    expect(noInbox.sent.map((email) => email.to)).toEqual([lead.email]);
-
-    // Once LEAD_NOTIFICATION_EMAIL is set, a re-run sends only the alert that was missing.
-    vi.stubEnv("LEAD_NOTIFICATION_EMAIL", planner);
-    const withInbox = createRecordingAdapter();
-    const second = await run(lead.id, { emailAdapter: withInbox.adapter });
-    expect(second).toMatchObject({ status: "SENT", autoReplySent: false, plannerAlertSent: true });
-    expect(withInbox.sent.map((email) => email.to)).toEqual([planner]);
-    const text = withInbox.sent[0]?.text ?? "";
+    const { adapter, sent } = createRecordingAdapter();
+    const result = await run(lead.id, { emailAdapter: adapter });
+    expect(result).toMatchObject({ status: "SENT", autoReplySent: true, plannerAlertSent: true });
+    expect(sent.map((email) => email.to)).toEqual([lead.email, planner]);
+    const text = sent[1]?.text ?? "";
     for (const line of [
       "Phone: Not provided",
       "Ceremony: Not provided",
@@ -176,6 +181,37 @@ describe.skipIf(!dbAvailable)("lead.created job (database)", () => {
     ]) {
       expect(text).toContain(line);
     }
+  });
+
+  it("sends the alert to the public contact email when no alert address is set anywhere", async () => {
+    vi.stubEnv("LEAD_NOTIFICATION_EMAIL", "");
+    vi.stubEnv("CONTACT_EMAIL", "");
+    const lead = await createLead();
+    const { adapter, sent } = createRecordingAdapter();
+    const result = await run(lead.id, { emailAdapter: adapter });
+    expect(result).toMatchObject({ status: "SENT", autoReplySent: true, plannerAlertSent: true });
+    expect(sent.map((email) => email.to)).toEqual([lead.email, "appilico.au@gmail.com"]);
+  });
+
+  it("follows the contact email staff saved, and prefers the alert address they set", async () => {
+    vi.stubEnv("LEAD_NOTIFICATION_EMAIL", "old-env@test.managevent.invalid");
+    await db.siteSetting.create({
+      data: { id: "site", contactEmail: "contact-" + planner, contactPhone: "" },
+    });
+    // Environment alert address still wins over the contact email until staff set their own.
+    const first = createRecordingAdapter();
+    const leadA = await createLead();
+    await run(leadA.id, { emailAdapter: first.adapter });
+    expect(first.sent.map((email) => email.to)).toEqual([
+      leadA.email,
+      "old-env@test.managevent.invalid",
+    ]);
+
+    await db.siteSetting.update({ where: { id: "site" }, data: { notificationEmail: planner } });
+    const second = createRecordingAdapter();
+    const leadB = await createLead();
+    await run(leadB.id, { emailAdapter: second.adapter });
+    expect(second.sent.map((email) => email.to)).toEqual([leadB.email, planner]);
   });
 
   it("records NOT_CONFIGURED and sends nothing when email is not set up, then sends once it is", async () => {

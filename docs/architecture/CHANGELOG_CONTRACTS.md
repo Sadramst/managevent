@@ -2,6 +2,18 @@
 
 Record every change to `packages/db`, `validators`, `types`, `auth`, `payments`, `i18n` keys (renames or removals only) and `ui` tokens here, newest first (root `AGENTS.md` §6). Entries are a historical record: do not rewrite an old entry, add a new one. Package names and locales in older entries (for example `fa`) describe the code as it was then.
 
+## Staff-editable contact settings (2026-11-13)
+
+`contract-change`, additive only. Consumers: `apps/api`, `apps/worker`, `apps/marketing`, `packages/api-client`.
+
+- `@managevent/db`: migration `20261113000000_site_settings` adds the `SiteSetting` table (one row, `id = "site"`: `contactEmail?`, `contactPhone?`, `notificationEmail?`, `updatedByUserId?`). Nothing existing changes, so a rollback to the previous images runs against the new schema.
+- `@managevent/validators` (`site-settings.ts`): `PublicSiteSettingsSchema`, `AdminSiteSettingsSchema`, `SiteSettingsUpdateSchema`, `SitePhoneSchema`, `DEFAULT_CONTACT_EMAIL` (`appilico.au@gmail.com`) and `resolveSiteSettings()`, the one place that decides which value is in force (staff-saved, else environment, else built-in).
+- `@managevent/auth`: new permission `site_settings:manage` (`PLANNER_STAFF` and `SUPER_ADMIN`: all; every other role: none). `PERMISSIONS.md` and the matrix test list it.
+- `apps/api`: `GET /v1/site-settings` (public) and `GET`, `PUT /v1/admin/site-settings` (staff). 51 operations in total.
+- `@managevent/api-client`: `client.siteSettings` (`getPublic`, `getAdmin`, `update`); `generated.ts` regenerated.
+- `@managevent/i18n`: `admin-pages.ts` gains the `settings` block and `shell.settings`; `errors.FORBIDDEN` no longer says "enquiries".
+- Behaviour: the worker's `lead.created` now always sends the planner alert when email is configured: to the console's alert address, else `LEAD_NOTIFICATION_EMAIL`, else the contact email. Before, it sent none unless `LEAD_NOTIFICATION_EMAIL` was set. `CONTACT_EMAIL` and `CONTACT_PHONE` are no longer required, and no longer build arguments of the marketing image.
+
 ## Invitation platform: backend integration (2026-11-12)
 
 `contract-change`. Follows the foundation entry below; read that one first. This entry records what changed while the modules were integrated, and states where nothing changed so consumers need not look.

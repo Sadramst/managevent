@@ -27,10 +27,6 @@ services:
         NEXT_PUBLIC_MARKETING_URL: ${NEXT_PUBLIC_MARKETING_URL:-https://www.managevent.com.au}
         NEXT_PUBLIC_INVITATION_URL: ${NEXT_PUBLIC_INVITATION_URL:-https://invitation.managevent.com.au}
         NEXT_PUBLIC_ADMIN_URL: ${NEXT_PUBLIC_ADMIN_URL:-https://www.managevent.com.au/admin}
-        # The public pages are prerendered during the build, so the contact details shown on
-        # them are fixed here, from the same .env lines the running container gets.
-        CONTACT_EMAIL: ${CONTACT_EMAIL:?CONTACT_EMAIL is required (public contact address shown on www)}
-        CONTACT_PHONE: ${CONTACT_PHONE:?CONTACT_PHONE is required (public contact number shown on www)}
 
   invitation:
     build:

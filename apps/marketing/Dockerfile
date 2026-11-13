@@ -64,19 +64,9 @@ ENV NEXT_PUBLIC_MARKETING_URL=$NEXT_PUBLIC_MARKETING_URL
 ENV NEXT_PUBLIC_INVITATION_URL=$NEXT_PUBLIC_INVITATION_URL
 ENV NEXT_PUBLIC_ADMIN_URL=$NEXT_PUBLIC_ADMIN_URL
 
-# The public contact details shown on www. The public pages are prerendered by `next build`, so
-# the values are fixed HERE: setting CONTACT_EMAIL / CONTACT_PHONE only on the running
-# container does not change a page that was already built. There is no default on purpose
-# (lib/site.ts falls back to a personal address and number that must never be published), and
-# the build stops when either is missing. They are public values, not secrets.
-ARG CONTACT_EMAIL
-ARG CONTACT_PHONE
-RUN if [ -z "$CONTACT_EMAIL" ] || [ -z "$CONTACT_PHONE" ]; then \
-      echo "CONTACT_EMAIL and CONTACT_PHONE are required build arguments (--build-arg): the public pages are prerendered with them." >&2; \
-      exit 1; \
-    fi
-ENV CONTACT_EMAIL=$CONTACT_EMAIL
-ENV CONTACT_PHONE=$CONTACT_PHONE
+# The public contact details are not baked in: pages read them from the API (`lib/contact.ts`)
+# and refresh at most every minute, and staff edit them in the console. CONTACT_EMAIL and
+# CONTACT_PHONE exist only as run-time fallbacks for when the API cannot be reached.
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1

@@ -36,7 +36,7 @@ type Auth =
   | "event"
   /** A signed-in user, not tied to one event. */
   | "session"
-  /** Managevent staff only (`lead:read` / `lead:write`). */
+  /** Managevent staff only (`lead:*` or `site_settings:manage`). */
   | "staff";
 
 interface ContractRoute {
@@ -312,6 +312,21 @@ const CONTRACT_ROUTES: readonly ContractRoute[] = [
     success: 200,
     body: () => ({ stage: LeadStageEnum.options[1] }),
   },
+
+  // Staff-editable contact details
+  { method: "GET", path: "/v1/site-settings", auth: "public", success: 200 },
+  { method: "GET", path: "/v1/admin/site-settings", auth: "staff", success: 200 },
+  {
+    method: "PUT",
+    path: "/v1/admin/site-settings",
+    auth: "staff",
+    success: 200,
+    body: () => ({
+      contactEmail: "contract@test.managevent.invalid",
+      contactPhone: "",
+      notificationEmail: "",
+    }),
+  },
 ];
 
 const label = (route: ContractRoute) => `${route.method} ${route.path}`;
@@ -453,7 +468,7 @@ describe.skipIf(!dbAvailable)("contract route table: authorisation (database)", 
   it("covers every kind of route", () => {
     expect(sessionRoutes.length + openRoutes.length).toBe(CONTRACT_ROUTES.length);
     expect(eventRoutes.length).toBeGreaterThan(25);
-    expect(staffRoutes).toHaveLength(3);
+    expect(staffRoutes).toHaveLength(5);
   });
 
   it("answers 401 UNAUTHENTICATED on every session route when signed out, and changes nothing", async () => {

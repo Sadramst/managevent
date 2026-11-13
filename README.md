@@ -10,7 +10,7 @@ _A product by **Appilico**._ English only (en-AU).
 | ------------------------------------------------------- | ------------------------------ | ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
 | Marketing site, enquiry form, staff console at `/admin` | `www.managevent.com.au`        | `apps/marketing`   | Built. Multi-page site, ten ceremony pages, enquiry form to the API, staff console (password + TOTP) with the enquiry inbox  |
 | Invitations: host studio, guest site, door check-in     | `invitation.managevent.com.au` | `apps/invitation`  | Built. Sign-up, template-first studio, guests and CSV, email invitations, RSVP, wishes, signed QR passes, calendar, check-in |
-| API (Hono, Better Auth, OpenAPI)                        | `api.managevent.com.au`        | `apps/api`         | Built. 48 operations, Stripe Checkout and Resend used only when configured                                                   |
+| API (Hono, Better Auth, OpenAPI)                        | `api.managevent.com.au`        | `apps/api`         | Built. 51 operations, Stripe Checkout and Resend used only when configured                                                   |
 | Background jobs (pg-boss)                               | internal                       | `apps/worker`      | Built. `lead.created`, `headcount.changed`, email campaigns and their sweep                                                  |
 | Staff role helpers                                      | (served by `/admin` on www)    | `apps/admin`       | Small package; the console UI lives in `apps/marketing`                                                                      |
 | Customer portal                                         | `app.managevent.com.au`        | `apps/portal`      | Planned (placeholder only)                                                                                                   |
@@ -81,7 +81,7 @@ CI (`.github/workflows/ci.yml`) runs these (Playwright for the marketing site on
 ```text
 managevent/
 ├── apps/
-│   ├── api/            Hono API on Node: Better Auth, 48 operations, Stripe webhook, CLIs (seed:demo, staff:create)
+│   ├── api/            Hono API on Node: Better Auth, 51 operations, Stripe webhook, CLIs (seed:demo, staff:create)
 │   ├── worker/         pg-boss jobs: lead.created, headcount.changed, invitation email campaigns
 │   ├── marketing/      Next.js: www pages and the staff console at /admin
 │   ├── invitation/     Next.js: host studio, guest site, door check-in

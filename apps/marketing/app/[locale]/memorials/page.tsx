@@ -9,7 +9,8 @@ import {
 } from "../../../components/ceremony-kit";
 import { Breadcrumbs, CheckList, CtaBand, JsonLd } from "../../../components/page-kit";
 import { ceremonyMode, loadCeremonies } from "../../../lib/content";
-import { contact, invitationLinks, localePath, pageMetadata, routes } from "../../../lib/site";
+import { getContact } from "../../../lib/contact";
+import { invitationLinks, localePath, pageMetadata, routes } from "../../../lib/site";
 import { faqJsonLd, serviceJsonLd } from "../../../lib/structured-data";
 import "../../ceremony-pages.css";
 
@@ -24,6 +25,7 @@ export function generateMetadata() {
 }
 
 export default async function Memorials({ params }: { params: Promise<{ locale: string }> }) {
+  const contact = await getContact();
   const { locale } = await params;
   if (locale !== "en") notFound();
   const pages = getCeremonyPages(locale);

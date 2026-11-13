@@ -16,6 +16,7 @@ import { createGuestSiteRoutes } from "./modules/guest-site/routes.js";
 import { createIdentityRoutes } from "./modules/identity/routes.js";
 import { createMessagingRoutes } from "./modules/messaging/routes.js";
 import { createResponsesRoutes } from "./modules/responses/routes.js";
+import { createSiteSettingsRoutes } from "./modules/site-settings/routes.js";
 import { createWellRoutes } from "./modules/well/routes.js";
 import { createStripeWebhookRoute } from "./webhooks/stripe.js";
 
@@ -52,4 +53,5 @@ export function mountApiRouters(
   app.route("/", createResponsesRoutes(deps));
   app.route("/", createMessagingRoutes(deps));
   app.route("/", createCrmRoutes(options.leadService ?? createDefaultLeadService(deps)));
+  app.route("/", createSiteSettingsRoutes(deps));
 }

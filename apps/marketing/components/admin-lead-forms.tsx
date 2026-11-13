@@ -8,10 +8,10 @@ import {
   saveLeadNotes,
   updateLeadStage,
 } from "../app/admin/actions";
-import { actionErrorMessage } from "../lib/admin/action-result";
+import { type ActionResult, actionErrorMessage } from "../lib/admin/action-result";
 
 /** Failure messages by error code, plus the fallback (`AdminPagesCopy["errors"]`). */
-type ErrorMessages = Readonly<Record<string, string>> & { readonly fallback: string };
+export type ErrorMessages = Readonly<Record<string, string>> & { readonly fallback: string };
 
 /**
  * The outcome line under a form: a polite status when saved, an alert when it failed.
@@ -20,13 +20,13 @@ type ErrorMessages = Readonly<Record<string, string>> & { readonly fallback: str
  * be gone afterwards (a stage move replaces the buttons), so without this a keyboard user would
  * be dropped back at the top of the page.
  */
-function FormOutcome({
+export function FormOutcome({
   state,
   saved,
   errors,
   id,
 }: {
-  state: LeadFormState;
+  state: ActionResult<unknown> | null;
   saved: string;
   errors: ErrorMessages;
   id: string;

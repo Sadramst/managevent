@@ -12,6 +12,18 @@ export const GENERATED_OPERATIONS = [
   },
   {
     method: "GET",
+    path: "/v1/admin/site-settings",
+    summary: "The contact details and enquiry-alert address in force (staff only)",
+    tags: ["Site settings"],
+  },
+  {
+    method: "PUT",
+    path: "/v1/admin/site-settings",
+    summary: "Replace the contact email, phone and enquiry-alert address (staff only)",
+    tags: ["Site settings"],
+  },
+  {
+    method: "GET",
     path: "/v1/events",
     summary: "List the events the signed-in host owns or co-hosts",
     tags: ["Events"],
@@ -285,6 +297,12 @@ export const GENERATED_OPERATIONS = [
     path: "/v1/public/unsubscribe",
     summary: "Stop invitation and reminder emails to the address a signed link was sent to",
     tags: ["Messaging"],
+  },
+  {
+    method: "GET",
+    path: "/v1/site-settings",
+    summary: "The public contact email and phone shown on www (no sign-in; safe to cache briefly)",
+    tags: ["Site settings"],
   },
   {
     method: "POST",

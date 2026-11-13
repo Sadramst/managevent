@@ -10,7 +10,7 @@
 - **Local port:** 3100
 - **Open backlog:** MKT-05 (packages catalogue), MKT-10 (Perth local SEO), MKT-14 (analytics with consent), and the staff console items ADM-02 to ADM-08 (see [`ROADMAP.md`](../../ROADMAP.md))
 
-The public site (home with the cost estimator, ceremonies and ten ceremony pages, services, invitations, pricing, how it works, venues, memorials, about, contact, FAQ and the legal pages), the enquiry form that creates a lead through `POST /v1/leads`, and the staff console at `/admin` (sign-in with password and TOTP, enquiry inbox and enquiry detail). What each file does is in [`README.md`](README.md).
+The public site (home with the cost estimator, ceremonies and ten ceremony pages, services, invitations, pricing, how it works, venues, memorials, about, contact, FAQ and the legal pages), the enquiry form that creates a lead through `POST /v1/leads`, and the staff console at `/admin` (sign-in with password and TOTP, enquiry inbox, enquiry detail and the contact-details settings page). What each file does is in [`README.md`](README.md).
 
 **Planned, not built:** `/packages` and `/packages/[slug]` (MKT-05; today they redirect to `/pricing`), `/perth` and other city pages (MKT-10), analytics and a consent banner (MKT-14), and every staff module other than enquiries (ADM-02 to ADM-08).
 
@@ -38,7 +38,7 @@ app/
   actions.ts           # submitEnquiry server action → POST /v1/leads
   sitemap.ts  robots.ts  opengraph-image.tsx
 components/            # app-specific only; shared ones belong in packages/ui
-lib/                   # content loader, site routes, plans, admin helpers (lib/admin)
+lib/                   # content loader, site routes, contact details (contact.ts), plans, admin helpers (lib/admin)
 proxy.ts  next.config.ts
 ```
 
@@ -52,10 +52,11 @@ proxy.ts  next.config.ts
 - Memorial Mode applies to solemn routes and memorial enquiries through `getExperienceMode()`.
 - The staff console shows only what the API returns, is never cached or indexed, and checks the staff session on every page and every server action (`lib/admin/server.ts`). The API remains the authority.
 - The browser calls the API only through `/api/auth/*`; everything else is server-side.
+- Contact details are never hard-coded or read from `process.env` by a page: use `await getContact()` (`lib/contact.ts`). A page that reads them is prerendered and refreshed every 60 seconds; the staff settings page (`/admin/settings`) is where they are changed. A blank phone must hide every phone link.
 
 ## Environment variables
 
-`API_URL` and `API_PROXY_SECRET` (server-side, shared secret with the API), `NEXT_PUBLIC_INVITATION_URL`, and `CONTACT_EMAIL` / `CONTACT_PHONE` (required in production, where they are also image build arguments). The names are listed in the root `.env.example`.
+`API_URL` and `API_PROXY_SECRET` (server-side, shared secret with the API), `NEXT_PUBLIC_INVITATION_URL`, and `CONTACT_EMAIL` / `CONTACT_PHONE` (optional: the fallback shown only if the API cannot be reached; the real values are staff settings, see below). The names are listed in the root `.env.example`.
 
 ## Tests required
 
@@ -63,4 +64,4 @@ Vitest next to the code (content loader, site, venue prefill, admin helpers, aut
 
 ## Status
 
-Built and running locally against the real API: every public page listed above, the enquiry form and the staff console (enquiries only). Not deployed from this branch yet (OPS-01). Old `/fa` URLs redirect to English; only en-AU is shipped.
+Built and running locally against the real API: every public page listed above, the enquiry form and the staff console (enquiries and contact settings). Not deployed from this branch yet (OPS-01). Old `/fa` URLs redirect to English; only en-AU is shipped.

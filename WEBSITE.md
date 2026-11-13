@@ -80,7 +80,7 @@ Public pages live in `apps/marketing/app/[locale]/`. Visitors never see a locale
 ## A5. Global layout
 
 - The header, footer and mobile menu come from the brand shell in `packages/ui` (`@managevent/ui/brand`: `SiteHeader`, `SiteFooter`, `SiteMenu`), shared with `apps/invitation`.
-- Contact details come from `CONTACT_EMAIL` and `CONTACT_PHONE`. They are required in production builds, where they are baked into the prerendered pages ([`DEPLOYMENT.md`](DEPLOYMENT.md)).
+- Contact details are staff settings: the footer, contact page, memorial page, legal pages and structured data read the email and phone from `GET /v1/site-settings` (`apps/marketing/lib/contact.ts`, refreshed at most every minute), and staff edit them at `/admin/settings`. The email defaults to `appilico.au@gmail.com`, the phone is blank, and a blank phone shows no phone link. `CONTACT_EMAIL` and `CONTACT_PHONE` are only first-run defaults and the fallback if the API is unreachable.
 - **Experience mode:** pages derive it with `getExperienceMode()`. Memorial pages switch to the memorial palette, drop celebratory imagery and motion, use gentle wording, and show no promotional prompts.
 
 ## A6. Page notes

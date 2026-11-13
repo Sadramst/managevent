@@ -83,8 +83,14 @@ describe("metadata, sitemap and structured data", () => {
     expect(new Set(urls).size).toBe(urls.length);
   });
   it("builds structured data without an address or ABN", () => {
-    const organization = organizationJsonLd("About us");
+    const organization = organizationJsonLd("About us", {
+      email: "hello@example.com.au",
+      phone: "",
+    });
     expect(organization).not.toHaveProperty("address");
+    // A blank phone is left out rather than published as an empty number.
+    expect(organization).not.toHaveProperty("telephone");
+    expect(organization).toMatchObject({ email: "hello@example.com.au" });
     expect(organization).not.toHaveProperty("taxID");
     expect(
       breadcrumbJsonLd([

@@ -11,11 +11,17 @@
  */
 import { isApiError } from "@managevent/api-client";
 import { getAdminPages } from "@managevent/i18n";
-import { LeadIdSchema, LeadStageEnum } from "@managevent/validators";
-import { revalidatePath } from "next/cache";
+import {
+  type AdminSiteSettings,
+  LeadIdSchema,
+  LeadStageEnum,
+  SiteSettingsUpdateSchema,
+} from "@managevent/validators";
+import { revalidatePath, updateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import type { ActionResult } from "../../lib/admin/action-result";
 import { toActionFailure } from "../../lib/admin/api-failure";
+import { CONTACT_CACHE_TAG } from "../../lib/contact";
 import { loadCeremonyNames } from "../../lib/admin/ceremonies";
 import {
   canMoveLeadStage,
@@ -160,4 +166,57 @@ export async function assignLead(_previous: LeadFormState, data: FormData): Prom
 
   // The assignee is always the caller's own account, read from the session, never from the form.
   return updateLead(leadId, (staff) => ({ assignedToUserId: staff.id }));
+}
+
+export type SiteSettingsFormState = ActionResult<{
+  saved: true;
+  settings: AdminSiteSettings;
+}> | null;
+
+const SETTINGS_PATH = "/admin/settings";
+
+/**
+ * Saves the public contact details and the enquiry-alert address. The staff gate runs first;
+ * the API checks the role again (`site_settings:manage`). On success the cached contact details
+ * and the prerendered public pages are expired, so visitors see the change at once on this
+ * server rather than after the cache time.
+ */
+export async function saveSiteSettings(
+  _previous: SiteSettingsFormState,
+  data: FormData,
+): Promise<SiteSettingsFormState> {
+  const staff = await requireStaffForAction(SETTINGS_PATH);
+  if (isActionFailure(staff)) return staff;
+
+  const text = (name: string) => {
+    const value = data.get(name);
+    return typeof value === "string" ? value : "";
+  };
+  const parsed = SiteSettingsUpdateSchema.safeParse({
+    contactEmail: text("contactEmail"),
+    contactPhone: text("contactPhone"),
+    notificationEmail: text("notificationEmail"),
+  });
+  if (!parsed.success) {
+    const fieldErrors: Record<string, string[]> = {};
+    for (const issue of parsed.error.issues) {
+      const field = String(issue.path[0] ?? "");
+      fieldErrors[field] = ["INVALID"];
+    }
+    return { ok: false, code: "VALIDATION_ERROR", fieldErrors };
+  }
+
+  let settings: AdminSiteSettings;
+  try {
+    settings = await (await getServerApi()).siteSettings.update(parsed.data);
+  } catch (err) {
+    if (isApiError(err, "UNAUTHENTICATED")) {
+      redirect(signInHref({ reason: "session", next: SETTINGS_PATH }));
+    }
+    return toActionFailure(err);
+  }
+  updateTag(CONTACT_CACHE_TAG);
+  revalidatePath("/", "layout");
+  revalidatePath(SETTINGS_PATH);
+  return { ok: true, data: { saved: true, settings } };
 }

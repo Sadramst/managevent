@@ -36,7 +36,8 @@ src/
   lib/                          # deps, access (requireEventAccess), audit, auth, queue, rate-limit,
                                 # guest-tokens, time, localized, email, env, errors, router
   modules/<module>/             # identity, events, billing, guest-site, headcount, checkin, well,
-    routes.ts service.ts        # guest-list, responses, messaging, crm
+    routes.ts service.ts        # guest-list, responses, messaging, crm,
+                                # site-settings
     repo.ts  *.test.ts          # *.db.test.ts need the database; *.test.ts are pure
   webhooks/stripe.ts
   cli/                          # seed-demo.ts, create-staff.ts
@@ -96,10 +97,11 @@ All JSON routes are in the OpenAPI document (`GET /openapi.json`). Details are i
 | Guest list                                | `GET` `POST /v1/events/{eventId}/parties`; `PATCH` `DELETE .../parties/{partyId}`; `POST .../parties/{partyId}/revoke-link`; `POST .../reissue-link`; `POST .../parties/{partyId}/guests`; `PATCH` `DELETE .../guests/{guestId}`; `PUT .../parties/{partyId}/rsvp`; `POST /v1/events/{eventId}/guests/import`; `GET .../guests/export.csv` (plain route, not in OpenAPI) |
 | Responses                                 | `GET /v1/events/{eventId}/responses`; `GET .../responses/dietary`                                                                                                                                                                                                                                                                                                        |
 | Messaging                                 | `GET /v1/events/{eventId}/messaging`; `POST .../messaging/email-invitations`; `POST .../messaging/rsvp-reminders`                                                                                                                                                                                                                                                        |
+| Site settings                             | `GET /v1/site-settings` (public); `GET` `PUT /v1/admin/site-settings` (staff, `site_settings:manage`)                                                                                                                                                                                                                                                                    |
 | CRM                                       | `POST /v1/leads` (public); `GET /v1/leads`; `GET` `PATCH /v1/leads/{leadId}` (staff)                                                                                                                                                                                                                                                                                     |
 
 There is no `/v1/invitations` or `/v1/rsvp`: the invitation hangs off its event, and guests reply through their link.
 
 ## Status
 
-Built and running locally on PostgreSQL: 48 OpenAPI operations plus the CSV export, Better Auth sessions, the pg-boss producer, the demo seed and staff bootstrap tools, and the production `Dockerfile` (never built locally; CI's image job is the first build). Not deployed from this branch yet (OPS-01) and never exercised against live Stripe or Resend (OPS-02, OPS-03). Rate limits are per process, in memory (OPS-11).
+Built and running locally on PostgreSQL: 51 OpenAPI operations plus the CSV export, Better Auth sessions, the pg-boss producer, the demo seed and staff bootstrap tools, and the production `Dockerfile` (never built locally; CI's image job is the first build). Not deployed from this branch yet (OPS-01) and never exercised against live Stripe or Resend (OPS-02, OPS-03). Rate limits are per process, in memory (OPS-11).

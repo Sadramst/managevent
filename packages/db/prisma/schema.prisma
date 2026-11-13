@@ -1205,3 +1205,16 @@ model WebhookEvent {
 
   @@unique([provider, providerEventId])
 }
+
+// One row (`id = "site"`) of staff-editable public settings. A null column means "not set yet":
+// the API then answers with its first-run default (the CONTACT_* environment variables). An empty
+// string means "deliberately blank" (for example no public phone number).
+model SiteSetting {
+  id                String   @id
+  contactEmail      String?
+  contactPhone      String?
+  notificationEmail String?
+  updatedByUserId   String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

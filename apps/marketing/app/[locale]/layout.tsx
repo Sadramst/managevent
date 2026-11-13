@@ -5,7 +5,8 @@ import { SiteFooter, SiteHeader } from "@managevent/ui/brand";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
 import type { Metadata } from "next";
 import { CurrentNav } from "../../components/current-nav";
-import { contact, invitationLinks, localePath, routes, siteUrl } from "../../lib/site";
+import { getContact } from "../../lib/contact";
+import { invitationLinks, localePath, routes, siteUrl } from "../../lib/site";
 import "../globals.css";
 import "../site-pages.css";
 
@@ -25,6 +26,13 @@ const memorialPageCss = `body:has(> main[data-experience-mode="memorial"]){${Obj
   .map(([name, value]) => `${name}:${value}`)
   .join(";")}}`;
 
+/**
+ * Pages are prerendered and refreshed at most every minute, so the contact details staff edit in
+ * the console reach every page without a redeploy (`lib/contact.ts`). This must stay a literal:
+ * Next reads it at build time. Keep it equal to `CONTACT_REVALIDATE_SECONDS`.
+ */
+export const revalidate = 60;
+
 /** English is the only enabled locale, so every page under it can be prerendered. */
 export function generateStaticParams() {
   return [{ locale: "en" }];
@@ -37,6 +45,7 @@ export default async function LocaleLayout({
   children: ReactNode;
   params: Promise<{ locale: string }>;
 }) {
+  const contact = await getContact();
   const { locale } = await params;
   if (locale !== "en") notFound();
 

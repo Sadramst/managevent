@@ -36,6 +36,7 @@ export const PERMISSIONS = [
   "media:moderate",
   "lead:read",
   "lead:write",
+  "site_settings:manage",
   "user:manage_roles",
   "audit:read",
 ] as const;
@@ -214,6 +215,14 @@ export const PERMISSION_MATRIX: Readonly<
     SUPER_ADMIN: { scope: "all" },
   },
   "lead:write": {
+    CUSTOMER_HOST: { scope: "none" },
+    GUEST: { scope: "none" },
+    VENDOR: { scope: "none" },
+    PLANNER_STAFF: { scope: "all" },
+    CHECKIN_CREW: { scope: "none" },
+    SUPER_ADMIN: { scope: "all" },
+  },
+  "site_settings:manage": {
     CUSTOMER_HOST: { scope: "none" },
     GUEST: { scope: "none" },
     VENDOR: { scope: "none" },

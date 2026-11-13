@@ -58,7 +58,7 @@ flowchart LR
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/marketing`   | Next.js 16 App Router, prerendered pages | Built. Container on the VPS, port 3100. Also serves the staff console at `/admin`                                                           |
 | `apps/invitation`  | Next.js 16 App Router, server-rendered   | Built. Container on the VPS, port 3001                                                                                                      |
-| `apps/api`         | Hono on Node 22, run through `tsx`       | Built. Container on the VPS, port 4000. 48 OpenAPI operations plus a CSV export, the Stripe webhook, two CLIs (`seed:demo`, `staff:create`) |
+| `apps/api`         | Hono on Node 22, run through `tsx`       | Built. Container on the VPS, port 4000. 51 OpenAPI operations plus a CSV export, the Stripe webhook, two CLIs (`seed:demo`, `staff:create`) |
 | `apps/worker`      | Node 22, pg-boss                         | Built. Container on the VPS, no port                                                                                                        |
 | `apps/admin`       | Library (no UI)                          | Staff-role helpers. The console UI lives in `apps/marketing`                                                                                |
 | `apps/portal`      | Next.js, authenticated                   | Planned (PRT-01). Placeholder `package.json` and `AGENTS.md` only                                                                           |

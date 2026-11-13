@@ -28,6 +28,7 @@ Environment: `DATABASE_URL`, `DIRECT_URL` (both point at the same database local
 | `20261023010000_encrypted_health_only` | Drops the plaintext dietary and severity columns; refuses if a row still has plaintext without ciphertext.               |
 | `20261111000000_remove_persian`        | Data only: moves rows that used the removed `fa` locale or `persian-azure` theme to English and `emerald-botanic`.       |
 | `20261112000000_invitation_platform`   | `Lead.notes`, `Invitation.isDemo`, link reissue on `Party`, `Pass.revokedAt`, idempotency keys, `WebhookEvent`, indexes. |
+| `20261113000000_site_settings`         | `SiteSetting`: staff-editable public contact email, phone and enquiry-alert address.                                     |
 
 ## Usage
 

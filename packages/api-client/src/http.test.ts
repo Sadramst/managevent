@@ -680,6 +680,18 @@ describe("client resources: every contract method maps to its route", () => {
       ["GET /v1/leads?stage=NEW&limit=50", () => client.leads.list({ stage: "NEW" })],
       [`GET /v1/leads/${leadId}`, () => client.leads.get(leadId)],
       [`PATCH /v1/leads/${leadId}`, () => client.leads.update(leadId, { stage: "QUALIFIED" })],
+
+      ["GET /v1/site-settings", () => client.siteSettings.getPublic()],
+      ["GET /v1/admin/site-settings", () => client.siteSettings.getAdmin()],
+      [
+        "PUT /v1/admin/site-settings",
+        () =>
+          client.siteSettings.update({
+            contactEmail: "hello@example.com.au",
+            contactPhone: "",
+            notificationEmail: "",
+          }),
+      ],
     ];
 
     for (const [expected, run] of requests) {

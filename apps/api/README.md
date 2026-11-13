@@ -130,6 +130,16 @@ Host edits that change who is coming take a headcount snapshot and enqueue `head
 | `GET /v1/leads/{leadId}`   | `lead:read`         |                                                                                                        |
 | `PATCH /v1/leads/{leadId}` | `lead:write`        | stage, notes, assignee; the audit entry never contains the notes text                                  |
 
+### Site settings (`modules/site-settings`)
+
+The public contact email and phone shown on www, and where new-enquiry alerts go. One `SiteSetting` row; a column that has never been saved falls back to `CONTACT_EMAIL` / `CONTACT_PHONE` (and `LEAD_NOTIFICATION_EMAIL` for the alert address), then to `appilico.au@gmail.com` and no phone.
+
+| Route                         | Permission                     | Notes                                                                                                                          |
+| ----------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
+| `GET /v1/site-settings`       | public                         | `contactEmail` and `contactPhone` only (never the alert address); `Cache-Control: public, max-age=30`; 60/min per IP           |
+| `GET /v1/admin/site-settings` | `site_settings:manage` (staff) | The values in force, whether the alert address is custom, and when staff last saved                                            |
+| `PUT /v1/admin/site-settings` | `site_settings:manage`         | Replaces all three values; a blank phone hides it, a blank alert address follows the contact email; audited by field name only |
+
 ### Sample invitations
 
 Invitations with `Invitation.isDemo` are read-only: every write, by anyone, answers `403 DEMO_READ_ONLY`.

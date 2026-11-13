@@ -34,6 +34,7 @@ export const adminPagesEn = {
     productLabel: "Staff console",
     navLabel: "Staff console",
     enquiries: "Enquiries",
+    settings: "Settings",
     account: "Your account",
     signedInAs: "Signed in as",
     signOut: "Sign out",
@@ -175,6 +176,36 @@ export const adminPagesEn = {
     notFoundBody: "This enquiry does not exist or has been removed.",
   },
 
+  settings: {
+    metaTitle: "Settings",
+    eyebrow: "Website",
+    title: "Contact details",
+    lead: "The email address and phone number shown on the public website, and where new enquiries are sent. A change is live for visitors within a minute.",
+    contactTitle: "Shown on the website",
+    contactHelp:
+      "Appears in the footer, on the contact page, on the memorial page and in the page data search engines read.",
+    contactEmail: "Contact email",
+    contactEmailHelp: "Visitors write to this address.",
+    contactPhone: "Contact phone",
+    contactPhoneHelp: "Leave this blank to show no phone number anywhere on the website.",
+    notificationTitle: "New enquiries",
+    notificationHelp:
+      "Each new enquiry sends an email alert to this address, once email sending is set up.",
+    notificationEmail: "Send enquiry alerts to",
+    notificationEmailHelp: "Leave blank to use the contact email.",
+    notificationUsing: "Currently sending to {email}.",
+    save: "Save changes",
+    saving: "Saving",
+    saved: "Saved. The website will show the new details within a minute.",
+    neverSaved: "Not saved yet: the website is showing the defaults set up with the server.",
+    lastSaved: "Last saved {date} (Perth time).",
+    fieldErrors: {
+      contactEmail: "Enter a valid email address, such as hello@example.com.au.",
+      contactPhone: "Enter a phone number such as 0412 345 678 or 1300 123 456, or leave it blank.",
+      notificationEmail: "Enter a valid email address, or leave it blank.",
+    },
+  },
+
   stages: stageLabels,
   stageActions,
 
@@ -203,7 +234,7 @@ export const adminPagesEn = {
 
   /** Messages for a failed save, by API error code. `fallback` covers every other code. */
   errors: {
-    FORBIDDEN: "Your account is not allowed to change enquiries.",
+    FORBIDDEN: "Your account is not allowed to make this change.",
     NOT_FOUND: "This enquiry no longer exists. Go back to the inbox.",
     VALIDATION_ERROR: "That change was not accepted. Check what you entered and try again.",
     NOTES_TOO_LONG: "Notes can be up to {max} characters.",

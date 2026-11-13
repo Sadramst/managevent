@@ -20,7 +20,8 @@ import {
   settingsForCeremony,
 } from "../../../../lib/content";
 import { planCopyParams } from "../../../../lib/plans";
-import { contact, invitationLinks, localePath, pageMetadata, routes } from "../../../../lib/site";
+import { getContact } from "../../../../lib/contact";
+import { invitationLinks, localePath, pageMetadata, routes } from "../../../../lib/site";
 import { faqJsonLd, serviceJsonLd } from "../../../../lib/structured-data";
 import "../../../ceremony-pages.css";
 
@@ -49,6 +50,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 export default async function CeremonyDetail({ params }: { params: Params }) {
+  const contact = await getContact();
   const { locale, slug } = await params;
   if (locale !== "en") notFound();
 

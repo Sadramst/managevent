@@ -318,3 +318,15 @@ test("the staff console is closed to the public: /admin sends a signed-out visit
   expect((await new AxeBuilder({ page }).analyze()).violations).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test("the footer and contact page show an email, and no phone until one is set", async ({
+  page,
+}) => {
+  for (const path of ["/", "/contact", "/memorials"]) {
+    await page.goto(path);
+    await expect(page.locator('footer a[href^="mailto:"]').first(), path).toBeVisible();
+    // The phone number is staff-editable and blank by default: no empty `tel:` link anywhere.
+    await expect(page.locator('a[href="tel:"]'), path).toHaveCount(0);
+    await expect(page.locator('a[href^="tel:"]'), path).toHaveCount(0);
+  }
+});

@@ -19,6 +19,11 @@ createServer(async (request, response) => {
     );
     return;
   }
+  if (request.url === "/v1/site-settings" && request.method === "GET") {
+    // What a fresh install answers: the built-in email, no phone.
+    response.end(JSON.stringify({ contactEmail: "appilico.au@gmail.com", contactPhone: "" }));
+    return;
+  }
   if (request.url !== "/v1/leads" || request.method !== "POST") {
     response.end(JSON.stringify({ status: "ok" }));
     return;

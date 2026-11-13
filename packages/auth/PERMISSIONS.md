@@ -4,7 +4,7 @@
 
 Format: `resource:action`. Scopes: **own** (owner or co-host of the event, limited by co-host sub-role), **self** (the guest's own party, from the guest link), **org** (the vendor's own organisation), **roster** (assigned crew, from 24 hours before the event starts to 24 hours after it ends), **all**.
 
-**Enforced today** by `apps/api`: `event:*`, `guest:*`, `rsvp:submit`, `health:read`, `checkin:scan`, `payment:create` (the Premium Event Pass), `lead:*` (the staff enquiry inbox) and `media:moderate` (moderating wishes and tribute entries). The vendor, booking, inventory, order, refund, payout, media upload, role management and audit permissions exist in the matrix for work that is **planned** (see `ROADMAP.md`: VEN, ADM, PRT and INV-11). Co-hosts other than the event owner cannot be invited yet (INV-17).
+**Enforced today** by `apps/api`: `event:*`, `guest:*`, `rsvp:submit`, `health:read`, `checkin:scan`, `payment:create` (the Premium Event Pass), `lead:*` (the staff enquiry inbox), `site_settings:manage` (the public contact details) and `media:moderate` (moderating wishes and tribute entries). The vendor, booking, inventory, order, refund, payout, media upload, role management and audit permissions exist in the matrix for work that is **planned** (see `ROADMAP.md`: VEN, ADM, PRT and INV-11). Co-hosts other than the event owner cannot be invited yet (INV-17).
 
 | Permission                                 | CUSTOMER_HOST         | GUEST (token)                       | VENDOR                                                         | PLANNER_STAFF | CHECKIN_CREW                | SUPER_ADMIN  |
 | ------------------------------------------ | --------------------- | ----------------------------------- | -------------------------------------------------------------- | ------------- | --------------------------- | ------------ |
@@ -27,6 +27,7 @@ Format: `resource:action`. Scopes: **own** (owner or co-host of the event, limit
 | `media:upload`                             | own                   | self (wall, tribute)                | org (portfolio)                                                | all           | roster (evidence photos)    | all          |
 | `media:moderate`                           | own                   | —                                   | —                                                              | all           | —                           | all          |
 | `lead:read` / `lead:write`                 | —                     | —                                   | —                                                              | all           | —                           | all          |
+| `site_settings:manage`                     | —                     | —                                   | —                                                              | all           | —                           | all          |
 | `user:manage_roles`                        | —                     | —                                   | org (members)                                                  | —             | —                           | all          |
 | `audit:read`                               | —                     | —                                   | —                                                              | —             | —                           | all          |
 

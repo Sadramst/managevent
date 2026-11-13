@@ -278,6 +278,20 @@
   margin-block-start: 1rem;
 }
 
+/* ---- Settings ------------------------------------------------------------- */
+.console-detail.console-settings {
+  grid-template-columns: minmax(0, 40rem);
+}
+.console-settings .card > .help {
+  margin-block: 0.25rem 0.5rem;
+}
+.console-field-error {
+  margin-block: 0.4rem 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--me-danger);
+}
+
 /* ---- Sign in -------------------------------------------------------------- */
 .console-auth {
   display: grid;

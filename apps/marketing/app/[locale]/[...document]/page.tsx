@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import { getSitePages, t, type TranslationKey } from "@managevent/i18n";
 import { PageHero, Section } from "@managevent/ui/brand";
 import { Breadcrumbs } from "../../../components/page-kit";
-import { contact, localePath, pageMetadata, routes } from "../../../lib/site";
+import { getContact } from "../../../lib/contact";
+import { localePath, pageMetadata, routes } from "../../../lib/site";
 
 type DocumentKey = "privacy" | "terms" | "accessibility";
 
@@ -61,6 +62,7 @@ export async function generateMetadata({ params }: { params: Params }) {
 }
 
 export default async function Document({ params }: { params: Params }) {
+  const contact = await getContact();
   const { locale, document: segments } = await params;
   const document = documentKey(segments);
   if (locale !== "en" || !document) notFound();

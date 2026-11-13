@@ -98,11 +98,28 @@ test("estimator guest presets, summary chips and enquiry attachment confirmation
   page,
 }) => {
   await page.goto("/");
+  await expect(page.locator(".estimator-breakdown")).toBeVisible();
+  await expect(page.locator(".estimator-breakdown-list")).toContainText("Base coordination");
+  await expect(page.locator(".estimator-breakdown-list")).toContainText("Guest allocation");
+  await expect(page.locator(".estimator-breakdown-list")).not.toContainText("Travel & logistics");
+
+  const memorialPill = page.locator(".estimator-cat-pill", { hasText: /memorial/i });
+  await memorialPill.click();
+  await expect(memorialPill).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator("#est-ceremony")).toHaveValue("celebration-of-life");
+  await expect(page.locator(".estimator-grid")).toHaveAttribute("data-experience-mode", "memorial");
+
+  const weddingPill = page.locator(".estimator-cat-pill", { hasText: /wedding/i });
+  await weddingPill.click();
+  await expect(page.locator("#est-ceremony")).toHaveValue("wedding");
+
   const preset150 = page.locator(".estimator-preset", { hasText: /^150$/ });
   await preset150.click();
   await expect(preset150).toHaveAttribute("aria-pressed", "true");
   await expect(page.locator(".estimator-guest-badge")).toContainText("150");
   await page.locator("#est-tier").selectOption("LUXE");
+  await page.locator("#est-zone").selectOption("REGIONAL");
+  await expect(page.locator(".estimator-breakdown-list")).toContainText("Travel & logistics");
   await expect(page.locator(".estimator-summary-chips")).toContainText("Luxe");
   await page.locator(".estimator-cta").click();
   await expect(page.locator(".estimator-applied")).toBeVisible();

@@ -1,3 +1,6 @@
+import { readFileSync } from "node:fs";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
@@ -15,6 +18,9 @@ import {
   memorialTokens,
   Panel,
 } from "./index.js";
+import { ButtonLink, Card, PageHero, Section, SectionHead } from "./brand/index.js";
+
+const dir = dirname(fileURLToPath(import.meta.url));
 
 describe("@managevent/ui", () => {
   describe("WCAG 2.2 contrast ratios for every documented text pairing in DESIGN_SYSTEM.md", () => {
@@ -144,6 +150,46 @@ describe("@managevent/ui", () => {
       expect(html).not.toContain("<svg");
       expect(html).not.toContain("#5C1A24");
       expect(html).toContain("--me-surface:#F8F9FA");
+    });
+
+    it("renders brand layout primitives cleanly across variants", () => {
+      const html = renderToStaticMarkup(
+        <>
+          <PageHero
+            eyebrow="Stationery"
+            title="Digital invitations"
+            lead="Personalised per guest."
+            tone="dark"
+            actions={
+              <ButtonLink href="/contact" label="Talk to us" variant="inverse" size="large" />
+            }
+          />
+          <Section band tight size="narrow">
+            <SectionHead eyebrow="Steps" title="Three phases" lead="Guided coordination." />
+            <Card variant="accent">Accent card</Card>
+            <Card variant="quiet">Quiet card</Card>
+            <Card variant="rule">Rule card</Card>
+            <Card variant="sheet">Sheet panel</Card>
+          </Section>
+        </>,
+      );
+
+      expect(html).toContain("page-hero surface-dark");
+      expect(html).toContain("button button-inverse button-large");
+      expect(html).toContain("wrap wrap-narrow section section-tight");
+      expect(html).toContain("card card-accent");
+      expect(html).toContain("card card-quiet");
+      expect(html).toContain("card card-rule");
+      expect(html).toContain("panel");
+    });
+
+    it("keeps brand.css strictly token-driven (no hardcoded hex) and resets shadow/motion in Memorial Mode", () => {
+      const brandCss = readFileSync(resolve(dir, "brand/brand.css"), "utf8");
+      expect(brandCss).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+      expect(brandCss).toContain('[data-experience-mode="memorial"]');
+      expect(brandCss).toContain("box-shadow: none");
+      expect(brandCss).toContain("transform: none");
+      expect(brandCss).not.toMatch(/text-transform:\s*uppercase/);
     });
   });
 });

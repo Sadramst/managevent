@@ -621,7 +621,8 @@
   padding: clamp(1.1rem, 5vw, 2.5rem);
   border: 1px solid var(--me-rule-strong);
   border-radius: var(--me-radius-sheet);
-  background: var(--me-surface-raised);
+  background-color: var(--me-surface-raised);
+  background-image: var(--me-paper-sheen);
   box-shadow: var(--me-shadow-soft);
 }
 .inv-form {
@@ -1449,9 +1450,14 @@
 .inv-pass-top {
   display: grid;
   justify-items: center;
-  gap: 0.4rem;
-  padding: 1.35rem 1.25rem 1.1rem;
-  border-block-end: 1px dashed var(--inv-rule);
+  gap: 0.45rem;
+  padding: 1.45rem 1.25rem 1.2rem;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--me-accent) 9%, var(--me-surface-raised)) 0%,
+    var(--me-surface-raised) 100%
+  );
+  border-block-end: 1.5px dashed var(--inv-rule);
 }
 .inv-pass-name {
   margin: 0;
@@ -1465,20 +1471,41 @@
   gap: 0.4rem;
 }
 .inv-pass-qr {
+  position: relative;
   display: grid;
   justify-items: center;
-  padding: 1.25rem;
+  padding: 1.4rem 1.25rem 1.15rem;
+}
+.inv-pass-qr::before,
+.inv-pass-qr::after {
+  content: "";
+  position: absolute;
+  inset-block-start: -0.6rem;
+  inline-size: 1.15rem;
+  block-size: 1.15rem;
+  border-radius: 999px;
+  background: var(--me-surface);
+  border: 1px solid var(--me-rule-strong);
+}
+.inv-pass-qr::before {
+  inset-inline-start: -0.6rem;
+}
+.inv-pass-qr::after {
+  inset-inline-end: -0.6rem;
 }
 .inv-pass-qr img {
   display: block;
   inline-size: min(100%, 15rem);
   block-size: auto;
+  padding: 0.45rem;
+  background: var(--inv-surface);
+  border: 1px solid var(--inv-rule);
   border-radius: var(--me-radius-control);
   image-rendering: pixelated;
 }
 .inv-pass-foot {
   margin: 0;
-  padding: 0 1.25rem 1.25rem;
+  padding: 0 1.25rem 1.35rem;
   font-size: 0.85rem;
   color: var(--me-ink-muted);
 }
@@ -1565,8 +1592,6 @@
 }
 .inv-pass-code-label {
   font-weight: 600;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
 }
 .inv-pass-code code {
   font-size: 0.8rem;
@@ -1576,8 +1601,16 @@
   user-select: all;
 }
 
-/* Memorial Mode stays calm and flat without celebratory card elevation. */
+/* Memorial Mode stays calm and flat without celebratory card elevation or decorative ticket punches. */
 .inv[data-experience-mode="memorial"]
   :is(.inv-frame, .inv-detail, .inv-sheet, .inv-confirm, .inv-pass, .inv-gate-card) {
+  background-image: none;
   box-shadow: none;
+}
+.inv[data-experience-mode="memorial"] .inv-pass-top {
+  background: var(--me-surface-raised);
+}
+.inv[data-experience-mode="memorial"] .inv-pass-qr::before,
+.inv[data-experience-mode="memorial"] .inv-pass-qr::after {
+  content: none;
 }

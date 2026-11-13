@@ -290,6 +290,16 @@ test.describe("Host Studio: guests, share, responses and the door", () => {
     );
     const junePass = passes.passes.find((pass) => pass.guestName === "June Carroway");
     expect(junePass, "an attending guest has a pass").toBeTruthy();
+
+    await page.goto(`${carroway.invitePath}/pass`);
+    await expect(page.locator(".inv-pass")).toHaveCount(2);
+    await expect(page.locator(".inv-pass-qr img").first()).toBeVisible();
+    const labelTransform = await page
+      .locator(".inv-pass-code-label")
+      .first()
+      .evaluate((el) => getComputedStyle(el).textTransform);
+    expect(labelTransform).toBe("none");
+
     await host.signIn(context);
 
     await page.goto(`/check-in/${eventId}`);

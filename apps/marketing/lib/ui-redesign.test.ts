@@ -22,12 +22,17 @@ describe("redesign asset parity and estimator UI", () => {
     expect(brandIcon).toContain("M12 51.5c4-2 16-2 24 0");
   });
 
-  it("renders EventEstimator with one-tap guest presets and selected summary chips", () => {
+  it("renders EventEstimator with one-tap guest presets, category pills, breakdown bar, and summary chips", () => {
     const html = renderToStaticMarkup(React.createElement(EventEstimator, { locale: "en" }));
+    expect(html).toContain('class="estimator-cat-pills"');
+    expect(html).toContain('class="estimator-cat-pill"');
     expect(html).toContain('class="estimator-presets"');
     for (const preset of [50, 100, 150, 250]) {
       expect(html).toContain(`>${preset}</button>`);
     }
+    expect(html).toContain('class="estimator-breakdown"');
+    expect(html).toContain("Base coordination");
+    expect(html).toContain("Guest allocation");
     expect(html).toContain('aria-pressed="true"');
     expect(html).toContain('class="pills estimator-summary-chips"');
     expect(html).toContain("Signature");

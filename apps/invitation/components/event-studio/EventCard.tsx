@@ -60,6 +60,8 @@ export function EventCard({ event, past, copy }: EventCardProps) {
   const memorial = isMemorialEvent(event);
   const occasion = occasionLabel(event.ceremonySlug, copy.catalog);
   const { guests, yes, pending } = event.counts;
+  const answered = Math.max(0, guests - pending);
+  const replyPct = guests > 0 ? Math.min(100, Math.round((answered / guests) * 100)) : 0;
 
   return (
     <Link
@@ -98,20 +100,25 @@ export function EventCard({ event, past, copy }: EventCardProps) {
         {guests === 0 ? (
           <p className="es-event-empty">{card.noGuests}</p>
         ) : (
-          <dl className="es-event-counts">
-            <div>
-              <dt>{card.invited}</dt>
-              <dd className="num">{guests}</dd>
+          <>
+            <dl className="es-event-counts">
+              <div>
+                <dt>{card.invited}</dt>
+                <dd className="num">{guests}</dd>
+              </div>
+              <div>
+                <dt>{card.coming}</dt>
+                <dd className="num">{yes}</dd>
+              </div>
+              <div>
+                <dt>{card.awaiting}</dt>
+                <dd className="num">{pending}</dd>
+              </div>
+            </dl>
+            <div className="es-event-meter" aria-hidden="true">
+              <span style={{ inlineSize: `${replyPct}%` }} />
             </div>
-            <div>
-              <dt>{card.coming}</dt>
-              <dd className="num">{yes}</dd>
-            </div>
-            <div>
-              <dt>{card.awaiting}</dt>
-              <dd className="num">{pending}</dd>
-            </div>
-          </dl>
+          </>
         )}
       </div>
     </Link>

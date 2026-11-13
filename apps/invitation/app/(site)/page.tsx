@@ -8,6 +8,7 @@ import {
 } from "@managevent/i18n";
 import { ButtonLink, PageHero, Section, SectionHead } from "@managevent/ui/brand";
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
+import { HeroPreviewSwitcher } from "@/components/public/HeroPreviewSwitcher";
 import { InvitationPreview } from "@/components/public/InvitationPreview";
 import { CheckList, CtaBand, Faq, FeatureList, JsonLd, Steps } from "@/components/public/kit";
 import { PlanCards } from "@/components/public/Plans";
@@ -105,8 +106,8 @@ export default async function HomePage() {
         }
         aside={
           <div className="pub-hero-preview">
-            <InvitationPreview
-              themeId={heroDemo?.themeId ?? "royal-ivory"}
+            <HeroPreviewSwitcher
+              initialThemeId={heroDemo?.themeId ?? "royal-ivory"}
               hosts={heroDemo?.hosts ?? home.previewFallbackHosts}
               headline={heroDemo?.headline ?? home.previewFallbackHeadline}
               title={heroDemo?.title ?? home.previewFallbackTitle}

@@ -283,6 +283,7 @@ test.describe("a host's events", () => {
   test("the event list shows both events; deleting needs the name typed", async () => {
     await page.goto("/studio");
     await expect(page.locator(".es-event")).toHaveCount(2);
+    await expect(page.locator(".es-event .es-event-meter").first()).toBeVisible();
     await expectNoAxeViolations(page, "event list");
 
     await page.goto(`/studio/${weddingId}/settings`);

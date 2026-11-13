@@ -249,6 +249,7 @@ test("staff sign in with two-factor, find a real enquiry, move it on, add a note
   await signInAsStaff(page);
   await expect(page).toHaveURL(/\/admin$/);
   await expect(page.locator("h1")).toHaveText("Enquiries");
+  await expect(page.locator(".console-kpis > div")).toHaveCount(4);
   await expect(page.getByTestId("signed-in-user")).toContainText(staff.name);
   await expect(page.getByTestId("signed-in-user")).toContainText("Administrator");
   await expect(page.locator(".site-header-bar, .footer-shell")).toHaveCount(0);

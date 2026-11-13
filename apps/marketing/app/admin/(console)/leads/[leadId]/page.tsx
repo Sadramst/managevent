@@ -224,7 +224,7 @@ export default async function LeadPage({ params }: { params: Promise<{ leadId: s
           </section>
         </div>
 
-        <div className="console-column">
+        <div className="console-column console-column-sticky">
           <section className="card card-accent" aria-labelledby="lead-stage-title">
             <h2 className="console-card-title" id="lead-stage-title">
               {copy.lead.stageTitle}

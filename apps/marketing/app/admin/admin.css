@@ -13,6 +13,10 @@
   background: color-mix(in srgb, var(--me-surface-raised) 94%, transparent);
   backdrop-filter: blur(10px);
   border-block-end: 1px solid var(--me-rule);
+  box-shadow: 0 1px 14px -8px color-mix(in srgb, var(--me-ink) 12%, transparent);
+}
+[data-experience-mode="memorial"] .console-bar {
+  box-shadow: none;
 }
 .console-bar-inner {
   display: flex;
@@ -131,6 +135,33 @@
 }
 
 /* ---- Inbox ---------------------------------------------------------------- */
+.console-kpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 0 0 1.5rem;
+}
+.console-kpis > div {
+  padding: 1rem 1.2rem;
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  border: 1px solid var(--me-rule);
+  border-block-start: 2px solid var(--me-accent);
+  box-shadow: var(--me-shadow-soft);
+}
+.console-kpis dt {
+  font-size: 0.82rem;
+  color: var(--me-ink-muted);
+}
+.console-kpis dd {
+  margin: 0.2rem 0 0;
+  font-family: var(--me-font-display);
+  font-size: 1.85rem;
+  font-weight: 600;
+  line-height: 1.15;
+  color: var(--me-primary);
+  font-variant-numeric: lining-nums tabular-nums;
+}
 .console-count {
   display: inline-block;
   margin-inline-start: 0.5rem;
@@ -212,6 +243,16 @@
   flex-direction: column;
   gap: 1.5rem;
   min-inline-size: 0;
+}
+@media (min-width: 961px) {
+  .console-column-sticky {
+    position: sticky;
+    inset-block-start: calc(4rem + 1.5rem);
+  }
+}
+[data-experience-mode="memorial"] .console-kpis > div {
+  box-shadow: none;
+  border-block-start: 1px solid var(--me-rule);
 }
 .console-detail .card {
   padding: 1.5rem;
@@ -350,6 +391,10 @@
   }
 }
 @media (max-width: 680px) {
+  .console-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
   /* Row one: logo and sign-out. Row two: the section link and who is signed in. */
   .console-brand {
     order: 1;

@@ -40,6 +40,23 @@ test.describe("home", () => {
     await page.keyboard.press("Enter");
     await expect(first).toHaveAttribute("open", "");
   });
+
+  test("lets visitors preview celebration themes live in the hero", async ({ page }) => {
+    await page.goto("/");
+    const swatches = page.locator(".pub-hero-swatch");
+    await expect(swatches).toHaveCount(4);
+
+    const midnight = page.getByRole("button", { name: "Midnight Celestial & Rose Gold" });
+    await midnight.click();
+    await expect(midnight).toHaveAttribute("aria-pressed", "true");
+    await expect(page.locator(".pub-hero-preview .pub-inv")).toHaveAttribute(
+      "style",
+      /--inv-bg:\s*#0F172A/i,
+    );
+
+    const box = await midnight.boundingBox();
+    expect(box?.height ?? 0).toBeGreaterThanOrEqual(44);
+  });
 });
 
 test.describe("templates", () => {

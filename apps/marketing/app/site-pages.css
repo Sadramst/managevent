@@ -46,7 +46,8 @@
   max-inline-size: 23rem;
   margin-inline: auto;
   padding-block-start: 4.5rem;
-  background: var(--me-surface-raised);
+  background-color: var(--me-surface-raised);
+  background-image: var(--me-paper-sheen);
   text-align: center;
   box-shadow: var(--me-shadow-raised);
 }
@@ -93,6 +94,7 @@
   text-decoration-thickness: 2px;
 }
 [data-experience-mode="memorial"] .sp-arch {
+  background-image: none;
   box-shadow: none;
 }
 
@@ -416,6 +418,12 @@
 /* Keeps the plan names on one line across the row despite the thicker rule on the accent card. */
 .sp-plan.card-accent {
   padding-block-start: calc(1.75rem - 2px);
+  background: linear-gradient(
+    180deg,
+    var(--me-surface-raised) 0%,
+    color-mix(in srgb, var(--me-accent) 9%, var(--me-surface-raised)) 100%
+  );
+  border-color: var(--me-rule-strong);
 }
 .sp-plan-name {
   margin-block: 0 0.5rem;

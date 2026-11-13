@@ -119,10 +119,14 @@ export function EventEstimator({
   const perGuestCents = rates.perGuestCents[tier];
   const zoneCents = ZONE_SURCHARGE_CENTS[zone];
 
-  const midTotalCents = rates.baseFixedCents + safeGuests * perGuestCents + zoneCents;
+  const perGuestSubtotalCents = safeGuests * perGuestCents;
+  const midTotalCents = rates.baseFixedCents + perGuestSubtotalCents + zoneCents;
   const lowTotalCents = Math.round((midTotalCents * 0.9) / 10000) * 10000;
   const highTotalCents = Math.round((midTotalCents * 1.12) / 10000) * 10000;
   const avgPerGuestCents = Math.round(midTotalCents / safeGuests);
+  const baseSharePct = Math.round((rates.baseFixedCents / midTotalCents) * 100);
+  const zoneSharePct = Math.round((zoneCents / midTotalCents) * 100);
+  const guestSharePct = Math.max(0, 100 - baseSharePct - zoneSharePct);
 
   // What the guest count usually means for tables, staff and dessert.
   const recommendedTables = Math.ceil(safeGuests / 10);
@@ -185,6 +189,26 @@ export function EventEstimator({
               </option>
             ))}
           </select>
+          <div
+            className="estimator-cat-pills"
+            role="group"
+            aria-label={t(locale, "marketing.launchEstCategoryLabel")}
+          >
+            {CATEGORIES.map((option) => (
+              <button
+                key={option.slug}
+                type="button"
+                className="estimator-cat-pill"
+                aria-pressed={ceremonySlug === option.slug}
+                onClick={() => {
+                  setCeremonySlug(option.slug);
+                  setApplied(false);
+                }}
+              >
+                {t(locale, option.label)}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="estimator-field">
@@ -309,6 +333,38 @@ export function EventEstimator({
             <strong dir="ltr">{formatDollarsFromCents(avgPerGuestCents)}</strong> (
             {t(locale, "common.inclGst")})
           </p>
+
+          <div className="estimator-breakdown" aria-label="Cost composition">
+            <div className="estimator-breakdown-bar" aria-hidden="true">
+              <span className="est-seg-base" style={{ flexGrow: Math.max(8, baseSharePct) }} />
+              <span className="est-seg-guests" style={{ flexGrow: Math.max(8, guestSharePct) }} />
+              {zoneCents > 0 ? (
+                <span className="est-seg-zone" style={{ flexGrow: Math.max(5, zoneSharePct) }} />
+              ) : null}
+            </div>
+            <dl className="estimator-breakdown-list">
+              <div>
+                <dt>Base coordination</dt>
+                <dd className="num" dir="ltr">
+                  {formatDollarsFromCents(rates.baseFixedCents)}
+                </dd>
+              </div>
+              <div>
+                <dt>Guest allocation</dt>
+                <dd className="num" dir="ltr">
+                  {formatDollarsFromCents(perGuestSubtotalCents)}
+                </dd>
+              </div>
+              {zoneCents > 0 ? (
+                <div>
+                  <dt>Travel &amp; logistics</dt>
+                  <dd className="num" dir="ltr">
+                    {formatDollarsFromCents(zoneCents)}
+                  </dd>
+                </div>
+              ) : null}
+            </dl>
+          </div>
         </div>
 
         <div className="estimator-output-foot">

@@ -83,6 +83,27 @@ export default async function InboxPage({
         </div>
       </header>
 
+      {counts ? (
+        <dl className="console-kpis">
+          <div>
+            <dt>{copy.inbox.all}</dt>
+            <dd className="num">{counts.all}</dd>
+          </div>
+          <div>
+            <dt>{copy.stages.NEW}</dt>
+            <dd className="num">{counts.NEW ?? 0}</dd>
+          </div>
+          <div>
+            <dt>{copy.stages.PROPOSAL_SENT}</dt>
+            <dd className="num">{counts.PROPOSAL_SENT ?? 0}</dd>
+          </div>
+          <div>
+            <dt>{copy.stages.BOOKED}</dt>
+            <dd className="num">{counts.BOOKED ?? 0}</dd>
+          </div>
+        </dl>
+      ) : null}
+
       <nav className="tabs" aria-label={copy.inbox.tabsLabel}>
         {tabs.map((tab) => (
           <a

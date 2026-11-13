@@ -15,6 +15,8 @@ export interface SiteFooterContact {
   phone?: string;
 }
 
+export const APPILICO_URL = "https://www.appilico.com.au/";
+
 export interface SiteFooterProps {
   /** Which product this footer belongs to. Exposed as `data-product`. */
   product: BrandProduct;
@@ -38,7 +40,7 @@ export interface SiteFooterProps {
   acknowledgement: string;
   /** "A product by Appilico" (`common.byAppilico`). */
   byline: string;
-  /** Optional link for the byline. */
+  /** Optional link for the byline. Defaults to Appilico's site (`APPILICO_URL`). */
   bylineHref?: string;
   /** Optional copyright line. */
   copyright?: string;
@@ -63,7 +65,7 @@ export function SiteFooter({
   legalLinks,
   acknowledgement,
   byline,
-  bylineHref,
+  bylineHref = APPILICO_URL,
   copyright,
   tone = "light",
   className,

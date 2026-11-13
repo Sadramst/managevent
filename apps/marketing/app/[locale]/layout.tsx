@@ -127,6 +127,7 @@ export default async function LocaleLayout({
           ]}
           acknowledgement={t(locale, "legal.acknowledgementOfCountry")}
           byline={t(locale, "common.byAppilico")}
+          bylineHref="https://www.appilico.com.au/"
         />
       </body>
     </html>

@@ -500,8 +500,18 @@ export type PlanView = z.infer<typeof PlanViewSchema>;
 export const CheckoutCreateSchema = z.object({});
 export type CheckoutCreate = z.infer<typeof CheckoutCreateSchema>;
 
+export const CheckoutUrlSchema = z.union([
+  HttpsUrlSchema,
+  z
+    .string()
+    .max(500)
+    .regex(/^\/studio\/[A-Za-z0-9_-]+\/checkout\?session_id=[A-Za-z0-9_.-]+$/, {
+      message: "Must be an https:// URL or a studio checkout path",
+    }),
+]);
+
 export const CheckoutSessionSchema = z.object({
-  checkoutUrl: HttpsUrlSchema,
+  checkoutUrl: CheckoutUrlSchema,
 });
 export type CheckoutSession = z.infer<typeof CheckoutSessionSchema>;
 
@@ -509,3 +519,4 @@ export const CheckoutConfirmSchema = z.object({
   sessionId: z.string().min(8).max(200),
 });
 export type CheckoutConfirm = z.infer<typeof CheckoutConfirmSchema>;
+

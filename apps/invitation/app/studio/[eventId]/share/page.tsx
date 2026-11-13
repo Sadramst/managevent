@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getInvitationShell, getInvitationStudioGuests } from "@managevent/i18n";
+import { fillCopy, getInvitationShell, getInvitationStudioGuests } from "@managevent/i18n";
+import { FREE_PARTY_LINK_LIMIT, INVITATION_PLANS } from "@managevent/payments";
 import { CampaignHistory } from "@/components/share/CampaignHistory";
 import { EmailInvitations } from "@/components/share/EmailInvitations";
 import { ShareLinks } from "@/components/share/ShareLinks";
+import { UpgradePassButton } from "@/components/share/UpgradePassButton";
 import { buttonClass, EmptyState, Notice } from "@/components/ui";
 import { formatLocalDate } from "@/lib/dates";
+import { formatAud } from "@/lib/event-studio/catalog";
 import {
   experienceModeAttr,
   isMemorial,
@@ -24,8 +27,19 @@ const shell = getInvitationShell("en");
 
 export const metadata: Metadata = privateMetadata(copy.share.metaTitle);
 
-export default async function EventSharePage({ params }: { params: Promise<{ eventId: string }> }) {
+export default async function EventSharePage({
+  params,
+  searchParams,
+}: {
+  params: Promise<{ eventId: string }>;
+  searchParams?: Promise<{ upgraded?: string | string[] }>;
+}) {
   const { eventId } = await params;
+  const resolvedSearchParams = searchParams ? await searchParams : {};
+  const justUpgraded =
+    (Array.isArray(resolvedSearchParams.upgraded)
+      ? resolvedSearchParams.upgraded[0]
+      : resolvedSearchParams.upgraded) === "1";
   const { capabilities } = await requireHost();
   const api = await getServerApi();
   const event = await loadEvent(api, eventId);
@@ -36,9 +50,15 @@ export default async function EventSharePage({ params }: { params: Promise<{ eve
 
   const memorial = isMemorial(event);
   const published = event.invitation.publishedAt !== null;
+  const canEdit = event.role !== "VIEWER";
+  const isFreePlan = !memorial && event.invitation.effectivePlan === "FREE";
+  const canUpgrade = isFreePlan && canEdit && capabilities.stripeCheckout;
+  const priceDisplay = formatAud(INVITATION_PLANS.PREMIUM.priceIncGstCents);
   // Each client component gets only what it shows: links without email addresses for the
   // link list, and names without links or contact details for the email list.
   const parties = loaded.items.map((party) => toLinkPartyView(party, event.timeZone));
+  const unlockedCount = parties.filter((party) => party.inviteUrl !== null).length;
+  const lockedCount = parties.length - unlockedCount;
   const withEmail = loaded.items
     .filter((party) => party.email.hasAddress)
     .map((party) => toEmailPartyView(party, event.timeZone));
@@ -65,6 +85,16 @@ export default async function EventSharePage({ params }: { params: Promise<{ eve
         </div>
       </header>
 
+      {justUpgraded && event.invitation.effectivePlan === "PREMIUM" ? (
+        <Notice
+          tone="success"
+          title={fillCopy(share.freeTier.upgradedTitle, { total: parties.length })}
+          className="sb-notice"
+        >
+          <p>{fillCopy(share.freeTier.upgradedBody, { total: parties.length })}</p>
+        </Notice>
+      ) : null}
+
       {!published ? (
         <Notice tone="warning" title={common.notPublishedTitle} className="sb-notice">
           <p>{common.notPublished}</p>
@@ -74,6 +104,55 @@ export default async function EventSharePage({ params }: { params: Promise<{ eve
             </Link>
           </p>
         </Notice>
+      ) : null}
+
+      {isFreePlan && canEdit && parties.length > 0 ? (
+        lockedCount > 0 ? (
+          <Notice
+            tone="warning"
+            title={fillCopy(share.freeTier.lockedTitle, {
+              locked: lockedCount,
+              total: parties.length,
+            })}
+            className="sb-notice"
+          >
+            <p>
+              {fillCopy(share.freeTier.lockedBody, {
+                freeLimit: FREE_PARTY_LINK_LIMIT,
+                locked: lockedCount,
+                price: priceDisplay,
+              })}
+            </p>
+            {canUpgrade ? (
+              <div className="sb-premium">
+                <UpgradePassButton
+                  eventId={eventId}
+                  label={fillCopy(share.freeTier.unlockAction, {
+                    total: parties.length,
+                    price: priceDisplay,
+                  })}
+                  workingLabel={share.freeTier.unlocking}
+                  networkError={shell.errors.NETWORK_ERROR}
+                />
+              </div>
+            ) : null}
+          </Notice>
+        ) : (
+          <Notice
+            title={fillCopy(share.freeTier.activeTitle, {
+              unlocked: unlockedCount,
+              freeLimit: FREE_PARTY_LINK_LIMIT,
+            })}
+            className="sb-notice"
+          >
+            <p>
+              {fillCopy(share.freeTier.activeBody, {
+                freeLimit: FREE_PARTY_LINK_LIMIT,
+                price: priceDisplay,
+              })}
+            </p>
+          </Notice>
+        )
       ) : null}
 
       {loaded.truncated ? (
@@ -110,6 +189,9 @@ export default async function EventSharePage({ params }: { params: Promise<{ eve
               messageTemplate={messageTemplate}
               copy={share}
               common={common}
+              canEdit={canEdit}
+              canUpgrade={canUpgrade}
+              networkError={shell.errors.NETWORK_ERROR}
             />
           </section>
 

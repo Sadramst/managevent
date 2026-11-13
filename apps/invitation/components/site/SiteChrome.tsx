@@ -94,6 +94,7 @@ export function SiteChrome({ signedIn, children }: SiteChromeProps) {
         ]}
         acknowledgement={t("en", "legal.acknowledgementOfCountry")}
         byline={t("en", "common.byAppilico")}
+        bylineHref="https://www.appilico.com.au/"
       />
     </>
   );

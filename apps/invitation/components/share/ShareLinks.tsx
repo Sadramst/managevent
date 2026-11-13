@@ -31,6 +31,7 @@ import { personalise } from "@/lib/guest-list/messages";
 import { type LinkPartyView, matchesQuery, tableLabelText } from "@/lib/guest-list/view";
 import { whatsAppUrl } from "@/lib/guest-list/whatsapp";
 import { QrDialog } from "./QrDialog";
+import { UpgradePassButton } from "./UpgradePassButton";
 
 export interface ShareLinksProps {
   eventId: string;
@@ -39,6 +40,9 @@ export interface ShareLinksProps {
   messageTemplate: string;
   copy: InvitationStudioGuestsCopy["share"];
   common: InvitationStudioGuestsCopy["common"];
+  canEdit?: boolean;
+  canUpgrade?: boolean;
+  networkError?: string;
 }
 
 type Confirm = { kind: "revoke" | "reissue"; partyId: string } | null;
@@ -50,7 +54,16 @@ const SEARCH_FROM = 6;
  * One row per household with its private link: copy it, open WhatsApp with the message ready,
  * show a QR code, or turn the link off and issue a new one (both confirmed first).
  */
-export function ShareLinks({ eventId, parties, messageTemplate, copy, common }: ShareLinksProps) {
+export function ShareLinks({
+  eventId,
+  parties,
+  messageTemplate,
+  copy,
+  common,
+  canEdit = true,
+  canUpgrade = false,
+  networkError = "",
+}: ShareLinksProps) {
   const { ui } = useUiCopy();
   const toast = useToast();
   const run = useSettle();
@@ -126,6 +139,7 @@ export function ShareLinks({ eventId, parties, messageTemplate, copy, common }: 
           {visible.map((party) => {
             const url = party.inviteUrl;
             const active = url !== null && !party.linkOff;
+            const lockedByPlan = url === null && canEdit;
             const message = url ? personalise(messageTemplate, party.displayName, url) : "";
             return (
               <li key={party.id} className="sb-party sb-share-row">
@@ -134,6 +148,7 @@ export function ShareLinks({ eventId, parties, messageTemplate, copy, common }: 
                     <h3 className="sb-party-name">{party.displayName}</h3>
                     <StatusBadge status={party.status} labels={common.status} />
                     {party.linkOff ? <Badge tone="danger">{links.linkOff}</Badge> : null}
+                    {lockedByPlan ? <Badge tone="warning">{links.lockedBadge}</Badge> : null}
                   </div>
                   <p className="sb-party-meta">
                     <span>
@@ -146,7 +161,9 @@ export function ShareLinks({ eventId, parties, messageTemplate, copy, common }: 
                       <span>{fill(links.emailed, { date: party.emailedOn })}</span>
                     ) : null}
                   </p>
-                  {url === null ? <p className="notice">{common.viewOnlyLinks}</p> : null}
+                  {url === null ? (
+                    <p className="notice">{canEdit ? links.lockedNote : common.viewOnlyLinks}</p>
+                  ) : null}
                   {party.linkOff && url !== null ? (
                     <p className="notice">{links.linkOffNote}</p>
                   ) : null}
@@ -246,6 +263,16 @@ export function ShareLinks({ eventId, parties, messageTemplate, copy, common }: 
                         {links.reissue}
                       </Button>
                     )}
+                  </div>
+                ) : lockedByPlan && canUpgrade ? (
+                  <div className="sb-party-actions">
+                    <UpgradePassButton
+                      eventId={eventId}
+                      label={links.unlockRow}
+                      workingLabel={copy.freeTier.unlocking}
+                      networkError={networkError}
+                      size="small"
+                    />
                   </div>
                 ) : null}
               </li>

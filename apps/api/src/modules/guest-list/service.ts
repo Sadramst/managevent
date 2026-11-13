@@ -8,7 +8,11 @@
  */
 import type { AuthActor } from "@managevent/auth";
 import { generateId, type Prisma, type RsvpStatus } from "@managevent/db";
-import { canAddGuestsUnderPlan } from "@managevent/payments";
+import {
+  canAddGuestsUnderPlan,
+  FREE_PARTY_LINK_LIMIT,
+  isPartyLinkUnlocked,
+} from "@managevent/payments";
 import type {
   GuestImport,
   GuestImportResult,
@@ -175,9 +179,18 @@ export function createGuestListService(deps: ApiDeps) {
       row.guests.flatMap((guest) => (guest.email ? [hashEmailAddress(guest.email)] : [])),
     );
     const emailActivity = await repo.loadEmailActivity(deps.db, access.event.id, hashes);
-    const showLink = canSeeGuestLinks(ctx, access);
+    const baseShowLink = canSeeGuestLinks(ctx, access);
+    let unlockedPartyIds: Set<string> | null = null;
+    if (baseShowLink && access.effectivePlan.plan === "FREE" && rows.length > 0) {
+      const liveIds = await repo.listLivePartyIds(deps.db, access.invitation.id);
+      unlockedPartyIds = new Set(liveIds.slice(0, FREE_PARTY_LINK_LIMIT));
+    }
     return rows.map((row) =>
-      toHostParty(row, { eventSlug: access.invitation.eventSlug, showLink, emailActivity }),
+      toHostParty(row, {
+        eventSlug: access.invitation.eventSlug,
+        showLink: baseShowLink && (unlockedPartyIds ? unlockedPartyIds.has(row.id) : true),
+        emailActivity,
+      }),
     );
   }
 
@@ -820,8 +833,15 @@ export function createGuestListService(deps: ApiDeps) {
       const showLinks = canSeeGuestLinks(ctx, access);
 
       const parties = await repo.listExportParties(deps.db, access.invitation.id, includeHealth);
-      const rows: ExportGuestRow[] = parties.flatMap((party) =>
-        party.guests.map((guest) => ({
+      const rows: ExportGuestRow[] = parties.flatMap((party, partyIndex) => {
+        const showPartyLink =
+          showLinks &&
+          isPartyLinkUnlocked(
+            access.invitation.plan,
+            partyIndex,
+            access.event.experienceMode,
+          );
+        return party.guests.map((guest) => ({
           partyName: fromLocalized(party.displayName),
           guestName: fromLocalized(guest.name),
           isChild: guest.isChild,
@@ -834,8 +854,9 @@ export function createGuestListService(deps: ApiDeps) {
           email: guest.email ?? "",
           phone: guest.phone ?? "",
           checkedIn: guest.checkedIn,
-          // The link is a credential: blank for a caller who may not write to the guest list.
-          invitePath: showLinks ? invitePath(access.invitation.eventSlug, party.token) : "",
+          // The link is a credential: blank for a caller who may not write to the guest list, or
+          // for parties beyond the Free tier link limit before payment.
+          invitePath: showPartyLink ? invitePath(access.invitation.eventSlug, party.token) : "",
           ...(guest.health
             ? {
                 health: {
@@ -846,8 +867,8 @@ export function createGuestListService(deps: ApiDeps) {
                 },
               }
             : {}),
-        })),
-      );
+        }));
+      });
 
       await deps.db.$transaction(async (tx) => {
         const base = {

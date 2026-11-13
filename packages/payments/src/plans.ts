@@ -135,3 +135,23 @@ export function canAddGuestsUnderPlan(
   if (max === "unlimited") return true;
   return guestCount <= max;
 }
+
+/** Number of private guest links (households) unlocked on the Free tier before payment is required. */
+export const FREE_PARTY_LINK_LIMIT = 5;
+
+/**
+ * Checks whether the guest link for a party at 0-based `partyIndex` (in creation order) is
+ * unlocked under the invitation's plan. Celebration events on `FREE` unlock the first
+ * `FREE_PARTY_LINK_LIMIT` (5) party links; additional links unlock once upgraded to `PREMIUM`.
+ */
+export function isPartyLinkUnlocked(
+  plan: InvitationPlan,
+  partyIndex: number,
+  experienceMode?: ExperienceMode,
+): boolean {
+  if (!Number.isSafeInteger(partyIndex) || partyIndex < 0) return false;
+  const effective = getInvitationPlan(plan, experienceMode);
+  if (effective.plan !== "FREE") return true;
+  return partyIndex < FREE_PARTY_LINK_LIMIT;
+}
+

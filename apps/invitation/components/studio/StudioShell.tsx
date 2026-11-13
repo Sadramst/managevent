@@ -107,7 +107,9 @@ export function StudioShell({ user, events, children }: StudioShellProps) {
       </main>
       <footer className="studio-foot">
         <div className="wrap cluster cluster-between">
-          <span>{t("en", "common.byAppilico")}</span>
+          <a href="https://www.appilico.com.au/" rel="noopener">
+            {t("en", "common.byAppilico")}
+          </a>
           <nav className="cluster" aria-label={t("en", "marketing.launchFooterLegal")}>
             <a href={wwwLinks.privacy} rel="noopener">
               {t("en", "marketing.launchPrivacy")}

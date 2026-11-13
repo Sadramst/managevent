@@ -248,7 +248,9 @@ describe("brand shell components", () => {
     expect(html).toContain('href="mailto:hello@example.com"');
     expect(html).toContain('href="tel:0400000000"');
     expect(html).toContain("We acknowledge the Traditional Custodians.");
-    expect(html).toContain("A product by Appilico");
+    expect(html).toContain(
+      '<a href="https://www.appilico.com.au/" rel="noopener">A product by Appilico</a>',
+    );
     expect(html).toContain('<ul class="footer-legal" aria-label="Legal">');
     expect(html).toContain('data-tone="onLight"');
   });

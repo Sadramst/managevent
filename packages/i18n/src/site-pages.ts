@@ -727,6 +727,7 @@ export const sitePagesEn = {
     appilicoTitle: "A product by Appilico",
     appilicoBody:
       "Managevent's platform is designed and built by Appilico, an Australian software studio. The event team and the software team work from the same plan.",
+    appilicoLink: "Visit Appilico",
     scopeTitle: "What we do not do",
     scopeBody:
       "We coordinate memorial gatherings and wakes, but we are not funeral directors and do not provide care of the deceased. We coordinate licensed caterers and venues rather than preparing food or serving alcohol ourselves.",

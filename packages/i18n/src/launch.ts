@@ -81,6 +81,11 @@ export const launchEn = {
   launchSending: "Sending enquiry...",
   launchSuccess:
     "Thank you. Your enquiry has been received. A Perth coordinator will be in touch shortly.",
+  launchSuccessNextTitle: "Next step: Create your digital invitation",
+  launchSuccessNextBody:
+    "Start your invitation for free (your first 5 household links are free). Share private links and collect RSVPs while we prepare your proposal.",
+  launchSuccessCreateBtn: "Create free invitation",
+  launchSuccessBrowseBtn: "Browse templates",
   launchInvalid: "Please check the highlighted fields and try again.",
   launchFailure: "We couldn't send your enquiry. Please try again or contact us by email or phone.",
   launchSkip: "Skip to content",

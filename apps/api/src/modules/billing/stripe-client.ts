@@ -5,7 +5,10 @@
  * `503 PAYMENTS_NOT_CONFIGURED`, and `GET /v1/me` reports `stripeCheckout: false`.
  */
 import {
+  createSimulatedCheckoutClient,
   createStripeCheckoutClient,
+  isSimulatedCheckoutEnabled,
+  isStripeCheckoutConfigured,
   PaymentsNotConfiguredError,
   type StripeCheckoutClient,
 } from "@managevent/payments";
@@ -14,7 +17,11 @@ import { ApiProblem } from "../../lib/errors.js";
 /** Builds the client. Tests pass one that points the real SDK at a local transport. */
 export type StripeClientFactory = () => StripeCheckoutClient;
 
-export const defaultStripeClientFactory: StripeClientFactory = () => createStripeCheckoutClient();
+export const defaultStripeClientFactory: StripeClientFactory = () => {
+  if (isStripeCheckoutConfigured()) return createStripeCheckoutClient();
+  if (isSimulatedCheckoutEnabled()) return createSimulatedCheckoutClient();
+  return createStripeCheckoutClient();
+};
 
 export function paymentsNotConfigured(): ApiProblem {
   return new ApiProblem(503, "PAYMENTS_NOT_CONFIGURED", "Online payments are not configured");

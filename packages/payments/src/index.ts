@@ -31,8 +31,11 @@ export {
 export {
   type CheckoutSessionSnapshot,
   type CreateInvitationUpgradeSessionParams,
+  createSimulatedCheckoutClient,
   createStripeCheckoutClient,
   type InvitationUpgradeSession,
+  isCheckoutAvailable,
+  isSimulatedCheckoutEnabled,
   isStripeCheckoutConfigured,
   isStripeWebhookConfigured,
   type PaymentsConfigGap,
@@ -46,8 +49,11 @@ export {
 export {
   type BooleanEntitlementKey,
   canAddGuestsUnderPlan,
+  FREE_PARTY_LINK_LIMIT,
   hasInvitationEntitlement,
   getInvitationPlan,
   INVITATION_PLANS,
   type InvitationPlanEntitlements,
+  isPartyLinkUnlocked,
 } from "./plans.js";
+

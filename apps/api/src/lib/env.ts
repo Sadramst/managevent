@@ -4,7 +4,7 @@
  *
  * Everything is read at call time (not import time) so tests and the CLI can set variables first.
  */
-import { isStripeCheckoutConfigured } from "@managevent/payments";
+import { isCheckoutAvailable } from "@managevent/payments";
 import type { MeResponse } from "@managevent/validators";
 import { isEmailConfigured } from "./email.js";
 
@@ -19,7 +19,7 @@ export function getCapabilities(): MeResponse["capabilities"] {
     magicLink: email,
     passwordReset: email,
     emailInvitations: email,
-    stripeCheckout: isStripeCheckoutConfigured(),
+    stripeCheckout: isCheckoutAvailable(),
   };
 }
 

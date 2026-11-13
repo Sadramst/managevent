@@ -12,7 +12,7 @@ export const WIZARD_STEPS = ["template", "basics", "guests", "review"] as const;
 export type WizardStep = (typeof WIZARD_STEPS)[number];
 
 /** How many households the wizard takes. The Guests tab has no such limit. */
-export const WIZARD_MAX_HOUSEHOLDS = 12;
+export const WIZARD_MAX_HOUSEHOLDS = 25;
 export const MAX_PEOPLE_PER_HOUSEHOLD = 20;
 
 export interface WizardBasics {

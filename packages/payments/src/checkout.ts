@@ -5,6 +5,7 @@
  * configured, every entry point throws `PaymentsNotConfiguredError` and the API reports
  * `503 PAYMENTS_NOT_CONFIGURED`. The legacy test wrappers in `./stripe.ts` are not used.
  */
+import { createHash } from "node:crypto";
 import Stripe from "stripe";
 import { INVITATION_PLANS } from "./plans.js";
 
@@ -65,6 +66,27 @@ export function isStripeWebhookConfigured(
   webhookSecret: string | undefined = process.env.STRIPE_WEBHOOK_SECRET,
 ): boolean {
   return usableWebhookSecret(webhookSecret) !== null;
+}
+
+/**
+ * True when simulated checkout is enabled for local development / E2E verification before a live
+ * Stripe key is configured. Whenever a real `STRIPE_SECRET_KEY` is present, real Stripe is used.
+ */
+export function isSimulatedCheckoutEnabled(
+  env: NodeJS.ProcessEnv = process.env,
+): boolean {
+  if (isStripeCheckoutConfigured(env.STRIPE_SECRET_KEY)) return false;
+  const explicit = (env.STRIPE_SIMULATED_CHECKOUT ?? env.MANAGEVENT_SIMULATED_CHECKOUT)
+    ?.trim()
+    .toLowerCase();
+  if (explicit === "true" || explicit === "1") return true;
+  if (explicit === "false" || explicit === "0") return false;
+  return env.NODE_ENV !== "production" && env.NODE_ENV !== "test";
+}
+
+/** True when either real Stripe Checkout or simulated checkout is available. */
+export function isCheckoutAvailable(env: NodeJS.ProcessEnv = process.env): boolean {
+  return isStripeCheckoutConfigured(env.STRIPE_SECRET_KEY) || isSimulatedCheckoutEnabled(env);
 }
 
 export interface StripeCheckoutClientOptions {
@@ -237,3 +259,81 @@ export function createStripeCheckoutClient(
     },
   };
 }
+
+interface SimulatedSessionMeta {
+  invitationId: string;
+  eventId: string;
+  userId: string;
+}
+
+const simulatedSessions = new Map<string, SimulatedSessionMeta>();
+const expiredSimulatedSessions = new Set<string>();
+const SIMULATED_SESSION_PATTERN = /^cs_sim_(inv_[A-Za-z0-9_-]+)_([0-9a-f]{16})$/;
+
+/**
+ * Simulated `StripeCheckoutClient` for local development and E2E testing when no real
+ * `STRIPE_SECRET_KEY` is configured. Routes through the exact same `startCheckout` and
+ * `confirmCheckout` (`applyCheckoutUpgrade`) pipeline and writes real `Payment` and `AuditLog`
+ * rows in PostgreSQL.
+ */
+export function createSimulatedCheckoutClient(): StripeCheckoutClient {
+  return {
+    async createInvitationUpgradeSession(params) {
+      const keyDigest = createHash("sha256")
+        .update(params.idempotencyKey)
+        .digest("hex")
+        .slice(0, 16);
+      const sessionId = `cs_sim_${params.invitationId}_${keyDigest}`;
+      simulatedSessions.set(sessionId, {
+        invitationId: params.invitationId,
+        eventId: params.eventId,
+        userId: params.userId,
+      });
+      const checkoutUrl = `/studio/${encodeURIComponent(params.eventId)}/checkout?session_id=${encodeURIComponent(sessionId)}`;
+      return { sessionId, checkoutUrl };
+    },
+
+    async retrieveCheckoutSession(sessionId) {
+      const match = SIMULATED_SESSION_PATTERN.exec(sessionId);
+      if (!match) {
+        const missing = new Error(`No such checkout.session: '${sessionId}'`) as Error & {
+          type: string;
+          code: string;
+        };
+        missing.type = "StripeInvalidRequestError";
+        missing.code = "resource_missing";
+        throw missing;
+      }
+      const invitationId = match[1] as string;
+      const keyDigest = match[2] as string;
+      const stored = simulatedSessions.get(sessionId);
+      const expired = expiredSimulatedSessions.has(sessionId);
+      return {
+        sessionId,
+        paymentStatus: expired ? "unpaid" : "paid",
+        amountTotalCents: INVITATION_PLANS.PREMIUM.priceIncGstCents,
+        currency: "aud",
+        paymentIntentId: expired ? null : `pi_sim_${invitationId}_${keyDigest}`,
+        clientReferenceId: invitationId,
+        metadata: {
+          invitationId,
+          eventId: stored?.eventId ?? null,
+          userId: stored?.userId ?? null,
+        },
+      };
+    },
+
+    async expireCheckoutSession(sessionId) {
+      if (!SIMULATED_SESSION_PATTERN.test(sessionId) || expiredSimulatedSessions.has(sessionId)) {
+        return false;
+      }
+      expiredSimulatedSessions.add(sessionId);
+      return true;
+    },
+
+    constructWebhookEvent() {
+      throw new PaymentsNotConfiguredError("STRIPE_WEBHOOK_SECRET");
+    },
+  };
+}
+

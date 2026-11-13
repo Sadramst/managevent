@@ -9,6 +9,7 @@ import { ManualCopyField, UiCopyProvider } from "@/components/ui";
 import type { PartyView } from "@/lib/guest-list/view";
 import { CampaignHistory } from "./CampaignHistory";
 import { EmailInvitations } from "./EmailInvitations";
+import { ShareLinks } from "./ShareLinks";
 
 // The forms import server actions; rendering them needs no server.
 vi.mock("@/app/studio/[eventId]/share/actions", () => ({
@@ -17,6 +18,10 @@ vi.mock("@/app/studio/[eventId]/share/actions", () => ({
   reissueLinkAction: vi.fn(),
 }));
 vi.mock("@/app/studio/[eventId]/awaiting/actions", () => ({ sendRsvpRemindersAction: vi.fn() }));
+vi.mock("@/app/studio/[eventId]/settings/actions", () => ({
+  startCheckoutAction: vi.fn(),
+  confirmCheckoutAction: vi.fn(),
+}));
 
 // Vitest compiles JSX with the classic runtime (tsconfig keeps `jsx: preserve` for Next), so
 // the components under test expect `React` in scope at render time.
@@ -260,3 +265,46 @@ describe("ManualCopyField (when the browser refuses to copy)", () => {
     expect(html).toContain("Your invitation is here:");
   });
 });
+
+describe("ShareLinks (free-tier link lock vs view-only co-host)", () => {
+  it("shows Copy link for unlocked free-tier links and Locked badge + Activate button for links #6+", () => {
+    const html = render(
+      <ShareLinks
+        eventId="evt_test"
+        parties={[
+          party("A and B"),
+          party("Sixth Household", { inviteUrl: null }),
+        ]}
+        messageTemplate="Hello {name}: {link}"
+        copy={copy.share}
+        common={copy.common}
+        canEdit
+        canUpgrade
+        networkError={shell.errors.NETWORK_ERROR}
+      />,
+    );
+    expect(html).toContain("A and B");
+    expect(html).toContain("Copy link");
+    expect(html).toContain("Sixth Household");
+    expect(html).toContain(copy.share.links.lockedBadge);
+    expect(html).toContain(copy.share.links.unlockRow);
+  });
+
+  it("shows viewOnlyLinks notice without upgrade prompt for a read-only co-host", () => {
+    const html = render(
+      <ShareLinks
+        eventId="evt_test"
+        parties={[party("A and B", { inviteUrl: null })]}
+        messageTemplate="Hello {name}: {link}"
+        copy={copy.share}
+        common={copy.common}
+        canEdit={false}
+        canUpgrade={false}
+      />,
+    );
+    expect(html).toContain(copy.common.viewOnlyLinks);
+    expect(html).not.toContain(copy.share.links.lockedBadge);
+    expect(html).not.toContain(copy.share.links.unlockRow);
+  });
+});
+

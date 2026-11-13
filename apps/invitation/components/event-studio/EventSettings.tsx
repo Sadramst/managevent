@@ -848,6 +848,7 @@ function PlanSettings({
 
   const isFree = plan.effectivePlan === "FREE";
   const features = [
+    text.features.householdLinks,
     plan.freeGuestLimit !== null
       ? fill(text.features.guests, { limit: plan.freeGuestLimit })
       : null,

@@ -6,6 +6,7 @@ import type { AuthActor } from "@managevent/auth";
 import { db } from "@managevent/db";
 import {
   GuestImportResultSchema,
+  GuestInvitationViewSchema,
   type HostParty,
   HostPartyListSchema,
   HostPartySchema,
@@ -1191,4 +1192,176 @@ describe.skipIf(!dbAvailable)("guest list (database)", () => {
       expect(JSON.stringify(audit)).not.toContain("adrenaline");
     });
   });
+
+  describe("Free-tier 5 links & 20-link simulated payment unlock flow", () => {
+    it("allows James on the Free tier to create 5 links (A and B, C and D, E and F, G and J, E and Q) and all 5 links work", async () => {
+      const jamesEvent = await world.createEvent({ published: true });
+      const couples = [
+        ["A and B", ["Guest A", "Guest B"]],
+        ["C and D", ["Guest C", "Guest D"]],
+        ["E and F", ["Guest E", "Guest F"]],
+        ["G and J", ["Guest G", "Guest J"]],
+        ["E and Q", ["Guest E2", "Guest Q"]],
+      ] as const;
+
+      const createdParties: HostParty[] = [];
+      for (const [displayName, [g1, g2]] of couples) {
+        const party = await createParty(jamesEvent, {
+          displayName,
+          guests: [{ name: g1 }, { name: g2 }],
+        });
+        expect(party.token).toMatch(/^a-and-b-[a-z0-9]{8}$|^c-and-d-[a-z0-9]{8}$|^e-and-f-[a-z0-9]{8}$|^g-and-j-[a-z0-9]{8}$|^e-and-q-[a-z0-9]{8}$/);
+        expect(party.invitePath).toBe(`/i/${jamesEvent.eventSlug}/${party.token}`);
+        createdParties.push(party);
+      }
+
+      const listed = HostPartyListSchema.parse(
+        await (
+          await api.call(jamesEvent.owner, "GET", `/v1/events/${jamesEvent.eventId}/parties`)
+        ).json(),
+      );
+      expect(listed.items).toHaveLength(5);
+
+      for (const party of listed.items) {
+        expect(party.token).not.toBeNull();
+        expect(party.invitePath).toBe(`/i/${jamesEvent.eventSlug}/${party.token}`);
+
+        // Resolve the guest link and submit an RSVP for both guests in the couple.
+        const resolved = await api.call(
+          null,
+          "GET",
+          `/v1/i/${jamesEvent.eventSlug}/${party.token}`,
+        );
+        expect(resolved.status).toBe(200);
+        const view = GuestInvitationViewSchema.parse(await resolved.json());
+        expect(view.rsvp.state).toBe("OPEN");
+        expect(view.party.displayName).toBe(party.displayName);
+
+        const rsvpRes = await api.call(
+          null,
+          "POST",
+          `/v1/i/${jamesEvent.eventSlug}/${party.token}/rsvp`,
+          {
+            members: view.party.members.map((g) => ({ guestId: g.guestId, status: "YES" })),
+          },
+          { "Idempotency-Key": `james-rsvp-${party.id}` },
+        );
+        expect(rsvpRes.status).toBe(200);
+      }
+    });
+
+    it("locks links #6-#20 before payment on Free tier, then unlocks all 20 links after simulated payment and all 20 links work", async () => {
+      const twentyEvent = await world.createEvent({ published: true });
+
+      for (let i = 1; i <= 20; i++) {
+        const party = await createParty(twentyEvent, {
+          displayName: `Household ${String(i).padStart(2, "0")}`,
+          guests: [{ name: `Guest ${i}` }],
+        });
+        if (i <= 5) {
+          expect(party.token).toMatch(/^household-0[1-5]-[a-z0-9]{8}$/);
+          expect(party.invitePath).toBe(`/i/${twentyEvent.eventSlug}/${party.token}`);
+        } else {
+          expect(party.token).toBeNull();
+          expect(party.invitePath).toBeNull();
+        }
+      }
+
+      const beforePayment = HostPartyListSchema.parse(
+        await (
+          await api.call(twentyEvent.owner, "GET", `/v1/events/${twentyEvent.eventId}/parties`)
+        ).json(),
+      );
+      expect(beforePayment.items).toHaveLength(20);
+      expect(beforePayment.items.filter((p) => p.token !== null)).toHaveLength(5);
+      expect(beforePayment.items.filter((p) => p.token === null)).toHaveLength(15);
+
+      // CSV export also hides the locked invite paths before payment.
+      const csvBeforeRes = await api.call(
+        twentyEvent.owner,
+        "GET",
+        `/v1/events/${twentyEvent.eventId}/guests/export.csv`,
+      );
+      expect(csvBeforeRes.status).toBe(200);
+      const csvBeforeRows = parseCsv(await csvBeforeRes.text()).slice(1);
+      expect(csvBeforeRows).toHaveLength(20);
+      expect(csvBeforeRows.filter((row) => (row[12] ?? "") !== "")).toHaveLength(5);
+      expect(csvBeforeRows.filter((row) => (row[12] ?? "") === "")).toHaveLength(15);
+
+      // Perform simulated checkout -> confirm checkout.
+      const prevSim = process.env.STRIPE_SIMULATED_CHECKOUT;
+      process.env.STRIPE_SIMULATED_CHECKOUT = "1";
+      try {
+        const checkoutRes = await api.call(
+          twentyEvent.owner,
+          "POST",
+          `/v1/events/${twentyEvent.eventId}/plan/checkout`,
+          undefined,
+          { "Idempotency-Key": `sim-checkout-${twentyEvent.eventId}` },
+        );
+        expect(checkoutRes.status).toBe(201);
+        const checkoutSession = (await checkoutRes.json()) as {
+          checkoutUrl: string;
+        };
+        const parsedCheckoutUrl = new URL(checkoutSession.checkoutUrl, "http://localhost:3001");
+        expect(parsedCheckoutUrl.pathname).toBe(`/studio/${twentyEvent.eventId}/checkout`);
+        const sessionId = parsedCheckoutUrl.searchParams.get("session_id") ?? "";
+        expect(sessionId).toMatch(/^cs_sim_/);
+
+        const confirmRes = await api.call(
+          twentyEvent.owner,
+          "POST",
+          `/v1/events/${twentyEvent.eventId}/plan/checkout/confirm`,
+          { sessionId },
+        );
+        expect(confirmRes.status).toBe(200);
+        const confirmedPlan = (await confirmRes.json()) as {
+          plan: string;
+          effectivePlan: string;
+        };
+        expect(confirmedPlan.plan).toBe("PREMIUM");
+        expect(confirmedPlan.effectivePlan).toBe("PREMIUM");
+      } finally {
+        if (prevSim === undefined) delete process.env.STRIPE_SIMULATED_CHECKOUT;
+        else process.env.STRIPE_SIMULATED_CHECKOUT = prevSim;
+      }
+
+      // After payment, all 20 links are unlocked and visible, and all 20 links work end-to-end!
+      const afterPayment = HostPartyListSchema.parse(
+        await (
+          await api.call(twentyEvent.owner, "GET", `/v1/events/${twentyEvent.eventId}/parties`)
+        ).json(),
+      );
+      expect(afterPayment.items).toHaveLength(20);
+      expect(afterPayment.items.every((p) => p.token !== null && p.invitePath !== null)).toBe(
+        true,
+      );
+
+      for (const party of afterPayment.items) {
+        const resolved = await api.call(
+          null,
+          "GET",
+          `/v1/i/${twentyEvent.eventSlug}/${party.token}`,
+        );
+        expect(resolved.status).toBe(200);
+        const view = GuestInvitationViewSchema.parse(await resolved.json());
+        expect(view.rsvp.state).toBe("OPEN");
+
+        const rsvpRes = await api.call(
+          null,
+          "POST",
+          `/v1/i/${twentyEvent.eventSlug}/${party.token}/rsvp`,
+          {
+            members: view.party.members.map((g) => ({ guestId: g.guestId, status: "YES" })),
+          },
+          { "Idempotency-Key": `twenty-rsvp-${party.id}` },
+        );
+        expect(rsvpRes.status).toBe(200);
+        const rsvpBody = (await rsvpRes.json()) as { passes: Array<{ token: string }> };
+        // Because the event is now PREMIUM, each attending guest also receives a QR entry pass!
+        expect(rsvpBody.passes).toHaveLength(1);
+      }
+    });
+  });
 });
+

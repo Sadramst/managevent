@@ -1,8 +1,11 @@
 import Stripe from "stripe";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import {
+  createSimulatedCheckoutClient,
   createStripeCheckoutClient,
   INVITATION_PLANS,
+  isCheckoutAvailable,
+  isSimulatedCheckoutEnabled,
   isStripeCheckoutConfigured,
   isStripeWebhookConfigured,
   PaymentsNotConfiguredError,
@@ -260,4 +263,49 @@ describe("@managevent/payments checkout (real Stripe SDK)", () => {
       PaymentsNotConfiguredError,
     );
   });
+
+  it("supports simulated checkout when live Stripe credentials are not configured", async () => {
+    expect(isSimulatedCheckoutEnabled({})).toBe(true);
+    expect(isSimulatedCheckoutEnabled({ MANAGEVENT_SIMULATED_CHECKOUT: "0" })).toBe(false);
+    expect(isSimulatedCheckoutEnabled({ NODE_ENV: "production" })).toBe(false);
+    expect(
+      isSimulatedCheckoutEnabled({
+        NODE_ENV: "production",
+        MANAGEVENT_SIMULATED_CHECKOUT: "true",
+      }),
+    ).toBe(true);
+    expect(isCheckoutAvailable({})).toBe(true);
+    expect(isCheckoutAvailable({ NODE_ENV: "production" })).toBe(false);
+
+    const sim = createSimulatedCheckoutClient();
+    const created = await sim.createInvitationUpgradeSession({
+      invitationId: "inv_sim_1",
+      eventId: "evt_sim_1",
+      userId: "usr_sim_1",
+      successUrl:
+        "http://localhost:3001/studio/evt_sim_1/settings?checkout=success&session_id={CHECKOUT_SESSION_ID}",
+      cancelUrl: "http://localhost:3001/studio/evt_sim_1/settings?checkout=cancelled",
+      idempotencyKey: "idem-sim-1",
+    });
+
+    expect(created.sessionId).toMatch(/^cs_sim_/);
+    expect(created.checkoutUrl).toBe(
+      `/studio/evt_sim_1/checkout?session_id=${encodeURIComponent(created.sessionId)}`,
+    );
+
+    const retrieved = await sim.retrieveCheckoutSession(created.sessionId);
+    expect(retrieved).toMatchObject({
+      sessionId: created.sessionId,
+      paymentStatus: "paid",
+      amountTotalCents: INVITATION_PLANS.PREMIUM.priceIncGstCents,
+      currency: "aud",
+      metadata: {
+        invitationId: "inv_sim_1",
+        eventId: "evt_sim_1",
+        userId: "usr_sim_1",
+      },
+    });
+    expect(retrieved.paymentIntentId).toMatch(/^pi_sim_/);
+  });
 });
+

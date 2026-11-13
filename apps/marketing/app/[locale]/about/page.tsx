@@ -35,7 +35,18 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             />
           </>
         }
-        aside={<ArchCard title={copy.heroCardTitle} lines={copy.heroCardLines} />}
+        aside={
+          <ArchCard
+            title={copy.heroCardTitle}
+            lines={[
+              copy.heroCardLines[0],
+              copy.heroCardLines[1],
+              <a key="byline" href="https://www.appilico.com.au/" rel="noopener">
+                {copy.heroCardLines[2]}
+              </a>,
+            ]}
+          />
+        }
       />
 
       <Section id="story">
@@ -90,8 +101,15 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <Section id="company">
         <div className="grid grid-2">
           <Card variant="rule">
-            <h2 className="card-title">{copy.appilicoTitle}</h2>
+            <h2 className="card-title">
+              <a href="https://www.appilico.com.au/" rel="noopener">
+                {copy.appilicoTitle}
+              </a>
+            </h2>
             <p className="card-body">{copy.appilicoBody}</p>
+            <a className="sp-more" href="https://www.appilico.com.au/" rel="noopener">
+              {copy.appilicoLink}
+            </a>
           </Card>
           <Card variant="rule">
             <h2 className="card-title">{copy.scopeTitle}</h2>

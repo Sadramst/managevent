@@ -4,7 +4,7 @@ import { useActionState, useEffect, useMemo, useState } from "react";
 import { getExperienceMode, t, type TranslationKey } from "@managevent/i18n";
 import type { EnabledLocale } from "@managevent/types";
 import { submitEnquiry } from "../app/actions";
-import { localePath } from "../lib/site";
+import { invitationLinks, localePath } from "../lib/site";
 import { resolveVenueName, type VenueRef } from "../lib/venue-prefill";
 import type { EstimateTransferPayload } from "./event-estimator";
 
@@ -100,6 +100,18 @@ export function EnquiryForm({
       <div role="status" className="success enquiry-confirmation">
         <span className="badge badge-success">Enquiry received</span>
         <p>{t(locale, "marketing.launchSuccess")}</p>
+        <div className="stack-xs">
+          <strong>{t(locale, "marketing.launchSuccessNextTitle")}</strong>
+          <p className="muted">{t(locale, "marketing.launchSuccessNextBody")}</p>
+          <div className="actions">
+            <a className="btn btn-primary" href={invitationLinks.create}>
+              {t(locale, "marketing.launchSuccessCreateBtn")}
+            </a>
+            <a className="btn btn-secondary" href={invitationLinks.templates}>
+              {t(locale, "marketing.launchSuccessBrowseBtn")}
+            </a>
+          </div>
+        </div>
       </div>
     );
   return (

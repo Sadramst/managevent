@@ -10,6 +10,7 @@ export { BrandLogo, type BrandLogoProps } from "./BrandLogo.js";
 export { SiteHeader, type SiteHeaderCrossLink, type SiteHeaderProps } from "./SiteHeader.js";
 export { SiteMenu, type SiteMenuProps } from "./SiteMenu.js";
 export {
+  APPILICO_URL,
   SiteFooter,
   type SiteFooterColumn,
   type SiteFooterContact,

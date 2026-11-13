@@ -91,6 +91,13 @@ export const invitationStudioGuestsEn = {
       exceeded:
         "The free plan covers up to {limit} guests. You have {used}, so there is room for {room} more. The Premium Event Pass removes the limit.",
     },
+    linkLimit: {
+      lockedTitle: "{locked} of your {total} household links need the Premium Event Pass",
+      lockedBody:
+        "Your first {freeLimit} household links are free and active. Complete payment ({price} once, incl. GST) to activate and share the remaining {locked} household links.",
+      unlockAction: "Activate all {total} links — {price}",
+      unlocking: "Opening checkout",
+    },
     filters: {
       search: "Search guests",
       searchPlaceholder: "Name, household, email or table",
@@ -289,6 +296,19 @@ export const invitationStudioGuestsEn = {
       body: "Add your guests first. Each household then gets a private link here.",
       action: "Add guests",
     },
+    freeTier: {
+      activeTitle: "Free tier: {unlocked} of {freeLimit} free private links in use",
+      activeBody:
+        "Your first {freeLimit} household links are free and ready to share below. Need more than {freeLimit} links? Upgrade to the Premium Event Pass ({price}) at any time.",
+      lockedTitle: "{locked} of {total} private links need the Premium Event Pass",
+      lockedBody:
+        "Your first {freeLimit} household links are free and active below. {locked} additional household links are hidden until payment is completed. Upgrade to the Premium Event Pass ({price} once, incl. GST) to activate all {total} links immediately.",
+      unlockAction: "Activate all {total} links — {price}",
+      unlocking: "Opening checkout",
+      upgradedTitle: "All {total} private guest links are now active",
+      upgradedBody:
+        "Your event now has the Premium Event Pass. Every household link below is active and ready to share.",
+    },
     links: {
       title: "Private links",
       search: "Find a household",
@@ -308,6 +328,10 @@ export const invitationStudioGuestsEn = {
       reissue: "Issue a new link",
       linkOff: "Link turned off",
       linkOffNote: "This household cannot open the invitation until you issue a new link.",
+      lockedBadge: "Locked — Free tier covers 5 links",
+      lockedNote:
+        "Complete payment ($69 Premium Event Pass) to activate and share this household's private link.",
+      unlockRow: "Activate link ($69)",
       emailed: "Emailed {date}",
       replied: "Replied",
     },

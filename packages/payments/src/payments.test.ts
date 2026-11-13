@@ -8,9 +8,11 @@ import {
   divRoundHalfUp,
   formatAudCents,
   formatTaxInvoiceNumber,
+  FREE_PARTY_LINK_LIMIT,
   hasInvitationEntitlement,
   getInvitationPlan,
   INVITATION_PLANS,
+  isPartyLinkUnlocked,
   priceLineFromUnitExGst,
   priceLineFromUnitIncGst,
   splitExGstCents,
@@ -235,5 +237,20 @@ describe("@managevent/payments", () => {
       // Memorial invitations are complimentary Premium, so reminders are included.
       expect(hasInvitationEntitlement("FREE", "rsvpReminders", "MEMORIAL")).toBe(true);
     });
+
+    it("unlocks the first 5 household links on FREE celebration events and all links on PREMIUM, AGENCY, and MEMORIAL", () => {
+      expect(FREE_PARTY_LINK_LIMIT).toBe(5);
+      for (let i = 0; i < 5; i++) {
+        expect(isPartyLinkUnlocked("FREE", i, "CELEBRATION")).toBe(true);
+      }
+      for (let i = 5; i < 20; i++) {
+        expect(isPartyLinkUnlocked("FREE", i, "CELEBRATION")).toBe(false);
+        expect(isPartyLinkUnlocked("PREMIUM", i, "CELEBRATION")).toBe(true);
+        expect(isPartyLinkUnlocked("AGENCY", i, "CELEBRATION")).toBe(true);
+        expect(isPartyLinkUnlocked("FREE", i, "MEMORIAL")).toBe(true);
+      }
+      expect(isPartyLinkUnlocked("FREE", -1, "CELEBRATION")).toBe(false);
+    });
   });
 });
+

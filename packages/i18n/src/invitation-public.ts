@@ -291,7 +291,7 @@ export const invitationPublicEn = {
         note: "For small gatherings of up to {guests} guests.",
         points: [
           "Two celebration templates",
-          "Private link for each household",
+          "Up to 5 free private household links",
           "RSVP with dietary and allergy needs",
           "Replies list and CSV export",
         ],
@@ -301,7 +301,7 @@ export const invitationPublicEn = {
         price: "{price}",
         note: "Paid once per event. No subscription.",
         points: [
-          "Unlimited guests",
+          "Unlimited guests and household links",
           "Every template and opening style",
           "QR passes and door check-in",
           "Your own words in the link, and no Managevent credit",

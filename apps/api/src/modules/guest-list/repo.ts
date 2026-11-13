@@ -129,6 +129,16 @@ export function listParties(
   });
 }
 
+/** Live party ids in creation order (`id: "asc"`), used to enforce the Free tier party link cap. */
+export async function listLivePartyIds(tx: DbTx, invitationId: string): Promise<string[]> {
+  const rows = await tx.party.findMany({
+    where: { invitationId, deletedAt: null },
+    orderBy: { id: "asc" },
+    select: { id: true },
+  });
+  return rows.map((row) => row.id);
+}
+
 /**
  * Which of `tokens` are unavailable on this invitation: in use by any party (deleted ones still
  * hold their unique slot) or on a party's revoked list, where reuse would make the lookup ambiguous.

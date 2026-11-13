@@ -8,7 +8,7 @@ import type { AuthActor } from "@managevent/auth";
 import {
   INVITATION_PLANS,
   type InvitationPlanEntitlements,
-  isStripeCheckoutConfigured,
+  isCheckoutAvailable,
   splitIncGstCents,
 } from "@managevent/payments";
 import type {
@@ -114,7 +114,7 @@ export async function getPlanView(
   eventId: string,
 ): Promise<PlanView> {
   const access = await requireEventAccess(deps, actor, eventId, "event:read");
-  return buildPlanView(deps, access, isStripeCheckoutConfigured());
+  return buildPlanView(deps, access, isCheckoutAvailable());
 }
 
 export async function startCheckout(

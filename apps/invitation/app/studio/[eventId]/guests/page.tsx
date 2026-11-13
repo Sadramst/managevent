@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
-import { fillCopy, getInvitationStudioGuests } from "@managevent/i18n";
+import { fillCopy, getInvitationShell, getInvitationStudioGuests } from "@managevent/i18n";
+import { FREE_PARTY_LINK_LIMIT, INVITATION_PLANS } from "@managevent/payments";
 import { GuestList } from "@/components/guest-list/GuestList";
 import { PremiumPointer } from "@/components/guest-list/PremiumPointer";
+import { UpgradePassButton } from "@/components/share/UpgradePassButton";
 import { Notice, Stats, StatTile } from "@/components/ui";
+import { formatAud } from "@/lib/event-studio/catalog";
 import { buildCsvTemplate, csvDataUrl } from "@/lib/guest-list/csv-template";
 import {
   experienceModeAttr,
@@ -18,6 +21,7 @@ import { requireHost } from "@/lib/session";
 import { routes } from "@/lib/urls";
 
 const copy = getInvitationStudioGuests("en");
+const shell = getInvitationShell("en");
 
 export const metadata: Metadata = privateMetadata(copy.guests.metaTitle);
 
@@ -43,10 +47,15 @@ export default async function EventGuestsPage({
   const premium = premiumPointerFor(event, capabilities);
   const limit = plan.usage.guestLimit;
   const used = plan.usage.guests;
+  const memorial = isMemorial(event);
+  const canEdit = event.role !== "VIEWER";
+  const isFreePlan = !memorial && event.invitation.effectivePlan === "FREE";
+  const lockedLinks = isFreePlan ? Math.max(0, parties.length - FREE_PARTY_LINK_LIMIT) : 0;
+  const priceDisplay = formatAud(INVITATION_PLANS.PREMIUM.priceIncGstCents);
   const { guests, common } = copy;
 
   return (
-    <div className="wrap sb-page" {...experienceModeAttr(isMemorial(event))}>
+    <div className="wrap sb-page" {...experienceModeAttr(memorial)}>
       <header className="page-header">
         <div>
           <h1 className="page-title">{guests.title}</h1>
@@ -65,6 +74,38 @@ export default async function EventGuestsPage({
           <StatTile label={guests.stats.attending} value={totals.attending} />
           <StatTile label={guests.stats.awaiting} value={totals.awaiting} />
         </Stats>
+      ) : null}
+
+      {lockedLinks > 0 && canEdit ? (
+        <Notice
+          tone="warning"
+          title={fillCopy(guests.linkLimit.lockedTitle, {
+            locked: lockedLinks,
+            total: parties.length,
+          })}
+          className="sb-notice"
+        >
+          <p>
+            {fillCopy(guests.linkLimit.lockedBody, {
+              freeLimit: FREE_PARTY_LINK_LIMIT,
+              locked: lockedLinks,
+              price: priceDisplay,
+            })}
+          </p>
+          {capabilities.stripeCheckout ? (
+            <div className="sb-premium">
+              <UpgradePassButton
+                eventId={eventId}
+                label={fillCopy(guests.linkLimit.unlockAction, {
+                  total: parties.length,
+                  price: priceDisplay,
+                })}
+                workingLabel={copy.share.freeTier.unlocking}
+                networkError={shell.errors.NETWORK_ERROR}
+              />
+            </div>
+          ) : null}
+        </Notice>
       ) : null}
 
       {limit !== null && used >= limit ? (

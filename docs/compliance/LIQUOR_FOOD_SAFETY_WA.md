@@ -13,5 +13,5 @@
 
 - Caterers must be registered food businesses with their local government (Food Act 2008, WA).
 - **FSANZ Standard 3.2.2A** applies to most caterers (category one): a certified Food Safety Supervisor, food handler training and evidence records. We collect the certificates in vendor verification (VEN-02, ADM-04).
-- Allergens are passed to caterers per table, with severity, and crew are briefed on any anaphylaxis risk. Today the recommendations count each allergen separately and never merge them into "other"; per-table briefs need seating (PRT-07) and the event command centre (ADM-03).
+- Allergens are passed to caterers per table, with severity, and crew are briefed on any anaphylaxis risk. Today the recommendations count each allergen separately and never merge them into "other"; per-table briefs need seating (PRT-07), the kitchen briefing sheet export (INV-21), the catering compliance checklist (ADM-10), and the event command centre (ADM-03).
 - Managevent crew who handle food (for example plating cake or desserts) complete food handler training (BIZ-10).

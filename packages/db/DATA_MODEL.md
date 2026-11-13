@@ -88,7 +88,7 @@ ConsentPurpose              MARKETING_EMAIL | MARKETING_SMS | EVENT_UPDATES | HE
 
 ## Which tables are in use
 
-`apps/api` and `apps/worker` read and write the identity, CRM (`Lead`), event and invitation, `Order` and `RecommendationSet`, `Payment`, `CrewRoster`, `ScanEvent`, wishes, messaging, consent, audit and webhook tables. `db:seed` fills the catalogue tables (`CeremonyType`, `Venue`, `Package`, `PriceList`) and `TaxInvoiceSequence` from `content/`, but no app reads them yet.
+`apps/api` and `apps/worker` read and write the identity, CRM (`Lead`), event and invitation, `Order` and `RecommendationSet`, `Payment`, `CrewRoster`, `ScanEvent`, wishes, messaging, consent, `SiteSetting`, audit and webhook tables. `db:seed` fills the catalogue tables (`CeremonyType`, `Venue`, `Package`, `PriceList`) and `TaxInvoiceSequence` from `content/`, but no app reads them yet.
 
 **Planned (schema only, no code uses them yet):** `Organisation`, `Membership`, `BuilderSession`, `Estimate`, `Service`, `SubEvent`, `OrderLine`, `Booking`, `VendorService`, `VendorDocument`, `AvailabilityBlock`, `PaymentSchedule`, `Transfer`, `TaxInvoice`, `Refund`, `InventoryItem`, `InventoryReservation`, `Task`, `RunSheet`, `FloorPlan` and `MediaAsset`. The `ROADMAP.md` items that will use them are named in each section below. Expect these tables to change when that work starts.
 

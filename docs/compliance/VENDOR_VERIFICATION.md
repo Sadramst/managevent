@@ -13,6 +13,6 @@
 | Pyrotechnics or drone licences              | Upload and review                                                                         | Where offered                                          |
 | Portfolio and references                    | Review                                                                                    | All                                                    |
 
-- **Expiry:** reminders 30 and 7 days before a document expires; the vendor is suspended from new bookings when a required document lapses. The worker declares a `vendor.compliance_expiry_check` schedule with no handler yet (ADM-04).
+- **Expiry:** reminders 30 and 7 days before a document expires; the vendor is suspended from new bookings when a required document lapses. The worker declares a `vendor.compliance_expiry_check` schedule with no handler yet (ADM-04, VEN-07).
 - **Decisions:** approve or reject with a reason, written to `AuditLog`.
 - Documents are stored privately (R2 private bucket, D-04).

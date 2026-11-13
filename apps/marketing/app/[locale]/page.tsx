@@ -67,6 +67,17 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
                 {copy.heroSecondary}
               </a>
             </div>
+
+            <div className="hero-quick-select" aria-label={copy.quickSelectTitle}>
+              <p className="hero-quick-title">{copy.quickSelectTitle}</p>
+              <div className="hero-quick-pills">
+                {copy.quickSelectItems.map((item) => (
+                  <a key={item.label} className="hero-quick-pill" href={href(item.href)}>
+                    {item.label}
+                  </a>
+                ))}
+              </div>
+            </div>
           </div>
 
           <div className="hero-arch-card">
@@ -79,6 +90,20 @@ export default async function Home({ params }: { params: Promise<{ locale: strin
               </ul>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="sp-perth-band" aria-label={copy.perthPillarsTitle}>
+        <div className="wrap sp-perth-grid">
+          {copy.perthPillars.map((pillar, index) => (
+            <div key={pillar.title} className="sp-perth-col">
+              <span className="sp-perth-num" aria-hidden="true">
+                0{index + 1}
+              </span>
+              <h3>{pillar.title}</h3>
+              <p>{pillar.body}</p>
+            </div>
+          ))}
         </div>
       </section>
 

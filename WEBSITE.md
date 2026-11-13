@@ -34,27 +34,27 @@ Public pages live in `apps/marketing/app/[locale]/`. Visitors never see a locale
 
 ### Built
 
-| Route                               | Page                                                                                                 | Data                                                    |
-| ----------------------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
-| `/`                                 | Home (A6.1), including the estimator (A6.4) and the enquiry form (A6.10)                             | `content/`, i18n, plan figures from `packages/payments` |
-| `/ceremonies`                       | Ceremony hub                                                                                         | `content/ceremonies`                                    |
-| `/ceremonies/[slug]`                | One page per file in `content/ceremonies`: ten today (A6.2)                                          | `content/ceremonies`                                    |
-| `/services`                         | What we handle, one page with anchors (including `#hire`)                                            | i18n                                                    |
-| `/invitations`                      | The invitation product and the Free vs Premium table (A6.8)                                          | i18n, `packages/payments`                               |
-| `/pricing`                          | How pricing works: invitation plans, agency quotes, deposits, GST                                    | i18n, `packages/payments`                               |
-| `/how-it-works`                     | The process from first call to pack-down                                                             | i18n                                                    |
-| `/venues`                           | Perth settings (A6.6)                                                                                | `content/locations/perth/venues.json`                   |
-| `/memorials`                        | Memorials, celebrations of life and wakes, in Memorial Mode (A6.9)                                   | i18n                                                    |
-| `/about`                            | Story and "A product by Appilico"                                                                    | i18n                                                    |
-| `/contact`                          | Enquiry form, phone and email; accepts `?ceremony=` and `?venue=` prefills (A6.10)                   | `POST /v1/leads`                                        |
-| `/faq`                              | FAQ with `FAQPage` structured data                                                                   | i18n                                                    |
-| `/privacy`, `/terms`                | Legal drafts, labelled as drafts. Final versions need legal review (PRV-02)                          | i18n                                                    |
-| `/accessibility`                    | Accessibility statement                                                                              | i18n                                                    |
-| `/admin`, `/admin/leads/[leadId]`   | Staff console (A14)                                                                                  | `GET` and `PATCH /v1/leads`                             |
-| `/admin/sign-in`, `/admin/sign-out` | Staff sign-in (password, then authenticator code) and sign-out                                       | Better Auth through `/api/auth/*`                       |
-| `/api/auth/*`                       | Same-origin proxy to the API's Better Auth mount (Part C)                                            | —                                                       |
-| `/sitemap.xml`, `/robots.txt`       | The sitemap lists the static pages and every ceremony page; robots disallows `/admin` and `/api/`    | —                                                       |
-| Any other path                      | Branded 404 (the `[...document]` catch-all calls `notFound()`; unknown `/admin/*` paths do the same) | —                                                       |
+| Route                                                | Page                                                                                                 | Data                                                                 |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `/`                                                  | Home (A6.1), including the estimator (A6.4) and the enquiry form (A6.10)                             | `content/`, i18n, plan figures from `packages/payments`              |
+| `/ceremonies`                                        | Ceremony hub                                                                                         | `content/ceremonies`                                                 |
+| `/ceremonies/[slug]`                                 | One page per file in `content/ceremonies`: ten today (A6.2)                                          | `content/ceremonies`                                                 |
+| `/services`                                          | What we handle, one page with anchors (including `#hire`)                                            | i18n                                                                 |
+| `/invitations`                                       | The invitation product and the Free vs Premium table (A6.8)                                          | i18n, `packages/payments`                                            |
+| `/pricing`                                           | How pricing works: invitation plans, agency quotes, deposits, GST                                    | i18n, `packages/payments`                                            |
+| `/how-it-works`                                      | The process from first call to pack-down                                                             | i18n                                                                 |
+| `/venues`                                            | Perth settings (A6.6)                                                                                | `content/locations/perth/venues.json`                                |
+| `/memorials`                                         | Memorials, celebrations of life and wakes, in Memorial Mode (A6.9)                                   | i18n                                                                 |
+| `/about`                                             | Story and "A product by Appilico"                                                                    | i18n                                                                 |
+| `/contact`                                           | Enquiry form, phone and email; accepts `?ceremony=` and `?venue=` prefills (A6.10)                   | `POST /v1/leads`                                                     |
+| `/faq`                                               | FAQ with `FAQPage` structured data                                                                   | i18n                                                                 |
+| `/privacy`, `/terms`                                 | Legal drafts, labelled as drafts. Final versions need legal review (PRV-02)                          | i18n                                                                 |
+| `/accessibility`                                     | Accessibility statement                                                                              | i18n                                                                 |
+| `/admin`, `/admin/leads/[leadId]`, `/admin/settings` | Staff console (A14)                                                                                  | `GET` and `PATCH /v1/leads`; `GET` and `PUT /v1/admin/site-settings` |
+| `/admin/sign-in`, `/admin/sign-out`                  | Staff sign-in (password, then authenticator code) and sign-out                                       | Better Auth through `/api/auth/*`                                    |
+| `/api/auth/*`                                        | Same-origin proxy to the API's Better Auth mount (Part C)                                            | —                                                                    |
+| `/sitemap.xml`, `/robots.txt`                        | The sitemap lists the static pages and every ceremony page; robots disallows `/admin` and `/api/`    | —                                                                    |
+| Any other path                                       | Branded 404 (the `[...document]` catch-all calls `notFound()`; unknown `/admin/*` paths do the same) | —                                                                    |
 
 **Redirects** (`next.config.ts`, permanent): `/plan`, `/plan/*` and `/estimator` → `/#estimator`; `/packages`, `/packages/*` and `/prices` → `/pricing`; `/book`, `/enquire`, `/enquiry` and `/contact-us` → `/contact`; `/hire` → `/services#hire`; `/legal` and `/legal/{privacy,terms,accessibility}` → the unprefixed legal pages; plus a few spelling aliases. Remove a redirect in the same PR that gives its path a real page (MKT-05 replaces `/packages`).
 
@@ -177,9 +177,9 @@ Nothing is collected today: there is no analytics script and no cookie banner. W
 Built, with its own root layout in `app/admin` outside the locale tree. Details are in the [marketing README](apps/marketing/README.md#staff-console-admin).
 
 - **Who:** `PLANNER_STAFF` and `SUPER_ADMIN`, always with TOTP. Accounts are created with the API's `staff:create` CLI; there is no sign-up, magic link or password reset here. A signed-in host who opens `/admin` is told the area is for staff.
-- **What:** the enquiry inbox (stage tabs, search, paging) and the enquiry detail (contact, event details, consent, stage moves, notes, assign to me). Memorial enquiries are marked and render in Memorial Mode.
+- **What:** the enquiry inbox (stage tabs, search, paging), enquiry detail (contact, event details, consent, stage moves, notes, assign to me), and site settings at `/admin/settings` (contact email, phone, and new-enquiry alert destination). Memorial enquiries are marked and render in Memorial Mode.
 - **Never cached or indexed:** every `/admin/*` response is `private, no-store` and `noindex`.
-- **Planned:** proposals (ADM-02), event command centre (ADM-03), vendor verification (ADM-04), hire inventory (ADM-05), finance (ADM-06), content editing (ADM-07), audit log and staff management (ADM-08). The 8-hour staff session is OPS-10.
+- **Planned:** proposals (ADM-02), event command centre (ADM-03), vendor verification (ADM-04), hire inventory (ADM-05), finance (ADM-06), content editing (ADM-07), audit log and staff management (ADM-08), run-sheet builder (ADM-09), and catering Halal/allergen compliance checklist (ADM-10). The 8-hour staff session is OPS-10.
 
 ---
 

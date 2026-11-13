@@ -80,11 +80,13 @@ async function upsertDemoParty(
     where: { invitationId_stableId: { invitationId: invitation.id, stableId } },
     select: { id: true, token: true },
   });
+  const token = buildPartyToken(DEMO_PARTY.displayName, invitation.salt, stableId, 0);
   if (party) {
     await tx.party.update({
       where: { id: party.id },
       data: {
         displayName: toLocalized(DEMO_PARTY.displayName),
+        token,
         maxSeats,
         allowPlusOnes: false,
         childrenAllowed: true,
@@ -93,6 +95,7 @@ async function upsertDemoParty(
         tokenRevokedAt: null,
       },
     });
+    party = { ...party, token };
   } else {
     party = await tx.party.create({
       data: {
@@ -100,7 +103,7 @@ async function upsertDemoParty(
         invitationId: invitation.id,
         stableId,
         displayName: toLocalized(DEMO_PARTY.displayName),
-        token: buildPartyToken(DEMO_PARTY.displayName, invitation.salt, stableId, 0),
+        token,
         maxSeats,
         allowPlusOnes: false,
         childrenAllowed: true,

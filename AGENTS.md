@@ -16,7 +16,7 @@ Managevent runs ceremonies of every kind from 0 to 100: weddings, engagements, b
 
 | App               | What it is                                                                                                                   | Local port |
 | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- | ---------- |
-| `apps/api`        | Hono API, Better Auth, 51 operations; Stripe Checkout and Resend used only when configured                                   | 4000       |
+| `apps/api`        | Hono API, Better Auth, 53 operations; Stripe Checkout and Resend used only when configured                                   | 4000       |
 | `apps/worker`     | pg-boss jobs: `lead.created`, `headcount.changed`, `invitation.email_campaign` and its sweep                                 | —          |
 | `apps/marketing`  | `www.` pages and the staff console at `/admin` (password + TOTP, enquiries, contact settings)                                | 3100       |
 | `apps/invitation` | Host sign-up and studio, guest site, RSVP with encrypted health data and consent, wishes, QR passes, calendar, door check-in | 3001       |

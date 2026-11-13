@@ -15,13 +15,13 @@
 
 ## What is implemented (email only)
 
-| Rule                  | Where                                                                                                                                                                                                |
-| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Marketing consent     | Enquiry form checkbox → `ConsentRecord` purpose `MARKETING_EMAIL`, written with the lead (`apps/api/src/modules/crm/repo.ts`)                                                                        |
-| Host attestation      | Every campaign stores `Campaign.consentAttestationUserId` (`apps/api/src/modules/messaging/service.ts`)                                                                                              |
-| Opt-out               | Signed unsubscribe link in every invitation email; `/unsubscribe` on `invitation.` records an `Unsubscribe` row; the worker re-checks it before each send (`apps/worker/src/jobs/email-campaign.ts`) |
-| Sender identification | Email footer `emails.unsubscribeFooter` in `packages/i18n` ("Managevent (Appilico) · Perth WA")                                                                                                      |
-| Quiet hours           | Reminders that would go out before 8am or after 8pm at the event are not sent; the campaign is marked failed and the host can resend                                                                 |
+| Rule                  | Where                                                                                                                                                                                                            |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Marketing consent     | Enquiry form checkbox → `ConsentRecord` purpose `MARKETING_EMAIL`, written with the lead (`apps/api/src/modules/crm/repo.ts`)                                                                                    |
+| Host attestation      | Every campaign stores `Campaign.consentAttestationUserId` (`apps/api/src/modules/messaging/service.ts`)                                                                                                          |
+| Opt-out               | Signed unsubscribe link in every invitation email; `/unsubscribe` on `invitation.` records an `Unsubscribe` row; the worker re-checks it before each send (`apps/worker/src/jobs/email-campaign.ts`)             |
+| Sender identification | Email footer `emails.unsubscribeFooter` in `packages/i18n` ("Managevent (Appilico) · Perth WA")                                                                                                                  |
+| Quiet hours           | Reminders that would go out before 8am or after 8pm at the event are not sent; the campaign is marked failed and the host can resend. Automated reminder sequences (INV-19) enforce the same quiet hours window. |
 
 Email goes through Resend directly from `apps/api` and `apps/worker`, only when `RESEND_API_KEY` is set. `packages/notifications` (which wraps Resend and Twilio with the same checks) is not used by any app yet.
 

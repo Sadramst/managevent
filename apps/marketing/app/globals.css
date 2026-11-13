@@ -127,6 +127,97 @@
   outline-color: var(--me-on-primary);
 }
 
+/* Hero quick ceremony selector */
+.hero-quick-select {
+  margin-block-start: 1.75rem;
+  padding-block-start: 1.25rem;
+  border-block-start: 1px solid color-mix(in srgb, var(--me-accent) 35%, transparent);
+}
+.hero-quick-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-accent);
+  margin-block-end: 0.65rem;
+  letter-spacing: 0.01em;
+}
+.hero-quick-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.hero-quick-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: color-mix(in srgb, var(--me-ink) 55%, transparent);
+  border: 1px solid color-mix(in srgb, var(--me-accent) 45%, transparent);
+  color: var(--me-on-primary);
+  transition: background var(--me-duration-micro) var(--me-ease),
+    border-color var(--me-duration-micro) var(--me-ease),
+    transform var(--me-duration-micro) var(--me-ease);
+}
+.hero-quick-pill:hover {
+  background: color-mix(in srgb, var(--me-accent) 25%, var(--me-ink));
+  border-color: var(--me-accent);
+  transform: translateY(-1px);
+}
+.hero-quick-pill:focus-visible {
+  outline: 2px solid var(--me-on-primary);
+  outline-offset: 2px;
+}
+
+/* Perth Trust & Assurance Pillars */
+.sp-perth-band {
+  background: var(--me-surface-raised);
+  border-block-end: 1px solid var(--me-rule-soft);
+  padding-block: 2.5rem;
+}
+.sp-perth-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 2rem;
+}
+.sp-perth-col {
+  display: flex;
+  flex-direction: column;
+}
+.sp-perth-num {
+  font-family: var(--me-font-display);
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--me-accent);
+  margin-block-end: 0.35rem;
+  line-height: 1;
+}
+.sp-perth-col h3 {
+  font-size: 1.15rem;
+  font-family: var(--me-font-display);
+  color: var(--me-primary);
+  margin-block: 0 0.4rem;
+}
+.sp-perth-col p {
+  font-size: 0.88rem;
+  color: var(--me-ink-muted);
+  line-height: 1.55;
+  margin-block-end: 0;
+}
+@media (max-width: 960px) {
+  .sp-perth-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem;
+  }
+}
+@media (max-width: 600px) {
+  .sp-perth-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+
 /* Event Families Grid */
 .families {
   display: grid;

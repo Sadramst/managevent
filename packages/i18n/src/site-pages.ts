@@ -70,6 +70,33 @@ export const sitePagesEn = {
       "Catering coordination and dietary needs",
       "Digital invitations, RSVP and check-in",
     ],
+    quickSelectTitle: "What ceremony or celebration are you planning?",
+    quickSelectItems: [
+      { label: "Weddings & Engagements", href: "/ceremonies/wedding" },
+      { label: "Milestone Birthdays", href: "/ceremonies/birthday-milestone" },
+      { label: "Corporate Galas & Dinners", href: "/ceremonies/gala-dinner" },
+      { label: "Cultural Ceremonies", href: "/ceremonies/cultural-celebration" },
+      { label: "Memorials & Wakes", href: "/memorials" },
+    ],
+    perthPillarsTitle: "Every celebration in Perth, from 0 to 100",
+    perthPillars: [
+      {
+        title: "Perth-Wide Settings",
+        body: "Swan Valley wineries, Kings Park, Fremantle heritage halls, riverside foreshores and private homes.",
+      },
+      {
+        title: "Full 0-to-100 Service",
+        body: "Concept, styling, florals, marquee hire, catering coordination and on-the-day staffing.",
+      },
+      {
+        title: "Connected Invitations & RSVP",
+        body: "Guest headcount, dietary requirements and allergy splits feed directly into your catering plan.",
+      },
+      {
+        title: "Transparent AUD Pricing",
+        body: "Clear quotes in Australian dollars including 10% GST with no hidden supplier markups.",
+      },
+    ],
     occasionsEyebrow: "Occasions",
     occasionsTitle: "Whatever you are gathering for",
     occasionsLead:

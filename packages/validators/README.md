@@ -7,6 +7,7 @@ Zod schemas for every Managevent API operation, mirrors of the `content/schemas`
 | `primitives.ts`      | `@managevent/validators/primitives` | Shared primitives and enums                                                                             |
 | `content.ts`         | `@managevent/validators/content`    | `content/` schemas (ceremonies, cities, venues, packages, routes, testimonials)                         |
 | `api.ts`             | `@managevent/validators/api`        | Error envelope, health, leads; also builder, order, payment and tax invoice shapes for planned features |
+| `site-settings.ts`   | root only                           | Public site settings, staff admin settings, update payload                                              |
 | `invitation-host.ts` | root only                           | `GET /v1/me`, host events and invitation, publish requirements, plan and checkout                       |
 | `guest-site.ts`      | root only                           | Guest site, RSVP, passes, calendar, wishes, demos, legacy links, check-in, wish moderation              |
 | `guest-list.ts`      | root only                           | Parties, guests, import, responses, messaging, unsubscribe, the staff enquiry list and detail           |

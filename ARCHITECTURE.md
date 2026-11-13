@@ -58,7 +58,7 @@ flowchart LR
 | ------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | `apps/marketing`   | Next.js 16 App Router, prerendered pages | Built. Container on the VPS, port 3100. Also serves the staff console at `/admin`                                                           |
 | `apps/invitation`  | Next.js 16 App Router, server-rendered   | Built. Container on the VPS, port 3001                                                                                                      |
-| `apps/api`         | Hono on Node 22, run through `tsx`       | Built. Container on the VPS, port 4000. 51 OpenAPI operations plus a CSV export, the Stripe webhook, two CLIs (`seed:demo`, `staff:create`) |
+| `apps/api`         | Hono on Node 22, run through `tsx`       | Built. Container on the VPS, port 4000. 53 OpenAPI operations plus a CSV export, the Stripe webhook, two CLIs (`seed:demo`, `staff:create`) |
 | `apps/worker`      | Node 22, pg-boss                         | Built. Container on the VPS, no port                                                                                                        |
 | `apps/admin`       | Library (no UI)                          | Staff-role helpers. The console UI lives in `apps/marketing`                                                                                |
 | `apps/portal`      | Next.js, authenticated                   | Planned (PRT-01). Placeholder `package.json` and `AGENTS.md` only                                                                           |
@@ -133,19 +133,20 @@ A host recording a reply in the studio takes the same path.
 
 Built (`apps/api/src/modules`; routes in [`apps/api/README.md`](apps/api/README.md)):
 
-| Module       | Responsibilities                                                                        |
-| ------------ | --------------------------------------------------------------------------------------- |
-| `identity`   | `GET /v1/me`: the signed-in user and the deployment's capabilities                      |
-| `events`     | Events, the invitation design and content, publish and unpublish                        |
-| `billing`    | Invitation plan, Stripe Checkout for the Premium Event Pass, the signed Stripe webhook  |
-| `guest-list` | Households (parties) and guests, CSV import and export, link revoke and reissue         |
-| `guest-site` | The guest view, RSVP, passes, calendar, wishes, sample invitations, legacy link resolve |
-| `responses`  | Totals and the dietary breakdown                                                        |
-| `headcount`  | Headcount snapshots and the `headcount.changed` job                                     |
-| `checkin`    | Door list and scans                                                                     |
-| `well`       | Wishing well and tribute book moderation                                                |
-| `messaging`  | Email invitations, RSVP reminders, unsubscribe                                          |
-| `crm`        | Leads from the enquiry form; the staff inbox                                            |
+| Module          | Responsibilities                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------ |
+| `identity`      | `GET /v1/me`: the signed-in user and the deployment's capabilities                         |
+| `events`        | Events, the invitation design and content, publish and unpublish                           |
+| `billing`       | Invitation plan, Stripe Checkout for the Premium Event Pass, the signed Stripe webhook     |
+| `guest-list`    | Households (parties) and guests, CSV import and export, link revoke and reissue            |
+| `guest-site`    | The guest view, RSVP, passes, calendar, wishes, sample invitations, legacy link resolve    |
+| `responses`     | Totals and the dietary breakdown                                                           |
+| `headcount`     | Headcount snapshots and the `headcount.changed` job                                        |
+| `checkin`       | Door list and scans                                                                        |
+| `well`          | Wishing well and tribute book moderation                                                   |
+| `messaging`     | Email invitations, RSVP reminders, unsubscribe                                             |
+| `crm`           | Leads from the enquiry form; the staff inbox                                               |
+| `site-settings` | Public contact email/phone for www; staff admin settings and new-enquiry alert destination |
 
 Planned: `catalog` and `orders` (packages, quotes, order lines, applying recommendations: MKT-05, PRT-04, PRT-05), `payments` beyond the invitation pass (deposits, milestones, tax invoices: PRT-06), `marketplace` (VEN, MKP), `inventory` (ADM-05), `ai` (INV-04), `reporting` (ADM-06), Twilio and Resend webhooks (INV-08), and an estimate `builder` (not scheduled).
 

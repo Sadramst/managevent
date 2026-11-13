@@ -4,7 +4,7 @@
 # The build context is the repository root:
 #   docker build -f apps/worker/Dockerfile -t managevent-worker:local .
 
-FROM node:22-alpine AS base
+FROM node:25-alpine AS base
 # openssl: Prisma's engines link against it. ca-certificates: outbound TLS (Resend).
 # corepack provides the pnpm version pinned in the root package.json ("packageManager").
 # /app and the pnpm store belong to the unprivileged `node` user (uid 1000), which installs,

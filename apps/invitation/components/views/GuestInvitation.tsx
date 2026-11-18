@@ -6,6 +6,7 @@ import {
   type InvitationGuestCopy,
   type InvitationGuestVoice,
 } from "@managevent/i18n";
+import type { InvitationThemeId } from "@managevent/types";
 import type { GuestInvitationView } from "@managevent/validators";
 import { Gate } from "@/components/gate/Gate";
 import { CardMotifSvg } from "@/components/public/OccasionCardArtwork";
@@ -13,7 +14,13 @@ import { RsvpPanel } from "@/components/rsvp/RsvpPanel";
 import { WishForm } from "@/components/rsvp/WishForm";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { formatLocalDate, formatLocalTime, formatScheduleTime } from "@/lib/dates";
-import { inferCardDesignForInvitation } from "@/lib/public/card-designs";
+import {
+  getCardDemoContent,
+  inferCardDesignForInvitation,
+  type OccasionCardDesign,
+  OCCASION_CARD_DESIGNS,
+} from "@/lib/public/card-designs";
+import { createInvitationHref } from "@/lib/public/links";
 import {
   type GuestLink,
   guestCalendarPath,
@@ -52,19 +59,19 @@ function paragraphs(text: string): string[] {
 }
 
 function SectionHead({
-  view,
+  themeId,
   title,
   lead,
   id,
 }: {
-  view: GuestInvitationView;
+  themeId: InvitationThemeId;
   title: string;
   lead?: string | undefined;
   id?: string;
 }) {
   return (
     <div className="inv-section-head">
-      <SectionMark themeId={view.invitation.themeId} />
+      <SectionMark themeId={themeId} />
       <h2 id={id}>{title}</h2>
       {lead ? <p>{lead}</p> : null}
     </div>
@@ -99,6 +106,13 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
     subheadline: content.subheadline,
     memorial,
   });
+  const demoCardContent = view.demo && cardDesign ? getCardDemoContent(cardDesign) : null;
+  const activeThemeId = demoCardContent ? cardDesign!.themeId : invitation.themeId;
+  const activeGateStyle = memorial
+    ? "plain-fade"
+    : demoCardContent
+      ? cardDesign!.gateStyle
+      : invitation.gateStyle;
   const baseOpenHref = guestOpenedPath(link);
   const openHref = cardId ? `${baseOpenHref}&card=${encodeURIComponent(cardId)}` : baseOpenHref;
 
@@ -110,22 +124,35 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
       ? formatLocalTime(event.endsAtLocal)
       : null;
   const zone = fillCopy(copy.details.timeZone, { city: timeZoneCity(event.timeZone) });
-  const wording = paragraphs(content.wording);
-  const story = content.story.flatMap(paragraphs);
+  const hosts = demoCardContent ? demoCardContent.hosts : content.hosts;
+  const headline = demoCardContent ? demoCardContent.headline : content.headline;
+  const subheadline = demoCardContent ? demoCardContent.subheadline : content.subheadline;
+  const venue: GuestInvitationView["invitation"]["content"]["venue"] = demoCardContent
+    ? demoCardContent.venue
+    : content.venue;
+  const dressCode = demoCardContent ? demoCardContent.dressCode : content.dressCode;
+  const wording = paragraphs(demoCardContent ? demoCardContent.wording : content.wording);
+  const story = (demoCardContent ? demoCardContent.story : content.story).flatMap(paragraphs);
+  const schedule = demoCardContent ? demoCardContent.schedule : content.schedule;
   const hasCover = Boolean(content.coverImageUrl);
   const readOnly = rsvp.state === "READ_ONLY" ? (view.demo ? "demo" : "preview") : null;
   const canReply = rsvp.state !== "CLOSED" || rsvp.hasResponded;
   const well = invitation.well;
   const showWell = view.features.wishesEnabled && well !== null && well.mode !== "NONE";
+  const wellMessage = demoCardContent ? demoCardContent.wellMessage : well?.message;
   const music = content.music.enabled && content.music.url ? content.music : null;
 
   return (
-    <GuestShell themeId={invitation.themeId} experienceMode={event.experienceMode}>
-      <Banner view={view} copy={copy} />
+    <GuestShell
+      themeId={activeThemeId}
+      experienceMode={event.experienceMode}
+      palette={demoCardContent ? cardDesign!.palette : undefined}
+    >
+      <Banner view={view} copy={copy} cardDesign={demoCardContent ? cardDesign : undefined} />
 
       {opened ? null : (
         <Gate
-          gateStyle={invitation.gateStyle}
+          gateStyle={activeGateStyle}
           memorial={memorial}
           name={party.displayName}
           openHref={openHref}
@@ -140,8 +167,8 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
         </a>
         <main id="main">
           <header className="inv-hero" data-cover={hasCover}>
-            {invitation.themeId === "midnight-celestial" ? <StarField /> : null}
-            {invitation.themeId === "emerald-botanic" ? (
+            {activeThemeId === "midnight-celestial" ? <StarField /> : null}
+            {activeThemeId === "emerald-botanic" ? (
               <>
                 <CornerBranch corner="start" />
                 <CornerBranch corner="end" />
@@ -160,8 +187,8 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
               </figure>
             ) : null}
 
-            <div className="inv-frame">
-              <Emblem themeId={invitation.themeId} />
+            <div className="inv-frame" data-card-shape={cardDesign?.cardShape}>
+              <Emblem themeId={activeThemeId} />
               {!memorial && cardDesign ? (
                 <div className="inv-card-motif-wrap">
                   <span className="inv-card-badge">{cardDesign.badgeText}</span>
@@ -171,24 +198,22 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
               <p className="inv-greeting">
                 {fillCopy(voice.greeting, { name: party.displayName })}
               </p>
-              <p className="inv-hosts">{content.hosts}</p>
+              <p className="inv-hosts">{hosts}</p>
               <h1
                 className="inv-headline"
-                data-length={content.headline.length > LONG_HEADLINE ? "long" : "short"}
+                data-length={headline.length > LONG_HEADLINE ? "long" : "short"}
               >
-                {content.headline}
+                {headline}
               </h1>
-              {content.subheadline ? (
-                <p className="inv-subheadline">{content.subheadline}</p>
-              ) : null}
+              {subheadline ? <p className="inv-subheadline">{subheadline}</p> : null}
               <hr className="inv-hero-rule" />
               <p className="inv-hero-date">{dateLong}</p>
               <p className="inv-hero-meta">
                 {startTime}, {zone}
-                {content.venue ? (
+                {venue ? (
                   <>
                     <br />
-                    {content.venue.name}
+                    {venue.name}
                   </>
                 ) : null}
               </p>
@@ -261,32 +286,32 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
                 </a>
               </div>
 
-              {content.venue ? (
+              {venue ? (
                 <div className="inv-detail">
                   <h2>{voice.whereTitle}</h2>
-                  <p className="inv-detail-main">{content.venue.name}</p>
-                  {content.venue.address ? <address>{content.venue.address}</address> : null}
+                  <p className="inv-detail-main">{venue.name}</p>
+                  {venue.address ? <address>{venue.address}</address> : null}
                   <a
                     className="button button-secondary button-small"
-                    href={venueMapsUrl(content.venue)}
+                    href={venueMapsUrl(venue)}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {copy.nav.openInMaps}
                   </a>
-                  {content.venue.parking ? (
+                  {venue.parking ? (
                     <p className="inv-detail-note">
                       <strong>{voice.parkingTitle}</strong>
-                      {content.venue.parking}
+                      {venue.parking}
                     </p>
                   ) : null}
                 </div>
               ) : null}
 
-              {content.dressCode ? (
+              {dressCode ? (
                 <div className="inv-detail" data-span="full">
                   <h2>{voice.dressCodeTitle}</h2>
-                  <p>{content.dressCode}</p>
+                  <p>{dressCode}</p>
                 </div>
               ) : null}
             </div>
@@ -295,7 +320,7 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
           {story.length > 0 ? (
             <section className="inv-section" data-band="true" aria-labelledby="story-title">
               <div className="inv-inner inv-story">
-                <SectionHead view={view} title={voice.storyTitle} id="story-title" />
+                <SectionHead themeId={activeThemeId} title={voice.storyTitle} id="story-title" />
                 {story.map((paragraph, index) => (
                   <p key={index}>{paragraph}</p>
                 ))}
@@ -303,12 +328,16 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
             </section>
           ) : null}
 
-          {content.schedule.length > 0 ? (
+          {schedule.length > 0 ? (
             <section className="inv-section" aria-labelledby="schedule-title">
               <div className="inv-inner">
-                <SectionHead view={view} title={voice.scheduleTitle} id="schedule-title" />
+                <SectionHead
+                  themeId={activeThemeId}
+                  title={voice.scheduleTitle}
+                  id="schedule-title"
+                />
                 <ol className="inv-timeline">
-                  {content.schedule.map((item) => (
+                  {schedule.map((item) => (
                     <li key={item.id}>
                       <span className="inv-timeline-time num">{formatScheduleTime(item.time)}</span>
                       <div className="inv-timeline-body">
@@ -328,7 +357,11 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
           {content.galleryImageUrls.length > 0 ? (
             <section className="inv-section" aria-labelledby="gallery-title">
               <div className="inv-inner" data-wide="true">
-                <SectionHead view={view} title={voice.galleryTitle} id="gallery-title" />
+                <SectionHead
+                  themeId={activeThemeId}
+                  title={voice.galleryTitle}
+                  id="gallery-title"
+                />
                 <ul className="inv-gallery">
                   {content.galleryImageUrls.map((url, index) => (
                     <li key={url}>
@@ -352,7 +385,7 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
           {content.faq.length > 0 ? (
             <section className="inv-section" data-band="true" aria-labelledby="faq-title">
               <div className="inv-inner">
-                <SectionHead view={view} title={voice.faqTitle} id="faq-title" />
+                <SectionHead themeId={activeThemeId} title={voice.faqTitle} id="faq-title" />
                 {content.faq.map((item, index) => (
                   <details key={index} className="inv-faq">
                     <summary>{item.question}</summary>
@@ -365,7 +398,7 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
 
           <section id="rsvp" className="inv-section" aria-labelledby="rsvp-title">
             <SectionHead
-              view={view}
+              themeId={activeThemeId}
               title={voice.rsvpTitle}
               id="rsvp-title"
               lead={
@@ -410,8 +443,8 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
             <section className="inv-section" data-band="true" aria-labelledby="well-title">
               <div className="inv-inner inv-well">
                 <div>
-                  <SectionHead view={view} title={voice.wellTitle} id="well-title" />
-                  {well.message ? <p className="inv-well-message">{well.message}</p> : null}
+                  <SectionHead themeId={activeThemeId} title={voice.wellTitle} id="well-title" />
+                  {wellMessage ? <p className="inv-well-message">{wellMessage}</p> : null}
                 </div>
                 <GiftDetails well={well} memorial={memorial} copy={copy.well} />
                 {well.tributePrompt ? (
@@ -462,8 +495,35 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
   );
 }
 
-function Banner({ view, copy }: { view: GuestInvitationView; copy: InvitationGuestCopy }) {
+function Banner({
+  view,
+  copy,
+  cardDesign,
+}: {
+  view: GuestInvitationView;
+  copy: InvitationGuestCopy;
+  cardDesign?: OccasionCardDesign | undefined;
+}) {
   if (view.demo) {
+    if (cardDesign) {
+      return (
+        <aside className="inv-banner" aria-label={copy.banner.demoTitle}>
+          <p>
+            <strong>
+              {cardDesign.name} ({cardDesign.categoryLabel})
+            </strong>{" "}
+            — Live card preview.{" "}
+            <a href={createInvitationHref(false, cardDesign.templateSlug, cardDesign.id)}>
+              Customize this card
+            </a>{" "}
+            ·{" "}
+            <a href={`${routes.templates}#occasion-cards`}>
+              Browse all {OCCASION_CARD_DESIGNS.length} cards
+            </a>
+          </p>
+        </aside>
+      );
+    }
     return (
       <aside className="inv-banner" aria-label={copy.banner.demoTitle}>
         <p>

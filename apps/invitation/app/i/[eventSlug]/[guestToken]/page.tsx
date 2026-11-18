@@ -19,8 +19,9 @@ interface PageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  return guestInvitationMetadata(await params);
+export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+  const [link, query] = await Promise.all([params, searchParams]);
+  return guestInvitationMetadata(link, typeof query.card === "string" ? query.card : undefined);
 }
 
 export async function generateViewport({ params }: PageProps): Promise<Viewport> {

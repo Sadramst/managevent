@@ -4,6 +4,7 @@ import { loadGuestView } from "@/lib/guest/load";
 import type { GuestLink } from "@/lib/guest/paths";
 import { getGuestTheme } from "@/lib/guest/theme";
 import { NOINDEX } from "@/lib/metadata";
+import { inferCardDesignForInvitation } from "@/lib/public/card-designs";
 import { GuestInvitation } from "./GuestInvitation";
 import { GuestStatus } from "./GuestShell";
 
@@ -39,27 +40,45 @@ export async function GuestInvitationPage({
  * Metadata for a guest invitation: the event title and the hosts' cover image only. Never the
  * guest's name, and never a URL (the link is the guest's credential). Always noindex.
  */
-export async function guestInvitationMetadata(link: GuestLink): Promise<Metadata> {
+export async function guestInvitationMetadata(
+  link: GuestLink,
+  cardId?: string | undefined,
+): Promise<Metadata> {
   const copy = getInvitationGuest("en");
   const result = await loadGuestView(link.eventSlug, link.guestToken);
   if (result.kind !== "ok") return { title: copy.meta.fallbackTitle, robots: NOINDEX };
 
   const { event, invitation } = result.data;
+  const memorial = event.experienceMode === "MEMORIAL";
+  const cardDesign =
+    result.data.demo && cardId
+      ? inferCardDesignForInvitation({
+          cardId,
+          ceremonySlug: event.ceremonySlug,
+          templateSlug: invitation.templateSlug,
+          themeId: invitation.themeId,
+          title: event.title,
+          headline: invitation.content.headline,
+          subheadline: invitation.content.subheadline,
+          memorial,
+        })
+      : undefined;
+  const pageTitle = cardDesign ? cardDesign.sample.title : event.title;
   const cover = invitation.content.coverImageUrl;
   const description = copy.meta.description;
   return {
-    title: event.title,
+    title: pageTitle,
     description,
     robots: NOINDEX,
     openGraph: {
       type: "website",
-      title: event.title,
+      title: pageTitle,
       description,
       ...(cover ? { images: [{ url: cover }] } : {}),
     },
     twitter: {
       card: cover ? "summary_large_image" : "summary",
-      title: event.title,
+      title: pageTitle,
       description,
       ...(cover ? { images: [cover] } : {}),
     },
@@ -67,9 +86,26 @@ export async function guestInvitationMetadata(link: GuestLink): Promise<Metadata
 }
 
 /** The browser chrome takes the invitation's background colour. */
-export async function guestInvitationViewport(link: GuestLink): Promise<Viewport> {
+export async function guestInvitationViewport(
+  link: GuestLink,
+  cardId?: string | undefined,
+): Promise<Viewport> {
   const result = await loadGuestView(link.eventSlug, link.guestToken);
   if (result.kind !== "ok") return {};
   const { event, invitation } = result.data;
-  return { themeColor: getGuestTheme(invitation.themeId, event.experienceMode).themeColor };
+  const memorial = event.experienceMode === "MEMORIAL";
+  const cardDesign =
+    result.data.demo && cardId
+      ? inferCardDesignForInvitation({
+          cardId,
+          ceremonySlug: event.ceremonySlug,
+          templateSlug: invitation.templateSlug,
+          themeId: invitation.themeId,
+          memorial,
+        })
+      : undefined;
+  return {
+    themeColor: getGuestTheme(invitation.themeId, event.experienceMode, cardDesign?.palette)
+      .themeColor,
+  };
 }

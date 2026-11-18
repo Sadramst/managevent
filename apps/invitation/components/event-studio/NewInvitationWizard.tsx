@@ -217,13 +217,11 @@ export function NewInvitationWizard({
 
   const occasionCards = useMemo(() => {
     const exact = OCCASION_CARD_DESIGNS.filter(
-      (card) => card.mode === mode && card.occasionSlug === occasionSlug && (card.free || memorial),
+      (card) => card.mode === mode && card.occasionSlug === occasionSlug,
     );
     if (exact.length > 0) return exact;
-    return OCCASION_CARD_DESIGNS.filter(
-      (card) => card.mode === mode && (card.free || memorial),
-    ).slice(0, 6);
-  }, [mode, occasionSlug, memorial]);
+    return OCCASION_CARD_DESIGNS.filter((card) => card.mode === mode).slice(0, 6);
+  }, [mode, occasionSlug]);
 
   const chooseOccasion = (slug: string) => {
     setTouched(true);
@@ -231,10 +229,7 @@ export function NewInvitationWizard({
     const nextMode = occasions.find((item) => item.slug === slug)?.mode ?? "CELEBRATION";
     if (nextMode !== mode) setTemplateSlug(defaultTemplateFor(templates, nextMode)?.slug ?? "");
     const nextMatch = OCCASION_CARD_DESIGNS.find(
-      (card) =>
-        card.mode === nextMode &&
-        card.occasionSlug === slug &&
-        (card.free || nextMode === "MEMORIAL"),
+      (card) => card.mode === nextMode && card.occasionSlug === slug,
     );
     setSelectedCardId(nextMatch?.id ?? null);
   };
@@ -486,8 +481,25 @@ export function NewInvitationWizard({
                           onClick={() => {
                             setTouched(true);
                             setSelectedCardId(active ? null : card.id);
-                            if (!active && (card.free || memorial)) {
-                              setTemplateSlug(card.templateSlug);
+                            if (!active) {
+                              if (card.free || memorial) {
+                                setTemplateSlug(card.templateSlug);
+                              }
+                              const titleTrimmed = basics.title.trim();
+                              const isSampleOrEmpty =
+                                titleTrimmed.length === 0 ||
+                                OCCASION_CARD_DESIGNS.some(
+                                  (c) => c.sample.headline === titleTrimmed,
+                                );
+                              if (isSampleOrEmpty) {
+                                setBasics((current) => ({
+                                  ...current,
+                                  title: card.sample.headline,
+                                  hosts: card.sample.hosts,
+                                  venueName: card.sample.venueName,
+                                  venueAddress: card.sample.venueAddress,
+                                }));
+                              }
                             }
                           }}
                         >

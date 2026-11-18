@@ -17,6 +17,16 @@ import { getContrastRatio, getPaletteTokens, parseHexRgb } from "@managevent/ui/
 
 const AA_TEXT = 4.5;
 
+export interface GuestPaletteOverride {
+  bg: string;
+  bgWarm: string;
+  surface: string;
+  ink: string;
+  inkMuted: string;
+  accent: string;
+  rule: string;
+}
+
 export interface GuestTheme {
   id: InvitationThemeId;
   /** `dark` when the page background is dark (Midnight Celestial). */
@@ -85,10 +95,23 @@ export function resolveThemeTokens(
 export function getGuestTheme(
   themeId: InvitationThemeId,
   experienceMode: ExperienceMode,
+  paletteOverride?: GuestPaletteOverride,
 ): GuestTheme {
   const theme = resolveThemeTokens(themeId, experienceMode);
-  const { colors, gate } = theme;
+  const { gate } = theme;
   const palette = getPaletteTokens(experienceMode);
+  const colors = paletteOverride
+    ? {
+        bg: paletteOverride.bg,
+        bgWarm: paletteOverride.bgWarm,
+        surface: paletteOverride.surface,
+        ink: paletteOverride.ink,
+        inkMuted: paletteOverride.inkMuted,
+        accent: paletteOverride.accent,
+        accentInk: paletteOverride.accent,
+        rule: paletteOverride.rule,
+      }
+    : theme.colors;
   const surfaces = [colors.bg, colors.bgWarm, colors.surface];
   const tone = isDark(colors.bg) ? "dark" : "light";
 
@@ -105,6 +128,8 @@ export function getGuestTheme(
   const primary = ensureContrast(primaryBase, surfaces, ink);
   const onPrimary = mostReadableOn(primary, [colors.bg, colors.surface, colors.accentInk, ink]);
   const accentStrong = ensureContrast(colors.accent, surfaces, primary);
+  const sealColor = paletteOverride ? primary : gate.sealColor;
+  const ribbonColor = paletteOverride ? colors.accent : gate.ribbonColor;
   const status = (colour: string) => ensureContrast(colour, surfaces, ink);
 
   const style: Record<string, string> = {
@@ -121,14 +146,9 @@ export function getGuestTheme(
     "--me-warning": status(palette.warning),
     "--inv-bg-warm": colors.bgWarm,
     "--inv-rule": colors.rule,
-    "--inv-seal": gate.sealColor,
-    "--inv-on-seal": mostReadableOn(gate.sealColor, [
-      colors.bg,
-      colors.surface,
-      colors.accentInk,
-      ink,
-    ]),
-    "--inv-ribbon": gate.ribbonColor,
+    "--inv-seal": sealColor,
+    "--inv-on-seal": mostReadableOn(sealColor, [colors.bg, colors.surface, colors.accentInk, ink]),
+    "--inv-ribbon": ribbonColor,
     "--inv-font-display": theme.fonts.display,
     "--inv-font-body": theme.fonts.body,
   };

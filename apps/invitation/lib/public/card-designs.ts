@@ -2171,6 +2171,652 @@ export const OCCASION_CARD_DESIGNS: readonly OccasionCardDesign[] = [
   },
 ];
 
+export interface CardDemoContent {
+  title: string;
+  hosts: string;
+  headline: string;
+  subheadline: string;
+  venue: {
+    name: string;
+    address: string;
+    parking: string;
+  };
+  dressCode: string;
+  wording: string;
+  story: string[];
+  schedule: ReadonlyArray<{
+    id: string;
+    time: string;
+    title: string;
+    description: string;
+    location: string;
+  }>;
+  wellMessage: string;
+}
+
+interface CategoryDemoTemplate {
+  parking: string;
+  dressCode: string;
+  wording: (d: OccasionCardDesign) => string;
+  story: (d: OccasionCardDesign) => string[];
+  schedule: (d: OccasionCardDesign) => CardDemoContent["schedule"];
+  wellMessage: string;
+}
+
+const CATEGORY_DEMO_TEMPLATES: Record<CardDesignCategory, CategoryDemoTemplate> = {
+  wedding: {
+    parking: "Complimentary valet and accessible bays near the main sandstone entrance.",
+    dressCode:
+      "Black-tie optional • Long gowns, dark suits and comfortable footwear for lawn drinks",
+    wording: (d) =>
+      `${d.sample.hosts} warmly invite you to join ${d.sample.headline} at ${d.sample.venueName} for our ceremony and evening reception.\n\nKindly share your attendance and any dietary requirements via the RSVP section below so every course is prepared with care.`,
+    story: (d) => [
+      `Planned around the "${d.name}" aesthetic (${d.badgeText}), this celebration brings together family and lifelong friends in Perth.`,
+      `${d.summary} Every detail from welcome champagne to the final dance takes place in one effortless setting.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "15:30",
+        title: "Guest arrival & acoustic strings",
+        description: "Find your seat before the processional begins.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "16:00",
+        title: "Ceremony & exchange of vows",
+        description: "Garden vows followed by group photographs.",
+        location: `${d.sample.venueName} Lawn`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "17:15",
+        title: "Canapés & sunset aperitifs",
+        description: "WA seafood, sparkling wine and lawn mingling.",
+        location: `${d.sample.venueName} Terrace`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "18:45",
+        title: "Seated dinner, speeches & dancing",
+        description: "Three-course banquet and late-night espresso cart.",
+        location: `${d.sample.venueName} Hall`,
+      },
+    ],
+    wellMessage:
+      "Having you celebrate with us in person is the greatest gift. For those who wish to give, a wishing well contribution toward our future home is warmly appreciated.",
+  },
+  "cultural-ceremony": {
+    parking: "Dedicated valet drop-off and lift access directly into the main hall foyer.",
+    dressCode: "Formal cultural attire or black-tie • Rich jewel tones and traditional silhouettes",
+    wording: (d) =>
+      `${d.sample.hosts} joyfully invite you to celebrate ${d.sample.headline} (${d.sample.title}) at ${d.sample.venueName}.\n\nPlease confirm your household attendance and dietary preferences below so we can welcome every elder and family guest with honour.`,
+    story: (d) => [
+      `Inspired by our heritage rituals, "${d.name}" frames ${d.sample.title} with poetry, calligraphy and shared blessings.`,
+      `From sweet saffron tea and mirror-and-candlestick traditions to joyful music with family, we cannot wait to share this evening with you.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "16:30",
+        title: "Welcoming tea, sweets & poetry",
+        description: "Persian rosewater pastries and family portraits on arrival.",
+        location: `${d.sample.venueName} Foyer`,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "17:30",
+        title: `${d.badgeText} ceremony & blessings`,
+        description: "Traditional spread, blessings from elders and ceremonial music.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "19:00",
+        title: "Festive banquet & live ensemble",
+        description: "Saffron rice feast, grilled platters and live santoor.",
+        location: `${d.sample.venueName} Banquet Room`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "21:00",
+        title: "Knife dance, cake & celebration",
+        description: "Group dancing and late-night cardamom tea service.",
+        location: `${d.sample.venueName} Ballroom`,
+      },
+    ],
+    wellMessage:
+      "Your blessings and presence around our ceremonial table mean everything to our families. No boxed gifts needed; a wishing card on the evening is deeply appreciated.",
+  },
+  engagement: {
+    parking:
+      "Metered street parking nearby and step-free lift entry from the main street entrance.",
+    dressCode: "Cocktail chic • Elevated evening textures with a celebratory sparkle",
+    wording: (d) =>
+      `${d.sample.hosts} are thrilled to invite you to celebrate ${d.sample.headline} at ${d.sample.venueName}.\n\nRaise a glass with us, leave a note in our keepsake wishes book, and let us know if you have any allergies below.`,
+    story: (d) => [
+      `After saying yes here in Western Australia, we wanted a warm night surrounded by the people who know us best.`,
+      `Designed with the "${d.name}" theme, expect cold champagne, golden hour views and zero speeches longer than two minutes.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "17:30",
+        title: "Champagne coupe welcome",
+        description: "Signature spritz on arrival while guests gather.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "18:30",
+        title: "Grazing tables & antipasti",
+        description: "Seasonal oysters, artisan cheeses and woodfired flatbreads.",
+        location: `${d.sample.venueName} Deck`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "20:00",
+        title: "Engagement toast & champagne tower",
+        description: "Short words from family and friends.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "20:45",
+        title: "DJ set & dessert bites",
+        description: "Mini pavlovas, espresso martinis and dancing.",
+        location: `${d.sample.venueName} Lounge`,
+      },
+    ],
+    wellMessage:
+      "Your company to celebrate our engagement is truly all we ask for! Cards and warm wishes are always welcome at the door.",
+  },
+  anniversary: {
+    parking: "Direct drop-off bay at the main porte-cochère and nearby guest parking.",
+    dressCode: "Lounge suit or cocktail elegance • Touches of metallic gold, ruby or pearl welcome",
+    wording: (d) =>
+      `${d.sample.hosts} invite you to honour ${d.sample.headline} at ${d.sample.venueName} for ${d.sample.title}.\n\nJoin family across generations for a celebratory dinner, cherished memories and a milestone toast.`,
+    story: (d) => [
+      `Years of shared adventures, Sunday roasts and growing family deserve a proper gathering styled in "${d.name}".`,
+      `We would love you to share a favourite memory in the wishes book below before we raise our glasses at ${d.sample.venueName}.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "18:00",
+        title: "Welcome drinks & photo gallery",
+        description: "Browse framed snapshots from every decade together.",
+        location: `${d.sample.venueName} Atrium`,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "18:45",
+        title: "Milestone dinner service",
+        description: "Long-table supper celebrating years of companionship.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "20:15",
+        title: "Jubilee toast & cutting the cake",
+        description: "Words from children, grandchildren and oldest friends.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "21:00",
+        title: "Live jazz & anniversary waltz",
+        description: "Tea, coffee and petit fours to close a joyful evening.",
+        location: `${d.sample.venueName} Lounge`,
+      },
+    ],
+    wellMessage:
+      "Please bring nothing more than your stories and warm smiles — no gifts, only the pleasure of your company at our table.",
+  },
+  "birthday-adult": {
+    parking: "Close rideshare drop-off at the venue courtyard and weekend parking adjacent.",
+    dressCode: "Dressed to celebrate • Festive evening wear matching the milestone vibe",
+    wording: (d) =>
+      `${d.sample.hosts} invite you to celebrate ${d.sample.headline} — ${d.sample.subheadline} at ${d.sample.venueName}.\n\nRSVP below with any dietary requirements so the kitchen and bar team can look after your crew properly.`,
+    story: (d) => [
+      `Why celebrate quietly when "${d.name}" sets the tone for an unforgettable Perth night at ${d.sample.venueName}?`,
+      `Expect great playlists, flowing drinks and everyone's favourite people gathered under one roof.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "18:30",
+        title: "Doors open & welcome pour",
+        description: "Signature birthday cocktail and Polaroid guestbook check-in.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "19:30",
+        title: "Feasting platters & shared plates",
+        description: "Roast bites, grazing boards and gluten-free/vegan options.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "21:00",
+        title: "Birthday speech, candles & cake",
+        description: "Gather round for the milestone toast and photo moment.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "21:45",
+        title: "After-hours dancefloor",
+        description: "Throwback classics and celebratory cocktails till midnight.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Just turn up ready to celebrate and have fun! If you'd like to chip in toward the birthday travel fund, details are below.",
+  },
+  "birthday-kids": {
+    parking: "Free family bays right outside the park lawn with easy pram and wagon access.",
+    dressCode: "Playful party outfits • Sun hats and comfy sneakers for lawn adventures",
+    wording: (d) =>
+      `${d.sample.hosts} invite little explorers and grown-ups alike to ${d.sample.headline} at ${d.sample.venueName}!\n\nPlease RSVP with how many children and adults are joining, plus any nut or dairy allergies so snack bags are safe for every child.`,
+    story: (d) => [
+      `Featuring "${d.name}" artwork, we've planned shaded picnic rugs, games, face-painting and allergen-friendly party platters.`,
+      `Grown-ups are very welcome to stay for barista coffee and morning treats while the kids enjoy the magic.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "10:00",
+        title: "Welcome & name badges",
+        description: "Craft station, temporary tattoos and bubbles on the grass.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "10:45",
+        title: "Themed treasure hunt & games",
+        description: "Guided games, obstacle fun and prizes for everyone.",
+        location: `${d.sample.venueName} Lawn`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "11:30",
+        title: "Kids' picnic boxes & adult coffee",
+        description: "Fresh fruit skewers, fairy bread and hot pastries.",
+        location: `${d.sample.venueName} Gazebo`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "12:15",
+        title: "Happy Birthday song & favour bags",
+        description: "Blowing out the candles followed by take-home treats.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Bringing your little one to celebrate with us is gift enough! If you'd prefer not to wrap, we are collecting pre-loved picture books or fiver cards for a single special toy.",
+  },
+  "pet-birthday": {
+    parking: "Shaded lakeside/coastal parking just steps from the dog-friendly fenced lawn area.",
+    dressCode:
+      "Park casual for humans • Party bandanas, bowties & wagging tails encouraged for pets",
+    wording: (d) =>
+      `${d.sample.hosts} invite two-legged friends and furry pals to ${d.sample.headline} at ${d.sample.venueName}!\n\nLet us know how many humans and pets are coming below — plus any pet treat sensitivities so our pupcake & kitty-treat bar is 100% tail-safe.`,
+    story: (d) => [
+      `Because pets are family too, "${d.name}" celebrates another joyful year of park zoomies, sunbeams and unconditional love.`,
+      `There will be chilled water bowls, homemade carob pupcakes for good pups (or tuna bites for royal kitties) and barista iced coffees for their humans.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "09:30",
+        title: "Sniffs, bandanas & photo backdrop",
+        description: "Check in for a custom pet polaroid and welcome pat.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "10:15",
+        title: "Treats tasting & park parade",
+        description: "Obedience tricks, best dressed tail-wag and tennis ball fetch.",
+        location: `${d.sample.venueName} Lawn`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "11:00",
+        title: "Pet cake cutting & singing",
+        description: "Vet-safe peanut-carob barkday cake and paw-printed treats.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "11:30",
+        title: "Puppuccinos & human brunch",
+        description: "Doggie goodie bags to take home after a happy morning.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "No presents required — belly rubs and a squeaky tennis ball are plenty! Donations to our local WA pet rescue shelter in lieu of gifts are warmly welcome.",
+  },
+  "baby-shower-girl": {
+    parking: "Free conservatory garden parking with ramp access to the tearoom veranda.",
+    dressCode: "Soft blush, garden florals & warm ivory daytime chic",
+    wording: (d) =>
+      `${d.sample.hosts} warmly invite you to shower our sweet baby girl with love — ${d.sample.headline} at ${d.sample.venueName}.\n\nPlease RSVP with any dietary requirements so high-tea tiers and mocktail pairings are tailored for you.`,
+    story: (d) => [
+      `Set against soft pastel tones of "${d.name}", afternoon tea, floral posies and handwritten advice cards await our favourite people.`,
+      `Your laughter and warm wishes for our growing family make this afternoon unforgettable before our little girl arrives.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "13:30",
+        title: "Rosewater spritzes & nursery board",
+        description: "Sign a baby-girl keepsake advice card on arrival.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "14:15",
+        title: "High tea tiers & warm scones",
+        description: "Finger sandwiches, seasonal berries and artisanal teas.",
+        location: `${d.sample.venueName} Tearoom`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "15:15",
+        title: "Nursery games & flower crown craft",
+        description: "Lighthearted baby predictions and Polaroids.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "16:00",
+        title: "Ribbon cake cutting & favours",
+        description: "Take-home wildflower seed packets and sweet macarons.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Instead of a card, we would love a signed children's book for her nursery bookshelf, or you may explore our curated baby registry below.",
+  },
+  "baby-shower-boy": {
+    parking: "Convenient marina parking outside the yacht club lawn with pram access.",
+    dressCode: "Powder blue, crisp white & coastal linen daytime attire",
+    wording: (d) =>
+      `${d.sample.hosts} joyfully invite you to celebrate our baby boy on the way — ${d.sample.headline} at ${d.sample.venueName}.\n\nRSVP below with any allergies or dietary notes and feel free to leave a sweet wish for our little captain.`,
+    story: (d) => [
+      `Styled in our "${d.name}" edition, expect bright coastal air, brunch pastries and celebratory mocktails as we countdown to meeting our boy.`,
+      `Everyone — partners, family and little cousins included — is warmly welcome aboard for a relaxed afternoon by the water.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "11:00",
+        title: "Blueberry spritz & guest sign-in",
+        description: "Leave your birth-date & weight guess on our baby boy board.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "11:45",
+        title: "Coastal grazing brunch",
+        description: "Smoked salmon bagels, fresh pastries and fruit platters.",
+        location: `${d.sample.venueName} Terrace`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "12:45",
+        title: "Baby boy trivia & onesie painting",
+        description: "Relaxed crew games and decorating newborn singlets.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "13:30",
+        title: "Blueberry-vanilla cake & farewells",
+        description: "Group photo before heading home with sailor treats.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Having you celebrate our little boy's arrival is the best gift! A signed bedtime storybook or contribution to the stroller fund below is deeply appreciated.",
+  },
+  "baby-shower-neutral": {
+    parking: "Closest parking along the conservatory forecourt with gentle accessible paths.",
+    dressCode: "Oatmeal, sage green & cream neutrals — or pink/blue for a playful reveal guess!",
+    wording: (d) =>
+      `${d.sample.hosts} invite you to gather for ${d.sample.headline} at ${d.sample.venueName}!\n\nRSVP below to confirm your seats, record your guess in the wishes book, and share any dietary preferences.`,
+    story: (d) => [
+      `Whether you are Team Pink, Team Blue, or simply here for the buttercream cake, "${d.name}" brings everyone together for a magical afternoon.`,
+      `From sweet predictions to the big reveal countdown, we can't wait to share this milestone with our dearest circle.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "14:00",
+        title: "Cast your vote & mocktails",
+        description: "Grab a keepsake pin and write a message for baby.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "14:45",
+        title: "Savory bites & garden tea",
+        description: "Seasonal antipasti, warm tarts and sparkling iced tea.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "15:30",
+        title: "The big reveal moment",
+        description: "Gather on the lawn for the reveal toast and group cheers.",
+        location: `${d.sample.venueName} Lawn`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "16:15",
+        title: "Reveal cake & celebration",
+        description: "Slice into the cake together and enjoy takeaway sweets.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Your love and excitement for our little one is priceless! Feel free to leave a card or peek at our neutral nursery essentials below.",
+  },
+  "religious-naming": {
+    parking: "Venue courtyard drop-off and validated parking adjacent to the main sanctuary.",
+    dressCode: "Modest formal or Sunday best • Crisp cream, navy, emerald or soft gold",
+    wording: (d) =>
+      `${d.sample.hosts} warmly invite you to witness ${d.sample.headline} — ${d.sample.subheadline} at ${d.sample.venueName}.\n\nPlease RSVP so we can arrange family seating and prepare all blessed feast & dietary options with care.`,
+    story: (d) => [
+      `Crafted in our "${d.name}" layout, this blessed ceremony marks an important spiritual milestone surrounded by elders, godparents and friends.`,
+      `Following the morning blessing, please stay for a generous family luncheon, music and shared gratitude.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "10:00",
+        title: "Family arrival & seating",
+        description: "Warm greeting at the sanctuary entrance.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "10:30",
+        title: "Naming & blessing service",
+        description: "Sacred readings, music and ceremonial blessings.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "12:00",
+        title: "Family portraits & welcome drinks",
+        description: "Gather with godparents, elders and guests in the courtyard.",
+        location: `${d.sample.venueName} Courtyard`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "12:45",
+        title: "Celebratory banquet luncheon",
+        description: "Halal/kosher/allergen-conscious seasonal menu and sweets.",
+        location: `${d.sample.venueName} Hall`,
+      },
+    ],
+    wellMessage:
+      "Your prayers, blessings and warm presence on this special day are the greatest treasure our family could receive.",
+  },
+  "lifestyle-milestone": {
+    parking: "Quiet street parking out front and step-free walkway to the front veranda.",
+    dressCode: "Smart daytime or relaxed evening style • Comfortable & celebratory",
+    wording: (d) =>
+      `${d.sample.hosts} invite you to celebrate ${d.sample.headline} at ${d.sample.venueName}!\n\nLet us know if you can make it below and share any food allergies before we pop the champagne.`,
+    story: (d) => [
+      `Tailored around our "${d.name}" card, this gathering marks a proud personal chapter — from bridal brunches and academic honours to turning the key on a new front door.`,
+      `Good conversation, homemade platters and Perth sunshine are on the agenda.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "15:00",
+        title: "Welcome drinks & tour",
+        description: "Say hello with chilled bubbles or iced citrus tea.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "16:00",
+        title: "Grazing platters & nibbles",
+        description: "Artisan dips, seasonal produce and warm finger food.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "17:15",
+        title: "Celebration toast & stories",
+        description: "Brief milestone words and cheers with everyone.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "18:00",
+        title: "Sweet bites & lawn mingling",
+        description: "Gelato cups, coffee and acoustic playlist till dusk.",
+        location: d.sample.venueName,
+      },
+    ],
+    wellMessage:
+      "Showing up to celebrate this chapter together is all we want! Thank you for being part of the journey.",
+  },
+  "corporate-gala": {
+    parking: "Underground convention carpark (Lift Lobby B) and taxi rank at the main plaza.",
+    dressCode: "Black tie / Executive formal • Evening gowns & tailored dinner jackets",
+    wording: (d) =>
+      `${d.sample.hosts} request the pleasure of your company at ${d.sample.headline} hosted at ${d.sample.venueName}.\n\nPlease confirm your guest details and dietary requirements below; your QR door pass will be issued immediately upon RSVP.`,
+    story: (d) => [
+      `Presented with the "${d.name}" pass aesthetic, this flagship evening unites leaders, partners and philanthropic supporters across Western Australia.`,
+      `Use your digital QR pass at Express Check-In from 6:00 PM for pre-dinner champagne and networking.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "18:00",
+        title: "Red carpet check-in & pre-dinner drinks",
+        description: "Fast QR door pass scanning and networking aperitifs.",
+        location: `${d.sample.venueName} Atrium`,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "19:00",
+        title: "Opening keynote & welcome",
+        description: "Ballroom doors open for welcome address and first course.",
+        location: `${d.sample.venueName} Main Hall`,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "20:30",
+        title: "Annual awards & charity pledge",
+        description: "Celebrating milestones and community impact.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "21:45",
+        title: "Dessert table & live quartet",
+        description: "Post-gala digestifs and evening fellowship.",
+        location: `${d.sample.venueName} Lounge`,
+      },
+    ],
+    wellMessage:
+      "Thank you for supporting this year's gala. Direct pledge links for our partner foundation are listed below if your organisation wishes to contribute.",
+  },
+  memorial: {
+    parking: "Reserved family and accessible parking close to the chapel entrance.",
+    dressCode: "Smart, understated attire • Soft colours or whatever feels most respectful to you",
+    wording: (d) =>
+      `${d.sample.hosts} gently invite family, neighbours and friends to gather in remembrance of ${d.sample.headline} at ${d.sample.venueName}.\n\nPlease indicate below if you plan to attend so seating and quiet afternoon refreshments are arranged with care. You are also welcome to share a memory in the tribute book.`,
+    story: (d) => [
+      `${d.sample.headline} touched many lives through quiet kindness, dedication and warmth toward everyone around them.`,
+      `Whether joining in person at ${d.sample.venueName} or holding us in your thoughts from afar, reading your memories in the tribute book brings lasting comfort.`,
+    ],
+    schedule: (d) => [
+      {
+        id: `${d.id}-1`,
+        time: "10:00",
+        title: "Chapel doors open & quiet music",
+        description: "Sign the remembrance book and be seated comfortably.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-2`,
+        time: "10:30",
+        title: "Memorial service & reflections",
+        description: "Readings, shared tributes and quiet reflection.",
+        location: d.sample.venueName,
+      },
+      {
+        id: `${d.id}-3`,
+        time: "11:30",
+        title: "Farewell tribute & eucalyptus sprig",
+        description: "A calm moment to pay respects as the service concludes.",
+        location: `${d.sample.venueName} Courtyard`,
+      },
+      {
+        id: `${d.id}-4`,
+        time: "12:00",
+        title: "Afternoon tea & remembrance",
+        description: "Light refreshments and quiet conversation with family.",
+        location: `${d.sample.venueName} Lounge`,
+      },
+    ],
+    wellMessage:
+      "In lieu of flowers, charitable donations may be made via the memorial link below, and every written memory in the tribute book is deeply cherished.",
+  },
+};
+
+export function getCardDemoContent(design: OccasionCardDesign): CardDemoContent {
+  const tpl = CATEGORY_DEMO_TEMPLATES[design.category];
+  return {
+    title: design.sample.title,
+    hosts: design.sample.hosts,
+    headline: design.sample.headline,
+    subheadline: design.sample.subheadline,
+    venue: {
+      name: design.sample.venueName,
+      address: design.sample.venueAddress,
+      parking: tpl.parking,
+    },
+    dressCode: tpl.dressCode,
+    wording: tpl.wording(design),
+    story: tpl.story(design),
+    schedule: tpl.schedule(design),
+    wellMessage: tpl.wellMessage,
+  };
+}
+
 export function getCardDesignById(id?: string | null): OccasionCardDesign | undefined {
   if (!id) return undefined;
   return OCCASION_CARD_DESIGNS.find((design) => design.id === id);

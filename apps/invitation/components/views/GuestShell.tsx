@@ -1,12 +1,13 @@
 import type { ExperienceMode, InvitationThemeId } from "@managevent/types";
 import { cx } from "@managevent/ui/brand";
 import type { CSSProperties, ReactNode } from "react";
-import { getGuestTheme } from "@/lib/guest/theme";
+import { getGuestTheme, type GuestPaletteOverride } from "@/lib/guest/theme";
 import "./guest.css";
 
 export interface GuestShellProps {
   themeId: InvitationThemeId;
   experienceMode: ExperienceMode;
+  palette?: GuestPaletteOverride | undefined;
   className?: string | undefined;
   children: ReactNode;
 }
@@ -24,8 +25,14 @@ export interface GuestShellProps {
  * The <noscript> style hides the pieces that only work with JavaScript (gate, countdown, forms),
  * leaving the complete server-rendered invitation.
  */
-export function GuestShell({ themeId, experienceMode, className, children }: GuestShellProps) {
-  const theme = getGuestTheme(themeId, experienceMode);
+export function GuestShell({
+  themeId,
+  experienceMode,
+  palette,
+  className,
+  children,
+}: GuestShellProps) {
+  const theme = getGuestTheme(themeId, experienceMode, palette);
   return (
     <div
       className={cx("inv", className)}

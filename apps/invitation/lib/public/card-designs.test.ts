@@ -8,10 +8,12 @@ import {
 import { describe, expect, it } from "vitest";
 import {
   CARD_DESIGN_CATEGORIES,
+  getCardDemoContent,
   getCardDesignById,
   inferCardDesignForInvitation,
   OCCASION_CARD_DESIGNS,
 } from "./card-designs";
+import { getGuestTheme } from "@/lib/guest/theme";
 
 describe("52 occasion card designs catalogue", () => {
   it("provides at least 40 distinct designs (52 total) with unique ids", () => {
@@ -42,18 +44,10 @@ describe("52 occasion card designs catalogue", () => {
       expect(items.length, category).toBeGreaterThan(0);
     }
 
-    expect(
-      OCCASION_CARD_DESIGNS.filter((d) => d.category === "pet-birthday").length,
-    ).toBeGreaterThanOrEqual(5);
-    expect(
-      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-girl").length,
-    ).toBeGreaterThanOrEqual(2);
-    expect(
-      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-boy").length,
-    ).toBeGreaterThanOrEqual(2);
-    expect(
-      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-neutral").length,
-    ).toBeGreaterThanOrEqual(2);
+    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "pet-birthday").length).toBeGreaterThanOrEqual(5);
+    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-girl").length).toBeGreaterThanOrEqual(2);
+    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-boy").length).toBeGreaterThanOrEqual(2);
+    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-neutral").length).toBeGreaterThanOrEqual(2);
   });
 
   it("uses at least 14 distinct card frame silhouettes and 25+ custom vector motifs", () => {
@@ -66,9 +60,7 @@ describe("52 occasion card designs catalogue", () => {
   it("passes WCAG 2.2 AA text contrast (>= 4.5:1) on every design card", () => {
     for (const design of OCCASION_CARD_DESIGNS) {
       const { bg, surface, ink, inkMuted } = design.palette;
-      expect(getContrastRatio(ink, surface), `${design.id} ink/surface`).toBeGreaterThanOrEqual(
-        4.5,
-      );
+      expect(getContrastRatio(ink, surface), `${design.id} ink/surface`).toBeGreaterThanOrEqual(4.5);
       expect(getContrastRatio(ink, bg), `${design.id} ink/bg`).toBeGreaterThanOrEqual(4.5);
       expect(
         getContrastRatio(inkMuted, surface),
@@ -113,5 +105,43 @@ describe("52 occasion card designs catalogue", () => {
         ceremonySlug: "baby-shower",
       })?.id,
     ).toBe("baby-boy-little-prince");
+  });
+
+  it("provides rich occasion-specific demo content and WCAG AA guest themes for all 52 cards", () => {
+    for (const design of OCCASION_CARD_DESIGNS) {
+      const demo = getCardDemoContent(design);
+      expect(demo.title, design.id).toBe(design.sample.title);
+      expect(demo.wording.trim().length, `${design.id} wording`).toBeGreaterThan(20);
+      expect(demo.story.length, `${design.id} story`).toBeGreaterThanOrEqual(2);
+      expect(demo.dressCode.trim().length, `${design.id} dressCode`).toBeGreaterThan(5);
+      expect(demo.venue.name, `${design.id} venue.name`).toBe(design.sample.venueName);
+      expect(demo.venue.address, `${design.id} venue.address`).toBe(design.sample.venueAddress);
+      expect(demo.wellMessage.trim().length, `${design.id} wellMessage`).toBeGreaterThan(10);
+      expect(demo.schedule, `${design.id} schedule`).toHaveLength(4);
+      for (const item of demo.schedule) {
+        expect(item.time, `${design.id} schedule time`).toMatch(/^([01]\d|2[0-3]):[0-5]\d$/);
+        expect(item.title.trim().length, `${design.id} schedule title`).toBeGreaterThan(0);
+      }
+
+      const guestTheme = getGuestTheme(design.themeId, design.mode, design.palette);
+      const read = (name: string) => guestTheme.style[name] ?? "";
+      const surfaces = [read("--me-surface"), read("--me-surface-raised"), read("--inv-bg-warm")];
+      for (const surface of surfaces) {
+        for (const token of ["--me-ink", "--me-ink-muted", "--me-primary", "--me-accent-strong"]) {
+          expect(
+            getContrastRatio(read(token), surface),
+            `${design.id} ${token} on ${surface}`,
+          ).toBeGreaterThanOrEqual(4.5);
+        }
+      }
+      expect(
+        getContrastRatio(read("--me-on-primary"), read("--me-primary")),
+        `${design.id} --me-on-primary`,
+      ).toBeGreaterThanOrEqual(4.5);
+      expect(
+        getContrastRatio(read("--inv-on-seal"), read("--inv-seal")),
+        `${design.id} --inv-on-seal`,
+      ).toBeGreaterThanOrEqual(3);
+    }
   });
 });

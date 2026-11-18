@@ -4544,3 +4544,327 @@ form > .es-toggle:first-child {
   :is(.es-publish, .es-checklist, .sb-party, .sb-wish, .sb-door-list) {
   box-shadow: none;
 }
+
+/* ---- 9. Occasion Card Designs Gallery (52 card varieties) ----------------- */
+.pub-occ-wrap {
+  display: grid;
+  gap: 1.5rem;
+}
+.pub-occ-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.pub-occ-search {
+  display: grid;
+  gap: 0.4rem;
+  flex: 1 1 20rem;
+  max-inline-size: 30rem;
+}
+.pub-occ-search-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--me-ink);
+}
+.pub-occ-search-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.pub-occ-search-icon {
+  position: absolute;
+  inset-inline-start: 0.85rem;
+  inline-size: 1rem;
+  block-size: 1rem;
+  color: var(--me-ink-muted);
+  pointer-events: none;
+}
+.pub-occ-search-field input {
+  inline-size: 100%;
+  min-block-size: 44px;
+  padding-block: 0.55rem;
+  padding-inline: 2.35rem 0.9rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  font: inherit;
+  font-size: 0.92rem;
+}
+.pub-occ-count {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--me-ink-muted);
+}
+.pub-occ-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.pub-occ-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-block-size: 44px;
+  padding-block: 0.45rem;
+  padding-inline: 0.9rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-chip);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  font: inherit;
+  font-size: 0.84rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color var(--me-duration-micro) var(--me-ease),
+    border-color var(--me-duration-micro) var(--me-ease),
+    color var(--me-duration-micro) var(--me-ease);
+}
+.pub-occ-chip:hover {
+  border-color: var(--me-primary);
+  background: var(--me-tint);
+}
+.pub-occ-chip[aria-pressed="true"] {
+  border-color: var(--me-primary);
+  background: var(--me-primary);
+  color: var(--me-on-primary);
+}
+.pub-occ-chip-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 1.45rem;
+  padding: 0.1rem 0.38rem;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 14%, transparent);
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+.pub-occ-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 18.5rem), 1fr));
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.pub-occ-home-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+}
+.pub-occ-card-item {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--me-rule);
+  border-radius: var(--me-radius-panel);
+  background: var(--me-surface-raised);
+  overflow: hidden;
+  box-shadow: var(--me-shadow-flat);
+  transition:
+    transform var(--me-duration-micro) var(--me-ease),
+    box-shadow var(--me-duration-micro) var(--me-ease);
+}
+.pub-occ-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--me-shadow-raised);
+}
+.pub-occ-card {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  padding: 1rem;
+  background: var(--inv-bg);
+  color: var(--inv-ink);
+}
+.pub-occ-sheet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: 20.5rem;
+  padding: 1.75rem 1.35rem;
+  border-radius: var(--me-radius-panel);
+  background: var(--inv-surface);
+  overflow: hidden;
+  text-align: center;
+}
+.pub-occ-frame-svg {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  pointer-events: none;
+}
+.pub-occ-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+}
+.pub-occ-pill {
+  display: inline-block;
+  padding: 0.2rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--inv-rule) 75%, transparent);
+  border-radius: var(--me-radius-chip);
+  background: var(--inv-warm);
+  color: var(--inv-ink);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.pub-occ-motif {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 3.75rem;
+  block-size: 3.75rem;
+  margin-block: 0.25rem;
+  padding: 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--inv-accent) 40%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--inv-accent) 12%, transparent);
+}
+.pub-occ-motif svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+.pub-occ-hosts {
+  margin: 0;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--inv-ink-muted);
+}
+.pub-occ-headline {
+  margin: 0;
+  max-inline-size: 14ch;
+  font-family: var(--me-font-display, Georgia, serif);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--inv-ink);
+  text-wrap: balance;
+}
+.pub-occ-rule {
+  display: block;
+  inline-size: 2.5rem;
+  margin-block: 0.35rem;
+  border-block-start: 1px solid var(--inv-accent);
+}
+.pub-occ-title {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.4;
+  color: var(--inv-ink-muted);
+}
+.pub-occ-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 auto;
+  gap: 0.55rem;
+  padding: 1.15rem 1.25rem 1.25rem;
+}
+.pub-occ-card-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+.pub-occ-card-title {
+  margin: 0;
+  font-size: 1.12rem;
+  font-weight: 700;
+  color: var(--me-ink);
+}
+.pub-occ-card-summary {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--me-ink-muted);
+  flex: 1 0 auto;
+}
+.pub-occ-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding-block-start: 0.35rem;
+}
+.pub-occ-empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed var(--me-rule-strong);
+  border-radius: var(--me-radius-panel);
+  text-align: center;
+}
+.pub-occ-empty h3,
+.pub-occ-empty p {
+  margin: 0;
+}
+/* Compact occasion card picker inside Studio New Invitation Wizard */
+.es-wizard-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 11.5rem), 1fr));
+  gap: 0.65rem;
+  margin-block-start: 0.5rem;
+}
+.es-wizard-card-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  min-block-size: 44px;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--me-rule-strong);
+  border-radius: var(--me-radius-control);
+  background: var(--me-surface-raised);
+  color: var(--me-ink);
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: start;
+  cursor: pointer;
+}
+.es-wizard-card-opt[aria-pressed="true"] {
+  border-color: var(--me-primary);
+  background: var(--me-tint);
+  box-shadow: inset 0 0 0 1px var(--me-primary);
+}
+.es-wizard-card-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--me-primary);
+}
+.inv-preview-motif {
+  inline-size: 3.25rem;
+  block-size: 3.25rem;
+  margin-block-end: 0.15rem;
+}
+.inv-preview-badge {
+  display: inline-block;
+  padding: 0.15rem 0.6rem;
+  border: 1px solid var(--pv-rule);
+  border-radius: var(--me-radius-chip);
+  background: var(--pv-warm);
+  color: var(--pv-ink);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pub-occ-card-item,
+  .pub-occ-chip {
+    transition: none;
+  }
+  .pub-occ-card-item:hover {
+    transform: none;
+  }
+}

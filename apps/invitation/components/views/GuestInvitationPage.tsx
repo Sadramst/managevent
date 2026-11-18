@@ -19,12 +19,20 @@ import { GuestStatus } from "./GuestShell";
  *
  * An unknown link ends in `notFound()` (inside `loadGuestView`): a real 404.
  */
-export async function GuestInvitationPage({ link, opened }: { link: GuestLink; opened: boolean }) {
+export async function GuestInvitationPage({
+  link,
+  opened,
+  cardId,
+}: {
+  link: GuestLink;
+  opened: boolean;
+  cardId?: string | undefined;
+}) {
   const copy = getInvitationGuest("en");
   const result = await loadGuestView(link.eventSlug, link.guestToken);
   if (result.kind === "gone") return <GuestStatus title={copy.gone.title} body={copy.gone.body} />;
   if (result.kind === "busy") return <GuestStatus title={copy.busy.title} body={copy.busy.body} />;
-  return <GuestInvitation link={link} view={result.data} opened={opened} />;
+  return <GuestInvitation link={link} view={result.data} opened={opened} cardId={cardId} />;
 }
 
 /**

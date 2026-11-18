@@ -29,5 +29,11 @@ export async function generateViewport({ params }: PageProps): Promise<Viewport>
 
 export default async function GuestInvitationRoute({ params, searchParams }: PageProps) {
   const [link, query] = await Promise.all([params, searchParams]);
-  return <GuestInvitationPage link={link} opened={query.opened === "1"} />;
+  return (
+    <GuestInvitationPage
+      link={link}
+      opened={query.opened === "1"}
+      cardId={typeof query.card === "string" ? query.card : undefined}
+    />
+  );
 }

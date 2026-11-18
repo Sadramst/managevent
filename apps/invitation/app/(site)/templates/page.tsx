@@ -10,8 +10,10 @@ import { ButtonLink, PageHero, Section, SectionHead } from "@managevent/ui/brand
 import { getCssVariablesForMode } from "@managevent/ui/tokens";
 import { INVITATION_TEMPLATES } from "@managevent/validators";
 import { CtaBand, JsonLd } from "@/components/public/kit";
+import { OccasionCardsGallery } from "@/components/public/OccasionCardsGallery";
 import { TemplateCard } from "@/components/public/TemplateCard";
 import { Notice } from "@/components/ui";
+import { CARD_DESIGN_CATEGORIES, type CardDesignCategory } from "@/lib/public/card-designs";
 import { loadDemos } from "@/lib/public/demos";
 import { itemListJsonLd } from "@/lib/public/json-ld";
 import { createInvitationHref } from "@/lib/public/links";
@@ -37,11 +39,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default async function TemplatesPage() {
-  const [me, demos] = await Promise.all([getMeOptional(), loadDemos()]);
+export default async function TemplatesPage({
+  searchParams,
+}: {
+  searchParams?: Promise<{ category?: string | string[] }>;
+}) {
+  const [me, demos, query] = await Promise.all([
+    getMeOptional(),
+    loadDemos(),
+    searchParams ?? Promise.resolve<{ category?: string | string[] }>({}),
+  ]);
   const signedIn = me.user !== null;
   const page = copy.templates;
   const plan = planCopyParams();
+  const rawCategory = typeof query.category === "string" ? query.category : "all";
+  const initialCategory = (
+    CARD_DESIGN_CATEGORIES.some((cat) => cat.id === rawCategory) ? rawCategory : "all"
+  ) as CardDesignCategory | "all";
 
   // The catalogue is static (`INVITATION_TEMPLATES`); the API adds one live sample per template.
   const demoFor = (slug: string) => demos.items.find((demo) => demo.templateSlug === slug);
@@ -64,6 +78,19 @@ export default async function TemplatesPage() {
       />
 
       <PageHero eyebrow={page.eyebrow} title={page.title} lead={page.lead} />
+
+      <Section id="occasion-cards">
+        <SectionHead
+          eyebrow="52 Occasion Card Designs"
+          title="Cards tailored for every celebration, milestone & family moment"
+          lead="Explore curated cards for weddings, Persian and cultural ceremonies, engagements, anniversaries, adult & kids' birthdays, dog & pet barkdays, baby showers (girl, boy & neutral), naming ceremonies, galas, and dignified memorials."
+        />
+        <OccasionCardsGallery
+          demos={demos.items}
+          signedIn={signedIn}
+          initialCategory={initialCategory}
+        />
+      </Section>
 
       <Section id="celebration">
         <SectionHead

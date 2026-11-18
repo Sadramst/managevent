@@ -8,10 +8,12 @@ import {
 } from "@managevent/i18n";
 import type { GuestInvitationView } from "@managevent/validators";
 import { Gate } from "@/components/gate/Gate";
+import { CardMotifSvg } from "@/components/public/OccasionCardArtwork";
 import { RsvpPanel } from "@/components/rsvp/RsvpPanel";
 import { WishForm } from "@/components/rsvp/WishForm";
 import { CopyButton } from "@/components/ui/CopyButton";
 import { formatLocalDate, formatLocalTime, formatScheduleTime } from "@/lib/dates";
+import { inferCardDesignForInvitation } from "@/lib/public/card-designs";
 import {
   type GuestLink,
   guestCalendarPath,
@@ -34,6 +36,8 @@ export interface GuestInvitationProps {
   view: GuestInvitationView;
   /** True when the URL carries `?opened=1`: the gate has been opened before, so it is skipped. */
   opened: boolean;
+  /** Optional 52-card design override from the public catalogue (`?card=`). */
+  cardId?: string | undefined;
 }
 
 const CONTENT_ID = "invitation";
@@ -78,13 +82,25 @@ function SectionHead({
  * words. Nothing here is specific to `/i/...`: legacy links render the same component once the
  * API has resolved them to a slug and token.
  */
-export function GuestInvitation({ link, view, opened }: GuestInvitationProps) {
+export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationProps) {
   const copy = getInvitationGuest("en");
   const shell = getInvitationShell("en");
   const { event, invitation, party, rsvp } = view;
   const { content } = invitation;
   const memorial = event.experienceMode === "MEMORIAL";
   const voice = guestVoice(copy, event.experienceMode);
+  const cardDesign = inferCardDesignForInvitation({
+    cardId,
+    ceremonySlug: event.ceremonySlug,
+    templateSlug: invitation.templateSlug,
+    themeId: invitation.themeId,
+    title: event.title,
+    headline: content.headline,
+    subheadline: content.subheadline,
+    memorial,
+  });
+  const baseOpenHref = guestOpenedPath(link);
+  const openHref = cardId ? `${baseOpenHref}&card=${encodeURIComponent(cardId)}` : baseOpenHref;
 
   const calendarHref = guestCalendarPath(link);
   const dateLong = formatLocalDate(event.startsAtLocal, { weekday: true });
@@ -112,7 +128,7 @@ export function GuestInvitation({ link, view, opened }: GuestInvitationProps) {
           gateStyle={invitation.gateStyle}
           memorial={memorial}
           name={party.displayName}
-          openHref={guestOpenedPath(link)}
+          openHref={openHref}
           contentId={CONTENT_ID}
           copy={copy.gate}
         />
@@ -146,6 +162,12 @@ export function GuestInvitation({ link, view, opened }: GuestInvitationProps) {
 
             <div className="inv-frame">
               <Emblem themeId={invitation.themeId} />
+              {!memorial && cardDesign ? (
+                <div className="inv-card-motif-wrap">
+                  <span className="inv-card-badge">{cardDesign.badgeText}</span>
+                  <CardMotifSvg motif={cardDesign.motif} className="inv-card-motif" />
+                </div>
+              ) : null}
               <p className="inv-greeting">
                 {fillCopy(voice.greeting, { name: party.displayName })}
               </p>

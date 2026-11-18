@@ -5,12 +5,18 @@ import { routes } from "@/lib/urls";
  *
  * A signed-in host goes straight to the wizard. A signed-out visitor creates an account first;
  * `next` (checked by `safeNextPath` on the sign-up page) brings them to the wizard afterwards,
- * with the template they chose still selected.
+ * with the template and optional card design they chose still selected.
  */
-export function createInvitationHref(signedIn: boolean, templateSlug?: string): string {
-  const target = templateSlug
-    ? `${routes.studioNew}?template=${encodeURIComponent(templateSlug)}`
-    : routes.studioNew;
+export function createInvitationHref(
+  signedIn: boolean,
+  templateSlug?: string,
+  cardId?: string,
+): string {
+  const params = new URLSearchParams();
+  if (templateSlug) params.set("template", templateSlug);
+  if (cardId) params.set("card", cardId);
+  const query = params.toString();
+  const target = query ? `${routes.studioNew}?${query}` : routes.studioNew;
   return signedIn ? target : `${routes.signUp}?next=${encodeURIComponent(target)}`;
 }
 

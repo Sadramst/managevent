@@ -11,8 +11,10 @@ import { getCssVariablesForMode } from "@managevent/ui/tokens";
 import { HeroPreviewSwitcher } from "@/components/public/HeroPreviewSwitcher";
 import { InvitationPreview } from "@/components/public/InvitationPreview";
 import { CheckList, CtaBand, Faq, FeatureList, JsonLd, Steps } from "@/components/public/kit";
+import { OccasionCardArtwork } from "@/components/public/OccasionCardArtwork";
 import { PlanCards } from "@/components/public/Plans";
-import { Notice } from "@/components/ui";
+import { Badge, buttonClass, Notice } from "@/components/ui";
+import { getCardDesignById, OCCASION_CARD_DESIGNS } from "@/lib/public/card-designs";
 import { loadDemos } from "@/lib/public/demos";
 import { faqJsonLd, serviceJsonLd } from "@/lib/public/json-ld";
 import { createInvitationHref, samplePath } from "@/lib/public/links";
@@ -182,6 +184,53 @@ export default async function HomePage() {
         ) : (
           <Notice>{home.samplesUnavailable}</Notice>
         )}
+      </Section>
+
+      <Section id="occasion-cards">
+        <div className="pub-head-row">
+          <SectionHead
+            eyebrow={`${OCCASION_CARD_DESIGNS.length} Special Occasion Card Styles`}
+            title="Distinct cards for weddings, birthdays, pets & baby showers"
+            lead="Pick a card silhouette and vector artwork tailored to your celebration: traditional ceremonies, 50th anniversaries, dog barkday parties, baby girl prams, and baby boy crowns."
+          />
+          <a className="pub-more" href={`${routes.templates}#occasion-cards`}>
+            Explore all {OCCASION_CARD_DESIGNS.length} cards
+          </a>
+        </div>
+        <ul className="pub-occ-grid pub-occ-home-grid">
+          {[
+            "wedding-royal-ivory-arch",
+            "pet-dog-barkday-pawty",
+            "baby-girl-vintage-pram",
+            "baby-boy-little-prince",
+            "kids-wild-one-safari",
+            "anniversary-golden-50",
+          ].map((cardId) => {
+            const design = getCardDesignById(cardId);
+            if (!design) return null;
+            return (
+              <li key={design.id} className="pub-occ-card-item">
+                <OccasionCardArtwork design={design} />
+                <div className="pub-occ-card-body">
+                  <div className="pub-occ-card-badges">
+                    <Badge tone="neutral">{design.categoryLabel}</Badge>
+                  </div>
+                  <h3 className="pub-occ-card-title">{design.name}</h3>
+                  <p className="pub-occ-card-summary">{design.summary}</p>
+                  <div className="pub-occ-card-actions">
+                    <a
+                      className={buttonClass({ size: "small" })}
+                      href={createInvitationHref(signedIn, design.templateSlug, design.id)}
+                      aria-label={`Customize card: ${design.name}`}
+                    >
+                      Customize card
+                    </a>
+                  </div>
+                </div>
+              </li>
+            );
+          })}
+        </ul>
       </Section>
 
       <Section band id="bridge">

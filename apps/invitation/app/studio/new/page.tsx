@@ -38,12 +38,13 @@ async function loadSamples(): Promise<Record<string, string>> {
 export default async function NewInvitationPage({
   searchParams,
 }: {
-  searchParams: Promise<{ template?: string | string[] }>;
+  searchParams: Promise<{ template?: string | string[]; card?: string | string[] }>;
 }) {
   await requireHost();
-  const [{ template }, samples] = await Promise.all([searchParams, loadSamples()]);
+  const [{ template, card }, samples] = await Promise.all([searchParams, loadSamples()]);
   const catalog = buildCatalog(copy.catalog);
   const requested = typeof template === "string" ? template : null;
+  const requestedCard = typeof card === "string" ? card : null;
 
   return (
     <Section tight>
@@ -61,6 +62,7 @@ export default async function NewInvitationPage({
         requestedTemplate={
           catalog.templates.some((item) => item.slug === requested) ? requested : null
         }
+        requestedCard={requestedCard}
         samples={samples}
         freeGuestLimit={freeGuestLimit()}
         defaultTimeZone={DEFAULT_TIME_ZONE}

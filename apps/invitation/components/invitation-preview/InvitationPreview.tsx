@@ -1,6 +1,8 @@
 import type { CSSProperties } from "react";
 import { cx } from "@managevent/ui/brand";
 import { INVITATION_THEMES, type InvitationThemeTokens } from "@managevent/ui/themes";
+import { CardMotifSvg } from "@/components/public/OccasionCardArtwork";
+import { getCardDesignById, type OccasionCardDesign } from "@/lib/public/card-designs";
 
 /**
  * A compact, faithful preview of the opening card of an invitation: the headline, who is
@@ -49,6 +51,8 @@ export interface InvitationPreviewProps {
   labels: InvitationPreviewLabels;
   /** `thumb` is the small tile on template and event cards: headline and hosts only. */
   size?: "default" | "thumb" | undefined;
+  /** Optional 52-card design id chosen in the catalogue or wizard. */
+  cardId?: string | undefined;
   className?: string | undefined;
 }
 
@@ -61,7 +65,30 @@ function themeFor(themeId: string): InvitationThemeTokens {
 }
 
 /** Theme tokens as CSS variables. On a dark theme the heading takes the accent colour. */
-function themeStyle(theme: InvitationThemeTokens): CSSProperties {
+function themeStyle(theme: InvitationThemeTokens, cardDesign?: OccasionCardDesign): CSSProperties {
+  if (cardDesign) {
+    const p = cardDesign.palette;
+    return {
+      "--pv-bg": p.bg,
+      "--pv-warm": p.bgWarm,
+      "--pv-surface": p.surface,
+      "--pv-ink": p.ink,
+      "--pv-muted": p.inkMuted,
+      "--pv-accent": p.accent,
+      "--pv-rule": p.rule,
+      "--pv-heading": p.ink,
+      "--pv-display": theme.fonts.display,
+      "--pv-body": theme.fonts.body,
+      "--inv-bg": p.bg,
+      "--inv-warm": p.bgWarm,
+      "--inv-surface": p.surface,
+      "--inv-ink": p.ink,
+      "--inv-ink-muted": p.inkMuted,
+      "--inv-accent": p.accent,
+      "--inv-rule": p.rule,
+    } as CSSProperties;
+  }
+
   const { colors } = theme;
   const heading = colors.accentInk === colors.bg ? colors.accent : colors.accentInk;
   return {
@@ -141,9 +168,16 @@ export function InvitationPreview({
   coverImageUrl,
   labels,
   size = "default",
+  cardId,
   className,
 }: InvitationPreviewProps) {
   const theme = themeFor(themeId);
+  const rawCardDesign = cardId ? getCardDesignById(cardId) : undefined;
+  const cardDesign =
+    rawCardDesign &&
+    (memorial ? rawCardDesign.mode === "MEMORIAL" : rawCardDesign.mode !== "MEMORIAL")
+      ? rawCardDesign
+      : undefined;
   const thumb = size === "thumb";
   const headlineText = headline.trim();
   const hostsText = hosts.trim();
@@ -159,7 +193,7 @@ export function InvitationPreview({
       data-size={size}
       data-shape={shapeFor(templateSlug, memorial)}
       data-template={templateSlug}
-      style={themeStyle(theme)}
+      style={themeStyle(theme, cardDesign)}
       aria-label={thumb ? undefined : labels.label}
       aria-hidden={thumb ? true : undefined}
     >
@@ -172,7 +206,12 @@ export function InvitationPreview({
             loading="lazy"
             referrerPolicy="no-referrer"
           />
-        ) : memorial ? null : (
+        ) : memorial ? null : cardDesign ? (
+          <>
+            <span className="inv-preview-badge">{cardDesign.badgeText}</span>
+            <CardMotifSvg motif={cardDesign.motif} className="inv-preview-motif" />
+          </>
+        ) : (
           <Ornament templateSlug={templateSlug} />
         )}
 

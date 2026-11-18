@@ -14,6 +14,7 @@ import { Notice } from "@/components/ui/Notice";
 import { createEventAction } from "@/lib/event-studio/actions";
 import { settle } from "@/lib/client-action";
 import type { OccasionOption, TemplateOption, TimeZoneOption } from "@/lib/event-studio/catalog";
+import { getCardDesignById, OCCASION_CARD_DESIGNS } from "@/lib/public/card-designs";
 import { defaultTemplateFor } from "@/lib/event-studio/design-rules";
 import {
   type DateNames,
@@ -44,6 +45,8 @@ export interface NewInvitationWizardProps {
   timeZones: TimeZoneOption[];
   /** `?template=` when it names a real template; null otherwise. */
   requestedTemplate: string | null;
+  /** Optional `?card=` from the 52-card gallery. */
+  requestedCard?: string | null | undefined;
   /** Sample invitation paths by template slug (from the API's published samples). */
   samples: Record<string, string>;
   /** Guests the free plan covers (`INVITATION_PLANS.FREE.maxGuests`). */
@@ -105,26 +108,40 @@ export function NewInvitationWizard({
   templates,
   timeZones,
   requestedTemplate,
+  requestedCard,
   samples,
   freeGuestLimit,
   defaultTimeZone,
   copy,
 }: NewInvitationWizardProps) {
   const text = copy.wizard;
+  const initialCard = getCardDesignById(requestedCard);
   const requested = templates.find((template) => template.slug === requestedTemplate) ?? null;
   const initialOccasion =
+    (initialCard && occasions.find((occasion) => occasion.slug === initialCard.occasionSlug)) ??
     occasions.find((occasion) => occasion.mode === (requested?.mode ?? "CELEBRATION")) ??
     occasions[0];
 
   const [step, setStep] = useState<WizardStep>("template");
   const [occasionSlug, setOccasionSlug] = useState(initialOccasion?.slug ?? "");
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(initialCard?.id ?? null);
   const [templateSlug, setTemplateSlug] = useState(() => {
-    const mode = requested?.mode ?? "CELEBRATION";
-    const usable = requested && (requested.free || requested.mode === "MEMORIAL");
-    return (usable ? requested : defaultTemplateFor(templates, mode))?.slug ?? "";
+    const mode = initialCard?.mode ?? requested?.mode ?? "CELEBRATION";
+    const preferredSlug = initialCard?.templateSlug ?? requested?.slug;
+    const preferred = templates.find((t) => t.slug === preferredSlug);
+    const usable = preferred && (preferred.free || preferred.mode === "MEMORIAL");
+    return (usable ? preferred : defaultTemplateFor(templates, mode))?.slug ?? "";
   });
   const [basics, setBasics] = useState<WizardBasics>({
     ...EMPTY_BASICS,
+    ...(initialCard
+      ? {
+          title: initialCard.sample.headline,
+          hosts: initialCard.sample.hosts,
+          venueName: initialCard.sample.venueName,
+          venueAddress: initialCard.sample.venueAddress,
+        }
+      : {}),
     timeZone: defaultTimeZone,
   });
   const [households, setHouseholds] = useState<HouseholdRow[]>([]);
@@ -198,11 +215,28 @@ export function NewInvitationWizard({
     if (basicsErrors[key]) setBasicsErrors((current) => without(current, key));
   };
 
+  const occasionCards = useMemo(() => {
+    const exact = OCCASION_CARD_DESIGNS.filter(
+      (card) => card.mode === mode && card.occasionSlug === occasionSlug && (card.free || memorial),
+    );
+    if (exact.length > 0) return exact;
+    return OCCASION_CARD_DESIGNS.filter(
+      (card) => card.mode === mode && (card.free || memorial),
+    ).slice(0, 6);
+  }, [mode, occasionSlug, memorial]);
+
   const chooseOccasion = (slug: string) => {
     setTouched(true);
     setOccasionSlug(slug);
     const nextMode = occasions.find((item) => item.slug === slug)?.mode ?? "CELEBRATION";
     if (nextMode !== mode) setTemplateSlug(defaultTemplateFor(templates, nextMode)?.slug ?? "");
+    const nextMatch = OCCASION_CARD_DESIGNS.find(
+      (card) =>
+        card.mode === nextMode &&
+        card.occasionSlug === slug &&
+        (card.free || nextMode === "MEMORIAL"),
+    );
+    setSelectedCardId(nextMatch?.id ?? null);
   };
 
   const checkBasics = (): boolean => {
@@ -333,6 +367,7 @@ export function NewInvitationWizard({
     <InvitationPreview
       themeId={template?.defaultThemeId ?? ""}
       templateSlug={template?.slug ?? ""}
+      cardId={selectedCardId ?? undefined}
       memorial={memorial}
       headline={basics.title}
       hosts={basics.hosts}
@@ -432,6 +467,38 @@ export function NewInvitationWizard({
               </fieldset>
 
               {memorial ? <Notice>{text.template.memorialNote}</Notice> : null}
+
+              {occasionCards.length > 0 ? (
+                <fieldset className="es-fieldset">
+                  <legend>Occasion card artwork</legend>
+                  <p className="help">
+                    Optional card artwork style tailored to your selected occasion.
+                  </p>
+                  <div className="es-wizard-cards" role="group" aria-label="Occasion card artwork">
+                    {occasionCards.map((card) => {
+                      const active = selectedCardId === card.id;
+                      return (
+                        <button
+                          key={card.id}
+                          type="button"
+                          className="es-wizard-card-opt"
+                          aria-pressed={active}
+                          onClick={() => {
+                            setTouched(true);
+                            setSelectedCardId(active ? null : card.id);
+                            if (!active && (card.free || memorial)) {
+                              setTemplateSlug(card.templateSlug);
+                            }
+                          }}
+                        >
+                          <span className="es-wizard-card-badge">{card.badgeText}</span>
+                          <span>{card.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </fieldset>
+              ) : null}
 
               <fieldset className="es-fieldset">
                 <legend>{text.template.templateLegend}</legend>

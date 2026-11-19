@@ -836,11 +836,7 @@ export function createGuestListService(deps: ApiDeps) {
       const rows: ExportGuestRow[] = parties.flatMap((party, partyIndex) => {
         const showPartyLink =
           showLinks &&
-          isPartyLinkUnlocked(
-            access.invitation.plan,
-            partyIndex,
-            access.event.experienceMode,
-          );
+          isPartyLinkUnlocked(access.invitation.plan, partyIndex, access.event.experienceMode);
         return party.guests.map((guest) => ({
           partyName: fromLocalized(party.displayName),
           guestName: fromLocalized(guest.name),

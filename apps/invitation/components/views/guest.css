@@ -1651,14 +1651,17 @@
   block-size: 100%;
 }
 
-
 /* Distinct physical frame silhouettes for celebratory card shapes in live guest view. */
 .inv[data-experience-mode="celebration"] .inv-frame[data-card-shape="double-arch"] {
   outline: 2px solid color-mix(in srgb, var(--inv-rule) 70%, transparent);
   outline-offset: 0.45rem;
 }
 .inv[data-experience-mode="celebration"]
-  .inv-frame:is([data-card-shape="botanical-oval"], [data-card-shape="paw-badge"], [data-card-shape="cloud-dream"]) {
+  .inv-frame:is(
+    [data-card-shape="botanical-oval"],
+    [data-card-shape="paw-badge"],
+    [data-card-shape="cloud-dream"]
+  ) {
   border-radius: 3rem;
 }
 .inv[data-experience-mode="celebration"] .inv-frame[data-card-shape="scalloped"] {
@@ -1667,7 +1670,11 @@
   border-width: 3px;
 }
 .inv[data-experience-mode="celebration"]
-  .inv-frame:is([data-card-shape="octagon"], [data-card-shape="art-deco"], [data-card-shape="mediterranean-tile"]) {
+  .inv-frame:is(
+    [data-card-shape="octagon"],
+    [data-card-shape="art-deco"],
+    [data-card-shape="mediterranean-tile"]
+  ) {
   border-radius: 0.65rem;
   outline: 2px solid color-mix(in srgb, var(--me-accent) 45%, transparent);
   outline-offset: 0.4rem;

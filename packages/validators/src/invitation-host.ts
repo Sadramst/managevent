@@ -519,4 +519,3 @@ export const CheckoutConfirmSchema = z.object({
   sessionId: z.string().min(8).max(200),
 });
 export type CheckoutConfirm = z.infer<typeof CheckoutConfirmSchema>;
-

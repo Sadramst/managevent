@@ -44,10 +44,18 @@ describe("52 occasion card designs catalogue", () => {
       expect(items.length, category).toBeGreaterThan(0);
     }
 
-    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "pet-birthday").length).toBeGreaterThanOrEqual(5);
-    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-girl").length).toBeGreaterThanOrEqual(2);
-    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-boy").length).toBeGreaterThanOrEqual(2);
-    expect(OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-neutral").length).toBeGreaterThanOrEqual(2);
+    expect(
+      OCCASION_CARD_DESIGNS.filter((d) => d.category === "pet-birthday").length,
+    ).toBeGreaterThanOrEqual(5);
+    expect(
+      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-girl").length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-boy").length,
+    ).toBeGreaterThanOrEqual(2);
+    expect(
+      OCCASION_CARD_DESIGNS.filter((d) => d.category === "baby-shower-neutral").length,
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it("uses at least 14 distinct card frame silhouettes and 25+ custom vector motifs", () => {
@@ -60,7 +68,9 @@ describe("52 occasion card designs catalogue", () => {
   it("passes WCAG 2.2 AA text contrast (>= 4.5:1) on every design card", () => {
     for (const design of OCCASION_CARD_DESIGNS) {
       const { bg, surface, ink, inkMuted } = design.palette;
-      expect(getContrastRatio(ink, surface), `${design.id} ink/surface`).toBeGreaterThanOrEqual(4.5);
+      expect(getContrastRatio(ink, surface), `${design.id} ink/surface`).toBeGreaterThanOrEqual(
+        4.5,
+      );
       expect(getContrastRatio(ink, bg), `${design.id} ink/bg`).toBeGreaterThanOrEqual(4.5);
       expect(
         getContrastRatio(inkMuted, surface),

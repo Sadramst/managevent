@@ -73,9 +73,7 @@ export function isStripeWebhookConfigured(
  * Stripe key is configured. Whenever a real `STRIPE_SECRET_KEY` is present, real Stripe is used.
  * Simulated checkout is unconditionally forbidden in `NODE_ENV === "production"`.
  */
-export function isSimulatedCheckoutEnabled(
-  env: NodeJS.ProcessEnv = process.env,
-): boolean {
+export function isSimulatedCheckoutEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
   if (env.NODE_ENV === "production") return false;
   if (isStripeCheckoutConfigured(env.STRIPE_SECRET_KEY)) return false;
   const explicit = (env.STRIPE_SIMULATED_CHECKOUT ?? env.MANAGEVENT_SIMULATED_CHECKOUT)
@@ -294,9 +292,7 @@ function parseVerifiedSimulatedSession(
   const keyDigest = match[2] as string;
   const providedSig = match[3] as string;
   const expectedSig = signSimulatedSession(invitationId, keyDigest);
-  if (
-    !timingSafeEqual(Buffer.from(providedSig, "hex"), Buffer.from(expectedSig, "hex"))
-  ) {
+  if (!timingSafeEqual(Buffer.from(providedSig, "hex"), Buffer.from(expectedSig, "hex"))) {
     return null;
   }
   return { invitationId, keyDigest };
@@ -376,4 +372,3 @@ export function createSimulatedCheckoutClient(): StripeCheckoutClient {
     },
   };
 }
-

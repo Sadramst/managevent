@@ -107,7 +107,8 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
     subheadline: content.subheadline,
     memorial,
   });
-  const demoCardContent = view.demo && cardDesign ? getCardDemoContent(cardDesign) : null;
+  const demoCardContent =
+    view.demo && Boolean(cardId) && cardDesign ? getCardDemoContent(cardDesign) : null;
   const activeThemeId = demoCardContent ? cardDesign!.themeId : invitation.themeId;
   const activeGateStyle = memorial
     ? "plain-fade"

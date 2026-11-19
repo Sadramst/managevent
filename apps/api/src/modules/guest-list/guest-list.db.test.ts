@@ -1210,7 +1210,9 @@ describe.skipIf(!dbAvailable)("guest list (database)", () => {
           displayName,
           guests: [{ name: g1 }, { name: g2 }],
         });
-        expect(party.token).toMatch(/^a-and-b-[a-z0-9]{8}$|^c-and-d-[a-z0-9]{8}$|^e-and-f-[a-z0-9]{8}$|^g-and-j-[a-z0-9]{8}$|^e-and-q-[a-z0-9]{8}$/);
+        expect(party.token).toMatch(
+          /^a-and-b-[a-z0-9]{8}$|^c-and-d-[a-z0-9]{8}$|^e-and-f-[a-z0-9]{8}$|^g-and-j-[a-z0-9]{8}$|^e-and-q-[a-z0-9]{8}$/,
+        );
         expect(party.invitePath).toBe(`/i/${jamesEvent.eventSlug}/${party.token}`);
         createdParties.push(party);
       }
@@ -1333,9 +1335,7 @@ describe.skipIf(!dbAvailable)("guest list (database)", () => {
         ).json(),
       );
       expect(afterPayment.items).toHaveLength(20);
-      expect(afterPayment.items.every((p) => p.token !== null && p.invitePath !== null)).toBe(
-        true,
-      );
+      expect(afterPayment.items.every((p) => p.token !== null && p.invitePath !== null)).toBe(true);
 
       for (const party of afterPayment.items) {
         const resolved = await api.call(
@@ -1364,4 +1364,3 @@ describe.skipIf(!dbAvailable)("guest list (database)", () => {
     });
   });
 });
-

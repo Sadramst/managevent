@@ -122,7 +122,10 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
   app.use("/v1/*", originGuard(trustedOrigins));
 
   // Cap request body sizes before parsing JSON/CSV to prevent memory exhaustion DoS.
-  const payloadTooLarge = (c: { get: (k: "requestId") => string | undefined; json: (body: unknown, status: 413) => Response }) =>
+  const payloadTooLarge = (c: {
+    get: (k: "requestId") => string | undefined;
+    json: (body: unknown, status: 413) => Response;
+  }) =>
     c.json(
       {
         error: {

@@ -79,9 +79,7 @@ test.describe("Free tier (5 links) and 20-link simulated payment unlock flow", (
 
     // Open Share tab and verify all 5 links are unlocked on the Free tier.
     await host.goto(`/studio/${eventId}/share`);
-    await expect(
-      host.getByText("Free tier: 5 of 5 free private links in use"),
-    ).toBeVisible();
+    await expect(host.getByText("Free tier: 5 of 5 free private links in use")).toBeVisible();
     await expect(host.locator(".sb-share-row")).toHaveCount(5);
     await expect(host.getByText("Locked — Free tier covers 5 links")).toHaveCount(0);
     await expectNoSidewaysScroll(host, "James share page");
@@ -151,9 +149,7 @@ test.describe("Free tier (5 links) and 20-link simulated payment unlock flow", (
     await expect(
       page.getByText("15 of your 20 household links need the Premium Event Pass"),
     ).toBeVisible();
-    await expect(
-      page.getByRole("button", { name: "Activate all 20 links — $69" }),
-    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Activate all 20 links — $69" })).toBeVisible();
 
     // 2. Before payment: Share page shows 5 unlocked links and 15 locked links.
     await page.goto(`/studio/${event.id}/share`);
@@ -178,21 +174,15 @@ test.describe("Free tier (5 links) and 20-link simulated payment unlock flow", (
       page.getByRole("heading", { level: 1, name: "Complete your Premium Event Pass" }),
     ).toBeVisible();
     await expect(page.getByText("Simulated payment (test mode)")).toBeVisible();
-    await expect(
-      page.getByText("All 20 household links (plus unlimited new links)"),
-    ).toBeVisible();
+    await expect(page.getByText("All 20 household links (plus unlimited new links)")).toBeVisible();
     await expectNoSidewaysScroll(page, "Simulated checkout page");
     await expectNoAxeViolations(page, "Simulated checkout page", "main");
 
     // 4. Complete the simulated payment -> redirects back to Share with all 20 links active!
-    await page
-      .getByRole("button", { name: "Pay $69 AUD and unlock all links" })
-      .click();
+    await page.getByRole("button", { name: "Pay $69 AUD and unlock all links" }).click();
     await page.waitForURL(new RegExp(`/studio/${event.id}/share\\?upgraded=1$`));
 
-    await expect(
-      page.getByText("All 20 private guest links are now active"),
-    ).toBeVisible();
+    await expect(page.getByText("All 20 private guest links are now active")).toBeVisible();
     await expect(page.getByText("Locked — Free tier covers 5 links")).toHaveCount(0);
     await expect(
       page.locator(".sb-share-row").getByRole("button", { name: "Copy link" }),
@@ -223,9 +213,7 @@ test.describe("Free tier (5 links) and 20-link simulated payment unlock flow", (
     await expect(guest.getByText("Dear Party 20")).toBeVisible();
     await guest.getByRole("radio", { name: "Yes, I will be there" }).check();
     await guest.getByRole("button", { name: "Send reply" }).click();
-    await expect(
-      guest.getByRole("heading", { name: /We cannot wait to see you/i }),
-    ).toBeVisible();
+    await expect(guest.getByRole("heading", { name: /We cannot wait to see you/i })).toBeVisible();
 
     await guestContext.close();
   });

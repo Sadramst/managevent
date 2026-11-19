@@ -46,9 +46,9 @@ describe("safe-url", () => {
 describe("client-ip", () => {
   it("accepts valid IPv4/IPv6 literals and drops malformed or spoofed values", () => {
     expect(clientIpFromHeaders(new Headers({ "x-real-ip": "203.0.113.42" }))).toBe("203.0.113.42");
-    expect(
-      clientIpFromHeaders(new Headers({ "x-forwarded-for": "2001:db8::1, 10.0.0.1" })),
-    ).toBe("2001:db8::1");
+    expect(clientIpFromHeaders(new Headers({ "x-forwarded-for": "2001:db8::1, 10.0.0.1" }))).toBe(
+      "2001:db8::1",
+    );
 
     for (const bad of ["::::", "999.999.999.999", "1.2.3.4.5", "not-an-ip", "203.0.113.1\r\nX:1"]) {
       const headers = { get: (name: string) => (name === "x-real-ip" ? bad : null) };

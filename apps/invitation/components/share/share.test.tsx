@@ -271,10 +271,7 @@ describe("ShareLinks (free-tier link lock vs view-only co-host)", () => {
     const html = render(
       <ShareLinks
         eventId="evt_test"
-        parties={[
-          party("A and B"),
-          party("Sixth Household", { inviteUrl: null }),
-        ]}
+        parties={[party("A and B"), party("Sixth Household", { inviteUrl: null })]}
         messageTemplate="Hello {name}: {link}"
         copy={copy.share}
         common={copy.common}
@@ -307,4 +304,3 @@ describe("ShareLinks (free-tier link lock vs view-only co-host)", () => {
     expect(html).not.toContain(copy.share.links.unlockRow);
   });
 });
-

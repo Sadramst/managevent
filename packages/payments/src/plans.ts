@@ -154,4 +154,3 @@ export function isPartyLinkUnlocked(
   if (effective.plan !== "FREE") return true;
   return partyIndex < FREE_PARTY_LINK_LIMIT;
 }
-

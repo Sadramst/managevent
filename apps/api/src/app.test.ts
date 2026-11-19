@@ -157,6 +157,56 @@ describe("application wiring", () => {
     expect((await bad(limited)).status).toBe(429);
     for (let i = 0; i < 3; i += 1) expect((await bad(open)).status).toBe(400);
   });
+
+  it("sets defence-in-depth security headers and rejects oversized request bodies", async () => {
+    const app = createApiApp({ disableRateLimits: true });
+    const health = await app.request("/health");
+    expect(health.headers.get("x-content-type-options")).toBe("nosniff");
+    expect(health.headers.get("x-frame-options")).toBe("DENY");
+    expect(health.headers.get("referrer-policy")).toBe("no-referrer");
+    expect(health.headers.get("cross-origin-resource-policy")).toBe("same-site");
+
+    const notFound = await app.request("/v1/nope");
+    expect(notFound.headers.get("cache-control")).toBe("no-store");
+
+    const oversizedAuth = await app.request("/api/auth/sign-in/email", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ email: "a@example.com", password: "x".repeat(20_000) }),
+    });
+    expect(oversizedAuth.status).toBe(413);
+    expect(((await oversizedAuth.json()) as { error: { code: string } }).error.code).toBe(
+      "PAYLOAD_TOO_LARGE",
+    );
+
+    const oversizedLead = await app.request("/v1/leads", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        source: "CONTACT_FORM",
+        name: "Big",
+        email: "big@example.com",
+        message: "x".repeat(300_000),
+      }),
+    });
+    expect(oversizedLead.status).toBe(413);
+  });
+
+  it("does not expose /openapi.json when NODE_ENV is production", async () => {
+    const prevNodeEnv = process.env.NODE_ENV;
+    const prevSecret = process.env.BETTER_AUTH_SECRET;
+    process.env.NODE_ENV = "production";
+    process.env.BETTER_AUTH_SECRET = prevSecret || "test-production-secret-minimum-32-chars";
+    try {
+      const app = createApiApp({ disableRateLimits: true });
+      const res = await app.request("/openapi.json");
+      expect(res.status).toBe(404);
+    } finally {
+      process.env.NODE_ENV = prevNodeEnv;
+      if (prevSecret === undefined) delete process.env.BETTER_AUTH_SECRET;
+      else process.env.BETTER_AUTH_SECRET = prevSecret;
+    }
+  });
 });
 
 describe.skipIf(!dbAvailable)("application wiring (database)", () => {

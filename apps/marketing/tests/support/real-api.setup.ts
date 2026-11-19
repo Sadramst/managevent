@@ -56,7 +56,7 @@ function createStaff(email: string, name: string): { password: string; totpUri: 
 async function signUpHost(email: string, password: string): Promise<void> {
   const response = await fetch(`${REAL_API_URL}/api/auth/sign-up/email`, {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", origin: REAL_WEB_ORIGIN },
     body: JSON.stringify({ name: "E2E Host", email, password }),
   });
   if (!response.ok) {

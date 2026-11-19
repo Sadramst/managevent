@@ -121,6 +121,7 @@ export default async function EventSharePage({
                 freeLimit: FREE_PARTY_LINK_LIMIT,
                 locked: lockedCount,
                 price: priceDisplay,
+                total: parties.length,
               })}
             </p>
             {canUpgrade ? (

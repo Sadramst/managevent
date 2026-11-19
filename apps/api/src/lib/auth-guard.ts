@@ -191,6 +191,13 @@ export function createAuthGuard(deps: ApiDeps): MiddlewareHandler<ApiEnv> {
     isFailure: isRejectedAttempt,
   });
 
+  const accountMutationPerIp = rateLimit({
+    name: "auth:account-mutation:ip",
+    windowMs: 15 * MINUTE,
+    max: 10,
+    key: byIp,
+  });
+
   const forPath = (path: string): MiddlewareHandler<ApiEnv>[] => {
     const limiters: MiddlewareHandler<ApiEnv>[] = [];
     if (path === "/sign-in/email") limiters.push(signInPerIp, signInPerEmail);
@@ -200,6 +207,7 @@ export function createAuthGuard(deps: ApiDeps): MiddlewareHandler<ApiEnv> {
     if (path === "/sign-in/magic-link") limiters.push(magicLinkPerIp);
     if (PASSWORD_RESET_PATHS.has(path)) limiters.push(resetPerIp);
     if (EMAILED_LINK_PATHS.has(path)) limiters.push(linkPerEmail);
+    if (path === "/change-password" || path === "/update-user") limiters.push(accountMutationPerIp);
     return limiters;
   };
 

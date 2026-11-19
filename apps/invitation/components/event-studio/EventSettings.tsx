@@ -21,6 +21,7 @@ import {
   updateInvitationAction,
 } from "@/lib/event-studio/actions";
 import { settle } from "@/lib/client-action";
+import { isSafeCheckoutRedirectUrl } from "@/lib/safe-url";
 import type { FormErrors } from "@/lib/event-studio/content-form";
 import { fill } from "@/lib/event-studio/local-date";
 import {
@@ -838,6 +839,11 @@ function PlanSettings({
     );
     if (!result) return;
     if (result.ok) {
+      if (!isSafeCheckoutRedirectUrl(result.data.checkoutUrl)) {
+        setStarting(false);
+        setFailure({ ok: false, code: "NETWORK_ERROR", message: ctx.copy.errors.NETWORK_ERROR });
+        return;
+      }
       // Leave for Stripe's hosted checkout; the button stays busy until the page unloads.
       window.location.assign(result.data.checkoutUrl);
       return;

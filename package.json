@@ -38,8 +38,7 @@
   "pnpm": {
     "overrides": {
       "@hono/zod-validator": "0.4.3",
-      "@modelcontextprotocol/sdk": "1.11.4",
-      "better-call": "1.0.8"
+      "@modelcontextprotocol/sdk": "1.32.2"
     },
     "onlyBuiltDependencies": [
       "@prisma/client",

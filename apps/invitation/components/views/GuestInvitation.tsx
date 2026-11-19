@@ -30,6 +30,7 @@ import {
   timeZoneCity,
   venueMapsUrl,
 } from "@/lib/guest/paths";
+import { safeExternalHttpsUrl } from "@/lib/safe-url";
 import { absoluteUrl, routes, wwwLinks } from "@/lib/urls";
 import { Countdown } from "./Countdown";
 import { GuestShell } from "./GuestShell";
@@ -482,14 +483,17 @@ export function GuestInvitation({ link, view, opened, cardId }: GuestInvitationP
           ) : null}
         </footer>
 
-        {music ? (
-          <MusicControl
-            src={music.url ?? ""}
-            title={music.title}
-            startWithGate={!memorial && !opened}
-            copy={copy.music}
-          />
-        ) : null}
+        {(() => {
+          const musicUrl = music ? safeExternalHttpsUrl(music.url) : null;
+          return music && musicUrl ? (
+            <MusicControl
+              src={musicUrl}
+              title={music.title}
+              startWithGate={!memorial && !opened}
+              copy={copy.music}
+            />
+          ) : null;
+        })()}
       </div>
     </GuestShell>
   );
@@ -561,13 +565,15 @@ function GiftDetails({
   memorial: boolean;
   copy: InvitationGuestCopy["well"];
 }) {
+  const registryUrl = safeExternalHttpsUrl(well.registryUrl);
+  const donationUrl = safeExternalHttpsUrl(well.donationUrl);
   const rows: { label: string; value: string }[] = [
     ...(well.payId ? [{ label: copy.payId, value: well.payId }] : []),
     ...(well.accountName ? [{ label: copy.accountName, value: well.accountName }] : []),
     ...(well.bsb ? [{ label: copy.bsb, value: well.bsb }] : []),
     ...(well.accountNumber ? [{ label: copy.accountNumber, value: well.accountNumber }] : []),
   ];
-  if (rows.length === 0 && !well.registryUrl && !well.donationUrl) return null;
+  if (rows.length === 0 && !registryUrl && !donationUrl) return null;
 
   return (
     <div className="inv-gift">
@@ -592,22 +598,22 @@ function GiftDetails({
           ))}
         </dl>
       ) : null}
-      {well.registryUrl || well.donationUrl ? (
+      {registryUrl || donationUrl ? (
         <div className="inv-gift-links">
-          {well.registryUrl ? (
+          {registryUrl ? (
             <a
               className="button button-secondary"
-              href={well.registryUrl}
+              href={registryUrl}
               target="_blank"
               rel="noopener noreferrer"
             >
               {copy.registry}
             </a>
           ) : null}
-          {well.donationUrl ? (
+          {donationUrl ? (
             <a
               className="button button-secondary"
-              href={well.donationUrl}
+              href={donationUrl}
               target="_blank"
               rel="noopener noreferrer"
             >

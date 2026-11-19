@@ -9,6 +9,7 @@
  */
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { AuthActor } from "@managevent/auth";
+import { bodyLimit } from "hono/body-limit";
 import { cors } from "hono/cors";
 import { createApiAuth, createSessionActorResolver } from "./lib/auth.js";
 import { createAuthGuard, withTrustedClientIp } from "./lib/auth-guard.js";
@@ -29,6 +30,11 @@ import {
 import type { LeadService } from "./modules/crm/service.js";
 import { healthRoute, OPENAPI_DOCUMENT_CONFIG } from "./openapi.js";
 import { mountApiRouters } from "./routers.js";
+
+const AUTH_BODY_LIMIT_BYTES = 16 * 1024;
+const DEFAULT_API_BODY_LIMIT_BYTES = 256 * 1024;
+const WEBHOOK_BODY_LIMIT_BYTES = 512 * 1024;
+const CSV_IMPORT_BODY_LIMIT_BYTES = 2 * 1024 * 1024;
 
 export interface CreateApiAppOptions {
   resolveActor?: (request: Request) => Promise<AuthActor | null>;
@@ -78,6 +84,20 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
 
   app.use("*", requestIdMiddleware());
   app.use("*", redactedLoggerMiddleware(options.logSink));
+  // Defence-in-depth security headers on every API response, independent of reverse proxy config.
+  app.use("*", async (c, next) => {
+    await next();
+    c.header("X-Content-Type-Options", "nosniff");
+    c.header("X-Frame-Options", "DENY");
+    c.header("Referrer-Policy", "no-referrer");
+    c.header("Cross-Origin-Resource-Policy", "same-site");
+    if (
+      !c.res.headers.has("Cache-Control") &&
+      (c.req.path.startsWith("/api/auth/") || c.req.path.startsWith("/v1/"))
+    ) {
+      c.header("Cache-Control", "no-store");
+    }
+  });
   app.use("*", async (c, next) => {
     c.set("rateLimit", rateLimitState);
     await next();
@@ -100,6 +120,38 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
     }),
   );
   app.use("/v1/*", originGuard(trustedOrigins));
+
+  // Cap request body sizes before parsing JSON/CSV to prevent memory exhaustion DoS.
+  const payloadTooLarge = (c: { get: (k: "requestId") => string | undefined; json: (body: unknown, status: 413) => Response }) =>
+    c.json(
+      {
+        error: {
+          code: "PAYLOAD_TOO_LARGE",
+          message: "The request body is too large",
+          requestId: c.get("requestId") ?? "req_unknown",
+        },
+      },
+      413,
+    );
+  const authBodyLimit = bodyLimit({ maxSize: AUTH_BODY_LIMIT_BYTES, onError: payloadTooLarge });
+  const defaultBodyLimit = bodyLimit({
+    maxSize: DEFAULT_API_BODY_LIMIT_BYTES,
+    onError: payloadTooLarge,
+  });
+  const webhookBodyLimit = bodyLimit({
+    maxSize: WEBHOOK_BODY_LIMIT_BYTES,
+    onError: payloadTooLarge,
+  });
+  const csvImportBodyLimit = bodyLimit({
+    maxSize: CSV_IMPORT_BODY_LIMIT_BYTES,
+    onError: payloadTooLarge,
+  });
+  app.use("/api/auth/*", authBodyLimit);
+  app.use("/v1/*", (c, next) => {
+    if (c.req.path.endsWith("/guests/import")) return csvImportBodyLimit(c, next);
+    if (c.req.path === "/v1/webhooks/stripe") return webhookBodyLimit(c, next);
+    return defaultBodyLimit(c, next);
+  });
 
   app.use("*", actorMiddleware(options.resolveActor ?? createSessionActorResolver(deps, auth)));
 
@@ -129,8 +181,11 @@ export function createApiApp(options: CreateApiAppOptions = {}) {
   // Module routers (`/v1/...`)
   mountApiRouters(app, deps, options.leadService ? { leadService: options.leadService } : {});
 
-  // OpenAPI 3.1 JSON endpoint
-  app.doc31("/openapi.json", OPENAPI_DOCUMENT_CONFIG);
+  // OpenAPI 3.1 JSON endpoint — exposed only outside production so internal routes are not
+  // enumerated by unauthenticated internet scanners.
+  if (process.env.NODE_ENV !== "production") {
+    app.doc31("/openapi.json", OPENAPI_DOCUMENT_CONFIG);
+  }
 
   // 404 handler in standard error envelope
   app.notFound((c) => {

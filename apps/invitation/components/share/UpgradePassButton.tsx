@@ -6,6 +6,7 @@ import { useToast } from "@/components/ui/Toast";
 import { settle } from "@/lib/client-action";
 import { startCheckoutAction } from "@/lib/event-studio/actions";
 import { rowKey } from "@/lib/event-studio/wizard";
+import { isSafeCheckoutRedirectUrl } from "@/lib/safe-url";
 
 export interface UpgradePassButtonProps {
   eventId: string;
@@ -43,6 +44,11 @@ export function UpgradePassButton({
       return;
     }
     if (result.ok) {
+      if (!isSafeCheckoutRedirectUrl(result.data.checkoutUrl)) {
+        setStarting(false);
+        toast.show(networkError, { tone: "danger" });
+        return;
+      }
       window.location.assign(result.data.checkoutUrl);
       return;
     }

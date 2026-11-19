@@ -68,12 +68,32 @@ export interface InvitationIcsInput {
   url: string;
 }
 
+/** Strips CR/LF and control chars so a single-line ICS property cannot inject new properties. */
+function stripIcsControlChars(value: string): string {
+  // eslint-disable-next-line no-control-regex
+  return value.replace(/[\r\n\u0000-\u001f\u007f]+/g, "");
+}
+
+function sanitizeIcsUrl(value: string): string | null {
+  const cleaned = stripIcsControlChars(value).trim();
+  if (!/^https?:\/\//i.test(cleaned)) return null;
+  try {
+    const parsed = new URL(cleaned);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+}
+
 /** Builds a complete `VCALENDAR` document with one `VEVENT`. */
 export function buildInvitationIcs(input: InvitationIcsInput): string {
   const endsAt =
     input.endsAt && input.endsAt.getTime() > input.startsAt.getTime()
       ? input.endsAt
       : new Date(input.startsAt.getTime() + DEFAULT_EVENT_DURATION_MS);
+  const safeUid = stripIcsControlChars(input.uid);
+  const safeUrl = sanitizeIcsUrl(input.url);
 
   const lines = [
     "BEGIN:VCALENDAR",
@@ -82,14 +102,14 @@ export function buildInvitationIcs(input: InvitationIcsInput): string {
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     "BEGIN:VEVENT",
-    `UID:${input.uid}`,
+    `UID:${safeUid}`,
     `DTSTAMP:${formatIcsDate(input.stamp)}`,
     `DTSTART:${formatIcsDate(input.startsAt)}`,
     `DTEND:${formatIcsDate(endsAt)}`,
     `SUMMARY:${escapeIcsText(input.summary)}`,
     `DESCRIPTION:${escapeIcsText(input.description)}`,
     ...(input.location ? [`LOCATION:${escapeIcsText(input.location)}`] : []),
-    `URL:${input.url}`,
+    ...(safeUrl ? [`URL:${safeUrl}`] : []),
     "STATUS:CONFIRMED",
     "END:VEVENT",
     "END:VCALENDAR",

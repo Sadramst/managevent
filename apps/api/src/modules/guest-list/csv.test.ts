@@ -213,12 +213,19 @@ describe("CSV export", () => {
   it("neutralises cells a spreadsheet would run as a formula", () => {
     const csv = buildCsvWithBom(
       ["Name"],
-      [["=HYPERLINK(1)"], ["+61"], ["-2+3"], ["@SUM(A1)"], ["\tx"]],
+      [["=HYPERLINK(1)"], [" =HYPERLINK(1)"], ["+61"], ["-2+3"], ["@SUM(A1)"], ["\tx"]],
     );
     const cells = parseCsv(csv)
       .slice(1)
       .map((record) => record[0]);
-    expect(cells).toEqual(["'=HYPERLINK(1)", "'+61", "'-2+3", "'@SUM(A1)", "'\tx"]);
+    expect(cells).toEqual([
+      "'=HYPERLINK(1)",
+      "' =HYPERLINK(1)",
+      "'+61",
+      "'-2+3",
+      "'@SUM(A1)",
+      "'\tx",
+    ]);
     // Numbers are data, not text, and stay as they are.
     expect(buildCsvWithBom(["N"], [[-5]])).toContain('"-5"');
   });

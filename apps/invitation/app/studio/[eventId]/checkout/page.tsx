@@ -17,6 +17,8 @@ function single(value: string | string[] | undefined): string | null {
   return typeof value === "string" && value.length > 0 ? value : null;
 }
 
+const SIMULATED_SESSION_ID_PATTERN = /^cs_sim_inv_[A-Za-z0-9_-]+_[0-9a-f]{16}_[0-9a-f]{16}$/;
+
 export default async function EventSimulatedCheckoutPage({
   params,
   searchParams,
@@ -27,13 +29,16 @@ export default async function EventSimulatedCheckoutPage({
   await requireHost();
   const [{ eventId }, query] = await Promise.all([params, searchParams]);
   const sessionId = single(query.session_id);
-  if (!sessionId) {
+  if (!sessionId || !SIMULATED_SESSION_ID_PATTERN.test(sessionId)) {
     redirect(routes.eventTab(eventId, "settings"));
   }
 
   const [event, plan] = await Promise.all([loadEvent(eventId), loadPlan(eventId)]);
   if (isMemorialEvent(event) || plan.effectivePlan !== "FREE") {
     redirect(`${routes.eventTab(eventId, "share")}?upgraded=1`);
+  }
+  if (!plan.upgrade.available) {
+    redirect(routes.eventTab(eventId, "settings"));
   }
 
   return (

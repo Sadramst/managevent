@@ -5,7 +5,7 @@
  * configured, every entry point throws `PaymentsNotConfiguredError` and the API reports
  * `503 PAYMENTS_NOT_CONFIGURED`. The legacy test wrappers in `./stripe.ts` are not used.
  */
-import { createHash } from "node:crypto";
+import { createHash, createHmac, randomBytes, timingSafeEqual } from "node:crypto";
 import Stripe from "stripe";
 import { INVITATION_PLANS } from "./plans.js";
 
@@ -71,17 +71,19 @@ export function isStripeWebhookConfigured(
 /**
  * True when simulated checkout is enabled for local development / E2E verification before a live
  * Stripe key is configured. Whenever a real `STRIPE_SECRET_KEY` is present, real Stripe is used.
+ * Simulated checkout is unconditionally forbidden in `NODE_ENV === "production"`.
  */
 export function isSimulatedCheckoutEnabled(
   env: NodeJS.ProcessEnv = process.env,
 ): boolean {
+  if (env.NODE_ENV === "production") return false;
   if (isStripeCheckoutConfigured(env.STRIPE_SECRET_KEY)) return false;
   const explicit = (env.STRIPE_SIMULATED_CHECKOUT ?? env.MANAGEVENT_SIMULATED_CHECKOUT)
     ?.trim()
     .toLowerCase();
   if (explicit === "true" || explicit === "1") return true;
   if (explicit === "false" || explicit === "0") return false;
-  return env.NODE_ENV !== "production" && env.NODE_ENV !== "test";
+  return env.NODE_ENV !== "test";
 }
 
 /** True when either real Stripe Checkout or simulated checkout is available. */
@@ -268,22 +270,67 @@ interface SimulatedSessionMeta {
 
 const simulatedSessions = new Map<string, SimulatedSessionMeta>();
 const expiredSimulatedSessions = new Set<string>();
-const SIMULATED_SESSION_PATTERN = /^cs_sim_(inv_[A-Za-z0-9_-]+)_([0-9a-f]{16})$/;
+const PROCESS_SIMULATED_KEY = randomBytes(32);
+const SIMULATED_SESSION_PATTERN = /^cs_sim_(inv_[A-Za-z0-9_-]+)_([0-9a-f]{16})_([0-9a-f]{16})$/;
+
+function simulatedSigningKey(): Buffer | string {
+  const configured = process.env.BETTER_AUTH_SECRET?.trim();
+  return configured && configured.length >= 16 ? configured : PROCESS_SIMULATED_KEY;
+}
+
+function signSimulatedSession(invitationId: string, keyDigest: string): string {
+  return createHmac("sha256", simulatedSigningKey())
+    .update(`cs_sim:${invitationId}:${keyDigest}`)
+    .digest("hex")
+    .slice(0, 16);
+}
+
+function parseVerifiedSimulatedSession(
+  sessionId: string,
+): { invitationId: string; keyDigest: string } | null {
+  const match = SIMULATED_SESSION_PATTERN.exec(sessionId);
+  if (!match) return null;
+  const invitationId = match[1] as string;
+  const keyDigest = match[2] as string;
+  const providedSig = match[3] as string;
+  const expectedSig = signSimulatedSession(invitationId, keyDigest);
+  if (
+    !timingSafeEqual(Buffer.from(providedSig, "hex"), Buffer.from(expectedSig, "hex"))
+  ) {
+    return null;
+  }
+  return { invitationId, keyDigest };
+}
+
+function missingSimulatedSessionError(sessionId: string): Error {
+  const missing = new Error(`No such checkout.session: '${sessionId}'`) as Error & {
+    type: string;
+    code: string;
+  };
+  missing.type = "StripeInvalidRequestError";
+  missing.code = "resource_missing";
+  return missing;
+}
 
 /**
  * Simulated `StripeCheckoutClient` for local development and E2E testing when no real
  * `STRIPE_SECRET_KEY` is configured. Routes through the exact same `startCheckout` and
  * `confirmCheckout` (`applyCheckoutUpgrade`) pipeline and writes real `Payment` and `AuditLog`
- * rows in PostgreSQL.
+ * rows in PostgreSQL. Never permitted in `NODE_ENV === "production"`.
  */
 export function createSimulatedCheckoutClient(): StripeCheckoutClient {
+  if (process.env.NODE_ENV === "production") {
+    throw new PaymentsNotConfiguredError("STRIPE_SECRET_KEY");
+  }
+
   return {
     async createInvitationUpgradeSession(params) {
       const keyDigest = createHash("sha256")
         .update(params.idempotencyKey)
         .digest("hex")
         .slice(0, 16);
-      const sessionId = `cs_sim_${params.invitationId}_${keyDigest}`;
+      const signature = signSimulatedSession(params.invitationId, keyDigest);
+      const sessionId = `cs_sim_${params.invitationId}_${keyDigest}_${signature}`;
       simulatedSessions.set(sessionId, {
         invitationId: params.invitationId,
         eventId: params.eventId,
@@ -294,18 +341,11 @@ export function createSimulatedCheckoutClient(): StripeCheckoutClient {
     },
 
     async retrieveCheckoutSession(sessionId) {
-      const match = SIMULATED_SESSION_PATTERN.exec(sessionId);
-      if (!match) {
-        const missing = new Error(`No such checkout.session: '${sessionId}'`) as Error & {
-          type: string;
-          code: string;
-        };
-        missing.type = "StripeInvalidRequestError";
-        missing.code = "resource_missing";
-        throw missing;
+      const parsed = parseVerifiedSimulatedSession(sessionId);
+      if (!parsed) {
+        throw missingSimulatedSessionError(sessionId);
       }
-      const invitationId = match[1] as string;
-      const keyDigest = match[2] as string;
+      const { invitationId, keyDigest } = parsed;
       const stored = simulatedSessions.get(sessionId);
       const expired = expiredSimulatedSessions.has(sessionId);
       return {
@@ -324,7 +364,7 @@ export function createSimulatedCheckoutClient(): StripeCheckoutClient {
     },
 
     async expireCheckoutSession(sessionId) {
-      if (!SIMULATED_SESSION_PATTERN.test(sessionId) || expiredSimulatedSessions.has(sessionId)) {
+      if (!parseVerifiedSimulatedSession(sessionId) || expiredSimulatedSessions.has(sessionId)) {
         return false;
       }
       expiredSimulatedSessions.add(sessionId);

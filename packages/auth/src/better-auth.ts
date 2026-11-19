@@ -75,7 +75,7 @@ interface MagicLinkUser {
 }
 
 /**
- * Runs before `GET /magic-link/verify` (Better Auth 1.2.12 has no such checks of its own):
+ * Runs before `GET /magic-link/verify`:
  *
  * - An account with two-factor enabled, or with a role that requires it, never signs in by
  *   emailed link: the two-factor hook only covers password sign-in, so the link would be a way
@@ -91,7 +91,10 @@ const magicLinkVerifyGuard = createAuthMiddleware(async (ctx) => {
   const token = typeof query?.token === "string" ? query.token : null;
   if (!token) return;
 
-  const stored = await ctx.context.internalAdapter.findVerificationValue(token);
+  // Better Auth 1.7 prefixes magic-link verification rows with `magic-link:`.
+  const stored =
+    (await ctx.context.internalAdapter.findVerificationValue(`magic-link:${token}`)) ??
+    (await ctx.context.internalAdapter.findVerificationValue(token));
   // Unknown or expired: the endpoint itself answers.
   if (!stored || stored.expiresAt < new Date()) return;
   let email: unknown;
@@ -108,7 +111,7 @@ const magicLinkVerifyGuard = createAuthMiddleware(async (ctx) => {
 
   const roles = Array.isArray(user.roles) ? user.roles : [];
   if (user.twoFactorEnabled || roles.some((role) => MFA_REQUIRED_ROLES.includes(String(role)))) {
-    await ctx.context.internalAdapter.deleteVerificationValue(stored.id);
+    await ctx.context.internalAdapter.deleteVerificationByIdentifier(stored.identifier);
     throw new APIError("FORBIDDEN", {
       code: "TWO_FACTOR_REQUIRED",
       message: "This account signs in with its password and two-factor code",
@@ -123,7 +126,7 @@ const magicLinkVerifyGuard = createAuthMiddleware(async (ctx) => {
         { field: "providerId", value: "credential" },
       ],
     });
-    await ctx.context.internalAdapter.deleteSessions(user.id);
+    await ctx.context.internalAdapter.deleteUserSessions(user.id);
   }
 });
 
@@ -172,7 +175,7 @@ export function buildBetterAuthConfig(
     ...(options.database ? { database: options.database } : {}),
     ...(options.trustedOrigins ? { trustedOrigins: options.trustedOrigins } : {}),
     // Never the default console logger: it prints email addresses (see `logAuthEvent`).
-    logger: { level: "error", log: logAuthEvent },
+    logger: { level: "warn", log: logAuthEvent },
     ...(sendMagicLink ? { hooks: { before: magicLinkVerifyGuard } } : {}),
     emailAndPassword: {
       enabled: true,

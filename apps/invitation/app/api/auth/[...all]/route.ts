@@ -96,15 +96,19 @@ function apiBaseUrl(): string {
   return (process.env.API_URL || "http://localhost:4000").replace(/\/+$/, "");
 }
 
+const PRIVATE_HEADERS = {
+  "cache-control": "private, no-store",
+  "x-robots-tag": "noindex, nofollow",
+} as const;
+
 function problem(status: number, code: string, message: string): Response {
   return Response.json(
     { error: { code, message, requestId: "req_unknown" } },
-    { status, headers: { "cache-control": "no-store" } },
+    { status, headers: PRIVATE_HEADERS },
   );
 }
 
-const notFound = () =>
-  new Response(null, { status: 404, headers: { "cache-control": "no-store" } });
+const notFound = () => new Response(null, { status: 404, headers: PRIVATE_HEADERS });
 
 function isAllowed(method: string, path: string): boolean {
   if (method === "POST") return ALLOWED_POST.has(path);
@@ -231,7 +235,8 @@ async function proxy(request: NextRequest, method: "GET" | "POST"): Promise<Resp
   for (const cookie of upstream.headers.getSetCookie()) {
     responseHeaders.append("set-cookie", cookie);
   }
-  responseHeaders.set("cache-control", "no-store");
+  responseHeaders.set("cache-control", PRIVATE_HEADERS["cache-control"]);
+  responseHeaders.set("x-robots-tag", PRIVATE_HEADERS["x-robots-tag"]);
 
   const location = upstream.headers.get("location");
   if (location && pointsAtAuthErrorPage(location)) {

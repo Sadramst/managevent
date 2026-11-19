@@ -264,7 +264,7 @@ describe("@managevent/payments checkout (real Stripe SDK)", () => {
     );
   });
 
-  it("supports simulated checkout when live Stripe credentials are not configured", async () => {
+  it("supports simulated checkout outside production and rejects forged or production sessions", async () => {
     expect(isSimulatedCheckoutEnabled({})).toBe(true);
     expect(isSimulatedCheckoutEnabled({ MANAGEVENT_SIMULATED_CHECKOUT: "0" })).toBe(false);
     expect(isSimulatedCheckoutEnabled({ NODE_ENV: "production" })).toBe(false);
@@ -273,7 +273,13 @@ describe("@managevent/payments checkout (real Stripe SDK)", () => {
         NODE_ENV: "production",
         MANAGEVENT_SIMULATED_CHECKOUT: "true",
       }),
-    ).toBe(true);
+    ).toBe(false);
+    expect(
+      isSimulatedCheckoutEnabled({
+        NODE_ENV: "production",
+        STRIPE_SIMULATED_CHECKOUT: "1",
+      }),
+    ).toBe(false);
     expect(isCheckoutAvailable({})).toBe(true);
     expect(isCheckoutAvailable({ NODE_ENV: "production" })).toBe(false);
 
@@ -306,6 +312,17 @@ describe("@managevent/payments checkout (real Stripe SDK)", () => {
       },
     });
     expect(retrieved.paymentIntentId).toMatch(/^pi_sim_/);
+
+    // Forged or tampered simulated session IDs must be rejected.
+    await expect(
+      sim.retrieveCheckoutSession("cs_sim_inv_sim_1_0000000000000000_0000000000000000"),
+    ).rejects.toMatchObject({ code: "resource_missing" });
+    await expect(
+      sim.retrieveCheckoutSession(`${created.sessionId.slice(0, -1)}${created.sessionId.endsWith("0") ? "1" : "0"}`),
+    ).rejects.toMatchObject({ code: "resource_missing" });
+    await expect(
+      sim.expireCheckoutSession("cs_sim_inv_sim_1_0000000000000000_0000000000000000"),
+    ).resolves.toBe(false);
   });
 });
 

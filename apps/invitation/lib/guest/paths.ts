@@ -3,6 +3,8 @@
  * browser. A guest path contains the guest's token: build it, link to it, never log it.
  */
 
+import { safeExternalHttpsUrl } from "@/lib/safe-url";
+
 export interface GuestLink {
   eventSlug: string;
   guestToken: string;
@@ -44,16 +46,17 @@ export function parseGuestPath(pathname: string): GuestLink | null {
 }
 
 /**
- * A maps link for a venue: the host's own link when they gave one, otherwise a search for the
- * venue name and address. The universal Google Maps URL opens the Maps app on Android and iOS
- * when it is installed, and the website otherwise.
+ * A maps link for a venue: the host's own link when they gave a valid `https://` URL, otherwise
+ * a search for the venue name and address. The universal Google Maps URL opens the Maps app on
+ * Android and iOS when it is installed, and the website otherwise.
  */
 export function venueMapsUrl(venue: {
   name: string;
   address: string;
   mapsUrl?: string | undefined;
 }): string {
-  if (venue.mapsUrl) return venue.mapsUrl;
+  const safeHostUrl = safeExternalHttpsUrl(venue.mapsUrl);
+  if (safeHostUrl) return safeHostUrl;
   const query = [venue.name, venue.address].filter((part) => part.trim().length > 0).join(", ");
   return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(query)}`;
 }

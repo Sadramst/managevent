@@ -331,8 +331,11 @@ function escapeCell(value: CsvCell): string {
   if (value === null || value === undefined) return '""';
   let text = String(value);
   // Neutralise spreadsheet formula injection (OWASP CSV injection): a text cell that starts with
-  // one of these characters would otherwise be evaluated by Excel or Sheets.
-  if (typeof value === "string" && /^[=+\-@\t\r]/.test(text)) text = `'${text}`;
+  // (or leads with whitespace before) one of these characters would otherwise be evaluated by
+  // Excel or Sheets.
+  if (typeof value === "string" && (/^[\t\r\n ]*[=+\-@]/.test(text) || /^[\t\r]/.test(text))) {
+    text = `'${text}`;
+  }
   return `"${text.replace(/"/g, '""')}"`;
 }
 

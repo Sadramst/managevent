@@ -25,6 +25,7 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self'",
   "manifest-src 'self'",
+  ...(isDev ? [] : ["upgrade-insecure-requests"]),
 ].join("; ");
 
 const securityHeaders = [
@@ -32,15 +33,29 @@ const securityHeaders = [
   { key: "X-Frame-Options", value: "DENY" },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
   {
     key: "Permissions-Policy",
     value:
       "accelerometer=(), browsing-topics=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=()",
   },
+  ...(isDev
+    ? []
+    : [{ key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }]),
 ];
+
+const noindexHeader = { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive" };
+const noindexSources = ["/admin", "/admin/:path*", "/api/:path*"];
+
+/** Requests carrying credentials or staff console traffic are kept out of dev/CI logs. */
+export const unloggedRequests: RegExp[] = [/^\/api\/auth\//, /^\/admin(\/|\?|$)/];
 
 const config: NextConfig = {
   poweredByHeader: false,
+  // Never print server action arguments (lead contact details, admin notes, site settings)
+  // or auth/admin request paths to dev/CI logs.
+  logging: { serverFunctions: false, incomingRequests: { ignore: unloggedRequests } },
   webpack(configuration) {
     configuration.resolve.extensionAlias = { ".js": [".ts", ".tsx", ".js"] };
     return configuration;
@@ -57,6 +72,7 @@ const config: NextConfig = {
         source: "/:path*",
         headers: securityHeaders,
       },
+      ...noindexSources.map((source) => ({ source, headers: [noindexHeader] })),
     ];
   },
   async redirects() {

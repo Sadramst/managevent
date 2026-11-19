@@ -101,4 +101,22 @@ describe("guest-site/ics", () => {
     const badEnd = buildInvitationIcs({ ...base, endsAt: new Date("2027-03-06T07:00:00.000Z") });
     expect(badEnd).toContain("DTEND:20270306T130000Z");
   });
+
+  it("strips CR/LF from UID and URL and omits non-http(s) URLs", () => {
+    const ics = buildInvitationIcs({
+      uid: "evt_1\r\nSUMMARY:Injected@managevent.com.au",
+      stamp: new Date("2026-11-12T00:00:00.000Z"),
+      startsAt: new Date("2027-03-06T08:00:00.000Z"),
+      endsAt: null,
+      summary: "Safe Event",
+      description: "Details",
+      location: null,
+      url: "javascript:alert(1)\r\nX-EVIL:1",
+    });
+    const lines = unfold(ics).split("\r\n");
+    expect(lines).toContain("UID:evt_1SUMMARY:Injected@managevent.com.au");
+    expect(lines.some((line) => line.startsWith("URL:"))).toBe(false);
+    expect(lines.some((line) => line.startsWith("X-EVIL:"))).toBe(false);
+    expect(lines.filter((line) => line.startsWith("SUMMARY:"))).toEqual(["SUMMARY:Safe Event"]);
+  });
 });

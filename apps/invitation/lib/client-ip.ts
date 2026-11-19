@@ -6,13 +6,13 @@
  * (`API_PROXY_SECRET`), so this value is never trusted from the public internet directly.
  */
 
-const IP_PATTERN = /^[0-9a-fA-F:.]{2,45}$/;
+import { isIP } from "node:net";
 
 function clean(value: string | null | undefined): string | undefined {
   const candidate = value?.split(",")[0]?.trim();
   if (!candidate) return undefined;
-  // Anything that is not address-shaped is dropped, so a header cannot smuggle other content.
-  return IP_PATTERN.test(candidate) ? candidate : undefined;
+  // Drop anything that is not a syntactically valid IPv4 or IPv6 literal.
+  return isIP(candidate) !== 0 ? candidate : undefined;
 }
 
 /**

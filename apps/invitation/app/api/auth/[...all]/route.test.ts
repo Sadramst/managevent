@@ -85,7 +85,8 @@ describe("auth proxy", () => {
     ]);
     expect(response.headers.get("content-length")).toBeNull();
     expect(response.headers.get("content-encoding")).toBeNull();
-    expect(response.headers.get("cache-control")).toBe("no-store");
+    expect(response.headers.get("cache-control")).toBe("private, no-store");
+    expect(response.headers.get("x-robots-tag")).toBe("noindex, nofollow");
     // The session token is a bearer credential; the cookie already carries the session.
     await expect(response.json()).resolves.toEqual({ redirect: false, user: { id: "usr_1" } });
   });
